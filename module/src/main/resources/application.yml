@@ -1,0 +1,85 @@
+#端口
+server:
+  port: 8123
+  servlet:
+    #上下文
+    context-path: /
+    #编码格式
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
+  #编码格式
+  tomcat:
+    uri-encoding: UTF-8
+
+spring:
+  #上传文件修改限制大小
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 10MB
+  #数据库配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    database:
+      type: mysql
+    url: jdbc:mysql://39.107.157.91:13306/dashu_frame_open?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
+    username: dashuopen
+    password: dashuopen@123
+  #Redis配置
+  redis:
+    host: localhost
+    port: 6379
+    password: 123456
+    database: 0
+
+#mybatis-plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.kg.**.entity
+
+#自定义配置
+com:
+  kg:
+    #微信配置
+    weixin:
+      appid: xxxxx
+      secret: xxxxx
+    #百度OCR配置
+    baidu:
+      clientId: xxxxx
+      clientSecret: xxxxx
+      grantType: xxxxx
+    #文件上传配置
+    file:
+      allow-extend: jpg|jpeg|png|gif|bpm|
+      image-extend: jpg|jpeg|png|gif|bpm|
+      default-path-pre: /upfiles
+    #swagger相关配置
+    swagger:
+      title: "大树快速开发平台API"
+      description: "基于swagger的Api接口信息"
+      termsOfServiceUrl: "http://www.keepgrown.com"
+      version: "1.0.0"
+      concat:
+        name: "ziro"
+        www: "http://www.keepgrown.com"
+        email: "877185959@qq.com"
+    #开发管理员配置
+    developer:
+      user:
+        # 所有开发管理员的ids，多个用逗号隔开
+        ids: 1
+    #登录常量配置
+    login:
+      jwt:
+        token:
+          expiry: 120
+#输出日志配置
+logging:
+  level:
+    root: info
+    com:
+      kg: trace

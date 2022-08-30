@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>dashu-frame</artifactId>
+        <groupId>com.keepgrown</groupId>
+        <version>1.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>module</artifactId>
+    <description>Module::业务代码模块</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.keepgrown</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-generator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baidubce</groupId>
+            <artifactId>api-explorer-sdk</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>*</include>
+                    <include>*/**</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+
+        <!--打包的jar文件名-->
+        <finalName>${finalpackage.name}</finalName>
+        <plugins>
+            <!--项目打包jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <!-- 不打包资源文件（配置文件和依赖包分开） -->
+                    <excludes>
+                        <!--<exclude>static/**</exclude>-->
+                        <!--<exclude>aspose/**</exclude>-->
+                        <exclude>**.yml</exclude>
+                        <exclude>**.ignore</exclude>
+                    </excludes>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <!--MANIFEST.MF中Class-Path 加入前缀 -->
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <!--jar包不包含唯一版本标识 -->
+                            <useUniqueVersions>false</useUniqueVersions>
+                            <!--指定入口类 -->
+                            <mainClass>com.kg.DashuApplication</mainClass>
+                        </manifest>
+                        <manifestEntries>
+                            <!--MANIFEST.MF 中 Class-Path 加入资源文件目录 -->
+                            <Class-Path>
+                                ./config/
+                            </Class-Path>
+                        </manifestEntries>
+                    </archive>
+                    <!--输出目录-->
+                    <outputDirectory>${finalpackage.path}</outputDirectory>
+                </configuration>
+            </plugin>
+
+            <!--拷贝依赖jar copy-dependencies -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${finalpackage.path}/lib/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--拷贝资源文件 copy-resources -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <include>**.yml</include>
+                                    <include>**.ignore</include>
+                                    <!--<include>*.properties</include>
+                                    <include>aspose/**</include>-->
+                                </resource>
+                            </resources>
+                            <outputDirectory>${finalpackage.path}/config</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

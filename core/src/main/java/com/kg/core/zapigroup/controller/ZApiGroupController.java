@@ -1,0 +1,45 @@
+package com.kg.core.zapigroup.controller;
+
+
+import com.kg.core.zapi.service.IZApiService;
+import com.kg.core.zapigroup.dto.ZApiGroupDTO;
+import com.kg.core.zapigroup.service.IZApiGroupService;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * <p>
+ * API分组信息表 前端控制器
+ * </p>
+ *
+ * @author ziro
+ * @since 2022-05-17
+ */
+@RestController
+@RequestMapping("/api/group")
+public class ZApiGroupController {
+    @Autowired
+    private IZApiService apiService;
+    @Autowired IZApiGroupService groupService;
+
+    @ApiOperation(value = "delete", notes = "删除分组信息", httpMethod = "POST")
+    @PostMapping("delete")
+    @PreAuthorize("hasAuthority('api:group:delete')")
+    public boolean delete(String apiGroupId) {
+        return apiService.deletApiGroup(apiGroupId);
+    }
+
+    @ApiOperation(value = "add", notes = "添加分组信息", httpMethod = "POST")
+    @PostMapping("add")
+    @PreAuthorize("hasAuthority('api:group:add')")
+    public void add(@RequestBody ZApiGroupDTO zApiGroupDTO) {
+        groupService.add(zApiGroupDTO);
+    }
+
+}
