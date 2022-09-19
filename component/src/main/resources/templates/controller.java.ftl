@@ -86,9 +86,9 @@ public class ${table.controllerName} {
 			if (paramObj.containsKey("${field.propertyName}")) {
 				wrapper.lambda().eq(${entity}::get${field.propertyName?cap_first}, paramObj.getStr("${field.propertyName}"));
 			}
-	<#if field.propertyName=="order">
+	<#if field.propertyName=="order_index">
 			// 默认排序
-			wrapper.lambda().orderByAsc(${entity}::getOrder);
+			wrapper.lambda().orderByAsc(${entity}::getOrderIndex);
 	</#if>
 </#list>
 		}
@@ -102,7 +102,11 @@ public class ${table.controllerName} {
     public boolean add(@RequestBody ${dtoName} ${dtoName?uncap_first}) {
     	${entity} ${entity?uncap_first} = ${dtoconvertName?uncap_first}.dtoToEntity(${dtoName?uncap_first});
         ${entity?uncap_first}.set${entityKeyName?cap_first}(GuidUtils.getUuid());
+<#list table.fields as field>
+	<#if field.propertyName=="create_time">
 		${entity?uncap_first}.setCreateTime(LocalDateTime.now());
+	</#if>
+</#list>
         if (${table.serviceName?uncap_first}.save(${entity?uncap_first})) {
         	return true;
         }
@@ -115,7 +119,11 @@ public class ${table.controllerName} {
 	@PreAuthorize("hasAuthority('${controllerAuthorizePre}update')")
 	public boolean update(@RequestBody ${dtoName} ${dtoName?uncap_first}) {
     	${entity} ${entity?uncap_first} = ${dtoconvertName?uncap_first}.dtoToEntity(${dtoName?uncap_first});
+<#list table.fields as field>
+	<#if field.propertyName=="update_time">
 		${entity?uncap_first}.setUpdateTime(LocalDateTime.now());
+	</#if>
+</#list>
 		if (${table.serviceName?uncap_first}.updateById(${entity?uncap_first})) {
 			return true;
 		}
