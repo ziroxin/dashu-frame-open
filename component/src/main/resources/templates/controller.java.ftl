@@ -86,12 +86,15 @@ public class ${table.controllerName} {
 			if (paramObj.containsKey("${field.propertyName}")) {
 				wrapper.lambda().eq(${entity}::get${field.propertyName?cap_first}, paramObj.getStr("${field.propertyName}"));
 			}
-	<#if field.propertyName=="order_index">
-			// 默认排序
-			wrapper.lambda().orderByAsc(${entity}::getOrderIndex);
-	</#if>
 </#list>
 		}
+
+<#list table.fields as field>
+    <#if field.propertyName=="orderIndex">
+		// 默认排序
+		wrapper.lambda().orderByAsc(${entity}::getOrderIndex);
+    </#if>
+</#list>
 		return ${table.serviceName?uncap_first}.page(pager, wrapper);
 	}
 
@@ -103,7 +106,7 @@ public class ${table.controllerName} {
     	${entity} ${entity?uncap_first} = ${dtoconvertName?uncap_first}.dtoToEntity(${dtoName?uncap_first});
         ${entity?uncap_first}.set${entityKeyName?cap_first}(GuidUtils.getUuid());
 <#list table.fields as field>
-	<#if field.propertyName=="create_time">
+	<#if field.propertyName=="createTime">
 		${entity?uncap_first}.setCreateTime(LocalDateTime.now());
 	</#if>
 </#list>
@@ -120,7 +123,7 @@ public class ${table.controllerName} {
 	public boolean update(@RequestBody ${dtoName} ${dtoName?uncap_first}) {
     	${entity} ${entity?uncap_first} = ${dtoconvertName?uncap_first}.dtoToEntity(${dtoName?uncap_first});
 <#list table.fields as field>
-	<#if field.propertyName=="update_time">
+	<#if field.propertyName=="updateTime">
 		${entity?uncap_first}.setUpdateTime(LocalDateTime.now());
 	</#if>
 </#list>
