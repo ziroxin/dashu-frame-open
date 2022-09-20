@@ -26,13 +26,13 @@ public class ZLoginController implements BaseController {
     @Autowired
     private ZLoginService zLoginService;
 
-    @ApiOperation(value = "登录", notes = "11", httpMethod = "POST")
+    @ApiOperation(value = "登录", notes = "登录接口", httpMethod = "POST")
     @PostMapping("login")
     public LoginSuccessDTO login(@RequestBody ZUser zUser) throws BaseException {
         return zLoginService.login(zUser);
     }
 
-    @ApiOperation(value = "登出", notes = "2", httpMethod = "POST")
+    @ApiOperation(value = "登出", notes = "退出接口", httpMethod = "POST")
     @GetMapping("logout")
     public void logout() {
         zLoginService.logout();

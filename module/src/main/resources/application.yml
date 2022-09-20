@@ -54,8 +54,11 @@ com:
       grantType: xxxxx
     #文件上传配置
     file:
+      #允许上传的文件格式（防止攻击类脚本文件上传）
       allow-extend: jpg|jpeg|png|gif|bpm|
+      #允许上传的图片格式（图片需要压缩，格式必须正确）
       image-extend: jpg|jpeg|png|gif|bpm|
+      #默认上传路径
       default-path-pre: /upfiles
     #swagger相关配置
     swagger:
