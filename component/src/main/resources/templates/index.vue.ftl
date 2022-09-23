@@ -3,8 +3,16 @@
 		<!-- ${table.comment!}-管理按钮 -->
 		<div style="margin-bottom: 20px;">
 <#list table.fields as field>
+	<#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
+			<el-date-picker v-model="searchData.${field.propertyName}" style="width: 150px;margin-right: 10px;"
+							type="date" class="filter-item" placeholder="请选择${field.comment}查询"/>
+	<#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
+			<el-date-picker v-model="searchData.${field.propertyName}" style="width: 150px;margin-right: 10px;"
+							type="datetime" class="filter-item" placeholder="请选择${field.comment}查询"/>
+	<#else>
 			<el-input v-model="searchData.${field.propertyName}" style="width: 150px;margin-right: 10px;"
 					  		class="filter-item" placeholder="请输入${field.comment}查询"/>
+	</#if>
 </#list>
 			<el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="loadTableList">查询</el-button>
 			<el-button v-waves class="filter-item" type="info" icon="el-icon-refresh" @click="resetTableList">显示全部</el-button>
@@ -47,9 +55,10 @@
                       :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]">
 					<el-input-number v-model="temp.orderIndex" :min="0"/>
 				</el-form-item>
-	<#else>
+	<#elseif field.propertyName!='createTime' && field.propertyName!='updateTime'>
+		<#--判断是否为null的规则-->
+		<#assign rules1=field.metaInfo.nullable?string("","{required: true, message: '" + field.comment + "不能为空'}")>
 		<#if field.propertyType=='String'>
-			<#assign rules1=field.metaInfo.nullable?string("","{required: true, message: '" + field.comment + "不能为空'}")>
 			<#if field.metaInfo.length gte 255>
 				<el-form-item label="${field.comment}" prop="${field.propertyName}">
 					<el-input v-model="temp.${field.propertyName}" :rules="[${rules1}]" type="textarea" maxlength="${field.metaInfo.length}"
@@ -61,14 +70,30 @@
 					<el-input v-model="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
 				</el-form-item>
 			</#if>
-		</#if>
-		<#if field.propertyType=='Integer'>
+		<#elseif field.propertyType=='Integer' || field.propertyType=='Long'
+			|| field.propertyType=='BigDecimal'|| field.propertyType=='Double'>
+			<#--数字的可能有2种规则，所以单独判断-->
 			<#assign rules2=field.metaInfo.nullable?string("{type: 'number', message: '必须为数字'}","{required: true, message: '" + field.comment + "不能为空'},{type: 'number', message: '必须为数字'}")>
 				<el-form-item label="${field.comment}" prop="${field.propertyName}"
                       :rules="[${rules2}]">
 					<el-input v-model.number="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
 				</el-form-item>
-		</#if>
+		<#elseif field.propertyType=='LocalDate' || field.propertyType=='Date'>
+				<el-form-item label="${field.comment}" prop="${field.propertyName}"
+					  :rules="[${rules1}]">
+					<el-date-picker v-model="temp.${field.propertyName}" type="date" placeholder="请选择${field.comment}"/>
+				</el-form-item>
+        <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
+				<el-form-item label="${field.comment}" prop="${field.propertyName}"
+					  :rules="[${rules1}]">
+					<el-date-picker v-model="temp.${field.propertyName}" type="datetime" placeholder="请选择${field.comment}"/>
+				</el-form-item>
+		<#else>
+				<el-form-item label="${field.comment}" prop="${field.propertyName}"
+					  :rules="[${rules1}]">
+					<el-input v-model="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
+				</el-form-item>
+        </#if>
 	</#if>
 </#list>
 			</el-form>

@@ -1,5 +1,10 @@
 package ${package.DTO};
 
+<#list table.importPackages as pkg>
+    <#if !pkg?string?contains('com.baomidou.mybatisplus.annotation.') && !pkg?string?contains('BaseEntity')>
+import ${pkg};
+    </#if>
+</#list>
 <#if springdoc>
 import io.swagger.v3.oas.annotations.media.Schema;
 <#elseif swagger>
@@ -18,8 +23,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
     </#if>
 </#if>
-
-import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -72,10 +75,10 @@ public class ${dtoName} {
         </#if>
     </#if>
     <#if field.propertyType=="LocalDateTime">
-    @JsonFormat(pattern="yyyy/MM/dd HH:mm:ss", timezone="GMT+8")
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
     </#if>
-    <#if field.propertyType=="Date">
-        @JsonFormat(pattern="yyyy/MM/dd", timezone="GMT+8")
+    <#if field.propertyType=="Date" || field.propertyType=="LocalDate">
+        @JsonFormat(pattern = "yyyy/MM/dd", timezone = "GMT+8")
     </#if>
     private ${field.propertyType} ${field.propertyName};
 </#list>
