@@ -24,6 +24,7 @@ import './utils/error-log'
 import * as filters from './filters'
 // 导入权限指令
 import permission from '@/directive/permission';
+import mydate from '@/directive/mydate';
 
 Vue.use(Element, {
   // 设置element-ui默认大小
@@ -38,6 +39,7 @@ Object.keys(filters).forEach(key => {
 })
 // 注册权限指令
 Vue.directive('permission', permission)
+Vue.directive('mydate', mydate)
 
 Object.assign(Vue.prototype, {
   $serverUrl: process.env.VUE_APP_BASE_API,
