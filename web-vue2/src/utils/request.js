@@ -25,8 +25,8 @@ service.interceptors.request.use(
     }
     if (config.method === 'get') {
       // 若是是get请求，且params是数组类型如arr=[1,2]，则转换成arr=1&arr=2
-      config.paramsSerializer = function(params) {
-        return qs.stringify(params, { arrayFormat: 'repeat' })
+      config.paramsSerializer = function (params) {
+        return qs.stringify(params, {arrayFormat: 'repeat'})
       }
     }
     return config
@@ -45,22 +45,23 @@ service.interceptors.response.use(
     const res = response.data
 
     // 处理自定义状态码
-    if (res.code === '200' || res.code === 200) {
+    if (res.code == 200) {
       return res
     } else {
-      Message({
-        message: res.message || '请求出错',
-        type: 'error',
-        duration: 5 * 1000
-      })
+      // Message({
+      //   message: res.message || '请求出错',
+      //   type: 'error',
+      //   duration: 5 * 1000
+      // })
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 500 || res.code === 400 || res.code === 401 || res.code === 403 || res.code === 405) {
+      if (res.code == 500 || res.code == 400 || res.code == 401 || res.code == 403 || res.code == 405) {
         // to re-login
-        MessageBox.confirm('您的登录已失效，是否重新登录？', '是否重新登录', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
-          type: 'warning'
+        MessageBox.confirm('登录失效了，要重新登录吗？', '重新登录', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
+          type: 'error',
+          center: true
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
             location.reload()
