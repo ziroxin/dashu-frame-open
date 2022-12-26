@@ -13,7 +13,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import ${superControllerClassPackage};
 </#if>
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
@@ -51,9 +51,9 @@ public class ${table.controllerName} extends ${superControllerClass} {
 public class ${table.controllerName} {
 </#if>
 
-    @Autowired
+    @Resource
     private ${table.serviceName} ${table.serviceName?uncap_first};
-	@Autowired
+	@Resource
 	private ${dtoconvertName} ${dtoconvertName?uncap_first};
 
 	@ApiOperation(value = "${controllerMapping}/getById", notes = "详情-${table.comment!}", httpMethod = "GET")
