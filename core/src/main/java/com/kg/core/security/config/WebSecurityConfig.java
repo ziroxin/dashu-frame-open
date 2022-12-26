@@ -5,7 +5,7 @@ import cn.hutool.core.util.CharsetUtil;
 import com.kg.core.filter.JwtTokenAuthenticationFilter;
 import com.kg.core.security.handler.SimpleAccessDeniedHandler;
 import com.kg.core.security.handler.SimpleAuthenticationEntryPoint;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,10 +15,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.StringUtils;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,12 +36,17 @@ import java.util.stream.Collectors;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
+    @Resource
     private JwtTokenAuthenticationFilter jwtTokenAuthenticationFilter;
-    @Autowired
+    @Resource
     private SimpleAccessDeniedHandler accessDeniedHandler;
-    @Autowired
+    @Resource
     private SimpleAuthenticationEntryPoint authenticationEntryPoint;
+    /**
+     * 配置是否允许跨域，默认false
+     */
+    @Value("${com.kg.cors.enable}")
+    private Boolean isCorsEnable;
 
     /**
      * 配置默认解密方法
@@ -85,5 +93,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler)
                 .authenticationEntryPoint(authenticationEntryPoint);
+
+        // 允许iframe调用
+        http.headers().frameOptions().sameOrigin();
+
+        // 跨域配置
+        if (isCorsEnable) {
+            // 允许跨域，覆盖跨域配置
+            http.cors().configurationSource((corsConfigurationSource()));
+        }
+    }
+
+    /**
+     * 跨域资源配置
+     */
+    private CorsConfigurationSource corsConfigurationSource() {
+        CorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.addAllowedOrigin("*");// 同源配置，*表示任何请求都视为同源，若需指定ip和端口可以改为如“localhost：8080”，多个以“，”分隔；
+        corsConfiguration.addAllowedHeader("*");// header，允许哪些header，本案中使用的是token，此处可将*替换为token；
+        corsConfiguration.addAllowedMethod("*");// 允许的请求方法，PSOT、GET等
+        ((UrlBasedCorsConfigurationSource) source).registerCorsConfiguration("/**", corsConfiguration);// 配置允许跨域访问的url
+        return source;
     }
 }

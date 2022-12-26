@@ -79,7 +79,12 @@ com:
     login:
       jwt:
         token:
+          # token过期时限，单位：分钟
           expiry: 120
+    #跨域配置
+    cors:
+      # 是否开启跨域：默认关闭（true开启；false关闭）
+      enable: false
 #输出日志配置
 logging:
   level:
