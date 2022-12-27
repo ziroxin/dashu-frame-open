@@ -33,7 +33,7 @@ public class QuartzConfig {
      * 配置定时任务
      */
     @Bean
-    public void Initialization() {
+    public void QuartzInitialization() {
         System.out.println("========启动定时任务扫描=============");
         ThreadUtil.execute(() -> {
             try {
