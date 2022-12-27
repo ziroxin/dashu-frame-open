@@ -48,6 +48,7 @@
         <com.baidubce.version>1.0.3.1</com.baidubce.version>
         <org.jetbrains.version>23.0.0</org.jetbrains.version>
         <org.quartz.version>2.3.2</org.quartz.version>
+        <whvcse.easy-captcha.version>1.6.2</whvcse.easy-captcha.version>
 
         <!-- 打包信息 -->
         <finalpackage.path>${project.build.directory}/package-jar</finalpackage.path>
@@ -158,10 +159,18 @@
                 <version>${org.jetbrains.version}</version>
             </dependency>
 
+            <!-- Quartz -->
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
                 <artifactId>quartz</artifactId>
                 <version>${org.quartz.version}</version>
+            </dependency>
+
+            <!-- 验证码 -->
+            <dependency>
+                <groupId>com.github.whvcse</groupId>
+                <artifactId>easy-captcha</artifactId>
+                <version>${whvcse.easy-captcha.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
