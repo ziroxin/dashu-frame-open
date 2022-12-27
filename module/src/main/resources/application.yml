@@ -85,6 +85,22 @@ com:
     cors:
       # 是否开启跨域：默认关闭（true开启；false关闭）
       enable: false
+    #验证码配置
+    captcha:
+      #类型枚举 ARITHMETIC-算数；CHINESE-中文；CHINESE_GIF-中文闪图；GIF-闪图；SPEC-常规
+      type: ARITHMETIC
+      #有效期 分钟
+      expiration: 10
+      #内容长度
+      length: 4
+      #图片宽高
+      width: 120
+      height: 36
+      #字体样式
+      fontFamily: Default
+      fontSize: 20
+      #0正常、1加粗、2斜体
+      fontStyle: 0
 #输出日志配置
 logging:
   level:
