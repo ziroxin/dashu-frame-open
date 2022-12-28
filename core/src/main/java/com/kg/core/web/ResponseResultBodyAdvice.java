@@ -113,7 +113,7 @@ public class ResponseResultBodyAdvice implements ResponseBodyAdvice<Object> {
             try {
                 return objectMapper.writeValueAsString(ResponseResult.success(body));
             } catch (JsonProcessingException ex) {
-                throw new BaseException("API: Convert return data occur exception", ex);
+                throw new BaseException("API: Convert return data occur exception");
             }
         }
 

@@ -4,6 +4,7 @@ import com.kg.component.jwt.JwtUtils;
 import com.kg.component.redis.RedisUtils;
 import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
+import com.kg.core.exception.enums.BaseErrorCode;
 import com.kg.core.security.entity.SecurityUserDetailEntity;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,16 +48,16 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
         try {
             userId = JwtUtils.parseToken(jwtToken);
             if (ObjectUtils.isEmpty(userId)) {
-                throw new BaseException("无效的TOKEN");
+                throw new BaseException(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new BaseException("无效的TOKEN");
+            throw new BaseException(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID);
         }
         // 从redis中读取用户信息
         SecurityUserDetailEntity userDetailEntity = (SecurityUserDetailEntity) redisUtils.get(LoginConstant.LOGIN_INFO_REDIS_PRE + userId);
         if (ObjectUtils.isEmpty(userDetailEntity)) {
-            throw new BaseException("用户未登录");
+            throw new BaseException(BaseErrorCode.LOGIN_ERROR_NOT_LOGIN);
         }
         // 存入SecurityContextHolder
         UsernamePasswordAuthenticationToken authenticationToken =

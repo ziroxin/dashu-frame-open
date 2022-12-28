@@ -1,5 +1,7 @@
 package com.kg.core.exception;
 
+import com.kg.core.exception.enums.BaseErrorCode;
+
 /**
  * 全局异常
  *
@@ -9,19 +11,22 @@ package com.kg.core.exception;
 public class BaseException extends Exception {
     private static final long serialVersionUID = 1L;
 
-    public BaseException() {
-        super();
-    }
-
-    public BaseException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
+    /**
+     * 未定义异常（错误码统一是500）
+     *
+     * @param message 异常信息
+     */
     public BaseException(String message) {
+        // 默认错误码：500
         super(message);
     }
 
-    public BaseException(Throwable cause) {
-        super(cause);
+    /**
+     * 固定错误码异常
+     *
+     * @param errorCode 错误码
+     */
+    public BaseException(BaseErrorCode errorCode) {
+        super(errorCode.getCode().toString());
     }
 }

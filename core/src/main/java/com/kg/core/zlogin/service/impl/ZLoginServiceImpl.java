@@ -4,6 +4,7 @@ import com.kg.component.jwt.JwtUtils;
 import com.kg.component.redis.RedisUtils;
 import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
+import com.kg.core.exception.enums.BaseErrorCode;
 import com.kg.core.security.entity.SecurityUserDetailEntity;
 import com.kg.core.zlogin.dto.LoginSuccessDTO;
 import com.kg.core.zlogin.service.ZLoginService;
@@ -36,7 +37,7 @@ public class ZLoginServiceImpl implements ZLoginService {
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
         // 认证不通过
         if (ObjectUtils.isEmpty(authenticate)) {
-            throw new BaseException("登录失败，用户名或密码错误！");
+            throw new BaseException(BaseErrorCode.LOGIN_ERROR_USERNAME_OR_PASSWORD_WRONG);
         }
         // 获取登录成功的userId
         SecurityUserDetailEntity userDetailEntity = (SecurityUserDetailEntity) authenticate.getPrincipal();

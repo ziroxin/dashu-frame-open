@@ -2,12 +2,10 @@ package com.kg.core.security.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kg.core.exception.BaseException;
+import com.kg.core.exception.enums.BaseErrorCode;
 import com.kg.core.security.entity.SecurityUserDetailEntity;
-import com.kg.core.zapi.entity.ZApi;
 import com.kg.core.zapi.service.IZApiService;
-import com.kg.core.zpermission.service.IZPermissionService;
 import com.kg.core.zuser.entity.ZUser;
-import com.kg.core.zuser.mapper.ZUserMapper;
 import com.kg.core.zuser.service.IZUserService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import java.util.List;
-import java.util.Objects;
 
 
 /**
@@ -44,7 +40,7 @@ public class SecurityUserDetailServiceImpl implements UserDetailsService {
         ZUser user = userService.getOne(wrapper);
         // 没查询到
         if (null == user) {
-            throw new BaseException("登录失败！用户名或密码错误！");
+            throw new BaseException(BaseErrorCode.LOGIN_ERROR_USERNAME_OR_PASSWORD_WRONG);
         }
         // 查询用户权限列表
         List<String> lists = apiService.listApiByUserId(user.getUserId());
