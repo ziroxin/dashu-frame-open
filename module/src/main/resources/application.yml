@@ -58,8 +58,10 @@ com:
       allow-extend: jpg|jpeg|png|gif|bpm|
       #允许上传的图片格式（图片需要压缩，格式必须正确）
       image-extend: jpg|jpeg|png|gif|bpm|
-      #默认上传路径
-      default-path-pre: /upfiles
+      #默认上传路径（文件保存的物理绝对路径;不要使用\）
+      save-path: e:/IdeaProjects/fwwbsyb/dashu-frame-open/component/target/myupload/files
+      #隐藏上传路径（用于访问的路径，通过spring代理;不要使用\;要在security.ignore放开）
+      url-pre: /upload
     #swagger相关配置
     swagger:
       title: "大树快速开发平台API"

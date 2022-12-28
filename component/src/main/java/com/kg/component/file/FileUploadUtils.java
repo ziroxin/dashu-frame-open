@@ -1,5 +1,6 @@
 package com.kg.component.file;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import com.kg.component.utils.GuidUtils;
 import org.springframework.util.FileCopyUtils;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +47,7 @@ public class FileUploadUtils {
                 if (!StringUtils.hasText(oldFileName)) {
                     throw new IOException("上传文件名不正确！请检查");
                 }
+                // 旧文件名
                 file.setFileOldName(oldFileName);
 
                 // 判断文件扩展名
@@ -54,16 +57,21 @@ public class FileUploadUtils {
                 }
                 file.setFileExtend(extend);
 
-                // 处理文件名、路径
+                // 新文件名
                 file.setFileName(GuidUtils.getUuid32() + "." + extend);
-                file.setFilePath(FileNameUtils.getSavePath(dirName) + file.getFileName());
+                // 文件大小
                 file.setFileSize(multipartFile.getSize());
 
                 // 准备保存文件
-                String saveFileStr = FileNameUtils.getResourceStaticPath() + file.getFilePath();
-                File saveFile = new File(saveFileStr.replaceAll("//", "/"));
+                String savePath = FileNameUtils.SAVE_PATH
+                        + "/" + dirName
+                        + "/" + DateUtil.format(new Date(), "yyyyMMdd")
+                        + "/" + file.getFileName();
+                File saveFile = new File(savePath.replaceAll("//", "/"));
                 FileUtil.mkParentDirs(saveFile);
                 FileCopyUtils.copy(multipartFile.getBytes(), saveFile);
+                // 文件访问地址
+                file.setFileUrl(FileNameUtils.switchUrl(savePath));
                 resultList.add(file);
             }
         }

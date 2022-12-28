@@ -12,4 +12,4 @@
 /v2/api-docs
 
 # 静态资源映射路径（上传文件）
-/upfiles/**
+/upload/**

@@ -15,13 +15,9 @@ import lombok.ToString;
 @ToString
 public class FileUploadDTO {
     /**
-     * 文件地址（http地址）
+     * 文件地址（文件访问地址）
      */
     private String fileUrl;
-    /**
-     * 文件路径（保存数据库）
-     */
-    private String filePath;
     /**
      * 原文件名
      */

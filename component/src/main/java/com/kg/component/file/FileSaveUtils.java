@@ -1,14 +1,14 @@
 package com.kg.component.file;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.file.FileReader;
 import com.kg.component.utils.GuidUtils;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * 其他文件保存工具类
@@ -46,13 +46,17 @@ public class FileSaveUtils {
             file.setFileExtend(extend);
             // 处理文件名、路径
             file.setFileName(GuidUtils.getUuid32() + "." + extend);
-            file.setFilePath(FileNameUtils.getSavePath(dirName) + file.getFileName());
+
             // 准备保存文件
-            String saveFileStr = FileNameUtils.getResourceStaticPath() + file.getFilePath();
-            File saveFile = new File(saveFileStr.replaceAll("//", "/"));
+            String savePath = FileNameUtils.SAVE_PATH
+                    + "/" + dirName
+                    + "/" + DateUtil.format(new Date(), "yyyyMMdd")
+                    + "/" + file.getFileName();
+            File saveFile = new File(savePath.replaceAll("//", "/"));
             FileUtil.mkParentDirs(saveFile);
             FileCopyUtils.copy(buffer, saveFile);
             file.setFileSize(saveFile.length());
+            file.setFileUrl(FileNameUtils.switchUrl(savePath));
             return file;
         } catch (IOException e) {
             e.printStackTrace();
