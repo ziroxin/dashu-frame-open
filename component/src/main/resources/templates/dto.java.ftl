@@ -5,6 +5,7 @@ package ${package.DTO};
 import ${pkg};
     </#if>
 </#list>
+
 <#if springdoc>
 import io.swagger.v3.oas.annotations.media.Schema;
 <#elseif swagger>

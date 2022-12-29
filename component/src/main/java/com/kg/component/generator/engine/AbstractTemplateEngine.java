@@ -127,6 +127,33 @@ public abstract class AbstractTemplateEngine {
     }
 
     /**
+     * 输出Excels相关文件
+     *
+     * @param tableInfo 表信息
+     * @param objectMap 渲染数据
+     * @since 3.5.0
+     */
+    protected void outputExcels(@NotNull TableInfo tableInfo, @NotNull Map<String, Object> objectMap) {
+        // ExcelConstant.java
+        String entityName = tableInfo.getEntityName();
+        String excelConstantPath = getPathInfo(OutputFile.excelConstant);
+        if (StringUtils.isNotBlank(excelConstantPath)) {
+            getTemplateFilePath(TemplateConfig::getExcelConstant).ifPresent(constant -> {
+                String excelConstantFile = excelConstantPath + File.separator + entityName + "ExcelConstant" + suffixJavaOrKt();
+                outputFile(new File(excelConstantFile), objectMap, constant, getConfigBuilder().getStrategyConfig().excels().isFileOverride());
+            });
+        }
+        // ExcelOut.java
+        String excelOutPath = getPathInfo(OutputFile.excelOut);
+        if (StringUtils.isNotBlank(excelOutPath)) {
+            getTemplateFilePath(TemplateConfig::getExcelOut).ifPresent(out -> {
+                String excelOutFile = excelOutPath + File.separator + entityName + "ExcelOutDTO" + suffixJavaOrKt();
+                outputFile(new File(excelOutFile), objectMap, out, getConfigBuilder().getStrategyConfig().excels().isFileOverride());
+            });
+        }
+    }
+
+    /**
      * 输出Mapper文件(含xml)
      *
      * @param tableInfo 表信息
@@ -322,6 +349,8 @@ public abstract class AbstractTemplateEngine {
                 outputEntity(tableInfo, objectMap);
                 // dto
                 outputDTO(tableInfo, objectMap);
+                // excel相关文件
+                outputExcels(tableInfo, objectMap);
                 // mapper and xml
                 outputMapper(tableInfo, objectMap);
                 // service
@@ -424,6 +453,8 @@ public abstract class AbstractTemplateEngine {
         objectMap.putAll(entityData);
         Map<String, Object> dtoData = strategyConfig.dto().renderData(config, tableInfo);
         objectMap.putAll(dtoData);
+        Map<String, Object> excelsData = strategyConfig.excels().renderData(config, tableInfo);
+        objectMap.putAll(excelsData);
         objectMap.put("config", config);
         objectMap.put("package", config.getPackageConfig().getPackageInfo());
         objectMap.put("indexVuePackage", strategyConfig.indexVue().getViewPath());

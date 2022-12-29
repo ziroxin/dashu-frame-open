@@ -77,6 +77,8 @@ public class MybatisPlusGenerator {
                                 .entity("entity")
                                 .dto("dto")
                                 .dtoconvert("dto.convert")
+                                .excelConstant("excels")
+                                .excelOut("excels")
                                 .service("service")
                                 .serviceImpl("service")
                                 .mapper("mapper")
@@ -102,6 +104,8 @@ public class MybatisPlusGenerator {
                                 .enableFileOverride()
                                 .superClass(BaseDTO.class)
                                 .enableLombok()
+                                .excelsBuilder()// =================excel配置
+                                .enableFileOverride()
                                 .entityBuilder()// =================entity配置
                                 .enableFileOverride()
                                 .superClass(BaseEntity.class)

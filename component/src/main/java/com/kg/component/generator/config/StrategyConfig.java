@@ -117,6 +117,8 @@ public class StrategyConfig {
 
     private final DTO.Builder dtoBuilder = new DTO.Builder(this);
 
+    private final Excels.Builder excelsBuilder = new Excels.Builder(this);
+
     private final Controller.Builder controllerBuilder = new Controller.Builder(this);
 
     private final IndexVue.Builder indexVueBuilder = new IndexVue.Builder(this);
@@ -130,6 +132,8 @@ public class StrategyConfig {
     private Entity entity;
 
     private DTO dto;
+
+    private Excels excels;
 
     private Controller controller;
 
@@ -189,6 +193,31 @@ public class StrategyConfig {
             this.dto = dtoBuilder.get();
         }
         return dto;
+    }
+
+    /**
+     * Excels配置构建者
+     *
+     * @return Excels配置构建者
+     * @since 3.5.0
+     */
+    @NotNull
+    public Excels.Builder excelsBuilder() {
+        return excelsBuilder;
+    }
+
+    /**
+     * Excels配置
+     *
+     * @return Excels配置
+     * @since 3.5.0
+     */
+    @NotNull
+    public Excels excels() {
+        if (excels == null) {
+            this.excels = excelsBuilder.get();
+        }
+        return excels;
     }
 
     /**

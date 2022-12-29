@@ -47,6 +47,12 @@ public class TemplateConfig {
     private String dtoconvert;
 
     /**
+     * 设置Excel模板路径
+     */
+    private String excelConstant;
+    private String excelOut;
+
+    /**
      * 设置控制器模板路径
      */
     private String controller;
@@ -94,6 +100,8 @@ public class TemplateConfig {
         this.entityKt = ConstVal.TEMPLATE_ENTITY_KT;
         this.dto = ConstVal.TEMPLATE_DTO;
         this.dtoconvert = ConstVal.TEMPLATE_DTOCONVERT;
+        this.excelConstant = ConstVal.TEMPLATE_EXCEL_CONSTANT;
+        this.excelOut = ConstVal.TEMPLATE_EXCEL_OUT;
         this.controller = ConstVal.TEMPLATE_CONTROLLER;
         this.indexVue = ConstVal.TEMPLATE_INDEXVUE;
         this.permissionSQL = ConstVal.TEMPLATE_PERMISSION_SQL;
@@ -154,6 +162,12 @@ public class TemplateConfig {
                     case DTOCONVERT:
                         this.dtoconvert = null;
                         break;
+                    case EXCEL_CONSTANT:
+                        this.excelConstant = null;
+                        break;
+                    case EXCEL_OUT:
+                        this.excelOut = null;
+                        break;
                     case CONTROLLER:
                         this.controller = null;
                         break;
@@ -207,8 +221,17 @@ public class TemplateConfig {
     public String getDTO() {
         return dto;
     }
+
     public String getDtoconvert() {
         return dtoconvert;
+    }
+
+    public String getExcelConstant() {
+        return excelConstant;
+    }
+
+    public String getExcelOut() {
+        return excelOut;
     }
 
     public String getXml() {
@@ -350,6 +373,28 @@ public class TemplateConfig {
          */
         public Builder DTO(@NotNull String dtoTemplate) {
             this.templateConfig.dto = dtoTemplate;
+            return this;
+        }
+
+        /**
+         * 设置ExcelConstant模板路径
+         *
+         * @param excelConstantTemplate excelConstant模板路径
+         * @return this
+         */
+        public Builder excelConstant(@NotNull String excelConstantTemplate) {
+            this.templateConfig.excelConstant = excelConstantTemplate;
+            return this;
+        }
+
+        /**
+         * 设置ExcelOut模板路径
+         *
+         * @param excelOutTemplate excelOut模板路径
+         * @return this
+         */
+        public Builder excelOut(@NotNull String excelOutTemplate) {
+            this.templateConfig.excelOut = excelOutTemplate;
             return this;
         }
 

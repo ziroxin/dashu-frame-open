@@ -49,6 +49,7 @@
         <org.jetbrains.version>23.0.0</org.jetbrains.version>
         <org.quartz.version>2.3.2</org.quartz.version>
         <whvcse.easy-captcha.version>1.6.2</whvcse.easy-captcha.version>
+        <poi.version>4.1.2</poi.version>
 
         <!-- 打包信息 -->
         <finalpackage.path>${project.build.directory}/package-jar</finalpackage.path>
@@ -171,6 +172,18 @@
                 <groupId>com.github.whvcse</groupId>
                 <artifactId>easy-captcha</artifactId>
                 <version>${whvcse.easy-captcha.version}</version>
+            </dependency>
+
+            <!-- poi工具 -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

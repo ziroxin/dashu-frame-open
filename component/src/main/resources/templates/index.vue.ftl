@@ -26,6 +26,9 @@
 				<el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds"
                    v-permission="'${buttonNamePre}delete'">删除
 				</el-button>
+				<el-button v-waves type="success" icon="el-icon-printer" @click="exportExcel"
+						   v-permission="'${buttonNamePre}exportExcel'">导出Excel
+				</el-button>
 			</div>
 		</div>
 		<!-- ${table.comment!}-列表 -->
@@ -209,27 +212,17 @@ export default {
             request({
               url: '${controllerMapping}/update', method: 'post', data
             }).then(response => {
-              const {code} = response
-              if (code === '200') {
-                this.$message({type: 'success', message: '修改成功！'})
-                this.loadTableList()
-                this.dialogFormVisible = false
-              } else {
-                this.$message({type: 'error', message: '修改失败！'})
-              }
+              this.$message({type: 'success', message: '修改成功！'})
+              this.loadTableList()
+              this.dialogFormVisible = false
             })
           } else {
             request({
               url: '${controllerMapping}/add', method: 'post', data
             }).then(response => {
-              const {code} = response
-              if (code === '200') {
-                this.$message({type: 'success', message: '添加成功！'})
-                this.loadTableList()
-                this.dialogFormVisible = false
-              } else {
-                this.$message({type: 'error', message: '添加失败！'})
-              }
+              this.$message({type: 'success', message: '添加成功！'})
+              this.loadTableList()
+              this.dialogFormVisible = false
             })
           }
         }
@@ -248,16 +241,29 @@ export default {
           request({
             url: '${controllerMapping}/delete', method: 'post', data
           }).then(response => {
-            const {code} = response
-            if (code === '200') {
-              this.$message({type: 'success', message: '删除成功！'})
-              this.loadTableList()
-            } else {
-              this.$message({type: 'error', message: '删除失败！'})
-            }
+            this.$message({type: 'success', message: '删除成功！'})
+            this.loadTableList()
           })
         })
       }
+    },
+    // 导出Excel文件
+    exportExcel() {
+      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      request({
+        url: '${controllerMapping}/export/excel', method: 'get', params
+      }).then(response => {
+        // 创建a标签
+        const link = document.createElement('a');
+        // 组装下载地址
+        link.href = this.$baseServer + response.data;
+        // 修改文件名
+        link.setAttribute('download', '${table.comment!}.xlsx');
+        // 开始下载
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+      })
     },
   }
 }

@@ -5,10 +5,11 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kg.component.utils.GuidUtils;
+import com.kg.core.exception.BaseException;
+import ${package.DTO}.${dtoName};
+import ${package.Convert}.${dtoconvertName};
 import ${package.Entity}.${entity};
 import ${package.Service}.${service};
-import ${package.Convert}.${dtoconvertName};
-import ${package.DTO}.${dtoName};
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -102,35 +103,39 @@ public class ${table.controllerName} {
     @ApiImplicitParams({})
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('${controllerAuthorizePre}add')")
-    public boolean add(@RequestBody ${dtoName} ${dtoName?uncap_first}) {
-    	${entity} ${entity?uncap_first} = ${dtoconvertName?uncap_first}.dtoToEntity(${dtoName?uncap_first});
-        ${entity?uncap_first}.set${entityKeyName?cap_first}(GuidUtils.getUuid());
+    public void add(@RequestBody ${dtoName} ${dtoName?uncap_first}) throws BaseException {
+        try {
+            ${entity} ${entity?uncap_first} = ${dtoconvertName?uncap_first}.dtoToEntity(${dtoName?uncap_first});
+            ${entity?uncap_first}.set${entityKeyName?cap_first}(GuidUtils.getUuid());
 <#list table.fields as field>
 	<#if field.propertyName=="createTime">
-		${entity?uncap_first}.setCreateTime(LocalDateTime.now());
+            ${entity?uncap_first}.setCreateTime(LocalDateTime.now());
 	</#if>
 </#list>
-        if (${table.serviceName?uncap_first}.save(${entity?uncap_first})) {
-        	return true;
+            ${table.serviceName?uncap_first}.save(${entity?uncap_first});
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException("新增失败！请重试");
         }
-		return false;
 	}
 
 	@ApiOperation(value = "${controllerMapping}/update", notes = "修改-${table.comment!}", httpMethod = "POST")
 	@ApiImplicitParams({})
 	@PostMapping("/update")
 	@PreAuthorize("hasAuthority('${controllerAuthorizePre}update')")
-	public boolean update(@RequestBody ${dtoName} ${dtoName?uncap_first}) {
-    	${entity} ${entity?uncap_first} = ${dtoconvertName?uncap_first}.dtoToEntity(${dtoName?uncap_first});
+	public void update(@RequestBody ${dtoName} ${dtoName?uncap_first}) throws BaseException {
+		try {
+			${entity} ${entity?uncap_first} = ${dtoconvertName?uncap_first}.dtoToEntity(${dtoName?uncap_first});
 <#list table.fields as field>
 	<#if field.propertyName=="updateTime">
-		${entity?uncap_first}.setUpdateTime(LocalDateTime.now());
+			${entity?uncap_first}.setUpdateTime(LocalDateTime.now());
 	</#if>
 </#list>
-		if (${table.serviceName?uncap_first}.updateById(${entity?uncap_first})) {
-			return true;
+			${table.serviceName?uncap_first}.updateById(${entity?uncap_first});
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BaseException("修改失败！请重试");
 		}
-		return false;
 	}
 
 	@ApiOperation(value = "${controllerMapping}/delete", notes = "删除-${table.comment!}", httpMethod = "POST")
@@ -139,13 +144,27 @@ public class ${table.controllerName} {
 	})
 	@PostMapping("/delete")
 	@PreAuthorize("hasAuthority('${controllerAuthorizePre}delete')")
-	public boolean delete(@RequestBody String[] ${entityKeyName}s) {
-		if (${table.serviceName?uncap_first}.removeBatchByIds(Arrays.asList(${entityKeyName}s))) {
-			return true;
+	public void delete(@RequestBody String[] ${entityKeyName}s) throws BaseException {
+		try {
+			${table.serviceName?uncap_first}.removeBatchByIds(Arrays.asList(${entityKeyName}s));
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BaseException("删除失败！请重试");
 		}
-		return false;
 	}
 
-	// todo 导出Excel
+	@ApiOperation(value = "${controllerMapping}/export/excel", notes = "导出excel-${table.comment!}", httpMethod = "GET")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "params", value = "查询条件", paramType = "query", required = false, dataType = "String")
+	})
+	@GetMapping("/export/excel")
+	@PreAuthorize("hasAuthority('${controllerAuthorizePre}export:excel')")
+	public String exportExcel(@RequestParam(value = "params", required = false) String params) throws BaseException {
+		String result = ${table.serviceName?uncap_first}.exportExcel(params);
+		if ("error".equals(result)) {
+            throw new BaseException("导出Excel失败，请重试！");
+		}
+		return result;
+	}
 }
 </#if>

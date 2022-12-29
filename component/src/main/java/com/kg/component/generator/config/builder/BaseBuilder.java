@@ -44,6 +44,11 @@ public class BaseBuilder implements IConfigBuilder<StrategyConfig> {
     }
 
     @NotNull
+    public Excels.Builder excelsBuilder() {
+        return strategyConfig.excelsBuilder();
+    }
+
+    @NotNull
     public Controller.Builder controllerBuilder() {
         return strategyConfig.controllerBuilder();
     }

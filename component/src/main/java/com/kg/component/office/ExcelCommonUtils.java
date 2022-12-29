@@ -1,0 +1,75 @@
+package com.kg.component.office;
+
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+
+import java.io.File;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+/**
+ * Excel常用操作 - 工具类
+ *
+ * @author ziro
+ * @date 2022-12-27 15:06:45
+ */
+public class ExcelCommonUtils {
+
+    /**
+     * 导出excel文件（简单表头）
+     *
+     * @param path      文件生成路径
+     * @param title     第一行标题
+     * @param dataList  数据集合（实体类）
+     * @param columnMap 字段对应关系，例如：{"name":"姓名","age":"年龄"}
+     * @return 是否导出成功
+     */
+    public static boolean write(String path, String title, List<?> dataList, LinkedHashMap<String, String> columnMap) {
+        ExcelWriter writer = null;
+        try {
+            // 创建目标文件对象
+            File file = new File(path);
+            // 判断目标是否存在
+            if (file.exists()) {
+                file.delete();
+            }
+
+            // 创建writer
+            writer = ExcelUtil.getWriter(path);
+
+            // 设置标题行样式
+            CellStyle cellStyle = writer.getStyleSet().getHeadCellStyle();
+            Font font = writer.createFont();
+            font.setBold(true);
+            font.setFontHeight((short) 300);
+            font.setFontName("宋体");
+            cellStyle.setFont(font);// 字体
+            // 设置整体行高
+            writer.setDefaultRowHeight(25);
+            // 设置整体列宽
+            writer.setColumnWidth(-1, 30);
+
+            // 写入第一行标题（合并单元格）
+            writer.merge(columnMap.size() - 1, title);
+            // 设置字段名
+            writer.setHeaderAlias(columnMap);
+            // 写入内容
+            writer.write(dataList, true);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+}

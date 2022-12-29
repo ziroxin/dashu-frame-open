@@ -32,6 +32,8 @@ public interface ConstVal {
     String ENTITY = "Entity";
     String DTO = "DTO";
     String DTOCONVERT = "Convert";
+    String EXCEL_CONSTANT = "ExcelConstant";
+    String EXCEL_OUT = "ExcelOut";
     String SERVICE = "Service";
     String SERVICE_IMPL = "ServiceImpl";
     String MAPPER = "Mapper";
@@ -68,6 +70,16 @@ public interface ConstVal {
      * Convert模板路径
      */
     String TEMPLATE_DTOCONVERT = "/templates/dtoconvert.java";
+
+    /**
+     * Excel Constant模板路径
+     */
+    String TEMPLATE_EXCEL_CONSTANT = "/templates/excelconstant.java";
+
+    /**
+     * Excel Out模板路径
+     */
+    String TEMPLATE_EXCEL_OUT = "/templates/excelout.java";
 
     /**
      * 控制器模板路径

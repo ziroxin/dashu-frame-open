@@ -16,5 +16,12 @@ interface ${table.serviceName} : ${superServiceClass}<${entity}>
 <#else>
 public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
 
+    /**
+     * 导出Excel
+     *
+     * @param params 查询参数
+     * @return 导出后的文件url
+     */
+    String exportExcel(String params);
 }
 </#if>

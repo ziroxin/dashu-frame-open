@@ -56,6 +56,12 @@ public class PackageConfig {
     private String dtoconvert = "dto.convert";
 
     /**
+     * Excel包名
+     */
+    private String excelConstant = "excels";
+    private String excelOut = "excels";
+
+    /**
      * Service包名
      */
     private String service = "service";
@@ -128,6 +134,8 @@ public class PackageConfig {
             packageInfo.put(ConstVal.ENTITY, this.joinPackage(this.getEntity()));
             packageInfo.put(ConstVal.DTO, this.joinPackage(this.getDTO()));
             packageInfo.put(ConstVal.DTOCONVERT, this.joinPackage(this.getDtoconvert()));
+            packageInfo.put(ConstVal.EXCEL_CONSTANT, this.joinPackage(this.getExcelConstant()));
+            packageInfo.put(ConstVal.EXCEL_OUT, this.joinPackage(this.getExcelOut()));
             packageInfo.put(ConstVal.MAPPER, this.joinPackage(this.getMapper()));
             packageInfo.put(ConstVal.XML, this.joinPackage(this.getXml()));
             packageInfo.put(ConstVal.SERVICE, this.joinPackage(this.getService()));
@@ -163,6 +171,14 @@ public class PackageConfig {
 
     public String getDtoconvert() {
         return dtoconvert;
+    }
+
+    public String getExcelConstant() {
+        return excelConstant;
+    }
+
+    public String getExcelOut() {
+        return excelOut;
     }
 
     public String getService() {
@@ -261,6 +277,28 @@ public class PackageConfig {
          */
         public Builder dtoconvert(@NotNull String dtoconvert) {
             this.packageConfig.dtoconvert = dtoconvert;
+            return this;
+        }
+
+        /**
+         * 指定Excels包名
+         *
+         * @param excelConstant Excels包名
+         * @return this
+         */
+        public Builder excelConstant(@NotNull String excelConstant) {
+            this.packageConfig.excelConstant = excelConstant;
+            return this;
+        }
+
+        /**
+         * 指定Excels包名
+         *
+         * @param excelOut Excels包名
+         * @return this
+         */
+        public Builder excelOut(@NotNull String excelOut) {
+            this.packageConfig.excelOut = excelOut;
             return this;
         }
 

@@ -70,6 +70,8 @@ class PathInfoHandler {
         putPathInfo(templateConfig.getEntity(globalConfig.isKotlin()), OutputFile.entity, ConstVal.ENTITY);
         putPathInfo(templateConfig.getDTO(), OutputFile.dto, ConstVal.DTO);
         putPathInfo(templateConfig.getDtoconvert(), OutputFile.convert, ConstVal.DTOCONVERT);
+        putPathInfo(templateConfig.getExcelConstant(), OutputFile.excelConstant, ConstVal.EXCEL_CONSTANT);
+        putPathInfo(templateConfig.getExcelOut(), OutputFile.excelOut, ConstVal.EXCEL_OUT);
         putPathInfo(templateConfig.getMapper(), OutputFile.mapper, ConstVal.MAPPER);
         putPathInfo(templateConfig.getXml(), OutputFile.xml, ConstVal.XML);
         putPathInfo(templateConfig.getService(), OutputFile.service, ConstVal.SERVICE);
