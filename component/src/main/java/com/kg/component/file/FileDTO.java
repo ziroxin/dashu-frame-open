@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class FileUploadDTO {
+public class FileDTO {
     /**
      * 文件地址（文件访问地址）
      */

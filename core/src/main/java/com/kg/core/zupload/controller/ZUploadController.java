@@ -1,8 +1,8 @@
 package com.kg.core.zupload.controller;
 
-import com.kg.component.file.FileUploadDTO;
-import com.kg.component.file.FileUploadUtils;
-import com.kg.component.file.ImageUploadUtils;
+import com.kg.component.file.FileDTO;
+import com.kg.component.file.UploadFileUtils;
+import com.kg.component.file.UploadImageUtils;
 import com.kg.core.base.controller.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -34,9 +34,9 @@ public class ZUploadController implements BaseController {
             @ApiImplicitParam(name = "path", value = "路径", paramType = "query", required = false, dataType = "String")
     })
     @PostMapping("images")
-    public List<FileUploadDTO> images(HttpServletRequest request, String path) throws IOException {
+    public List<FileDTO> images(HttpServletRequest request, String path) throws IOException {
         // 图片上传，自动压缩
-        return ImageUploadUtils.upload(request, StringUtils.hasText(path) ? path : "images");
+        return UploadImageUtils.upload(request, StringUtils.hasText(path) ? path : "images");
     }
 
     @ApiOperation(value = "upload/files", notes = "上传文件", httpMethod = "POST")
@@ -45,8 +45,8 @@ public class ZUploadController implements BaseController {
             @ApiImplicitParam(name = "path", value = "路径", paramType = "query", required = false, dataType = "String")
     })
     @PostMapping("files")
-    public List<FileUploadDTO> files(HttpServletRequest request, String path) throws IOException {
+    public List<FileDTO> files(HttpServletRequest request, String path) throws IOException {
         // 普通文件上传
-        return FileUploadUtils.uploadFile(request, StringUtils.hasText(path) ? path : "files");
+        return UploadFileUtils.uploadFile(request, StringUtils.hasText(path) ? path : "files");
     }
 }

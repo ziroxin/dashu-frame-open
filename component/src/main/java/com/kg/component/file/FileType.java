@@ -17,7 +17,7 @@ import java.util.Map;
  * @author ziro
  * @date 2022-04-07 18:14:17
  */
-public class FileTypeUtils {
+public class FileType {
     // 常见文件头map
     public final static Map<String, String> FILE_TYPE_MAP = new HashMap<>();
 
@@ -190,7 +190,7 @@ public class FileTypeUtils {
             String type1 = null;
             try {
                 FileInputStream fis = new FileInputStream(ls[i]);
-                type1 = FileTypeUtils.getFileType(fis);
+                type1 = FileType.getFileType(fis);
             } catch (IOException e) {
                 continue;
 //                e.printStackTrace();
@@ -209,7 +209,7 @@ public class FileTypeUtils {
             System.out.print("               ");
             byte[] bytes = new byte[10];
             IoUtil.toStream(ls[i]).read(bytes, 0, bytes.length);
-            System.out.print(FileTypeUtils.getFileHeader(bytes));
+            System.out.print(FileType.getFileHeader(bytes));
             System.out.println("");
         }
 

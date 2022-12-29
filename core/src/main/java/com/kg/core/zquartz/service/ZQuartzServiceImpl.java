@@ -5,7 +5,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.kg.component.file.FileNameUtils;
+import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelCommonUtils;
 import com.kg.component.utils.GuidUtils;
 import com.kg.core.zquartz.entity.ZQuartz;
@@ -40,7 +40,7 @@ public class ZQuartzServiceImpl extends ServiceImpl<ZQuartzMapper, ZQuartz> impl
     public String exportExcel(String params) {
         try {
             // 拼接导出Excel的文件，保存的临时路径
-            String path = FileNameUtils.SAVE_PATH + "/exportTemp/excel/"
+            String path = FilePathConfig.SAVE_PATH + "/exportTemp/excel/"
                     + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
 
             // 查询待导出的数据
@@ -82,7 +82,7 @@ public class ZQuartzServiceImpl extends ServiceImpl<ZQuartzMapper, ZQuartz> impl
             // 写入导出excel文件
             ExcelCommonUtils.write(path, title, dataList, ZQuartzExcelConstant.EXPORT_EXCEL_COLUMN);
             // 导出成功，返回导出地址
-            return FileNameUtils.switchUrl(path);
+            return FilePathConfig.switchUrl(path);
         } catch (Exception e) {
             e.printStackTrace();
         }

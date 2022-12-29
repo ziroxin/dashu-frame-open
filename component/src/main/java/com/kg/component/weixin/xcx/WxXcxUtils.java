@@ -3,8 +3,8 @@ package com.kg.component.weixin.xcx;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.kg.component.file.FileSaveUtils;
-import com.kg.component.file.FileUploadDTO;
+import com.kg.component.file.FileDTO;
+import com.kg.component.file.UploadFileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -27,7 +27,7 @@ public class WxXcxUtils {
      * @param scene 扫描二维码带的参数
      * @return 二维码保存后的文件信息
      */
-    public FileUploadDTO getQRCode(String scene) {
+    public FileDTO getQRCode(String scene) {
         String accessToken = wxXcxTokenUtils.getAccessToken();
         JSONObject bodyObj = new JSONObject();
         // 参数（最大32个可见字符，只支持数字）
@@ -37,7 +37,7 @@ public class WxXcxUtils {
         bodyObj.set("page", "pages/place-order/index");
         byte[] buffer = HttpUtil.createPost(WxXcxConfig.WX_GET_QRCODE_URL + "?access_token=" + accessToken)
                 .body(bodyObj.toString()).execute().bodyBytes();
-        return FileSaveUtils.bufferToFile(buffer, "wxxcx/qrcode", "jpg");
+        return UploadFileUtils.bufferToFile(buffer, "wxxcx/qrcode", "jpg");
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.kg.core.web;
 
-import com.kg.component.file.FileNameUtils;
+import com.kg.component.file.FilePathConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,8 +16,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String fileUploadPath = FileNameUtils.SAVE_PATH + "/";
-        registry.addResourceHandler(FileNameUtils.URL_PRE + "/**")
+        String fileUploadPath = FilePathConfig.SAVE_PATH + "/";
+        registry.addResourceHandler(FilePathConfig.URL_PRE + "/**")
                 .addResourceLocations("file:" + fileUploadPath.replaceAll("//", "/"));
     }
 }

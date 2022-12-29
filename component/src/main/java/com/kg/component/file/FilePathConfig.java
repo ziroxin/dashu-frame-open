@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @date 2022-07-02 11:13:28
  */
 @Component
-public class FileNameUtils extends FilenameUtils {
+public class FilePathConfig extends FilenameUtils {
     public static String UPLOAD_FILE_ALLOW_EXTEND;
     public static String DEFAULT_IMAGE_FILE_EXTEND;
     public static String SAVE_PATH;
@@ -22,7 +22,7 @@ public class FileNameUtils extends FilenameUtils {
      */
     @Value("${com.kg.file.allow-extend}")
     public void setUploadFileAllowExtend(String extend) {
-        FileNameUtils.UPLOAD_FILE_ALLOW_EXTEND = extend;
+        FilePathConfig.UPLOAD_FILE_ALLOW_EXTEND = extend;
     }
 
     /**
@@ -30,7 +30,7 @@ public class FileNameUtils extends FilenameUtils {
      */
     @Value("${com.kg.file.image-extend}")
     public void setDefaultImageFileExtend(String imageExtend) {
-        FileNameUtils.DEFAULT_IMAGE_FILE_EXTEND = imageExtend;
+        FilePathConfig.DEFAULT_IMAGE_FILE_EXTEND = imageExtend;
     }
 
     /**
@@ -38,7 +38,7 @@ public class FileNameUtils extends FilenameUtils {
      */
     @Value("${com.kg.file.save-path}")
     public void setSavePath(String savePath) {
-        FileNameUtils.SAVE_PATH = savePath;
+        FilePathConfig.SAVE_PATH = savePath;
     }
 
     /**
@@ -46,7 +46,7 @@ public class FileNameUtils extends FilenameUtils {
      */
     @Value("${com.kg.file.url-pre}")
     public void setUrlPre(String urlPre) {
-        FileNameUtils.URL_PRE = urlPre;
+        FilePathConfig.URL_PRE = urlPre;
     }
 
     /**
@@ -56,8 +56,8 @@ public class FileNameUtils extends FilenameUtils {
      * @return 文件访问地址
      */
     public static String switchUrl(String savePath) {
-        if (savePath.startsWith(FileNameUtils.SAVE_PATH)) {
-            savePath = savePath.replaceFirst(FileNameUtils.SAVE_PATH, FileNameUtils.URL_PRE);
+        if (savePath.startsWith(FilePathConfig.SAVE_PATH)) {
+            savePath = savePath.replaceFirst(FilePathConfig.SAVE_PATH, FilePathConfig.URL_PRE);
             return savePath;
         }
         return savePath;
@@ -70,8 +70,8 @@ public class FileNameUtils extends FilenameUtils {
      * @return 文件存储路径
      */
     public static String switchSavePath(String url) {
-        if (url.startsWith(FileNameUtils.URL_PRE)) {
-            url = url.replaceFirst(FileNameUtils.URL_PRE, FileNameUtils.SAVE_PATH);
+        if (url.startsWith(FilePathConfig.URL_PRE)) {
+            url = url.replaceFirst(FilePathConfig.URL_PRE, FilePathConfig.SAVE_PATH);
             return url;
         }
         return url;
