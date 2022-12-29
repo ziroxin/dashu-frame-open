@@ -5,6 +5,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kg.component.utils.GuidUtils;
+import com.kg.core.exception.BaseException;
 import com.kg.core.zquartz.config.QuartzConfig;
 import com.kg.core.zquartz.dto.ZQuartzDTO;
 import com.kg.core.zquartz.dto.convert.ZQuartzConvert;
@@ -45,9 +46,13 @@ public class ZQuartzController {
     @ApiOperation(value = "/zquartz/zQuartz/refresh", notes = "刷新定时任务状态", httpMethod = "GET")
     @GetMapping("/refresh")
     @PreAuthorize("hasAuthority('zquartz:zQuartz:refresh')")
-    public boolean refresh() {
-        quartzConfig.refreshQuartzList();
-        return true;
+    public void refresh() throws BaseException {
+        try {
+            quartzConfig.refreshQuartzList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException("刷新定时任务状态失败了，请重试！");
+        }
     }
 
     @ApiOperation(value = "/zquartz/zQuartz/getById", notes = "详情-定时任务调度表", httpMethod = "GET")
@@ -109,27 +114,31 @@ public class ZQuartzController {
     @ApiImplicitParams({})
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('zquartz:zQuartz:add')")
-    public boolean add(@RequestBody ZQuartzDTO zQuartzDTO) {
-        ZQuartz zQuartz = zQuartzConvert.dtoToEntity(zQuartzDTO);
-        zQuartz.setQuartzId(GuidUtils.getUuid());
-        zQuartz.setCreateTime(LocalDateTime.now());
-        if (zQuartzService.save(zQuartz)) {
-            return true;
+    public void add(@RequestBody ZQuartzDTO zQuartzDTO) throws BaseException {
+        try {
+            ZQuartz zQuartz = zQuartzConvert.dtoToEntity(zQuartzDTO);
+            zQuartz.setQuartzId(GuidUtils.getUuid());
+            zQuartz.setCreateTime(LocalDateTime.now());
+            zQuartzService.save(zQuartz);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException("新增失败！请重试");
         }
-        return false;
     }
 
     @ApiOperation(value = "/zquartz/zQuartz/update", notes = "修改-定时任务调度表", httpMethod = "POST")
     @ApiImplicitParams({})
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('zquartz:zQuartz:update')")
-    public boolean update(@RequestBody ZQuartzDTO zQuartzDTO) {
-        ZQuartz zQuartz = zQuartzConvert.dtoToEntity(zQuartzDTO);
-        zQuartz.setUpdateTime(LocalDateTime.now());
-        if (zQuartzService.updateById(zQuartz)) {
-            return true;
+    public void update(@RequestBody ZQuartzDTO zQuartzDTO) throws BaseException {
+        try {
+            ZQuartz zQuartz = zQuartzConvert.dtoToEntity(zQuartzDTO);
+            zQuartz.setUpdateTime(LocalDateTime.now());
+            zQuartzService.updateById(zQuartz);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException("修改失败！请重试");
         }
-        return false;
     }
 
     @ApiOperation(value = "/zquartz/zQuartz/delete", notes = "删除-定时任务调度表", httpMethod = "POST")
@@ -138,12 +147,26 @@ public class ZQuartzController {
     })
     @PostMapping("/delete")
     @PreAuthorize("hasAuthority('zquartz:zQuartz:delete')")
-    public boolean delete(@RequestBody String[] quartzIds) {
-        if (zQuartzService.removeBatchByIds(Arrays.asList(quartzIds))) {
-            return true;
+    public void delete(@RequestBody String[] quartzIds) throws BaseException {
+        try {
+            zQuartzService.removeBatchByIds(Arrays.asList(quartzIds));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException("删除失败！请重试");
         }
-        return false;
     }
 
-    // todo 导出Excel
+    @ApiOperation(value = "/zquartz/zQuartz/export/excel", notes = "导出excel-定时任务调度表", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "params", value = "查询条件", paramType = "query", required = false, dataType = "String")
+    })
+    @GetMapping("/export/excel")
+    @PreAuthorize("hasAuthority('zquartz:zQuartz:export:excel')")
+    public String exportExcel(@RequestParam(value = "params", required = false) String params) throws BaseException {
+        String result = zQuartzService.exportExcel(params);
+        if ("error".equals(result)) {
+            throw new BaseException("导出Excel失败，请重试！");
+        }
+        return result;
+    }
 }

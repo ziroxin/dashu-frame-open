@@ -18,7 +18,10 @@
         <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds"
                    v-permission="'zquartz-zQuartz-delete'">删除
         </el-button>
-        <el-button v-waves type="info" icon="el-icon-refresh" @click="refresh"
+        <el-button v-waves type="success" icon="el-icon-printer" @click="exportExcel"
+                   v-permission="'zquartz-zQuartz-exportExcel'">导出Excel
+        </el-button>
+        <el-button v-waves type="success" icon="el-icon-refresh" @click="refresh"
                    v-permission="'zquartz-zQuartz-refresh'">刷新状态
         </el-button>
       </div>
@@ -188,27 +191,17 @@ export default {
             request({
               url: '/zquartz/zQuartz/update', method: 'post', data
             }).then(response => {
-              const {code} = response
-              if (code === '200') {
-                this.$message({type: 'success', message: '修改成功！'})
-                this.loadTableList()
-                this.dialogFormVisible = false
-              } else {
-                this.$message({type: 'error', message: '修改失败！'})
-              }
+              this.$message({type: 'success', message: '修改成功！'})
+              this.loadTableList()
+              this.dialogFormVisible = false
             })
           } else {
             request({
               url: '/zquartz/zQuartz/add', method: 'post', data
             }).then(response => {
-              const {code} = response
-              if (code === '200') {
-                this.$message({type: 'success', message: '添加成功！'})
-                this.loadTableList()
-                this.dialogFormVisible = false
-              } else {
-                this.$message({type: 'error', message: '添加失败！'})
-              }
+              this.$message({type: 'success', message: '添加成功！'})
+              this.loadTableList()
+              this.dialogFormVisible = false
             })
           }
         }
@@ -227,13 +220,8 @@ export default {
           request({
             url: '/zquartz/zQuartz/delete', method: 'post', data
           }).then(response => {
-            const {code} = response
-            if (code === '200') {
-              this.$message({type: 'success', message: '删除成功！'})
-              this.loadTableList()
-            } else {
-              this.$message({type: 'error', message: '删除失败！'})
-            }
+            this.$message({type: 'success', message: '删除成功！'})
+            this.loadTableList()
           })
         })
       }
@@ -243,13 +231,26 @@ export default {
       request({
         url: '/zquartz/zQuartz/refresh', method: 'get'
       }).then(response => {
-        const {code} = response
-        if (code === '200') {
-          this.$message({type: 'success', message: '刷新状态成功！'})
-          this.loadTableList()
-        } else {
-          this.$message({type: 'error', message: '刷新状态失败！'})
-        }
+        this.$message({type: 'success', message: '刷新状态成功！'})
+        this.loadTableList()
+      })
+    },
+    // 导出Excel文件
+    exportExcel() {
+      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      request({
+        url: '/zquartz/zQuartz/export/excel', method: 'get', params
+      }).then(response => {
+        // 创建a标签
+        const link = document.createElement('a');
+        // 组装下载地址
+        link.href = this.$baseServer + response.data;
+        // 修改文件名
+        link.setAttribute('download', '定时任务调度表.xlsx');
+        // 开始下载
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
       })
     },
   }

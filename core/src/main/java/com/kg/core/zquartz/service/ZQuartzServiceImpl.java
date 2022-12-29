@@ -1,10 +1,23 @@
 package com.kg.core.zquartz.service;
 
-import com.kg.core.zquartz.entity.ZQuartz;
-import com.kg.core.zquartz.mapper.ZQuartzMapper;
-import com.kg.core.zquartz.service.ZQuartzService;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kg.component.file.FileNameUtils;
+import com.kg.component.office.ExcelCommonUtils;
+import com.kg.component.utils.GuidUtils;
+import com.kg.core.zquartz.entity.ZQuartz;
+import com.kg.core.zquartz.excel.ZQuartzExcelConstant;
+import com.kg.core.zquartz.excel.ZQuartzExcelOutDTO;
+import com.kg.core.zquartz.mapper.ZQuartzMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -17,4 +30,62 @@ import org.springframework.stereotype.Service;
 @Service
 public class ZQuartzServiceImpl extends ServiceImpl<ZQuartzMapper, ZQuartz> implements ZQuartzService {
 
+    /**
+     * 导出Excel
+     *
+     * @param params 查询参数
+     * @return 导出后的文件url
+     */
+    @Override
+    public String exportExcel(String params) {
+        try {
+            // 拼接导出Excel的文件，保存的临时路径
+            String path = FileNameUtils.SAVE_PATH + "/exportTemp/excel/"
+                    + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
+
+            // 查询待导出的数据
+            QueryWrapper<ZQuartz> wrapper = new QueryWrapper<>();
+            if (StringUtils.hasText(params)) {
+                JSONObject paramObj = JSONUtil.parseObj(params);
+                if (paramObj.containsKey("quartzId")) {
+                    wrapper.lambda().eq(ZQuartz::getQuartzId, paramObj.getStr("quartzId"));
+                }
+                if (paramObj.containsKey("jobName")) {
+                    wrapper.lambda().like(ZQuartz::getJobName, paramObj.getStr("jobName"));
+                }
+                if (paramObj.containsKey("jobClass")) {
+                    wrapper.lambda().like(ZQuartz::getJobClass, paramObj.getStr("jobClass"));
+                }
+                if (paramObj.containsKey("jobTimeCron")) {
+                    wrapper.lambda().eq(ZQuartz::getJobTimeCron, paramObj.getStr("jobTimeCron"));
+                }
+                if (paramObj.containsKey("description")) {
+                    wrapper.lambda().eq(ZQuartz::getDescription, paramObj.getStr("description"));
+                }
+                if (paramObj.containsKey("status")) {
+                    wrapper.lambda().eq(ZQuartz::getStatus, paramObj.getStr("status"));
+                }
+                if (paramObj.containsKey("createTime")) {
+                    wrapper.lambda().eq(ZQuartz::getCreateTime, paramObj.getStr("createTime"));
+                }
+                if (paramObj.containsKey("updateTime")) {
+                    wrapper.lambda().eq(ZQuartz::getUpdateTime, paramObj.getStr("updateTime"));
+                }
+            }
+            List<ZQuartz> list = list(wrapper);
+            // 转换成导出excel实体
+            List<ZQuartzExcelOutDTO> dataList = list.stream()
+                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d), ZQuartzExcelOutDTO.class))
+                    .collect(Collectors.toList());
+            // 第一行标题
+            String title = "定时任务调度表";
+            // 写入导出excel文件
+            ExcelCommonUtils.write(path, title, dataList, ZQuartzExcelConstant.EXPORT_EXCEL_COLUMN);
+            // 导出成功，返回导出地址
+            return FileNameUtils.switchUrl(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "error";
+    }
 }

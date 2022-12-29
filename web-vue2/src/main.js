@@ -42,8 +42,7 @@ Vue.directive('permission', permission)
 Vue.directive('mydate', mydate)
 
 Object.assign(Vue.prototype, {
-  $serverUrl: process.env.VUE_APP_BASE_API,
-  $imgUrl: process.env.VUE_APP_IMG
+  $baseServer: process.env.VUE_APP_BASE_API
 });
 
 // 开发时不提示生产环境

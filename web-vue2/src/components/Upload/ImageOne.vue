@@ -8,7 +8,7 @@
     <el-upload ref="imageOne"
                :data="{'path':path}"
                :name="name"
-               :action="action==''?this.$serverUrl+'/upload/images':action"
+               :action="action==''?this.$baseServer+'/upload/images':action"
                :file-list.sync="imgList"
                :multiple="false"
                :on-preview="imgPreview"
@@ -60,7 +60,7 @@ export default {
     loadImg() {
       this.imgList = []
       if (this.value != '') {
-        let file = {url: this.$imgUrl + this.value}
+        let file = {url: this.$baseServer + this.value}
         this.imgList[0] = file
       }
     },

@@ -13,4 +13,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ZQuartzService extends IService<ZQuartz> {
 
+    /**
+     * 导出Excel
+     *
+     * @param params 查询参数
+     * @return 导出后的文件url
+     */
+    String exportExcel(String params);
 }
