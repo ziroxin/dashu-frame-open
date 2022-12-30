@@ -4,7 +4,9 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+<#if idType == "ASSIGN_UUID">
 import com.kg.component.utils.GuidUtils;
+</#if>
 import com.kg.core.exception.BaseException;
 import ${package.DTO}.${dtoName};
 import ${package.Convert}.${dtoconvertName};
@@ -106,7 +108,9 @@ public class ${table.controllerName} {
     public void add(@RequestBody ${dtoName} ${dtoName?uncap_first}) throws BaseException {
         try {
             ${entity} ${entity?uncap_first} = ${dtoconvertName?uncap_first}.dtoToEntity(${dtoName?uncap_first});
+<#if idType == "ASSIGN_UUID">
             ${entity?uncap_first}.set${entityKeyName?cap_first}(GuidUtils.getUuid());
+</#if>
 <#list table.fields as field>
 	<#if field.propertyName=="createTime">
             ${entity?uncap_first}.setCreateTime(LocalDateTime.now());

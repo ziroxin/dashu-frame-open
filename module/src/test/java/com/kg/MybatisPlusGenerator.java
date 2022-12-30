@@ -34,33 +34,40 @@ public class MybatisPlusGenerator {
 
     @Test
     public void generator() {
-        // 指定输出目录==========改成自己的目录
+        // 输出目录
         String basePath = "E:/IdeaProjects/fwwbsyb/dashu-frame-open";
-        // pom模块名
-        String module = "module";
+        // pom后台模块名（要和后台文件夹保持一致）
+        String module = "core";
+        // vue项目文件夹
+        String vueFolder = "web-vue2";
         // 作者
         String author = "ziro";
+        /**
+         * 说明：表名、主键类型、包名、前端view路径，必须是一对一的数组
+         */
         // 表名
-        String[] dataTableName = new String[]{"a_test"};
+        String[] dataTableName = new String[]{"z_safety"};
+        // 表主键类型（如：IdType.ASSIGN_UUID、IdType.ASSIGN_ID）
+        IdType[] idTypes = new IdType[]{IdType.ASSIGN_ID};
         // 包名
-        String[] dataPackage = new String[]{"atest"};
+        String[] dataPackage = new String[]{"zsafety"};
         // 前端view路径
-        String[] dataViewpath = new String[]{"/atest"};
-        // 开始执行生成
-        start(basePath, module, author, dataTableName, dataPackage, dataViewpath);
+        String[] dataViewpath = new String[]{"/system/safety"};
 
+        // ==================================开始执行生成=====================================
+        start(basePath, module, author, vueFolder, dataTableName, idTypes, dataPackage, dataViewpath);
     }
 
     // 代码生成器开始生成
-    private void start(String basePath, String module, String author,
-                       String[] dataTableName, String[] dataPackage, String[] dataViewpath) {
+    private void start(String basePath, String module, String author, String vueFolder,
+                       String[] dataTableName, IdType[] idTypes, String[] dataPackage, String[] dataViewpath) {
 
         for (int i = 0; i < dataTableName.length; i++) {
             // ===========================================执行生成=======================
             // 配置文件路径
             Map<OutputFile, String> pathInfo = new HashMap<>();
             pathInfo.put(OutputFile.xml, basePath + "/" + module + "/src/main/resources/mapper");
-            pathInfo.put(OutputFile.indexVue, basePath + "/web-vue2/src/views");
+            pathInfo.put(OutputFile.indexVue, basePath + "/" + vueFolder + "/src/views");
             pathInfo.put(OutputFile.permissionSql, basePath + "/sql");
             // 配置生成器
             int finalIndex = i;
@@ -109,7 +116,7 @@ public class MybatisPlusGenerator {
                                 .entityBuilder()// =================entity配置
                                 .enableFileOverride()
                                 .superClass(BaseEntity.class)
-                                .idType(IdType.ASSIGN_UUID)// 生成id类型
+                                .idType(idTypes[finalIndex])// 生成id类型
                                 .enableTableFieldAnnotation()// 生成TableField
                                 .addTableFills(new Column("create_time", FieldFill.INSERT))// 创建时间
                                 .addTableFills(new Column("update_time", FieldFill.INSERT_UPDATE))// 修改时间
