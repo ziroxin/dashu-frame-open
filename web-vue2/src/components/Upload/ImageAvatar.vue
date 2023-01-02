@@ -1,37 +1,31 @@
 <!--
- * 上传单张图片 - 可删除，可放大
+ * 上传头像 - 无删除按钮，点击可替换
  * @Author: ziro
  * @Date: 2023/01/02 15:16:40
  -->
 <template>
   <div>
-    <!-- 图片预览 -->
-    <el-dialog :visible.sync="dialogVisible" :fullscreen="true" append-to-body>
-      <img width="100%" :src="dialogImageUrl" alt="">
-    </el-dialog>
-    <!-- 图片上传 -->
-    <el-upload ref="imageOne"
+    <el-upload ref="imageAvatar"
+               class="avatar-uploader"
                :data="{'path':path}"
                :name="name"
                :action="action==''?this.$baseServer+'/upload/images':action"
-               :file-list.sync="imgList"
+
+               :show-file-list="false"
                :multiple="false"
-               :on-preview="imgPreview"
                :before-upload="imgBeforeUpload"
                :on-success="imgUploadSuccess"
-               :on-remove="imgRemove"
-               :class="value!=''?'hidden-btn':''"
-               list-type="picture-card"
                accept="image/*"
     >
-      <i class="el-icon-plus"/>
+      <img v-if="dialogImageUrl" :src="dialogImageUrl" class="avatar">
+      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
     </el-upload>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'ImageOne',
+  name: 'imageAvatar',
   props: {
     // 上传图片路径
     value: {type: String, default: ''},
@@ -47,9 +41,6 @@ export default {
   data() {
     return {
       // 图片列表
-      imgList: [],
-      // 图片预览
-      dialogVisible: false,
       dialogImageUrl: ''
     }
   },
@@ -63,19 +54,16 @@ export default {
   },
   methods: {
     loadImg() {
-      this.imgList = []
-      if (this.value != '') {
-        let file = {url: this.$baseServer + this.value}
-        this.imgList[0] = file
+      if (this.value != null && this.value != '') {
+        this.dialogImageUrl = this.$baseServer + this.value
+      } else {
+        this.dialogImageUrl = ''
       }
     },
     imgUploadSuccess(response, file, fileList) {
       // 给value赋值
       this.$emit('input', response.data[0].fileUrl)
-    },
-    imgRemove(file, fileList) {
-      // 清空value
-      this.$emit('input', '')
+      this.dialogImageUrl = URL.createObjectURL(file.raw)
     },
     // 图片大小和格式限制
     imgBeforeUpload(file) {
@@ -93,17 +81,34 @@ export default {
       }
       return isRightSize && isAccept
     },
-    // 预览图片
-    imgPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
-    }
   }
 }
 </script>
-
 <style>
-.hidden-btn .el-upload--picture-card {
-  display: none;
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>
