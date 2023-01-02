@@ -21,6 +21,8 @@ public class LoginConstant {
     public static final String ROLE_API_REDIS_KEY = "role_4_api_redis";
     // 登录token的有效时间（单位：分钟）
     public static Integer LOGIN_JWT_TOKEN_EXPIRY;
+    // 密码安全策略配置redis存储名称
+    public static String SAFETY_SET_REDIS_KEY = "z_safety_set_config";
 
     @Value("${com.kg.login.jwt.token.expiry}")
     public void setLoginJwtTokenExpiry(Integer expiry) {

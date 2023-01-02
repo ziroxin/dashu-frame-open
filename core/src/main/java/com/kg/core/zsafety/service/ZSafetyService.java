@@ -1,7 +1,7 @@
 package com.kg.core.zsafety.service;
 
-import com.kg.core.zsafety.entity.ZSafety;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kg.core.zsafety.entity.ZSafety;
 
 /**
  * <p>
@@ -14,10 +14,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface ZSafetyService extends IService<ZSafety> {
 
     /**
-     * 导出Excel
-     *
-     * @param params 查询参数
-     * @return 导出后的文件url
+     * 获取密码安全配置信息
      */
-    String exportExcel(String params);
+    ZSafety getSafety();
+
+    /**
+     * 清空安全配置缓存
+     */
+    void clearCache();
 }
