@@ -52,3 +52,12 @@ export function userDelete(data) {
     data
   })
 }
+
+export function userResetPassword(data) {
+  console.dir(data)
+  return request({
+    url: '/user/reset/password',
+    method: 'post',
+    data
+  })
+}

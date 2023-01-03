@@ -1,5 +1,8 @@
 package com.kg.core.zuser.service.impl;
 
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.utils.GuidUtils;
 import com.kg.core.zuser.dto.ZUserRoleSaveDTO;
@@ -14,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * <p>
@@ -34,13 +36,19 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
     IZUserRoleService userRoleService;
 
     @Override
-    public List<ZUserRoleSaveDTO> getUserRoleList() {
-        return zUserMapper.getUserRoleList();
+    public Page<ZUserRoleSaveDTO> getUserRoleList(Integer page, Integer limit, String params) {
+        Page<ZUserRoleSaveDTO> result = new Page<>(page, limit);
+        JSONObject paramObj = JSONUtil.parseObj(params);
+        paramObj.set("offset", (page - 1) * limit);
+        paramObj.set("limit", limit);
+        result.setRecords(zUserMapper.getUserRoleList(paramObj));
+        result.setTotal(zUserMapper.getUserRoleCount(paramObj));
+        return result;
     }
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public boolean add(ZUserRoleSaveDTO zUserRoleSaveDTO){
+    public boolean add(ZUserRoleSaveDTO zUserRoleSaveDTO) {
         ZUser zUser = new ZUser();
         BeanUtils.copyProperties(zUserRoleSaveDTO, zUser);
         zUser.setUserId(GuidUtils.getUuid());
@@ -58,7 +66,7 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public boolean update(ZUserRoleSaveDTO zUserRoleSaveDTO){
+    public boolean update(ZUserRoleSaveDTO zUserRoleSaveDTO) {
         ZUser zUser = new ZUser();
         BeanUtils.copyProperties(zUserRoleSaveDTO, zUser);
         zUser.setUpdateTime(LocalDateTime.now());
@@ -72,6 +80,11 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
         boolean s3 = userRoleService.save(zUserRole);
 
         return (!s1 && !s2 && !s3);
+    }
+
+    @Override
+    public ZUserRoleSaveDTO getUserById(String userId) {
+        return zUserMapper.getUserById(userId);
     }
 
 

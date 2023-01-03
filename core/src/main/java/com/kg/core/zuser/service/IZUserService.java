@@ -1,10 +1,9 @@
 package com.kg.core.zuser.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kg.core.zuser.dto.ZUserRoleSaveDTO;
 import com.kg.core.zuser.entity.ZUser;
-
-import java.util.List;
 
 /**
  * <p>
@@ -16,9 +15,17 @@ import java.util.List;
  */
 public interface IZUserService extends IService<ZUser> {
 
-    List<ZUserRoleSaveDTO> getUserRoleList();
+    Page<ZUserRoleSaveDTO> getUserRoleList(Integer page, Integer limit, String params);
 
     boolean add(ZUserRoleSaveDTO zUserRoleSaveDTO);
 
     boolean update(ZUserRoleSaveDTO zUserRoleSaveDTO);
+
+    /**
+     * 查询用户详情
+     *
+     * @param userId 用户id
+     * @return 用户详情DTO
+     */
+    ZUserRoleSaveDTO getUserById(String userId);
 }
