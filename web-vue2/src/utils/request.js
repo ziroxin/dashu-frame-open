@@ -62,20 +62,14 @@ service.interceptors.response.use(
       }
       // 异常2：服务器端异常
       if (res.code == 500) {
-        Message({
-          message: "服务端出错(" + res.code + ")：" + res.message,
-          type: 'error',
-          duration: 3 * 1000
-        })
+        console.log("服务端出错(" + res.code + ")：" + res.message);
+        Message({message: res.message, type: 'error', duration: 3 * 1000})
         return Promise.reject(new Error(res.message || 'Error'))
       }
       // 异常3：客户端异常
       if (res.code == 400 || res.code == 401 || res.code == 403 || res.code == 405) {
-        Message({
-          message: "客户端出错(" + res.code + ")：" + res.message,
-          type: 'error',
-          duration: 3 * 1000
-        })
+        console.log("客户端出错(" + res.code + ")：" + res.message);
+        Message({message: res.message, type: 'error', duration: 3 * 1000})
       }
     }
   }, error => {
