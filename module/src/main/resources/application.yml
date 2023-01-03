@@ -79,9 +79,11 @@ com:
         ids: 1
     #登录常量配置
     login:
+      #登录是否需要验证验证码
+      isYzm: true
       jwt:
         token:
-          # token过期时限，单位：分钟
+          #token过期时限，单位：分钟
           expiry: 120
     #跨域配置
     cors:
@@ -96,8 +98,8 @@ com:
       #内容长度
       length: 4
       #图片宽高
-      width: 120
-      height: 36
+      width: 163
+      height: 49
       #字体样式
       fontFamily: Default
       fontSize: 20

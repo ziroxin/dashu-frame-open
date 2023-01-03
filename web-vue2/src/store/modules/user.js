@@ -1,6 +1,7 @@
 import {getInfo, login, logout} from '@/api/user'
 import {getToken, removeToken, setToken} from '@/utils/auth'
 import router, {resetRouter} from '@/router'
+import Cookies from "js-cookie";
 
 const state = {
   token: getToken(),
@@ -35,19 +36,19 @@ const mutations = {
 const actions = {
   // 登录
   login({commit}, userInfo) {
-    const {userName, password} = userInfo
     return new Promise((resolve, reject) => {
-      login({userName: userName.trim(), password: password}).then(response => {
+      login(userInfo).then(response => {
         const {data} = response
         commit('SET_TOKEN', data.accessToken)
         setToken(data.accessToken)
+        // 是默认密码
+        Cookies.set("isDefaultPassword", data.defaultPassword)
         resolve()
       }).catch(error => {
         reject(error)
       })
     })
   },
-
   // 加载用户信息
   getInfo({commit, state}) {
     return new Promise((resolve, reject) => {

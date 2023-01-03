@@ -6,16 +6,22 @@ import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
 import com.kg.core.exception.enums.BaseErrorCode;
 import com.kg.core.security.entity.SecurityUserDetailEntity;
+import com.kg.core.zcaptcha.service.ZCaptchaService;
+import com.kg.core.zlogin.dto.LoginFormDTO;
 import com.kg.core.zlogin.dto.LoginSuccessDTO;
 import com.kg.core.zlogin.service.ZLoginService;
-import com.kg.core.zuser.entity.ZUser;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.kg.core.zsafety.entity.ZSafety;
+import com.kg.core.zsafety.service.ZSafetyService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+
+import javax.annotation.Resource;
 
 /**
  * @author ziro
@@ -23,17 +29,31 @@ import org.springframework.util.ObjectUtils;
  */
 @Service
 public class ZLoginServiceImpl implements ZLoginService {
-
-    @Autowired
+    @Resource
     private AuthenticationManager authenticationManager;
-    @Autowired
+    @Resource
     private RedisUtils redisUtils;
+    @Resource
+    private ZSafetyService safetyService;
+    @Resource
+    private ZCaptchaService captchaService;
+    @Value("${com.kg.login.isYzm}")
+    private boolean IS_YZM;
 
     @Override
-    public LoginSuccessDTO login(ZUser zUser) throws BaseException {
+    public LoginSuccessDTO login(LoginFormDTO loginForm) throws BaseException {
+        // 验证码
+        if (IS_YZM) {
+            if (!StringUtils.hasText(loginForm.getYzm())) {
+                throw new BaseException("请输入验证码！");
+            }
+            if (!captchaService.checkCaptcha(loginForm.getCodeUuid(), loginForm.getYzm())) {
+                throw new BaseException("验证码错误！请检查");
+            }
+        }
         // AuthenticationManager 进行用户认证
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(zUser.getUserName(), zUser.getPassword());
+                new UsernamePasswordAuthenticationToken(loginForm.getUserName(), loginForm.getPassword());
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
         // 认证不通过
         if (ObjectUtils.isEmpty(authenticate)) {
@@ -49,6 +69,11 @@ public class ZLoginServiceImpl implements ZLoginService {
         redisUtils.set(LoginConstant.LOGIN_INFO_REDIS_PRE + userId, userDetailEntity,
                 LoginConstant.LOGIN_JWT_TOKEN_EXPIRY * 60L);
         loginSuccessDTO.setSuccessMsg("登录成功！");
+        // 检查默认密码
+        ZSafety safety = safetyService.getSafety();
+        if (safety.getDefaultPassword().equals(loginForm.getPassword())) {
+            loginSuccessDTO.setDefaultPassword(true);// 是默认密码
+        }
         return loginSuccessDTO;
     }
 

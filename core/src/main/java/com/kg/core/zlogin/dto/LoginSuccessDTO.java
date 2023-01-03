@@ -14,4 +14,6 @@ public class LoginSuccessDTO {
     private String successMsg;
     // 登录获得的Token
     private String accessToken;
+    // 是否默认密码
+    private boolean isDefaultPassword;
 }

@@ -52,6 +52,23 @@
         </el-form-item>
       </el-tooltip>
 
+      <el-form-item prop="yzm">
+        <span class="svg-container">
+          <svg-icon icon-class="example"/>
+        </span>
+        <el-input
+          ref="yzm"
+          v-model="loginForm.yzm"
+          placeholder="请输入验证码"
+          name="yzm"
+          type="text"
+          tabindex="3"
+          autocomplete="off"
+          style="width: 200px"
+        />
+        <img class="yzm" :src="loginForm.codeBaseImage" @click="loadCaptacha"/>
+      </el-form-item>
+
       <el-button
         :loading="loading"
         type="primary"
@@ -89,6 +106,7 @@
 <script>
 import SocialSign from './components/SocialSignin'
 import {mapState} from 'vuex'
+import request from "@/utils/request";
 
 export default {
   name: 'Login',
@@ -102,7 +120,10 @@ export default {
     return {
       loginForm: {
         userName: 'admin',
-        password: '123'
+        password: 'ABCabc@123',
+        yzm: '',
+        codeUuid: '',
+        codeBaseImage: ''
       },
       loginRules: {
         userName: [{required: true, message: '请输入用户名', trigger: 'blur'}],
@@ -128,18 +149,14 @@ export default {
       immediate: true
     }
   },
-  created() {
-    // window.addEventListener('storage', this.afterQRScan)
-  },
   mounted() {
     if (this.loginForm.userName === '') {
       this.$refs.username.focus()
     } else if (this.loginForm.password === '') {
       this.$refs.password.focus()
     }
-  },
-  destroyed() {
-    // window.removeEventListener('storage', this.afterQRScan)
+    // 加载验证码
+    this.loadCaptacha()
   },
   methods: {
     checkCapslock(e) {
@@ -166,6 +183,8 @@ export default {
               this.loading = false
             })
             .catch(() => {
+              console.log("login error!")
+              this.loadCaptacha()
               this.loading = false
             })
         } else {
@@ -181,25 +200,17 @@ export default {
         }
         return acc
       }, {})
+    },
+    //验证码
+    loadCaptacha() {
+      request({
+        url: '/captcha/get', method: 'get'
+      }).then((response) => {
+        const {data} = response
+        this.loginForm.codeUuid = data.codeUuid;
+        this.loginForm.codeBaseImage = data.codeBaseImage;
+      })
     }
-    // afterQRScan() {
-    //   if (e.key === 'x-admin-oauth-code') {
-    //     const code = getQueryObject(e.newValue)
-    //     const codeMap = {
-    //       wechat: 'code',
-    //       tencent: 'code'
-    //     }
-    //     const type = codeMap[this.auth_type]
-    //     const codeName = code[type]
-    //     if (codeName) {
-    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-    //         this.$router.push({ path: this.redirect || '/' })
-    //       })
-    //     } else {
-    //       alert('第三方登录失败')
-    //     }
-    //   }
-    // }
   }
 }
 </script>
@@ -323,6 +334,12 @@ $light_gray: #eee;
     .thirdparty-button {
       display: none;
     }
+  }
+
+  .yzm {
+    float: right;
+    cursor: pointer;
+    border-radius: 5px;
   }
 }
 </style>
