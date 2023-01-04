@@ -2,6 +2,8 @@ package com.kg.core.zuser.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kg.core.exception.BaseException;
+import com.kg.core.zuser.dto.ZUserEditPasswordDTO;
 import com.kg.core.zuser.dto.ZUserRoleSaveDTO;
 import com.kg.core.zuser.entity.ZUser;
 
@@ -28,4 +30,9 @@ public interface IZUserService extends IService<ZUser> {
      * @return 用户详情DTO
      */
     ZUserRoleSaveDTO getUserById(String userId);
+
+    /**
+     * 修改用户密码
+     */
+    void editPassword(ZUserEditPasswordDTO passwordDTO) throws BaseException;
 }

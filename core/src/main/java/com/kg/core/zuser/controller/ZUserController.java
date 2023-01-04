@@ -3,8 +3,10 @@ package com.kg.core.zuser.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kg.core.exception.BaseException;
+import com.kg.core.security.util.CurrentUserUtils;
 import com.kg.core.zsafety.entity.ZSafety;
 import com.kg.core.zsafety.service.ZSafetyService;
+import com.kg.core.zuser.dto.ZUserEditPasswordDTO;
 import com.kg.core.zuser.dto.ZUserRoleSaveDTO;
 import com.kg.core.zuser.entity.ZUser;
 import com.kg.core.zuser.service.IZUserRoleService;
@@ -16,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -40,8 +43,6 @@ public class ZUserController {
     private IZUserRoleService userRoleService;
     @Resource
     private ZSafetyService safetyService;
-
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @ApiOperation(value = "user/list", notes = "查询用户列表", httpMethod = "GET")
     @ApiImplicitParams({
@@ -103,6 +104,7 @@ public class ZUserController {
     @PreAuthorize("hasAuthority('user:reset:password')")
     public void resetPassword(@RequestBody String[] userIds) throws BaseException {
         try {
+            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             ZSafety safety = safetyService.getSafety();
             for (String userId : userIds) {
                 ZUser user = new ZUser();
@@ -114,5 +116,15 @@ public class ZUserController {
             e.printStackTrace();
             throw new BaseException("重置密码失败！");
         }
+    }
+
+    @ApiOperation(value = "user/edit/password", notes = "修改用户密码", httpMethod = "POST")
+    @PostMapping("edit/password")
+    public void editPassword(@RequestBody ZUserEditPasswordDTO passwordDTO) throws BaseException {
+        if (!StringUtils.hasText(passwordDTO.getUserId())) {
+            // 不传userId，则修改当前用户的密码
+            passwordDTO.setUserId(CurrentUserUtils.getCurrentUser().getUserId());
+        }
+        userService.editPassword(passwordDTO);
     }
 }

@@ -20,53 +20,7 @@
         <settings/>
       </right-panel>
     </div>
-    <!--修改默认密码-->
-    <el-dialog title="修改默认密码" :visible.sync="isDefaultPassword"
-               :close-on-click-modal="false" :show-close="false"
-               :close-on-press-escape="false">
-      <div class="login-container">
-        <el-form ref="resetPassword" :model="temp" class="login-form">
-          <el-tooltip v-model="capsTooltip" content="大写已打开" placement="right" manual>
-            <el-form-item prop="oldPassword">
-              <span class="svg-container"><svg-icon icon-class="password"/></span>
-              <el-input :type="oldPasswordType" ref="oldPassword" name="oldPassword" v-model="temp.oldPassword"
-                        placeholder="请输入原密码" tabindex="1" autocomplete="off"
-                        @keyup.native="checkCapslock" @blur="capsTooltip=false"/>
-              <span class="show-pwd" @click="showPwd('old')">
-                <svg-icon :icon-class="oldPasswordType==='password'?'eye':'eye-open'"/>
-              </span>
-            </el-form-item>
-          </el-tooltip>
-
-          <el-tooltip v-model="capsTooltip" content="大写已打开" placement="right" manual>
-            <el-form-item prop="pwd1">
-              <span class="svg-container"><svg-icon icon-class="password"/></span>
-              <el-input :type="pwd1Type" ref="pwd1" name="pwd1" v-model="temp.pwd1"
-                        placeholder="请输入新密码" tabindex="2" autocomplete="off"
-                        @keyup.native="checkCapslock" @blur="capsTooltip=false"/>
-              <span class="show-pwd" @click="showPwd('pwd1')">
-                <svg-icon :icon-class="pwd1Type==='password'?'eye':'eye-open'"/>
-              </span>
-            </el-form-item>
-          </el-tooltip>
-
-          <el-tooltip v-model="capsTooltip" content="大写已打开" placement="right" manual>
-            <el-form-item prop="pwd2">
-              <span class="svg-container"><svg-icon icon-class="password"/></span>
-              <el-input :type="pwd2Type" ref="pwd2" name="pwd2" v-model="temp.pwd2"
-                        placeholder="请再次输入新密码确认" tabindex="3" autocomplete="off"
-                        @keyup.native="checkCapslock" @blur="capsTooltip=false"/>
-              <span class="show-pwd" @click="showPwd('pwd2')">
-                <svg-icon :icon-class="pwd2Type==='password'?'eye':'eye-open'"/>
-              </span>
-            </el-form-item>
-          </el-tooltip>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button type="primary">保存</el-button>
-        </div>
-      </div>
-    </el-dialog>
+    <user-edit-password :is-show="isDefaultPassword" :info="editPasswordInfo"></user-edit-password>
   </div>
 </template>
 
@@ -76,10 +30,12 @@ import {AppMain, Navbar, Settings, Sidebar, TagsView} from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import {mapState} from 'vuex'
 import Cookies from "js-cookie";
+import UserEditPassword from "@/views/system/user/UserEditPassword";
 
 export default {
   name: 'Layout',
   components: {
+    UserEditPassword,
     AppMain,
     Navbar,
     RightPanel,
@@ -90,18 +46,20 @@ export default {
   data() {
     return {
       // 是否默认密码
-      isDefaultPassword: false,
-      temp: {},
-      oldPasswordType: 'password',
-      pwd1Type: 'password',
-      pwd2Type: 'password',
-      capsTooltip: false,
+      editPassword: false,
+      editPasswordInfo: '',
     }
   },
   mixins: [ResizeMixin],
   mounted() {
-    if (Cookies.get("isDefaultPassword")) {
-      this.isDefaultPassword = true// 默认密码，弹窗修改密码
+    this.editPassword = false
+    if (Cookies.get('isDefaultPassword') === 'true') {
+      this.editPassword = true
+      this.editPasswordInfo = '检测到您当前的密码，是系统默认密码，请及时修改！！！'
+    }
+    if (Cookies.get('isInvalidPassword') === 'true') {
+      this.editPassword = true
+      this.editPasswordInfo = '检测到您的密码已失效，请修改！！！'
     }
   },
   computed: {
@@ -125,57 +83,9 @@ export default {
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', {withoutAnimation: false})
     },
-    showPwd(name) {
-      if (name == "old") {
-        this.oldPasswordType = (this.oldPasswordType === 'password' ? '' : 'password')
-        this.$nextTick(() => {
-          this.$refs.oldPassword.focus()
-        })
-      } else if (name = 'pwd1') {
-        this.pwd1Type = (this.pwd1Type === 'password' ? '' : 'password')
-        this.$nextTick(() => {
-          this.$refs.pwd1.focus()
-        })
-      } else if (name = 'pwd2') {
-        this.pwd2Type = (this.pwd2Type === 'password' ? '' : 'password')
-        this.$nextTick(() => {
-          this.$refs.pwd2.focus()
-        })
-      }
-    },
-    checkCapslock(e) {
-      const {key} = e
-      this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
-    },
   }
 }
 </script>
-
-<style lang="scss">
-/* reset element-ui css */
-.login-container {
-  .el-input {
-    display: inline-block;
-    height: 47px;
-    width: 85%;
-
-    input {
-      border: 0px;
-      -webkit-appearance: none;
-      border-radius: 0px;
-      padding: 12px 5px 12px 15px;
-      height: 47px;
-    }
-  }
-
-  .el-form-item {
-    border: 1px solid #DCDFE6;
-    background: #FFFFFF;
-    border-radius: 5px;
-    color: #606266;
-  }
-}
-</style>
 <style lang="scss" scoped>
 @import "~@/styles/mixin.scss";
 @import "~@/styles/variables.scss";
@@ -217,27 +127,5 @@ export default {
 
 .mobile .fixed-header {
   width: 100%;
-}
-
-.login-container {
-  min-height: 100%;
-  width: 100%;
-  overflow: hidden;
-
-  .svg-container {
-    padding: 6px 5px 6px 15px;
-    vertical-align: middle;
-    width: 30px;
-    display: inline-block;
-  }
-
-  .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 7px;
-    font-size: 16px;
-    cursor: pointer;
-    user-select: none;
-  }
 }
 </style>

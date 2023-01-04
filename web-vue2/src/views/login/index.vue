@@ -28,7 +28,7 @@
         />
       </el-form-item>
 
-      <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
+      <el-tooltip v-model="capsTooltip" content="大写已打开" placement="right" manual>
         <el-form-item prop="password">
           <span class="svg-container">
             <svg-icon icon-class="password"/>
@@ -120,14 +120,15 @@ export default {
     return {
       loginForm: {
         userName: 'admin',
-        password: 'ABCabc@123',
+        password: 'qwer@123',
         yzm: '',
         codeUuid: '',
         codeBaseImage: ''
       },
       loginRules: {
-        userName: [{required: true, message: '请输入用户名', trigger: 'blur'}],
-        password: [{required: true, message: '请输入密码', trigger: 'blur'}]
+        userName: [{required: true, message: '用户名不能为空', trigger: 'blur'}],
+        password: [{required: true, message: '密码不能为空', trigger: 'blur'}],
+        yzm: [{required: true, message: '验证码不能为空', trigger: 'blur'}]
       },
       passwordType: 'password',
       capsTooltip: false,
@@ -155,7 +156,7 @@ export default {
     } else if (this.loginForm.password === '') {
       this.$refs.password.focus()
     }
-    // 加载验证码
+    // 加载验证码handleLogin
     this.loadCaptacha()
   },
   methods: {
@@ -214,7 +215,6 @@ export default {
   }
 }
 </script>
-
 <style lang="scss">
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
