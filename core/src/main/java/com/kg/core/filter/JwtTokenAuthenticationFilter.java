@@ -16,10 +16,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * 验证用户登录状态
@@ -35,13 +33,16 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
 
     @SneakyThrows
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
         // 获取token
-        String jwtToken = request.getHeader(LoginConstant.LOGIN_JWT_TOKEN_KEY);
+        String jwtToken = request.getHeader(LoginConstant.LOGIN_JWT_TOKEN_KEY);// header中的token
         if (!StringUtils.hasText(jwtToken)) {
-            // 无token放行（后边security会判断权限）
-            filterChain.doFilter(request, response);
-            return;
+            jwtToken = request.getParameter(LoginConstant.LOGIN_JWT_TOKEN_KEY);// 参数中的token
+            if (!StringUtils.hasText(jwtToken)) {
+                // 无token放行（后边security会判断权限）
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
         // 解析token
         Object userId;
