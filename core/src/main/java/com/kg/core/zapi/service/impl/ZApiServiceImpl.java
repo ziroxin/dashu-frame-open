@@ -230,10 +230,12 @@ public class ZApiServiceImpl extends ServiceImpl<ZApiMapper, ZApi> implements IZ
             zApi.setApiMethodName(method.getName());
             //hasAuthority('permission:delete')
             zApi.setApiPermission(annotation.value().replace("hasAuthority('", "").replace("')", ""));
-            zApi.setApiName(apiOperation.notes());
-            zApi.setApiRequestUrl(apiOperation.value());
-            zApi.setApiRequestMethod(apiOperation.httpMethod());
-            zApi.setApiDescription(apiOperation.notes());
+            if (apiOperation != null) {
+                zApi.setApiName(apiOperation.notes());
+                zApi.setApiRequestUrl(apiOperation.value());
+                zApi.setApiRequestMethod(apiOperation.httpMethod());
+                zApi.setApiDescription(apiOperation.notes());
+            }
             zApiList.add(zApi);
         });
         return zApiList;
