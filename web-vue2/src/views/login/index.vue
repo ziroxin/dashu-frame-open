@@ -65,6 +65,7 @@
           tabindex="3"
           autocomplete="off"
           style="width: 200px"
+          @keyup.enter.native="handleLogin"
         />
         <img class="yzm" :src="loginForm.codeBaseImage" @click="loadCaptacha"/>
       </el-form-item>

@@ -16,4 +16,6 @@ public class LoginSuccessDTO {
     private String accessToken;
     // 是否默认密码
     private boolean isDefaultPassword;
+    // 密码是否已过期失效
+    private boolean isInvalidPassword;
 }

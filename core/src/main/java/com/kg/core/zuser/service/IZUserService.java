@@ -35,4 +35,9 @@ public interface IZUserService extends IService<ZUser> {
      * 修改用户密码
      */
     void editPassword(ZUserEditPasswordDTO passwordDTO) throws BaseException;
+
+    /**
+     * 重置密码
+     */
+    void resetPassword(String[] userIds) throws BaseException;
 }

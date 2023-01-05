@@ -8,7 +8,7 @@
   <el-dialog title="修改密码" :visible.sync="isShow"
              :close-on-click-modal="false" :show-close="false"
              :close-on-press-escape="false">
-    <div v-if="info.length>0" style="text-align: center;font-size: 1em;color: red;">
+    <div v-if="info.length>0" style="text-align: center;font-size: 1em;color: red;margin: -10px auto 20px auto;">
       {{ this.info }}
     </div>
     <div class="password-container">
@@ -133,7 +133,7 @@ export default {
             request({
               url: '/user/edit/password', method: 'post', data
             }).then(response => {
-              this.$message({type: 'success', message: '密码修改成功！'})
+              this.$message({type: 'success', message: '密码修改成功！下次登录请使用新密码'})
               Cookies.set('isDefaultPassword', false)
               Cookies.set('isInvalidPassword', false)
               this.isShow = false

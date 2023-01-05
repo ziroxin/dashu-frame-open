@@ -30,7 +30,6 @@ public class ZLoginController implements BaseController {
     @ApiOperation(value = "登录", notes = "登录接口", httpMethod = "POST")
     @PostMapping("login")
     public LoginSuccessDTO login(@RequestBody LoginFormDTO loginForm) throws BaseException {
-
         return zLoginService.login(loginForm);
     }
 

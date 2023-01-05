@@ -1,5 +1,6 @@
 package com.kg.core.zlogin.service.impl;
 
+import cn.hutool.core.date.LocalDateTimeUtil;
 import com.kg.component.jwt.JwtUtils;
 import com.kg.component.redis.RedisUtils;
 import com.kg.core.common.constant.LoginConstant;
@@ -12,6 +13,8 @@ import com.kg.core.zlogin.dto.LoginSuccessDTO;
 import com.kg.core.zlogin.service.ZLoginService;
 import com.kg.core.zsafety.entity.ZSafety;
 import com.kg.core.zsafety.service.ZSafetyService;
+import com.kg.core.zuserpassword.entity.ZUserPassword;
+import com.kg.core.zuserpassword.service.ZUserPasswordService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +25,8 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * @author ziro
@@ -35,6 +40,9 @@ public class ZLoginServiceImpl implements ZLoginService {
     private RedisUtils redisUtils;
     @Resource
     private ZSafetyService safetyService;
+    @Resource
+    private ZUserPasswordService passwordService;
+
     @Resource
     private ZCaptchaService captchaService;
     @Value("${com.kg.login.isYzm}")
@@ -73,6 +81,14 @@ public class ZLoginServiceImpl implements ZLoginService {
         ZSafety safety = safetyService.getSafety();
         if (safety.getDefaultPassword().equals(loginForm.getPassword())) {
             loginSuccessDTO.setDefaultPassword(true);// 是默认密码
+        }
+        // 检查密码是否失效（=0时不过期，否则过期，单位天）
+        if (safety.getValidTime() > 0) {
+            ZUserPassword pwd = passwordService.getById(userId);
+            long betweenDay = LocalDateTimeUtil.between(pwd.getEditPasswordTime(), LocalDateTime.now(), ChronoUnit.DAYS);
+            if (betweenDay > safety.getValidTime()) {
+                loginSuccessDTO.setInvalidPassword(true);// 密码已失效
+            }
         }
         return loginSuccessDTO;
     }

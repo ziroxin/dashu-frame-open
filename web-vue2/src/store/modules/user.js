@@ -43,6 +43,7 @@ const actions = {
         setToken(data.accessToken)
         // 是默认密码
         Cookies.set("isDefaultPassword", data.defaultPassword)
+        Cookies.set("isInvalidPassword", data.invalidPassword)
         resolve()
       }).catch(error => {
         reject(error)
