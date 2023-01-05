@@ -48,7 +48,7 @@ public class MybatisPlusGenerator {
         // 表名
         String[] tableNames = new String[]{"a_test"};
         // 表主键类型（如：IdType.ASSIGN_UUID、IdType.ASSIGN_ID）
-        IdType[] idTypes = new IdType[]{IdType.ASSIGN_ID};
+        IdType[] idTypes = new IdType[]{IdType.ASSIGN_UUID};
         // 包名
         String[] packages = new String[]{"atest"};
         // 前端view路径
