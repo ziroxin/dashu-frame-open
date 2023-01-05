@@ -63,8 +63,6 @@ const actions = {
         const {permissions, perrouters} = data
         const {nickName, avatar, introduce} = data.user
 
-        console.dir('permissions')
-        console.dir(permissions)
         commit('SET_PERMISSIONS', permissions)
         commit('SET_PERROUTERS', perrouters)
         commit('SET_NAME', nickName)

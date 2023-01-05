@@ -97,7 +97,6 @@ const actions = {
     return new Promise(resolve => {
       // 动态生成菜单
       const accessedRoutes = filterAsyncRoutes(routers, true)
-      console.log(accessedRoutes)
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })

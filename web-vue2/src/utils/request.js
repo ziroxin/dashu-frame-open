@@ -47,8 +47,8 @@ service.interceptors.response.use(
     if (res.code == 200) {
       return res
     } else {
-      // 异常1：未正常登录！ 40001=用户名或者密码错误;40002=无效的TOKEN;40003=用户未登录
-      if (res.code == 40001 || res.code == 40002 || res.code == 40003) {
+      // 异常1：未正常登录！ 40001=用户名或者密码错误;40002=无效的TOKEN;40003=用户未登录;401无权限;
+      if (res.code == 40001 || res.code == 40002 || res.code == 40003 || res.code == 401) {
         MessageBox.confirm(res.message, '登录失效', {
           confirmButtonText: '重新登录',
           cancelButtonText: '取消',
@@ -67,7 +67,7 @@ service.interceptors.response.use(
         return Promise.reject(new Error(res.message || 'Error'))
       }
       // 异常3：客户端异常
-      if (res.code == 400 || res.code == 401 || res.code == 403 || res.code == 405) {
+      if (res.code == 400 || res.code == 403 || res.code == 405) {
         console.log("客户端出错(" + res.code + ")：" + res.message);
         Message({message: res.message, type: 'error', duration: 3 * 1000})
       }
