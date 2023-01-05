@@ -20,7 +20,7 @@
         <settings/>
       </right-panel>
     </div>
-    <user-edit-password :is-show="editPassword" :info="editPasswordInfo"></user-edit-password>
+    <user-edit-password v-model="editPassword" :info="editPasswordInfo"></user-edit-password>
   </div>
 </template>
 

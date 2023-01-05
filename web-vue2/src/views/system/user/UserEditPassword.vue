@@ -5,8 +5,8 @@
  -->
 <template>
   <!--修改密码-->
-  <el-dialog title="修改密码" :visible.sync="isShow"
-             :close-on-click-modal="false" :show-close="false"
+  <el-dialog title="修改密码" :visible.sync="innerVisible"
+             :close-on-click-modal="false" :show-close="showCloseBtn"
              :close-on-press-escape="false">
     <div v-if="info.length>0" style="text-align: center;font-size: 1em;color: red;margin: -10px auto 20px auto;">
       {{ this.info }}
@@ -52,6 +52,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="savePassword">保存</el-button>
+        <el-button @click="innerVisible=false" v-if="showCloseBtn">取消</el-button>
       </div>
     </div>
   </el-dialog>
@@ -60,16 +61,18 @@
 <script>
 import request from '@/utils/request';
 import Cookies from "js-cookie";
+import myMixDialog from '@/utils/my-mix-dialog'
 
 export default {
   name: 'UserEditPassword',
+  mixins: [myMixDialog],
   props: {
-    // 是否显示修改弹窗
-    isShow: {type: Boolean, default: false},
     // 提示信息
     info: {type: String, default: ''},
     // 用户id（为空时，则默认修改当前登录用户的密码）
-    userId: {type: String, default: ''}
+    userId: {type: String, default: ''},
+    // 是否显示关闭按钮
+    showCloseBtn: {type: Boolean, default: false},
   },
   data() {
     return {
@@ -136,7 +139,7 @@ export default {
               this.$message({type: 'success', message: '密码修改成功！下次登录请使用新密码'})
               Cookies.set('isDefaultPassword', false)
               Cookies.set('isInvalidPassword', false)
-              this.isShow = false
+              this.innerVisible = false
             })
           } else {
             this.$message({type: 'error', message: '两次输入的密码不一致！'})
