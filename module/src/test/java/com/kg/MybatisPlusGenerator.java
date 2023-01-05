@@ -37,7 +37,7 @@ public class MybatisPlusGenerator {
         // 输出目录
         String basePath = "E:/IdeaProjects/fwwbsyb/dashu-frame-open";
         // pom后台模块名（要和后台文件夹保持一致）
-        String module = "core";
+        String module = "module";
         // vue项目文件夹
         String vueFolder = "web-vue2";
         // 作者
@@ -46,23 +46,23 @@ public class MybatisPlusGenerator {
          * 说明：表名、主键类型、包名、前端view路径，必须是一对一的数组
          */
         // 表名
-        String[] dataTableName = new String[]{"z_safety"};
+        String[] tableNames = new String[]{"a_test"};
         // 表主键类型（如：IdType.ASSIGN_UUID、IdType.ASSIGN_ID）
         IdType[] idTypes = new IdType[]{IdType.ASSIGN_ID};
         // 包名
-        String[] dataPackage = new String[]{"zsafety"};
+        String[] packages = new String[]{"atest"};
         // 前端view路径
-        String[] dataViewpath = new String[]{"/system/safety"};
+        String[] viewpaths = new String[]{"/atest"};
 
         // ==================================开始执行生成=====================================
-        start(basePath, module, author, vueFolder, dataTableName, idTypes, dataPackage, dataViewpath);
+        start(basePath, module, author, vueFolder, tableNames, idTypes, packages, viewpaths);
     }
 
     // 代码生成器开始生成
     private void start(String basePath, String module, String author, String vueFolder,
-                       String[] dataTableName, IdType[] idTypes, String[] dataPackage, String[] dataViewpath) {
+                       String[] tableNames, IdType[] idTypes, String[] packages, String[] viewpaths) {
 
-        for (int i = 0; i < dataTableName.length; i++) {
+        for (int i = 0; i < tableNames.length; i++) {
             // ===========================================执行生成=======================
             // 配置文件路径
             Map<OutputFile, String> pathInfo = new HashMap<>();
@@ -79,7 +79,7 @@ public class MybatisPlusGenerator {
                     })
                     .packageConfig(builder -> {
                         builder.parent("com.kg." + module) // 设置父包名
-                                .moduleName(dataPackage[finalIndex]) // 设置父包模块名
+                                .moduleName(packages[finalIndex]) // 设置父包模块名
                                 // 设置各包路径
                                 .entity("entity")
                                 .dto("dto")
@@ -94,10 +94,10 @@ public class MybatisPlusGenerator {
                                 .pathInfo(pathInfo);
                     })
                     .strategyConfig(builder -> {
-                        builder.addInclude(dataTableName[finalIndex])// 设置需要生成的表名
+                        builder.addInclude(tableNames[finalIndex])// 设置需要生成的表名
                                 .indexVueBuilder()// ===============indexVue配置
                                 .enableFileOverride()
-                                .viewPath(dataViewpath[finalIndex])// 前端文件路径
+                                .viewPath(viewpaths[finalIndex])// 前端文件路径
                                 .permissionSQLBuilder()// ==========permissionSQL配置
                                 .enableFileOverride()
                                 .controllerBuilder()// =============controller配置
