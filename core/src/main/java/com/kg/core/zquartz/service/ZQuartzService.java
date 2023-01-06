@@ -1,5 +1,6 @@
 package com.kg.core.zquartz.service;
 
+import com.kg.core.zquartz.dto.ZQuartzDTO;
 import com.kg.core.zquartz.entity.ZQuartz;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -20,4 +21,9 @@ public interface ZQuartzService extends IService<ZQuartz> {
      * @return 导出后的文件url
      */
     String exportExcel(String params);
+
+    /**
+     * 任务名称是否已存在
+     */
+    boolean isJobExit(ZQuartzDTO zQuartzDTO);
 }

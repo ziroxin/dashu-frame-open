@@ -115,6 +115,10 @@ public class ZQuartzController {
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('zquartz:zQuartz:add')")
     public void add(@RequestBody ZQuartzDTO zQuartzDTO) throws BaseException {
+        // 查重
+        if (zQuartzService.isJobExit(zQuartzDTO)) {
+            throw new BaseException("定时任务名称重复！！请修改");
+        }
         try {
             ZQuartz zQuartz = zQuartzConvert.dtoToEntity(zQuartzDTO);
             zQuartz.setQuartzId(GuidUtils.getUuid());
@@ -131,6 +135,10 @@ public class ZQuartzController {
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('zquartz:zQuartz:update')")
     public void update(@RequestBody ZQuartzDTO zQuartzDTO) throws BaseException {
+        // 查重
+        if (zQuartzService.isJobExit(zQuartzDTO)) {
+            throw new BaseException("定时任务名称重复！！请修改");
+        }
         try {
             ZQuartz zQuartz = zQuartzConvert.dtoToEntity(zQuartzDTO);
             zQuartz.setUpdateTime(LocalDateTime.now());

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- 定时任务调度表-管理按钮 -->
-    <div style="margin-bottom: 20px;">
+    <div style="margin-bottom: 10px;">
       <el-input v-model="searchData.jobName" style="width: 150px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入名称查询"/>
       <el-input v-model="searchData.jobClass" style="width: 150px;margin-right: 10px;"
@@ -18,13 +18,12 @@
         <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds"
                    v-permission="'zquartz-zQuartz-delete'">删除
         </el-button>
-        <el-button v-waves type="success" icon="el-icon-printer" @click="exportExcel"
-                   v-permission="'zquartz-zQuartz-exportExcel'">导出Excel
-        </el-button>
-        <el-button v-waves type="success" icon="el-icon-refresh" @click="refresh"
-                   v-permission="'zquartz-zQuartz-refresh'">刷新状态
-        </el-button>
       </div>
+    </div>
+    <div style="margin-bottom: 10px;float:right;">
+      <el-button v-waves icon="el-icon-refresh" @click="refresh"
+                 v-permission="'zquartz-zQuartz-refresh'">手动刷新（开启某个定时任务后，可点此按钮手动刷新后台状态；不点则默认30s会自动刷新）
+      </el-button>
     </div>
     <!-- 定时任务调度表-列表 -->
     <el-table :data="tableData" stripe border @selection-change="handleTableSelectChange">
@@ -54,29 +53,28 @@
     <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px"
                style="width: 500px; margin-left: 50px;" :disabled="dialogType=='view'">
-        <el-form-item label="定时任务id" prop="quartzId"
-                      :rules="[{required: true, message: '定时任务id不能为空'}]">
+        <el-form-item label="定时任务id" prop="quartzId" style="display: none;">
           <el-input v-model="temp.quartzId" placeholder="请输入定时任务id"/>
         </el-form-item>
-        <el-form-item label="任务名称（不能重复）" prop="jobName"
+        <el-form-item label="任务名称" prop="jobName"
                       :rules="[]">
           <el-input v-model="temp.jobName" placeholder="请输入任务名称（不能重复）"/>
         </el-form-item>
-        <el-form-item label="任务执行类（该类必须实现org.quartz.Job）" prop="jobClass"
+        <el-form-item label="任务执行类" prop="jobClass"
                       :rules="[]">
           <el-input v-model="temp.jobClass" placeholder="请输入任务执行类（该类必须实现org.quartz.Job）"/>
         </el-form-item>
         <el-form-item label="任务执行时间" prop="jobTimeCron"
                       :rules="[]">
-          <el-input v-model="temp.jobTimeCron" placeholder="请输入任务执行时间"/>
+          <el-input v-model="temp.jobTimeCron" placeholder="请输入任务执行时间（Cron表达式：秒 分 时 日 月 年）"/>
         </el-form-item>
-        <el-form-item label="任务描述" prop="description"
-                      :rules="[]">
+        <el-form-item label="任务描述" prop="description">
           <el-input v-model="temp.description" placeholder="请输入任务描述"/>
         </el-form-item>
-        <el-form-item label="状态0关闭1开启" prop="status"
+        <el-form-item label="状态" prop="status"
                       :rules="[]">
-          <el-input v-model="temp.status" placeholder="请输入状态0关闭1开启"/>
+          <el-switch v-model="temp.status" active-text="开启" inactive-text="关闭"
+                     active-value="1" inactive-value="0"></el-switch>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

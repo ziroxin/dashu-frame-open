@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelCommonUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.core.zquartz.dto.ZQuartzDTO;
 import com.kg.core.zquartz.entity.ZQuartz;
 import com.kg.core.zquartz.excel.ZQuartzExcelConstant;
 import com.kg.core.zquartz.excel.ZQuartzExcelOutDTO;
@@ -17,6 +18,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -87,5 +89,24 @@ public class ZQuartzServiceImpl extends ServiceImpl<ZQuartzMapper, ZQuartz> impl
             e.printStackTrace();
         }
         return "error";
+    }
+
+    @Override
+    public boolean isJobExit(ZQuartzDTO zQuartzDTO) {
+        if (StringUtils.hasText(zQuartzDTO.getQuartzId())) {
+            // 修改查重
+            Optional<ZQuartz> zQuartz = lambdaQuery().eq(ZQuartz::getJobName, zQuartzDTO.getJobName())
+                    .ne(ZQuartz::getQuartzId, zQuartzDTO.getQuartzId()).oneOpt();
+            if (zQuartz.isPresent()) {
+                return true;
+            }
+        } else {
+            // 添加查重
+            Optional<ZQuartz> zQuartz = lambdaQuery().eq(ZQuartz::getJobName, zQuartzDTO.getJobName()).oneOpt();
+            if (zQuartz.isPresent()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
