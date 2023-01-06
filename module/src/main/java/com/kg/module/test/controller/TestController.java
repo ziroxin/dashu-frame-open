@@ -1,5 +1,6 @@
 package com.kg.module.test.controller;
 
+import com.kg.core.annotation.IsResponseResult;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,5 +52,17 @@ public class TestController {
     @PreAuthorize("hasAuthority('test:abc3')")
     public String abc3() {
         return "get abc3 test! no login";
+    }
+
+    /**
+     * IsResponseResult为false时；
+     * 不使用全局返回值
+     *
+     * @return 直接返回String
+     */
+    @GetMapping("abc4")
+    @IsResponseResult(value = false)
+    public String abc4() {
+        return "get abc4 test! no login";
     }
 }
