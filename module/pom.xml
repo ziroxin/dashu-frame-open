@@ -37,6 +37,12 @@
             <groupId>com.baidubce</groupId>
             <artifactId>api-explorer-sdk</artifactId>
         </dependency>
+
+        <!-- JDBC依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
