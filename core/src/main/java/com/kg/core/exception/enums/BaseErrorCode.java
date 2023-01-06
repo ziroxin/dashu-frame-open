@@ -3,8 +3,8 @@ package com.kg.core.exception.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 统一自定义异常码
@@ -23,14 +23,18 @@ public enum BaseErrorCode {
     private Integer code;
     private String info;
 
+    private static Map<Integer, BaseErrorCode> codeMap = new HashMap<>();
+
+    static {
+        for (BaseErrorCode value : BaseErrorCode.values()) {
+            codeMap.put(value.getCode(), value);
+        }
+    }
+
     /**
      * 根据code，查询枚举信息
      */
     public static BaseErrorCode getByCode(Integer code) {
-        Optional<BaseErrorCode> first = Arrays.stream(BaseErrorCode.values()).filter(o -> o.getCode() == code).findFirst();
-        if (first.isPresent()) {
-            return first.get();
-        }
-        return null;
+        return codeMap.get(code);
     }
 }
