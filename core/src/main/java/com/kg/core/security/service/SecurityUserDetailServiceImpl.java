@@ -8,12 +8,12 @@ import com.kg.core.zapi.service.IZApiService;
 import com.kg.core.zuser.entity.ZUser;
 import com.kg.core.zuser.service.IZUserService;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 
@@ -26,9 +26,9 @@ import java.util.List;
 @Service
 public class SecurityUserDetailServiceImpl implements UserDetailsService {
 
-    @Autowired
+    @Resource
     private IZUserService userService;
-    @Autowired
+    @Resource
     private IZApiService apiService;
 
     @SneakyThrows
@@ -38,7 +38,7 @@ public class SecurityUserDetailServiceImpl implements UserDetailsService {
         QueryWrapper<ZUser> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(ZUser::getUserName, username);
         ZUser user = userService.getOne(wrapper);
-        // 没查询到
+        // 没查询到，用户名错误
         if (null == user) {
             throw new BaseException(BaseErrorCode.LOGIN_ERROR_USERNAME_OR_PASSWORD_WRONG);
         }

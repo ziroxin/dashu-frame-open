@@ -22,7 +22,13 @@ public class LoginConstant {
     // 登录token的有效时间（单位：分钟）
     public static Integer LOGIN_JWT_TOKEN_EXPIRY;
     // 密码安全策略配置redis存储名称
-    public static String SAFETY_SET_REDIS_KEY = "z_safety_set_config";
+    public static final String SAFETY_SET_REDIS_KEY = "z_safety_set_config";
+    // 用户登录错误次数
+    public static final String LOGIN_ERROR_COUNT_REDIS_PRE = "z_login_error_count@";
+    // 用户缓存锁定时，存入redis的前缀
+    public static final String USER_LOCK_REDIS_PRE = "z_user_lock@";
+    // 缓存中锁定用户的列表记录
+    public static final String USER_LOCKED_LIST_REDIS_KEY = "user_locked_list_redis";
 
     @Value("${com.kg.login.jwt.token.expiry}")
     public void setLoginJwtTokenExpiry(Integer expiry) {

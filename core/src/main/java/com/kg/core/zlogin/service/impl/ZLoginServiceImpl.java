@@ -13,12 +13,15 @@ import com.kg.core.zlogin.dto.LoginSuccessDTO;
 import com.kg.core.zlogin.service.ZLoginService;
 import com.kg.core.zsafety.entity.ZSafety;
 import com.kg.core.zsafety.service.ZSafetyService;
+import com.kg.core.zuserlock.entity.ZUserLock;
+import com.kg.core.zuserlock.service.ZUserLockService;
 import com.kg.core.zuserpassword.entity.ZUserPassword;
 import com.kg.core.zuserpassword.service.ZUserPasswordService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -42,6 +45,8 @@ public class ZLoginServiceImpl implements ZLoginService {
     private ZSafetyService safetyService;
     @Resource
     private ZUserPasswordService passwordService;
+    @Resource
+    private ZUserLockService lockService;
 
     @Resource
     private ZCaptchaService captchaService;
@@ -59,13 +64,27 @@ public class ZLoginServiceImpl implements ZLoginService {
                 throw new BaseException("验证码错误！请检查");
             }
         }
+        // 判断用户是否已锁定
+        ZUserLock userLock = lockService.isLocking(loginForm.getUserName());
+        if (userLock != null) {
+            // 锁定抛出锁定原因
+            throw new BaseException(userLock.getLockReason());
+        }
+
         // AuthenticationManager 进行用户认证
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginForm.getUserName(), loginForm.getPassword());
-        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
-        // 认证不通过
-        if (ObjectUtils.isEmpty(authenticate)) {
-            throw new BaseException(BaseErrorCode.LOGIN_ERROR_USERNAME_OR_PASSWORD_WRONG);
+        Authentication authenticate = null;
+        try {
+            authenticate = authenticationManager.authenticate(authenticationToken);
+        } catch (AuthenticationException e) {
+            // 用户名异常、密码错误异常，都会捕获，触发用户锁定
+            String lockInfo = lockService.loginError(loginForm.getUserName());
+            if (StringUtils.hasText(lockInfo)) {
+                throw new BaseException(lockInfo);
+            } else {
+                throw new BaseException(BaseErrorCode.LOGIN_ERROR_USERNAME_OR_PASSWORD_WRONG);
+            }
         }
         // 获取登录成功的userId
         SecurityUserDetailEntity userDetailEntity = (SecurityUserDetailEntity) authenticate.getPrincipal();
@@ -90,6 +109,8 @@ public class ZLoginServiceImpl implements ZLoginService {
                 loginSuccessDTO.setInvalidPassword(true);// 密码已失效
             }
         }
+        // 重置密码错误次数
+        redisUtils.delete(LoginConstant.LOGIN_ERROR_COUNT_REDIS_PRE + loginForm.getUserName());
         return loginSuccessDTO;
     }
 
