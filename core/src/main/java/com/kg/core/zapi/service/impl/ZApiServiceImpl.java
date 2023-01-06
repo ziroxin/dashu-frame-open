@@ -21,11 +21,9 @@ import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
@@ -55,12 +53,9 @@ public class ZApiServiceImpl extends ServiceImpl<ZApiMapper, ZApi> implements IZ
     @Autowired
     private RedisUtils redisUtils;
 
-    @Value("${com.kg.developer.user.ids}")
-    private String DeveloperUserIds;
-
     @Override
     public List<String> listApiByUserId(String userId) {
-        if ((DeveloperUserIds + ",").contains(userId + ",")) {
+        if ((LoginConstant.DEVELOPER_USER_IDS + ",").contains(userId + ",")) {
             // 判断是否开发管理员，拥有全部api权限
             return scanApiList().stream().map(zApi -> zApi.getApiPermission()).collect(Collectors.toList());
         }

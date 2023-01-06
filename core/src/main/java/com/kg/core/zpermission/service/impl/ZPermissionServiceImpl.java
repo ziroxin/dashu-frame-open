@@ -2,6 +2,7 @@ package com.kg.core.zpermission.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.zpermission.dto.ZPermissionDTO;
 import com.kg.core.zpermission.dto.ZRolePermissionDTO;
 import com.kg.core.zpermission.dto.convert.ZPermissionConvert;
@@ -13,7 +14,6 @@ import com.kg.core.zpermission.service.IZPermissionService;
 import com.kg.core.zrole.entity.ZRolePermission;
 import com.kg.core.zrole.service.IZRolePermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -43,20 +43,15 @@ public class ZPermissionServiceImpl extends ServiceImpl<ZPermissionMapper, ZPerm
     @Autowired
     private ZRolePermissionConvert rolePermissionConvert;
 
-    @Value("${com.kg.developer.user.ids}")
-    private String DeveloperUserIds;
-
     // 查询该用户有权限的所有资源
     @Override
     public Map<String, Object> listPermissionByUserId(String userId) {
         Map<String, Object> map = new HashMap<>();
         // 1 查出该用户所有资源
         List<ZPermission> zPermissions;
-        if ((DeveloperUserIds + ",").contains(userId + ",")) {
+        if ((LoginConstant.DEVELOPER_USER_IDS + ",").contains(userId + ",")) {
             // 开发管理员，拥有全部资源权限
-            QueryWrapper<ZPermission> wrapper = new QueryWrapper<>();
-            wrapper.lambda().orderByAsc(ZPermission::getPermissionOrder);
-            zPermissions = list(wrapper);
+            zPermissions = lambdaQuery().orderByAsc(ZPermission::getPermissionOrder).list();
         } else {
             // 非开发管理员，根据userId查询资源权限
             zPermissions = permissionMapper.listPermissionByUserId(userId);
