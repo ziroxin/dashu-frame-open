@@ -7,6 +7,7 @@ import com.kg.core.zquartz.service.ZQuartzService;
 import org.quartz.Job;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -53,22 +54,24 @@ public class QuartzConfig {
             System.out.println("刷新定时任务");
             // 查询数据库中，定时任务列表
             List<ZQuartz> list = quartzService.list();
-            for (ZQuartz zQuartz : list) {
-                if (zQuartz.getStatus().equals("1")) {
-                    // 开启--------------------
-                    if (!hasOpenedJobsList.contains(zQuartz.getJobName())) {
-                        // 开启任务
-                        quartzManagerUtils.addJob(zQuartz.getJobName(), (Class<Job>) Class.forName(zQuartz.getJobClass()), zQuartz.getJobTimeCron());
-                        // 开启成功，加入已开启列表
-                        hasOpenedJobsList.add(zQuartz.getJobName());
-                    }
-                } else {
-                    // 关闭--------------------
-                    if (hasOpenedJobsList.contains(zQuartz.getJobName())) {
-                        // 已开启的，才需要关闭
-                        quartzManagerUtils.removeJob(zQuartz.getJobName());
-                        // 关闭成功，移除列表
-                        hasOpenedJobsList.remove(zQuartz.getJobName());
+            if (list != null) {
+                for (ZQuartz zQuartz : list) {
+                    if (StringUtils.hasText(zQuartz.getStatus()) && zQuartz.getStatus().equals("1")) {
+                        // 开启--------------------
+                        if (!hasOpenedJobsList.contains(zQuartz.getJobName())) {
+                            // 开启任务
+                            quartzManagerUtils.addJob(zQuartz.getJobName(), (Class<Job>) Class.forName(zQuartz.getJobClass()), zQuartz.getJobTimeCron());
+                            // 开启成功，加入已开启列表
+                            hasOpenedJobsList.add(zQuartz.getJobName());
+                        }
+                    } else {
+                        // 关闭--------------------
+                        if (hasOpenedJobsList.contains(zQuartz.getJobName())) {
+                            // 已开启的，才需要关闭
+                            quartzManagerUtils.removeJob(zQuartz.getJobName());
+                            // 关闭成功，移除列表
+                            hasOpenedJobsList.remove(zQuartz.getJobName());
+                        }
                     }
                 }
             }
