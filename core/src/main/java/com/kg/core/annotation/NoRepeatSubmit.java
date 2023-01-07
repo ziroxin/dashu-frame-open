@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface NoRepeatSubmit {
     /**
-     * 放重复锁时间 默认2s不能重复提交
+     * 防止重复锁定时间 默认2s不能重复提交
      */
     long lockSecond() default 2L;
 }

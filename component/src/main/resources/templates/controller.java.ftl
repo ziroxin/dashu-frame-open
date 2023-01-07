@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 <#if idType == "ASSIGN_UUID">
 import com.kg.component.utils.GuidUtils;
 </#if>
+import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import ${package.DTO}.${dtoName};
 import ${package.Convert}.${dtoconvertName};
@@ -105,6 +106,7 @@ public class ${table.controllerName} {
     @ApiImplicitParams({})
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('${controllerAuthorizePre}add')")
+	@NoRepeatSubmit
     public void add(@RequestBody ${dtoName} ${dtoName?uncap_first}) throws BaseException {
         try {
             ${entity} ${entity?uncap_first} = ${dtoconvertName?uncap_first}.dtoToEntity(${dtoName?uncap_first});
@@ -127,6 +129,7 @@ public class ${table.controllerName} {
 	@ApiImplicitParams({})
 	@PostMapping("/update")
 	@PreAuthorize("hasAuthority('${controllerAuthorizePre}update')")
+	@NoRepeatSubmit
 	public void update(@RequestBody ${dtoName} ${dtoName?uncap_first}) throws BaseException {
 		try {
 			${entity} ${entity?uncap_first} = ${dtoconvertName?uncap_first}.dtoToEntity(${dtoName?uncap_first});
@@ -148,6 +151,7 @@ public class ${table.controllerName} {
 	})
 	@PostMapping("/delete")
 	@PreAuthorize("hasAuthority('${controllerAuthorizePre}delete')")
+	@NoRepeatSubmit
 	public void delete(@RequestBody String[] ${entityKeyName}s) throws BaseException {
 		try {
 			${table.serviceName?uncap_first}.removeBatchByIds(Arrays.asList(${entityKeyName}s));

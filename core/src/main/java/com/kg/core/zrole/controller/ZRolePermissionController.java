@@ -1,8 +1,8 @@
 package com.kg.core.zrole.controller;
 
 
+import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.zrole.dto.ZRolePermissionSaveDTO;
-import com.kg.core.zrole.entity.ZRolePermission;
 import com.kg.core.zrole.service.IZRolePermissionService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -33,8 +29,8 @@ public class ZRolePermissionController {
     @ApiOperation(value = "role/permission/saveRolePermission", notes = "保存角色权限关系", httpMethod = "POST")
     @PostMapping("saveRolePermission")
     @PreAuthorize("hasAuthority('role:permission:saveRolePermission')")
+    @NoRepeatSubmit
     public void saveRolePermission(@RequestBody ZRolePermissionSaveDTO rolePermissionSaveDTO) {
         rolePermissionService.saveRolePermission(rolePermissionSaveDTO);
-
     }
 }

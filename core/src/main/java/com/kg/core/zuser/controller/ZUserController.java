@@ -2,6 +2,7 @@ package com.kg.core.zuser.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.core.security.util.CurrentUserUtils;
 import com.kg.core.zsafety.service.ZSafetyService;
@@ -67,6 +68,7 @@ public class ZUserController {
     @ApiOperation(value = "user/add", notes = "添加用户", httpMethod = "POST")
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('user:add')")
+    @NoRepeatSubmit
     public void add(@RequestBody ZUserRoleSaveDTO zUserRoleSaveDTO) throws BaseException {
         if (!userService.add(zUserRoleSaveDTO)) {
             throw new BaseException("添加用户失败!");
@@ -76,6 +78,7 @@ public class ZUserController {
     @ApiOperation(value = "user/update", notes = "修改用户信息", httpMethod = "POST")
     @PostMapping("update")
     @PreAuthorize("hasAuthority('user:update')")
+    @NoRepeatSubmit
     public void update(@RequestBody ZUserRoleSaveDTO zUserRoleSaveDTO) throws BaseException {
         boolean s1 = userService.update(zUserRoleSaveDTO);
         if (s1) {
@@ -86,6 +89,7 @@ public class ZUserController {
     @ApiOperation(value = "user/delete", notes = "批量删除用户", httpMethod = "DELETE")
     @DeleteMapping("delete")
     @PreAuthorize("hasAuthority('user:delete')")
+    @NoRepeatSubmit
     public void delete(@RequestBody String[] userIds) throws BaseException {
         boolean s1 = userService.removeByIds(Arrays.asList(userIds));
         boolean s2 = userRoleService.removeByIds(Arrays.asList(userIds));
@@ -97,12 +101,14 @@ public class ZUserController {
     @ApiOperation(value = "user/reset/password", notes = "批量重置密码", httpMethod = "POST")
     @PostMapping("reset/password")
     @PreAuthorize("hasAuthority('user:reset:password')")
+    @NoRepeatSubmit
     public void resetPassword(@RequestBody String[] userIds) throws BaseException {
         userService.resetPassword(userIds);
     }
 
     @ApiOperation(value = "user/edit/password", notes = "修改用户密码", httpMethod = "POST")
     @PostMapping("edit/password")
+    @NoRepeatSubmit
     public void editPassword(@RequestBody ZUserEditPasswordDTO passwordDTO) throws BaseException {
         if (!StringUtils.hasText(passwordDTO.getUserId())) {
             // 不传userId，则修改当前用户的密码

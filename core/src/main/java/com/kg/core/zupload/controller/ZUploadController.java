@@ -3,6 +3,7 @@ package com.kg.core.zupload.controller;
 import com.kg.component.file.FileDTO;
 import com.kg.component.file.UploadFileUtils;
 import com.kg.component.file.UploadImageUtils;
+import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.base.controller.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -34,6 +35,7 @@ public class ZUploadController implements BaseController {
             @ApiImplicitParam(name = "path", value = "路径", paramType = "query", required = false, dataType = "String")
     })
     @PostMapping("images")
+    @NoRepeatSubmit
     public List<FileDTO> images(HttpServletRequest request, String path) throws IOException {
         // 图片上传，自动压缩
         return UploadImageUtils.upload(request, StringUtils.hasText(path) ? path : "images");
@@ -45,6 +47,7 @@ public class ZUploadController implements BaseController {
             @ApiImplicitParam(name = "path", value = "路径", paramType = "query", required = false, dataType = "String")
     })
     @PostMapping("files")
+    @NoRepeatSubmit
     public List<FileDTO> files(HttpServletRequest request, String path) throws IOException {
         // 普通文件上传
         return UploadFileUtils.uploadFile(request, StringUtils.hasText(path) ? path : "files");

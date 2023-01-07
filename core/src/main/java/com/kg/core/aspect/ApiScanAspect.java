@@ -23,7 +23,7 @@ import java.util.Optional;
  */
 @Aspect
 @Component
-public class ApiScanAop {
+public class ApiScanAspect {
     /**
      * 扫描到的所有带权限的接口
      */

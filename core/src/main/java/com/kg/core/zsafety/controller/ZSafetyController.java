@@ -1,5 +1,6 @@
 package com.kg.core.zsafety.controller;
 
+import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.core.zsafety.entity.ZSafety;
 import com.kg.core.zsafety.service.ZSafetyService;
@@ -37,6 +38,7 @@ public class ZSafetyController {
     @ApiOperation(value = "/zsafety/zSafety/update", notes = "修改-密码安全等设置", httpMethod = "POST")
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('zsafety:zSafety:update')")
+    @NoRepeatSubmit
     public void update(@RequestBody ZSafety zSafety) throws BaseException {
         try {
             zSafety.setUpdateTime(LocalDateTime.now());

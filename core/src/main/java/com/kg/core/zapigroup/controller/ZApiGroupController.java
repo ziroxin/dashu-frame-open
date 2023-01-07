@@ -1,6 +1,7 @@
 package com.kg.core.zapigroup.controller;
 
 
+import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.zapi.service.IZApiService;
 import com.kg.core.zapigroup.dto.ZApiGroupDTO;
 import com.kg.core.zapigroup.service.IZApiGroupService;
@@ -31,6 +32,7 @@ public class ZApiGroupController {
     @ApiOperation(value = "delete", notes = "删除分组信息", httpMethod = "POST")
     @PostMapping("delete")
     @PreAuthorize("hasAuthority('api:group:delete')")
+    @NoRepeatSubmit
     public boolean delete(String apiGroupId) {
         return apiService.deletApiGroup(apiGroupId);
     }
@@ -38,6 +40,7 @@ public class ZApiGroupController {
     @ApiOperation(value = "add", notes = "添加分组信息", httpMethod = "POST")
     @PostMapping("add")
     @PreAuthorize("hasAuthority('api:group:add')")
+    @NoRepeatSubmit
     public void add(@RequestBody ZApiGroupDTO zApiGroupDTO) {
         groupService.add(zApiGroupDTO);
     }

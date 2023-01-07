@@ -4,6 +4,7 @@ package com.kg.core.zpermission.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.kg.component.utils.GuidUtils;
+import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.core.security.util.CurrentUserUtils;
 import com.kg.core.zpermission.dto.ZPermissionDTO;
@@ -45,6 +46,7 @@ public class ZPermissionController {
     })
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('permission:add')")
+    @NoRepeatSubmit
     public boolean add(@RequestBody ZPermission zPermission) throws BaseException {
         // 查询重复标记
         QueryWrapper<ZPermission> wrapper = new QueryWrapper<>();
@@ -67,6 +69,7 @@ public class ZPermissionController {
     })
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('permission:update')")
+    @NoRepeatSubmit
     public boolean update(@RequestBody ZPermission zPermission) throws BaseException {
         // 查询重复标记
         QueryWrapper<ZPermission> wrapper = new QueryWrapper<>();
@@ -87,6 +90,7 @@ public class ZPermissionController {
     @ApiOperation(value = "permission/updateParentId", notes = "修改上下级关系", httpMethod = "POST")
     @PostMapping("/updateParentId")
     @PreAuthorize("hasAuthority('permission:updateParentId')")
+    @NoRepeatSubmit
     public boolean updateParentId(@RequestBody ZPermission zPermission) {
         UpdateWrapper<ZPermission> wrapper = new UpdateWrapper<>();
         wrapper.lambda().set(ZPermission::getParentId, zPermission.getParentId())
@@ -102,6 +106,7 @@ public class ZPermissionController {
     })
     @DeleteMapping("/delete")
     @PreAuthorize("hasAuthority('permission:delete')")
+    @NoRepeatSubmit
     public boolean delete(@RequestBody String[] permissionIds) {
         if (permissionService.removeBatchByIds(Arrays.asList(permissionIds))) {
             return true;

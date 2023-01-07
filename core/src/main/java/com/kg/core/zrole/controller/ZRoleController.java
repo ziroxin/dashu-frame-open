@@ -3,6 +3,7 @@ package com.kg.core.zrole.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.core.zrole.entity.ZRole;
 import com.kg.core.zrole.service.IZRoleService;
@@ -49,6 +50,7 @@ public class ZRoleController {
     @ApiOperation(value = "role/add", notes = "添加角色", httpMethod = "POST")
     @PostMapping("add")
     @PreAuthorize("hasAuthority('role:add')")
+    @NoRepeatSubmit
     public void add(@RequestBody ZRole zRole) throws BaseException {
         zRole.setCreateTime(LocalDateTime.now());
         if (!roleService.save(zRole)) {
@@ -59,6 +61,7 @@ public class ZRoleController {
     @ApiOperation(value = "role/update", notes = "修改角色", httpMethod = "POST")
     @PostMapping("update")
     @PreAuthorize("hasAuthority('role:update')")
+    @NoRepeatSubmit
     public void update(@RequestBody ZRole zRole) throws BaseException {
         zRole.setUpdateTime(LocalDateTime.now());
         if (!roleService.updateById(zRole)) {
@@ -69,6 +72,7 @@ public class ZRoleController {
     @ApiOperation(value = "role/delete", notes = "批量删除角色", httpMethod = "DELETE")
     @DeleteMapping("delete")
     @PreAuthorize("hasAuthority('role:delete')")
+    @NoRepeatSubmit
     public void delete(@RequestBody String[] roleIds) throws BaseException {
         if (!roleService.removeByIds(Arrays.asList(roleIds))) {
             throw new BaseException("删除角色失败");

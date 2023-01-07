@@ -3,6 +3,7 @@ package com.kg.core.zpermission.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kg.component.redis.RedisUtils;
+import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.zpermission.dto.ZPermissionApiDTO;
 import com.kg.core.zpermission.entity.ZPermissionApi;
@@ -56,6 +57,7 @@ public class ZPermissionApiController {
     @ApiOperation(value = "permission/api/savePermissionApi", notes = "保存资源和API关联关系", httpMethod = "POST")
     @PostMapping("savePermissionApi")
     @PreAuthorize("hasAuthority('permission:api:savePermissionApi')")
+    @NoRepeatSubmit
     public void savePermissionApi(@RequestBody ZPermissionApiDTO permissionApiDTO) {
         List<ZPermissionApi> collect = Arrays.stream(permissionApiDTO.getApiIds()).map(apiId -> {
             ZPermissionApi permissionApi = new ZPermissionApi();

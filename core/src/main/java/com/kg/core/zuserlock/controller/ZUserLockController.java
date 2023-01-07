@@ -4,6 +4,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.core.zuserlock.entity.ZUserLock;
 import com.kg.core.zuserlock.service.ZUserLockService;
@@ -79,6 +80,7 @@ public class ZUserLockController {
     })
     @PostMapping("/unlock")
     @PreAuthorize("hasAuthority('zuserlock:zUserLock:unlock')")
+    @NoRepeatSubmit
     public void delete(@RequestBody String[] userNames) throws BaseException {
         try {
             zUserLockService.unlock(userNames);

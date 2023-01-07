@@ -5,6 +5,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kg.component.utils.GuidUtils;
+import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.core.zquartz.config.QuartzConfig;
 import com.kg.core.zquartz.dto.ZQuartzDTO;
@@ -114,6 +115,7 @@ public class ZQuartzController {
     @ApiImplicitParams({})
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('zquartz:zQuartz:add')")
+    @NoRepeatSubmit
     public void add(@RequestBody ZQuartzDTO zQuartzDTO) throws BaseException {
         // 查重
         if (zQuartzService.isJobExit(zQuartzDTO)) {
@@ -134,6 +136,7 @@ public class ZQuartzController {
     @ApiImplicitParams({})
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('zquartz:zQuartz:update')")
+    @NoRepeatSubmit
     public void update(@RequestBody ZQuartzDTO zQuartzDTO) throws BaseException {
         // 查重
         if (zQuartzService.isJobExit(zQuartzDTO)) {
@@ -155,6 +158,7 @@ public class ZQuartzController {
     })
     @PostMapping("/delete")
     @PreAuthorize("hasAuthority('zquartz:zQuartz:delete')")
+    @NoRepeatSubmit
     public void delete(@RequestBody String[] quartzIds) throws BaseException {
         try {
             zQuartzService.removeBatchByIds(Arrays.asList(quartzIds));
