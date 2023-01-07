@@ -1,6 +1,5 @@
 package com.kg.core.security.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kg.core.exception.BaseException;
 import com.kg.core.exception.enums.BaseErrorCode;
 import com.kg.core.security.entity.SecurityUserDetailEntity;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -25,7 +25,6 @@ import java.util.List;
  */
 @Service
 public class SecurityUserDetailServiceImpl implements UserDetailsService {
-
     @Resource
     private IZUserService userService;
     @Resource
@@ -35,16 +34,14 @@ public class SecurityUserDetailServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 查询用户信息
-        QueryWrapper<ZUser> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(ZUser::getUserName, username);
-        ZUser user = userService.getOne(wrapper);
+        Optional<ZUser> zUser = userService.lambdaQuery().eq(ZUser::getUserName, username).oneOpt();
         // 没查询到，用户名错误
-        if (null == user) {
+        if (!zUser.isPresent()) {
             throw new BaseException(BaseErrorCode.LOGIN_ERROR_USERNAME_OR_PASSWORD_WRONG);
         }
         // 查询用户权限列表
-        List<String> lists = apiService.listApiByUserId(user.getUserId());
+        List<String> lists = apiService.listApiByUserId(zUser.get().getUserId());
         // 查到用户，并返回
-        return new SecurityUserDetailEntity(user, lists);
+        return new SecurityUserDetailEntity(zUser.get(), lists);
     }
 }
