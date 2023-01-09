@@ -29,7 +29,7 @@ public class NoRepeatSubmitAspect {
     private RedisUtils redisUtils;
 
     /**
-     * 切点
+     * 防止重复提交 - 切点
      */
     @Around("@annotation(noRepeatSubmit)")
     public Object around(ProceedingJoinPoint joinPoint, NoRepeatSubmit noRepeatSubmit) throws Throwable {
@@ -47,7 +47,7 @@ public class NoRepeatSubmitAspect {
             // 重复提交
             throw new BaseException("您的操作过于频繁，请稍等一会！！！");
         } else {
-            Object result = null;
+            Object result;
             try {
                 // 首次提交，锁定
                 redisUtils.set(submitKey, GuidUtils.getUuid(), noRepeatSubmit.lockSecond());

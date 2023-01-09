@@ -3,6 +3,8 @@ package com.kg.core.annotation;
 import java.lang.annotation.*;
 
 /**
+ * 是否使用默认全局返回值 ResponseResult
+ *
  * @author ziro
  * @date 2022/5/2 11:01
  */
