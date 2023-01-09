@@ -74,7 +74,7 @@ public class ZLoginServiceImpl implements ZLoginService {
         // AuthenticationManager 进行用户认证
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginForm.getUserName(), loginForm.getPassword());
-        Authentication authenticate = null;
+        Authentication authenticate;
         try {
             authenticate = authenticationManager.authenticate(authenticationToken);
         } catch (AuthenticationException e) {

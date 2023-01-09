@@ -1,5 +1,6 @@
 package ${package.Entity};
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 <#list table.importPackages as pkg>
 import ${pkg};
 </#list>
@@ -97,6 +98,12 @@ public class ${entity} {
     <#-- 逻辑删除注解 -->
     <#if field.logicDeleteField>
     @TableLogic
+    </#if>
+    <#if field.propertyType=="LocalDateTime">
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    </#if>
+    <#if field.propertyType=="Date" || field.propertyType=="LocalDate">
+    @JsonFormat(pattern = "yyyy/MM/dd", timezone = "GMT+8")
     </#if>
     private ${field.propertyType} ${field.propertyName};
 </#list>
