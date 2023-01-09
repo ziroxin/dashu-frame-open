@@ -16,7 +16,12 @@ public class CurrentUserUtils {
      * @return 获取当前用户信息
      */
     public static ZUser getCurrentUser() {
-        SecurityUserDetailEntity userDetailEntity = (SecurityUserDetailEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal == null || "anonymousUser".equals(principal.toString())) {
+            // 无用户或匿名用户返回null
+            return null;
+        }
+        SecurityUserDetailEntity userDetailEntity = (SecurityUserDetailEntity) principal;
         return userDetailEntity.getZUser();
     }
 

@@ -24,7 +24,6 @@ public class ZOperateLogExcelConstant {
         EXPORT_EXCEL_COLUMN.put("content", "操作内容");
         EXPORT_EXCEL_COLUMN.put("actionUrl", "请求路径");
         EXPORT_EXCEL_COLUMN.put("ip", "IP地址");
-        EXPORT_EXCEL_COLUMN.put("status", "执行结果（1成功 2失败）");
         EXPORT_EXCEL_COLUMN.put("createTime", "操作时间");
     }
 

@@ -1,14 +1,13 @@
 package com.kg.core.zlog.dto;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kg.core.base.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 
 /**
@@ -49,9 +48,6 @@ public class ZOperateLogDTO implements BaseDTO {
 
     @ApiModelProperty("IP地址")
     private String ip;
-
-    @ApiModelProperty("执行结果（1成功 2失败）")
-    private Byte status;
 
     @ApiModelProperty("操作时间")
     @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")

@@ -28,19 +28,14 @@
     <!-- 定时任务调度表-列表 -->
     <el-table :data="tableData" stripe border @selection-change="handleTableSelectChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
-      <el-table-column label="任务名称（不能重复）" prop="jobName" align="center"/>
-      <el-table-column label="任务执行类（该类必须实现org.quartz.Job）" prop="jobClass" align="center"/>
-      <el-table-column label="任务执行时间" prop="jobTimeCron" align="center"/>
-      <el-table-column label="任务描述" prop="description" align="center"/>
-      <el-table-column label="状态" align="center">
+      <el-table-column label="任务名称" prop="jobName" align="center" min-width="10%"/>
+      <el-table-column label="任务执行类" prop="jobClass" align="center" min-width="20%"/>
+      <el-table-column label="任务执行时间" prop="jobTimeCron" align="center" min-width="10%"/>
+      <el-table-column label="任务描述" prop="description" align="center" min-width="20%"/>
+      <el-table-column label="状态" align="center" min-width="10%">
         <template v-slot="scope">
           <span v-if="scope.row.status=='1'" style="color: #2ac06d;">开启</span>
           <span v-if="scope.row.status!='1'" style="color: #dd1100;">关闭</span>
-        </template>
-      </el-table-column>
-      <el-table-column fixed="right" label="操作" width="100">
-        <template v-slot="scope">
-          <el-button type="text" size="small" @click="openView(scope.row)">查看详情</el-button>
         </template>
       </el-table-column>
     </el-table>

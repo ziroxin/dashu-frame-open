@@ -71,9 +71,6 @@ public class ZOperateLogServiceImpl extends ServiceImpl<ZOperateLogMapper, ZOper
                 if (paramObj.containsKey("ip")) {
                     wrapper.lambda().eq(ZOperateLog::getIp, paramObj.getStr("ip"));
                 }
-                if (paramObj.containsKey("status")) {
-                    wrapper.lambda().eq(ZOperateLog::getStatus, paramObj.getStr("status"));
-                }
                 if (paramObj.containsKey("createTime")) {
                     wrapper.lambda().eq(ZOperateLog::getCreateTime, paramObj.getStr("createTime"));
                 }

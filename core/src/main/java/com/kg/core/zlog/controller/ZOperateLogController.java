@@ -74,10 +74,10 @@ public class ZOperateLogController {
                 wrapper.lambda().eq(ZOperateLog::getUserId, paramObj.getStr("userId"));
             }
             if (paramObj.containsKey("userName")) {
-                wrapper.lambda().eq(ZOperateLog::getUserName, paramObj.getStr("userName"));
+                wrapper.lambda().like(ZOperateLog::getUserName, paramObj.getStr("userName"));
             }
             if (paramObj.containsKey("logMethod")) {
-                wrapper.lambda().eq(ZOperateLog::getLogMethod, paramObj.getStr("logMethod"));
+                wrapper.lambda().like(ZOperateLog::getLogMethod, paramObj.getStr("logMethod"));
             }
             if (paramObj.containsKey("logMsg")) {
                 wrapper.lambda().eq(ZOperateLog::getLogMsg, paramObj.getStr("logMsg"));
@@ -91,14 +91,11 @@ public class ZOperateLogController {
             if (paramObj.containsKey("ip")) {
                 wrapper.lambda().eq(ZOperateLog::getIp, paramObj.getStr("ip"));
             }
-            if (paramObj.containsKey("status")) {
-                wrapper.lambda().eq(ZOperateLog::getStatus, paramObj.getStr("status"));
-            }
             if (paramObj.containsKey("createTime")) {
                 wrapper.lambda().eq(ZOperateLog::getCreateTime, paramObj.getStr("createTime"));
             }
         }
-
+        wrapper.lambda().orderByDesc(ZOperateLog::getCreateTime);
         return zOperateLogService.page(pager, wrapper);
     }
 

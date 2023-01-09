@@ -62,11 +62,6 @@ public class ZOperateLogExcelOutDTO implements BaseDTO {
     private String ip;
 
     /**
-     * 执行结果（1成功 2失败）
-     */
-    private Byte status;
-
-    /**
      * 操作时间
      */
     @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")

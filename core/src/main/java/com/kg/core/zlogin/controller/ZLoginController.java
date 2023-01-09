@@ -1,5 +1,6 @@
 package com.kg.core.zlogin.controller;
 
+import com.kg.core.annotation.AutoOperateLog;
 import com.kg.core.base.controller.BaseController;
 import com.kg.core.exception.BaseException;
 import com.kg.core.zlogin.dto.LoginFormDTO;
@@ -29,6 +30,7 @@ public class ZLoginController implements BaseController {
 
     @ApiOperation(value = "登录", notes = "登录接口", httpMethod = "POST")
     @PostMapping("login")
+    @AutoOperateLog(logMethod = "/login/login", logMsg = "用户执行了登录操作")
     public LoginSuccessDTO login(@RequestBody LoginFormDTO loginForm) throws BaseException {
         return zLoginService.login(loginForm);
     }
