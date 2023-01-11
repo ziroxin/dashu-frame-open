@@ -4,14 +4,14 @@
     <el-popover width="600" trigger="click">
       <div style="max-height:400px;overflow-y: scroll;overflow-x:hidden">
         <el-button v-for="(item,index) in iconList" :key="index" plain style="margin:2px;" @click="iconName=item">
-          <eIcon :icon-name="item" />
+          <eIcon :icon-name="item" style="font-size: 20px;"/>
         </el-button>
       </div>
 
       <el-button slot="reference">
         <span v-if="iconName==''">请选择图标</span>
         <span v-else>
-          <eIcon :icon-name="iconName" />
+          <eIcon :icon-name="iconName"/>
         </span>
       </el-button>
     </el-popover>
@@ -52,7 +52,10 @@ export default {
     }
   },
   mounted() {
-    for (var i = 0; i < elementIcons.length; i++) {
+    for (let i = 0; i < svgIcons.length; i++) {
+      this.iconList.push(svgIcons[i])
+    }
+    for (let i = 0; i < elementIcons.length; i++) {
       this.iconList.push('el-icon-' + elementIcons[i])
     }
   }
