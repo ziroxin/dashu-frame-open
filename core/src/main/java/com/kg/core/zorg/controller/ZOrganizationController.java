@@ -60,8 +60,8 @@ public class ZOrganizationController {
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('zorg:zOrganization:list')")
     public Page<ZOrganization> list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
-                                @RequestParam(value = "params", required = false) String params) {
+                                    @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
+                                    @RequestParam(value = "params", required = false) String params) {
         Page<ZOrganization> pager = new Page<>(page, limit);
         // 根据条件查询
         QueryWrapper<ZOrganization> wrapper = new QueryWrapper<>();
