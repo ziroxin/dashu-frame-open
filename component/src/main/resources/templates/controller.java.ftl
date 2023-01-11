@@ -79,8 +79,8 @@ public class ${table.controllerName} {
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('${controllerAuthorizePre}list')")
     public Page<${entity}> list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
-                                @RequestParam(value = "params", required = false) String params) {
+                                    @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
+                                    @RequestParam(value = "params", required = false) String params) {
         Page<${entity}> pager = new Page<>(page, limit);
         // 根据条件查询
         QueryWrapper<${entity}> wrapper = new QueryWrapper<>();
