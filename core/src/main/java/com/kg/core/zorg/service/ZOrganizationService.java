@@ -1,7 +1,7 @@
 package com.kg.core.zorg.service;
 
-import com.kg.core.zorg.entity.ZOrganization;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kg.core.zorg.entity.ZOrganization;
 
 /**
  * <p>

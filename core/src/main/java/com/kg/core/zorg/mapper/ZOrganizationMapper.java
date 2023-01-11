@@ -1,7 +1,7 @@
 package com.kg.core.zorg.mapper;
 
-import com.kg.core.zorg.entity.ZOrganization;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.kg.core.zorg.entity.ZOrganization;
 import org.springframework.stereotype.Repository;
 
 /**
