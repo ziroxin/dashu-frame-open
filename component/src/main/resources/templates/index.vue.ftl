@@ -252,7 +252,7 @@ export default {
     },
     // 导出Excel文件
     exportExcel() {
-      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      const params = {params: JSON.stringify(this.searchData)};
       request({
         url: '${controllerMapping}/export/excel', method: 'get', params
       }).then(response => {
