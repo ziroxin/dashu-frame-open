@@ -1,13 +1,14 @@
 package com.kg.core.zorg.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import com.kg.core.base.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 
 /**
@@ -40,6 +41,9 @@ public class ZOrganizationDTO implements BaseDTO {
     @ApiModelProperty("层级")
     private Integer orgLevel;
 
+    @ApiModelProperty("备注")
+    private String remarks;
+
     @ApiModelProperty("顺序")
     private Integer orderIndex;
 
@@ -50,4 +54,7 @@ public class ZOrganizationDTO implements BaseDTO {
     @ApiModelProperty("修改时间")
     @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
+
+    @ApiModelProperty("子节点内容")
+    private List<ZOrganizationDTO> children;
 }

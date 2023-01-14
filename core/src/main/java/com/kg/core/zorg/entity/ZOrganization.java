@@ -50,6 +50,10 @@ public class ZOrganization implements BaseEntity {
     @TableField("org_level")
     private Integer orgLevel;
 
+    @ApiModelProperty("备注")
+    @TableField("remarks")
+    private String remarks;
+
     @ApiModelProperty("顺序")
     @TableField("order_index")
     private Integer orderIndex;

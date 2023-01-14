@@ -1,5 +1,7 @@
 package com.kg.core.zorg.excels;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.LinkedHashMap;
 
 /**
@@ -21,6 +23,7 @@ public class ZOrganizationExcelConstant {
         EXPORT_EXCEL_COLUMN.put("orgParentId", "父级ID");
         EXPORT_EXCEL_COLUMN.put("orgPath", "组织机构路径(格式:id1.id2.id3)");
         EXPORT_EXCEL_COLUMN.put("orgLevel", "层级");
+        EXPORT_EXCEL_COLUMN.put("remarks", "备注");
         EXPORT_EXCEL_COLUMN.put("orderIndex", "顺序");
         EXPORT_EXCEL_COLUMN.put("createTime", "添加时间");
         EXPORT_EXCEL_COLUMN.put("updateTime", "修改时间");

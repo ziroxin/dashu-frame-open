@@ -1,12 +1,11 @@
 package com.kg.core.zorg.excels;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kg.core.base.dto.BaseDTO;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 /**
  * 导出Excel实体 - 组织机构表
@@ -45,6 +44,11 @@ public class ZOrganizationExcelOutDTO implements BaseDTO {
      * 层级
      */
     private Integer orgLevel;
+
+    /**
+     * 备注
+     */
+    private Integer remarks;
 
     /**
      * 顺序

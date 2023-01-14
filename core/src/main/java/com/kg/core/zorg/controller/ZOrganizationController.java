@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kg.component.utils.GuidUtils;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
+import com.kg.core.zorg.dto.ZOrganizationCascaderDTO;
 import com.kg.core.zorg.dto.ZOrganizationDTO;
 import com.kg.core.zorg.dto.convert.ZOrganizationConvert;
 import com.kg.core.zorg.entity.ZOrganization;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>
@@ -40,6 +43,28 @@ public class ZOrganizationController {
     private ZOrganizationService zOrganizationService;
     @Resource
     private ZOrganizationConvert zOrganizationConvert;
+
+    @ApiOperation(value = "/zorg/zOrganization/tree", notes = "组织机构树", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "orgName", value = "名称模糊查询", paramType = "query", required = false, dataType = "String"),
+            @ApiImplicitParam(name = "parentId", value = "父级ID", paramType = "query", required = false, dataType = "String")
+    })
+    @GetMapping("/tree")
+    @PreAuthorize("hasAuthority('zorg:zOrganization:tree')")
+    public List<ZOrganizationDTO> tree(@RequestParam(value = "orgName", required = false) String orgName,
+                                       @RequestParam(value = "parentId", required = false) String parentId) {
+        return zOrganizationService.tree(orgName, parentId);
+    }
+
+    @ApiOperation(value = "/zorg/zOrganization/treeForSelect", notes = "下拉选择框组织机构树", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "parentId", value = "父级ID", paramType = "query", required = false, dataType = "String")
+    })
+    @GetMapping("/treeForSelect")
+    @PreAuthorize("hasAuthority('zorg:zOrganization:treeForSelect')")
+    public List<ZOrganizationCascaderDTO> treeForSelect(@RequestParam(value = "parentId", required = false) String parentId) {
+        return zOrganizationService.treeForSelect(parentId);
+    }
 
     @ApiOperation(value = "/zorg/zOrganization/getById", notes = "详情-组织机构表", httpMethod = "GET")
     @ApiImplicitParams({
@@ -71,7 +96,7 @@ public class ZOrganizationController {
                 wrapper.lambda().eq(ZOrganization::getOrgId, paramObj.getStr("orgId"));
             }
             if (paramObj.containsKey("orgName")) {
-                wrapper.lambda().eq(ZOrganization::getOrgName, paramObj.getStr("orgName"));
+                wrapper.lambda().like(ZOrganization::getOrgName, paramObj.getStr("orgName"));
             }
             if (paramObj.containsKey("orgParentId")) {
                 wrapper.lambda().eq(ZOrganization::getOrgParentId, paramObj.getStr("orgParentId"));
@@ -106,9 +131,28 @@ public class ZOrganizationController {
     public void add(@RequestBody ZOrganizationDTO zOrganizationDTO) throws BaseException {
         try {
             ZOrganization zOrganization = zOrganizationConvert.dtoToEntity(zOrganizationDTO);
-            zOrganization.setOrgId(GuidUtils.getUuid());
+            zOrganization.setOrgId(GuidUtils.getUuid32());
+            if (StringUtils.hasText(zOrganization.getOrgParentId()) && !"-1".equals(zOrganization.getOrgParentId())) {
+                // 有父级，取父级路径
+                Optional<ZOrganization> oneOpt = zOrganizationService.lambdaQuery().eq(ZOrganization::getOrgId, zOrganization.getOrgParentId()).oneOpt();
+                if (oneOpt.isPresent()) {
+                    ZOrganization parent = oneOpt.get();
+                    String parentPath = StringUtils.hasText(parent.getOrgPath()) ? parent.getOrgPath() + "." : "";
+                    zOrganization.setOrgPath(parentPath + zOrganization.getOrgId());
+                } else {
+                    throw new BaseException("新增失败！您选择的父级不正确，请重试");
+                }
+            } else {
+                zOrganization.setOrgParentId("-1");
+                zOrganization.setOrgPath(zOrganization.getOrgId());
+            }
+            int pathLevel = StringUtils.hasText(zOrganization.getOrgPath()) ? zOrganization.getOrgPath().split("\\.").length : 0;
+            zOrganization.setOrgLevel(pathLevel);
             zOrganization.setCreateTime(LocalDateTime.now());
             zOrganizationService.save(zOrganization);
+        } catch (BaseException e) {
+            e.printStackTrace();
+            throw new BaseException(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException("新增失败！请重试");
@@ -123,6 +167,22 @@ public class ZOrganizationController {
     public void update(@RequestBody ZOrganizationDTO zOrganizationDTO) throws BaseException {
         try {
             ZOrganization zOrganization = zOrganizationConvert.dtoToEntity(zOrganizationDTO);
+            if (StringUtils.hasText(zOrganization.getOrgParentId()) && !"-1".equals(zOrganization.getOrgParentId())) {
+                // 有父级，取父级路径
+                Optional<ZOrganization> oneOpt = zOrganizationService.lambdaQuery().eq(ZOrganization::getOrgId, zOrganization.getOrgParentId()).oneOpt();
+                if (oneOpt.isPresent()) {
+                    ZOrganization parent = oneOpt.get();
+                    String parentPath = StringUtils.hasText(parent.getOrgPath()) ? parent.getOrgPath() + "." : "";
+                    zOrganization.setOrgPath(parentPath + zOrganization.getOrgId());
+                } else {
+                    throw new BaseException("新增失败！您选择的父级不正确，请重试");
+                }
+            } else {
+                zOrganization.setOrgParentId("-1");
+                zOrganization.setOrgPath(zOrganization.getOrgId());
+            }
+            int pathLevel = StringUtils.hasText(zOrganization.getOrgPath()) ? zOrganization.getOrgPath().split("\\.").length : 0;
+            zOrganization.setOrgLevel(pathLevel);
             zOrganization.setUpdateTime(LocalDateTime.now());
             zOrganizationService.updateById(zOrganization);
         } catch (Exception e) {

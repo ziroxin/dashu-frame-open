@@ -8,6 +8,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelCommonUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.core.zorg.dto.ZOrganizationCascaderDTO;
+import com.kg.core.zorg.dto.ZOrganizationDTO;
+import com.kg.core.zorg.dto.convert.ZOrganizationConvert;
 import com.kg.core.zorg.entity.ZOrganization;
 import com.kg.core.zorg.excels.ZOrganizationExcelConstant;
 import com.kg.core.zorg.excels.ZOrganizationExcelOutDTO;
@@ -15,8 +18,11 @@ import com.kg.core.zorg.mapper.ZOrganizationMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +35,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ZOrganizationServiceImpl extends ServiceImpl<ZOrganizationMapper, ZOrganization> implements ZOrganizationService {
+    @Resource
+    private ZOrganizationConvert organizationConvert;
 
     /**
      * 导出Excel
@@ -51,7 +59,7 @@ public class ZOrganizationServiceImpl extends ServiceImpl<ZOrganizationMapper, Z
                     wrapper.lambda().eq(ZOrganization::getOrgId, paramObj.getStr("orgId"));
                 }
                 if (paramObj.containsKey("orgName")) {
-                    wrapper.lambda().eq(ZOrganization::getOrgName, paramObj.getStr("orgName"));
+                    wrapper.lambda().like(ZOrganization::getOrgName, paramObj.getStr("orgName"));
                 }
                 if (paramObj.containsKey("orgParentId")) {
                     wrapper.lambda().eq(ZOrganization::getOrgParentId, paramObj.getStr("orgParentId"));
@@ -88,4 +96,108 @@ public class ZOrganizationServiceImpl extends ServiceImpl<ZOrganizationMapper, Z
         }
         return "error";
     }
+
+    @Override
+    public List<ZOrganizationDTO> tree(String orgName, String parentId) {
+        // 根据条件查询
+        QueryWrapper<ZOrganization> wrapper = new QueryWrapper<>();
+        if (StringUtils.hasText(orgName)) {
+            wrapper.lambda().eq(ZOrganization::getOrgName, orgName);
+        }
+        // 排序
+        wrapper.lambda().orderByAsc(ZOrganization::getOrgLevel).orderByAsc(ZOrganization::getOrderIndex);
+        // 查询
+        List<ZOrganization> list = list(wrapper);
+        List<ZOrganizationDTO> result = new ArrayList<>();
+        // 根据parentId查询
+        if (StringUtils.hasText(parentId)) {
+            // 取当前节点
+            Optional<ZOrganization> first = list.stream().filter(org -> org.getOrgId().equals(parentId)).findFirst();
+            if (first.isPresent()) {
+                ZOrganizationDTO top = organizationConvert.entityToDto(first.get());
+                if (list.stream().filter(org -> org.getOrgParentId() != null && org.getOrgParentId().equals(parentId)).count() > 0) {
+                    // 有子节点，迭代添加
+                    top.setChildren(getOrgChildren(list, parentId));
+                }
+                result.add(top);
+                return result;
+            }
+            return null;
+        } else {
+            // 取所有组织机构
+            return getOrgChildren(list, "-1");
+        }
+    }
+
+    @Override
+    public List<ZOrganizationCascaderDTO> treeForSelect(String parentId) {
+        // 查询
+        List<ZOrganization> list = lambdaQuery()
+                .orderByAsc(ZOrganization::getOrgLevel)
+                .orderByAsc(ZOrganization::getOrderIndex).list();
+        List<ZOrganizationCascaderDTO> result = new ArrayList<>();
+        // 根据parentId查询
+        if (StringUtils.hasText(parentId)) {
+            // 取当前节点
+            Optional<ZOrganization> first = list.stream().filter(org -> org.getOrgId().equals(parentId)).findFirst();
+            if (first.isPresent()) {
+                ZOrganizationCascaderDTO cascaderDTO = new ZOrganizationCascaderDTO();
+                cascaderDTO.setValue(first.get().getOrgId());
+                cascaderDTO.setLabel(first.get().getOrgName());
+                if (list.stream().filter(org -> org.getOrgParentId() != null && org.getOrgParentId().equals(parentId)).count() > 0) {
+                    // 有子节点，迭代添加
+                    cascaderDTO.setChildren(getOrgChildrenForTreeSelect(list, parentId));
+                }
+                result.add(cascaderDTO);
+                return result;
+            }
+            return null;
+        } else {
+            // 取所有组织机构
+            return getOrgChildrenForTreeSelect(list, "-1");
+        }
+    }
+
+    /**
+     * 迭代处理组织机构树
+     *
+     * @param list     待处理列表
+     * @param parentId 父级id
+     */
+    private List<ZOrganizationDTO> getOrgChildren(List<ZOrganization> list, String parentId) {
+        return list.stream()
+                .filter(org -> org.getOrgParentId() != null && org.getOrgParentId().equals(parentId))
+                .map(org -> {
+                    ZOrganizationDTO dto = organizationConvert.entityToDto(org);
+                    if (list.stream().filter(o -> o.getOrgParentId() != null && o.getOrgParentId().equals(dto.getOrgId())).count() > 0) {
+                        // 有子节点，迭代添加
+                        dto.setChildren(getOrgChildren(list, dto.getOrgId()));
+                    }
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 迭代处理组织机构树 for 级联
+     *
+     * @param list     待处理列表
+     * @param parentId 父级id
+     */
+    private List<ZOrganizationCascaderDTO> getOrgChildrenForTreeSelect(List<ZOrganization> list, String parentId) {
+        return list.stream()
+                .filter(org -> org.getOrgParentId() != null && org.getOrgParentId().equals(parentId))
+                .map(org -> {
+                    ZOrganizationCascaderDTO dto = new ZOrganizationCascaderDTO();
+                    dto.setValue(org.getOrgId());
+                    dto.setLabel(org.getOrgName());
+                    if (list.stream().filter(o -> o.getOrgParentId() != null && o.getOrgParentId().equals(dto.getValue())).count() > 0) {
+                        // 有子节点，迭代添加
+                        dto.setChildren(getOrgChildrenForTreeSelect(list, dto.getValue()));
+                    }
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
 }
