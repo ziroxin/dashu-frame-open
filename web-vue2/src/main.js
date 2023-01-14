@@ -42,7 +42,8 @@ Vue.directive('permission', permission)
 Vue.directive('mydate', mydate)
 
 Object.assign(Vue.prototype, {
-  $baseServer: process.env.VUE_APP_BASE_API
+  $baseServer: process.env.VUE_APP_BASE_API,
+  $windowHeight: window.innerHeight
 });
 
 // 开发时不提示生产环境

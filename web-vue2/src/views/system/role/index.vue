@@ -66,7 +66,7 @@
         </div>
         <el-table ref="permissionTable" style="width: 100%;" borderhighlight-current-row
                   :default-expand-all="isExpand" :data="tableData2" row-key="permissionId"
-                  :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+                  :tree-props="{children: 'children'}"
                   @selection-change="handleTable2SelectChange"
         >
           <el-table-column type="selection" width="50" align="center" header-align="center" />

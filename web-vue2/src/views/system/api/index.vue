@@ -48,8 +48,8 @@
                 <template slot="title">
                   <div class="collapse-title">
                     分组：{{ group2.groupName }}
-                    <el-button v-if="group2.apiGroupId!='no_group_api'" type="danger" icon="el-icon-delete" size="mini"
-                               circle
+                    <el-button v-if="group2.apiGroupId!='no_group_api'" type="danger"
+                               icon="el-icon-delete" size="mini" circle
                                @click.stop="deleteGroup(group2.apiGroupId)"
                     />
                   </div>
