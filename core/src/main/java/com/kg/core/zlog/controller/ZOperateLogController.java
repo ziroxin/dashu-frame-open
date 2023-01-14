@@ -99,38 +99,6 @@ public class ZOperateLogController {
         return zOperateLogService.page(pager, wrapper);
     }
 
-    @ApiOperation(value = "/zlog/zOperateLog/add", notes = "新增-操作日志表", httpMethod = "POST")
-    @ApiImplicitParams({})
-    @PostMapping("/add")
-    @PreAuthorize("hasAuthority('zlog:zOperateLog:add')")
-    @NoRepeatSubmit
-    public void add(@RequestBody ZOperateLogDTO zOperateLogDTO) throws BaseException {
-        try {
-            ZOperateLog zOperateLog = zOperateLogConvert.dtoToEntity(zOperateLogDTO);
-            zOperateLog.setLogId(GuidUtils.getUuid());
-            zOperateLog.setCreateTime(LocalDateTime.now());
-            zOperateLogService.save(zOperateLog);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BaseException("新增失败！请重试");
-        }
-    }
-
-    @ApiOperation(value = "/zlog/zOperateLog/update", notes = "修改-操作日志表", httpMethod = "POST")
-    @ApiImplicitParams({})
-    @PostMapping("/update")
-    @PreAuthorize("hasAuthority('zlog:zOperateLog:update')")
-    @NoRepeatSubmit
-    public void update(@RequestBody ZOperateLogDTO zOperateLogDTO) throws BaseException {
-        try {
-            ZOperateLog zOperateLog = zOperateLogConvert.dtoToEntity(zOperateLogDTO);
-            zOperateLogService.updateById(zOperateLog);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BaseException("修改失败！请重试");
-        }
-    }
-
     @ApiOperation(value = "/zlog/zOperateLog/delete", notes = "删除-操作日志表", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "logIds", value = "待删除id列表", paramType = "query", required = true, dataType = "String")

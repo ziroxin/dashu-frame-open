@@ -12,6 +12,7 @@ import com.kg.core.zapigroup.service.IZApiGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 
@@ -31,18 +32,24 @@ public class ZApiGroupServiceImpl extends ServiceImpl<ZApiGroupMapper, ZApiGroup
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(ZApiGroupDTO zApiGroupDTO) {
-        ZApiGroup group = new ZApiGroup();
-        group.setApiGroupId(GuidUtils.getUuid());
+        String groupId = "";
+        if (StringUtils.hasText(zApiGroupDTO.getApiGroupId())) {
+            groupId = zApiGroupDTO.getApiGroupId();
+        } else {
+            ZApiGroup group = new ZApiGroup();
+            // 新增分组
+            groupId = GuidUtils.getUuid();
+            group.setApiGroupId(groupId);
+            group.setGroupName(zApiGroupDTO.getGroupName());
+            group.setGroupOrder(zApiGroupDTO.getGroupOrder());
+            group.setCreateTime(LocalDateTime.now());
+            save(group);
+        }
         // 更新api分组信息
         QueryWrapper<ZApi> apiQueryWrapper = new QueryWrapper<>();
         apiQueryWrapper.lambda().in(ZApi::getApiId, zApiGroupDTO.getApiIds());
         ZApi updateApi = new ZApi();
-        updateApi.setApiGroupId(group.getApiGroupId());
+        updateApi.setApiGroupId(groupId);
         apiMapper.update(updateApi, apiQueryWrapper);
-        // 保存分组信息
-        group.setGroupName(zApiGroupDTO.getGroupName());
-        group.setGroupOrder(zApiGroupDTO.getGroupOrder());
-        group.setCreateTime(LocalDateTime.now());
-        save(group);
     }
 }

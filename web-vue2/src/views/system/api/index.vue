@@ -2,27 +2,26 @@
   <div class="app-container">
     <el-row>
       <el-col :span="9">
-        <!--        资源表格-->
-        <div style="margin-bottom: 20px;">
-          <el-button v-permission="'abcdefg'" @click="toggleTableOprate">全部{{ isExpand ? '收起' : '展开' }}</el-button>
+        <!-- 资源表格 -->
+        <div style="margin-bottom: 5px;">
+          <el-button @click="toggleTableOprate">全部{{ isExpand ? '收起' : '展开' }}</el-button>
         </div>
         <div class="grid-content bg-purple">
           <el-table ref="permissionTable" v-loading="listLoading" :default-expand-all="isExpand"
-                    style="width: 95%;margin-bottom: 20px;"
+                    :height="this.$windowHeight-170" style="width: 96%;"
                     border :data="tableData" row-key="permissionId"
-                    highlight-current-row :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+                    highlight-current-row :tree-props="{children: 'children'}"
           >
-            <el-table-column label="名称" sortable width="180px">
+            <el-table-column label="名称">
               <template v-slot="scope">
-                {{ scope.row.permissionTitle }}
                 <el-tag v-if="scope.row.permissionType === '0'" disable-transitions>路由</el-tag>
                 <el-tag v-if="scope.row.permissionType === '1'" disable-transitions type="warning">按钮</el-tag>
                 <el-tag v-if="scope.row.permissionType === '2'" disable-transitions type="success">外链</el-tag>
                 <el-tag v-if="scope.row.permissionType === '3'" disable-transitions type="danger">其他</el-tag>
+                {{ scope.row.permissionTitle }}{{ scope.row.permissionRouter ? '(' + scope.row.permissionRouter + ')' : '' }}
               </template>
             </el-table-column>
-            <el-table-column prop="permissionRouter" label="路由" sortable />
-            <el-table-column label="操作" width="80px" align="center">
+            <el-table-column label="操作" width="70px" align="center">
               <template v-slot="scope">
                 <el-button type="text" size="small" @click.native.prevent="setMyApi(scope.row.permissionId)">
                   设置API
@@ -32,17 +31,17 @@
           </el-table>
         </div>
       </el-col>
-      <el-col :span="15" style="padding-left: 20px;border-left: 1px solid #dedede;">
+      <el-col :span="15" style="padding-left: 10px;border-left: 1px solid #dedede;">
         <!--        API列表-->
         <div class="grid-content bg-purple-light">
-          <div style="margin-bottom: 20px;">
+          <div style="margin-bottom: 5px;">
             <el-button type="primary" :disabled="isSaveBtn" @click="savePermissionApi()">保存关联API</el-button>
-            <el-button type="primary" @click="saveGroupInfo()">设置分组</el-button>
+            <el-button type="primary" @click="openGroupDialog()">设置分组</el-button>
             <el-button type="danger" @click="scanApi()">自动扫描API（增量）</el-button>
             <el-button type="info" @click="clearApi()">清除无效API</el-button>
           </div>
-          <div>
-            <el-collapse v-model="activeNames" style="padding-top: 10px;">
+          <div :style="'height:' + ( this.$windowHeight - 170 ) + 'px;overflow-y: auto;'">
+            <el-collapse v-model="activeNames" style="padding-top: 5px;">
               <el-collapse-item v-for="group2 in tableData2" :key="group2.apiGroupId"
                                 :name="group2.apiGroupId"
               >
@@ -78,18 +77,37 @@
         </div>
       </el-col>
     </el-row>
+    <el-dialog :visible.sync="groupDialogShow">
+      <el-form ref="groupDataForm" :model="temp" :rules="rules" label-position="right" label-width="100px"
+               style="width: 500px; margin-left: 50px;"
+      >
+        <el-form-item label="">
+          <el-radio v-model="isNewGroup" label="0" @change="isNewGroup='0';temp={};">创建新分组</el-radio>
+          <el-radio v-model="isNewGroup" label="1" @change="isNewGroup='1'">加入已有分组</el-radio>
+        </el-form-item>
+        <el-form-item label="分组名称：" prop="groupName" v-if="isNewGroup==='0'">
+          <el-input v-model="temp.groupName" placeholder="请输入分组名称"/>
+        </el-form-item>
+        <el-form-item label="选择分组：" prop="apiGroupId" v-else>
+          <el-select v-model="temp.apiGroupId" placeholder="请选择分组" @change="groupSelectChange">
+            <el-option v-for="item in groupList" :key="item.apiGroupId"
+                       :label="item.groupName" :value="item.apiGroupId"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="分组顺序：" prop="groupOrder" v-if="isNewGroup==='0'">
+          <el-input-number v-model="temp.groupOrder"></el-input-number>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="saveGroupInfo">保存</el-button>
+        <el-button @click="groupDialogShow=false">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
-import {
-  clearApi,
-  deleteApiGroup,
-  getApiList,
-  getApiListByPermissionId,
-  permissionTreeList, saveApiGroup,
-  savePermissionApi,
-  scanApi
-} from '@/api/api'
+import {clearApi, deleteApiGroup, getApiList, getApiListByPermissionId, permissionTreeList, saveApiGroup, savePermissionApi, scanApi} from '@/api/api'
+import request from '@/utils/request'
 
 export default {
   data() {
@@ -102,7 +120,16 @@ export default {
       tableData2: [],
       listLoading: true,
       listLoading2: true,
-      isSaveBtn: true
+      isSaveBtn: true,
+      // 分组数据
+      groupDialogShow: false,
+      isNewGroup: '0',
+      temp: {},
+      rules: {
+        groupName: [{required: true, message: '分组名称必填', trigger: 'blur'}],
+        groupOrder: [{required: true, message: '分组顺序必填'}],
+      },
+      groupList: [],
     }
   },
   created() {
@@ -198,37 +225,45 @@ export default {
         })
     },
     // 保存分组
-    saveGroupInfo() {
-      this.$prompt('请输入分组名称', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      }).then(({value}) => {
-        let data = {};
-        data.groupName = value;
-        console.log(value, data)
-        this.$prompt('请输入分组顺序', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消'
-        }).then(({value}) => {
-          data.groupOrder = value;
-          console.log(value, data)
-          data.apiIds = this.selectPermissionApiList;
-          saveApiGroup(data)
-            .then((response) => {
-              const {code} = response
-              if (code === '200') {
-                this.$notify({
-                  title: '保存成功',
-                  message: '分组信息保存成功！',
-                  type: 'success'
-                })
-                this.getApiList()
-              }
-            })
-        }).catch(() => {
+    openGroupDialog() {
+      if (this.selectPermissionApiList.length <= 0) {
+        this.$message({message: '至少选择一个API接口！', type: 'error'})
+        return;
+      }
+      // 加载分组下拉框
+      request({url: '/api/group/list', method: 'get'})
+        .then((response) => {
+          this.groupList = response.data
         })
-      }).catch(() => {
+      // 打开窗口
+      this.groupDialogShow = true
+    },
+    groupSelectChange(val) {
+      this.groupList.forEach(g => {
+        if (g.apiGroupId === val) {
+          this.temp.groupOrder = g.groupOrder
+          this.temp.groupName = g.groupName
+        }
       })
+    },
+    saveGroupInfo() {
+      if (this.isNewGroup === '1') {
+        if (this.temp.apiGroupId == undefined) {
+          this.$message({type: 'error', message: '请选择分组'})
+          return
+        }
+      }
+      this.$refs.groupDataForm.validate(valid => {
+        if (valid) {
+          let data = {...this.temp};
+          data.apiIds = this.selectPermissionApiList
+          saveApiGroup(data).then((response) => {
+            this.groupDialogShow = false
+            this.$notify({title: '保存成功', message: '分组信息保存成功！', type: 'success'})
+            this.getApiList()
+          })
+        }
+      });
     },
     // 删除分组
     deleteGroup(apiGroupId) {
