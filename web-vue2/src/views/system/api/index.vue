@@ -14,10 +14,9 @@
           >
             <el-table-column label="名称">
               <template v-slot="{row}">
-                <el-tag v-if="row.permissionType === '0'" disable-transitions>路由</el-tag>
-                <el-tag v-if="row.permissionType === '1'" disable-transitions type="warning">按钮</el-tag>
-                <el-tag v-if="row.permissionType === '2'" disable-transitions type="success">外链</el-tag>
-                <el-tag v-if="row.permissionType === '3'" disable-transitions type="danger">其他</el-tag>
+                <el-tag v-if="row.permissionType === '0'" disable-transitions size="mini">路由</el-tag>
+                <el-tag v-if="row.permissionType === '1'" disable-transitions type="warning" size="mini">按钮</el-tag>
+                <el-tag v-if="row.permissionType === '3'" disable-transitions type="success" size="mini">其他</el-tag>
                 {{ row.permissionTitle }}{{ row.permissionRouter ? '(' + row.permissionRouter + ')' : '' }}
               </template>
             </el-table-column>
@@ -43,15 +42,13 @@
           <div :style="'height:' + ( this.$windowHeight - 170 ) + 'px;overflow-y: auto;'">
             <el-collapse v-model="activeNames" style="padding-top: 5px;">
               <el-collapse-item v-for="group2 in tableData2" :key="group2.apiGroupId"
-                                :name="group2.apiGroupId"
-              >
+                                :name="group2.apiGroupId">
                 <template slot="title">
                   <div class="collapse-title">
                     分组：{{ group2.groupName }}
                     <el-button v-if="group2.apiGroupId!='no_group_api'" type="danger"
                                icon="el-icon-delete" size="mini" circle
-                               @click.stop="deleteGroup(group2.apiGroupId)"
-                    />
+                               @click.stop="deleteGroup(group2.apiGroupId)"></el-button>
                   </div>
                 </template>
                 <el-checkbox-group v-model="selectPermissionApiList" style="line-height: 50px;">

@@ -23,8 +23,8 @@
             <template v-slot="{row}">
               <li class="menu-item">
                 <item :icon="row.permissionIcon" :title="row.permissionTitle"/>
-                <el-tag v-if="row.permissionType === '0'" disable-transitions>路由</el-tag>
-                <el-tag v-if="row.permissionType === '2'" disable-transitions type="success">外链</el-tag>
+                <el-tag v-if="row.permissionType === '0'" disable-transitions size="mini">路由</el-tag>
+                <el-tag v-if="row.permissionType === '2'" disable-transitions type="success" size="mini">外链</el-tag>
               </li>
             </template>
           </el-table-column>
