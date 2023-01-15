@@ -140,7 +140,7 @@ public class ZPermissionController {
         return permissionService.permissionTreeList();
     }
 
-    @ApiOperation(value = "permission/getListById", notes = "根据ID查询资源列表", httpMethod = "GET")
+    @ApiOperation(value = "permission/getListById", notes = "按钮管理-查询页面按钮列表", httpMethod = "GET")
     @ApiImplicitParams({})
     @GetMapping("/getListById")
     @PreAuthorize("hasAuthority('permission:getListById')")

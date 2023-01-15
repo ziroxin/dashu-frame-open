@@ -13,17 +13,17 @@
                     highlight-current-row :tree-props="{children: 'children'}"
           >
             <el-table-column label="名称">
-              <template v-slot="scope">
-                <el-tag v-if="scope.row.permissionType === '0'" disable-transitions>路由</el-tag>
-                <el-tag v-if="scope.row.permissionType === '1'" disable-transitions type="warning">按钮</el-tag>
-                <el-tag v-if="scope.row.permissionType === '2'" disable-transitions type="success">外链</el-tag>
-                <el-tag v-if="scope.row.permissionType === '3'" disable-transitions type="danger">其他</el-tag>
-                {{ scope.row.permissionTitle }}{{ scope.row.permissionRouter ? '(' + scope.row.permissionRouter + ')' : '' }}
+              <template v-slot="{row}">
+                <el-tag v-if="row.permissionType === '0'" disable-transitions>路由</el-tag>
+                <el-tag v-if="row.permissionType === '1'" disable-transitions type="warning">按钮</el-tag>
+                <el-tag v-if="row.permissionType === '2'" disable-transitions type="success">外链</el-tag>
+                <el-tag v-if="row.permissionType === '3'" disable-transitions type="danger">其他</el-tag>
+                {{ row.permissionTitle }}{{ row.permissionRouter ? '(' + row.permissionRouter + ')' : '' }}
               </template>
             </el-table-column>
             <el-table-column label="操作" width="70px" align="center">
-              <template v-slot="scope">
-                <el-button type="text" size="small" @click.native.prevent="setMyApi(scope.row.permissionId)">
+              <template v-slot="{row}">
+                <el-button type="text" size="small" @click.native.prevent="setMyApi(row.permissionId)">
                   设置API
                 </el-button>
               </template>
@@ -205,13 +205,17 @@ export default {
       getApiListByPermissionId({'permissionId': permissionId})
         .then((response) => {
           const {data} = response
-          this.selectPermissionApiList = data || []
+          this.selectPermissionApiList = data ? [...new Set(data)] : []
           this.currentPermissionId = permissionId
           this.isSaveBtn = false
         })
     },
     // 保存关联API
     savePermissionApi() {
+      if (this.selectPermissionApiList.length <= 0) {
+        this.$message({type: 'error', message: '请至少选择一个API才能保存'})
+        return
+      }
       savePermissionApi({'permissionId': this.currentPermissionId, 'apiIds': this.selectPermissionApiList})
         .then((response) => {
           const {code} = response

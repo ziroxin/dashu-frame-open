@@ -1,7 +1,8 @@
 package com.kg.core.zpermission.service;
 
-import com.kg.core.zpermission.entity.ZPermissionApi;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kg.core.zpermission.dto.ZPermissionApiDTO;
+import com.kg.core.zpermission.entity.ZPermissionApi;
 
 /**
  * <p>
@@ -13,4 +14,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IZPermissionApiService extends IService<ZPermissionApi> {
 
+    /**
+     * 保存资源和API关联关系
+     */
+    void savePermissionApi(ZPermissionApiDTO permissionApiDTO);
 }
