@@ -94,7 +94,10 @@ public class ZPermissionServiceImpl extends ServiceImpl<ZPermissionMapper, ZPerm
     @Override
     public List<ZPermissionDTO> treeList() {
         QueryWrapper<ZPermission> wrapper = new QueryWrapper<>();
-        wrapper.lambda().orderByAsc(ZPermission::getPermissionOrder);
+        wrapper.lambda()
+                // 不查询外链
+                .ne(ZPermission::getPermissionType, 2)
+                .orderByAsc(ZPermission::getPermissionOrder);
         List<ZPermission> list = list(wrapper);
         return treeListChildren(list, "-1");
     }
@@ -163,6 +166,7 @@ public class ZPermissionServiceImpl extends ServiceImpl<ZPermissionMapper, ZPerm
         QueryWrapper<ZPermission> wrapper = new QueryWrapper<>();
         wrapper.lambda().orderByAsc(ZPermission::getPermissionOrder)
                 .eq(ZPermission::getPermissionType, PermissionTypeEnum.ROUTER.getCode())
+                .ne(ZPermission::getPermissionId, "system-api") // 去掉API菜单的权限控制，保证只有开发管理员能管理api
                 .or().eq(ZPermission::getPermissionType, PermissionTypeEnum.LINK.getCode());
         List<ZPermission> list = list(wrapper);
         // 路由列表
