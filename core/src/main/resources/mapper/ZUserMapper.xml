@@ -17,6 +17,13 @@
             <if test="status != null and status != ''">
                 a.status = #{status}
             </if>
+            <if test="developer != null and developer != ''">
+                a.user_id NOT IN (
+                <foreach collection="developer" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+                )
+            </if>
         </where>
         LIMIT #{offset},#{limit}
     </select>
@@ -33,6 +40,13 @@
             </if>
             <if test="status != null and status != ''">
                 a.status = #{status}
+            </if>
+            <if test="developer != null and developer != ''">
+                a.user_id NOT IN (
+                <foreach collection="developer" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+                )
             </if>
         </where>
     </select>

@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kg.component.utils.GuidUtils;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
-import com.kg.core.zorg.dto.ZOrganizationCascaderDTO;
+import com.kg.core.zorg.dto.ZOrganizationTreeSelectDTO;
 import com.kg.core.zorg.dto.ZOrganizationDTO;
 import com.kg.core.zorg.dto.convert.ZOrganizationConvert;
 import com.kg.core.zorg.entity.ZOrganization;
@@ -62,7 +62,7 @@ public class ZOrganizationController {
     })
     @GetMapping("/treeForSelect")
     @PreAuthorize("hasAuthority('zorg:zOrganization:treeForSelect')")
-    public List<ZOrganizationCascaderDTO> treeForSelect(@RequestParam(value = "parentId", required = false) String parentId) {
+    public List<ZOrganizationTreeSelectDTO> treeForSelect(@RequestParam(value = "parentId", required = false) String parentId) {
         return zOrganizationService.treeForSelect(parentId);
     }
 

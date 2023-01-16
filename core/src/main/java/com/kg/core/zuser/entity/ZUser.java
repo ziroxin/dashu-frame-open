@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -17,6 +19,8 @@ import java.time.LocalDateTime;
  * @author ziro
  * @since 2022-05-01
  */
+@Getter
+@Setter
 @TableName("z_user")
 @ApiModel(value = "ZUser对象", description = "用户表")
 public class ZUser implements Serializable {
@@ -26,6 +30,9 @@ public class ZUser implements Serializable {
     @ApiModelProperty("用户ID")
     @TableId(value = "user_id", type = IdType.ASSIGN_UUID)
     private String userId;
+
+    @ApiModelProperty("用户所在部门ID")
+    private String orgId;
 
     @ApiModelProperty("用户名")
     private String userName;
@@ -51,7 +58,7 @@ public class ZUser implements Serializable {
     @ApiModelProperty("手机号")
     private String phone;
 
-    @ApiModelProperty("用户状态(0停用1启用)")
+    @ApiModelProperty("用户状态(0禁用1正常)")
     private String status;
 
     @ApiModelProperty("创建时间")
@@ -59,102 +66,6 @@ public class ZUser implements Serializable {
 
     @ApiModelProperty("最后更新时间")
     private LocalDateTime updateTime;
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getSex() {
-        return sex;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public String getIntroduce() {
-        return introduce;
-    }
-
-    public void setIntroduce(String introduce) {
-        this.introduce = introduce;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
 
     @Override
     public String toString() {

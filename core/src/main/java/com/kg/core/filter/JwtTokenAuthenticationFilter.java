@@ -56,17 +56,10 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
             throw new BaseException(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID);
         }
         // 从redis中读取用户信息
-        String userRedisKey = LoginConstant.LOGIN_INFO_REDIS_PRE + userId;
-        if (!redisUtils.hasKey(userRedisKey)) {
-            // redis中没有用户信息
-            throw new BaseException(BaseErrorCode.LOGIN_ERROR_NOT_LOGIN);
-        }
-        SecurityUserDetailEntity userDetailEntity = (SecurityUserDetailEntity) redisUtils.get(userRedisKey);
+        SecurityUserDetailEntity userDetailEntity = (SecurityUserDetailEntity) redisUtils.get(LoginConstant.LOGIN_INFO_REDIS_PRE + userId);
         if (ObjectUtils.isEmpty(userDetailEntity)) {
             throw new BaseException(BaseErrorCode.LOGIN_ERROR_NOT_LOGIN);
         }
-        // 有效的token，自动延长有效期
-        redisUtils.setExpire(userRedisKey, LoginConstant.LOGIN_JWT_TOKEN_EXPIRY * 60L);
         // 存入SecurityContextHolder
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(userDetailEntity, null, userDetailEntity.getAuthorities());

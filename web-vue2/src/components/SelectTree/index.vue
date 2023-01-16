@@ -45,7 +45,6 @@ export default {
     }
   },
   mounted() {
-    console.log('mounted', this.value, "|", this.selectValue)
     this.selectValue = this.value
   },
   watch: {
@@ -54,11 +53,9 @@ export default {
       this.formatOptions(this.data)
     },
     selectValue() {
-      console.log('watch selectvalue', this.value, "|", this.selectValue)
       this.$emit("input", this.selectValue)
     },
     value() {
-      console.log('watch value', this.value, "|", this.selectValue)
       this.selectValue = this.value
     }
   },

@@ -1,6 +1,7 @@
 package com.kg.core.zlogin.service.impl;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
+import com.google.common.primitives.Ints;
 import com.kg.component.jwt.JwtUtils;
 import com.kg.component.redis.RedisUtils;
 import com.kg.core.common.constant.LoginConstant;
@@ -24,7 +25,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -78,6 +78,11 @@ public class ZLoginServiceImpl implements ZLoginService {
         try {
             authenticate = authenticationManager.authenticate(authenticationToken);
         } catch (AuthenticationException e) {
+            // 用户禁用
+            BaseErrorCode errorCode = BaseErrorCode.getByCode(Ints.tryParse(e.getMessage()));
+            if (errorCode != null && errorCode == BaseErrorCode.LOGIN_ERROR_USER_DISABLED) {
+                throw new BaseException(BaseErrorCode.LOGIN_ERROR_USER_DISABLED);
+            }
             // 用户名异常、密码错误异常，都会捕获，触发用户锁定
             String lockInfo = lockService.loginError(loginForm.getUserName());
             if (StringUtils.hasText(lockInfo)) {

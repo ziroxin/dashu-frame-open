@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.core.security.util.CurrentUserUtils;
-import com.kg.core.zsafety.service.ZSafetyService;
+import com.kg.core.zorg.dto.ZOrganizationTreeSelectDTO;
+import com.kg.core.zorg.service.ZOrganizationService;
 import com.kg.core.zuser.dto.ZUserEditPasswordDTO;
 import com.kg.core.zuser.dto.ZUserRoleSaveDTO;
-import com.kg.core.zuser.service.IZUserRoleService;
+import com.kg.core.zuser.dto.ZUserStatusDTO;
+import com.kg.core.zuser.entity.ZUser;
 import com.kg.core.zuser.service.IZUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * <p>
@@ -33,15 +36,12 @@ import java.util.Arrays;
 @RestController
 @RequestMapping("user")
 public class ZUserController {
-
     @Resource
     private IZUserService userService;
     @Resource
-    private IZUserRoleService userRoleService;
-    @Resource
-    private ZSafetyService safetyService;
+    private ZOrganizationService organizationService;
 
-    @ApiOperation(value = "user/list", notes = "查询用户列表", httpMethod = "GET")
+    @ApiOperation(value = "/user/list", notes = "查询用户列表", httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page", value = "当前页码", paramType = "query", required = false, dataType = "Integer"),
             @ApiImplicitParam(name = "limit", value = "每页条数", paramType = "query", required = false, dataType = "Integer"),
@@ -55,7 +55,7 @@ public class ZUserController {
         return userService.getUserRoleList(page, limit, params);
     }
 
-    @ApiOperation(value = "user/getById", notes = "用户详情", httpMethod = "GET")
+    @ApiOperation(value = "/user/getById", notes = "用户详情", httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "ID", paramType = "query", required = true, dataType = "String")
     })
@@ -65,7 +65,19 @@ public class ZUserController {
         return userService.getUserById(userId);
     }
 
-    @ApiOperation(value = "user/add", notes = "添加用户", httpMethod = "POST")
+    @ApiOperation(value = "/user/org/tree", notes = "用户详情", httpMethod = "GET")
+    @GetMapping("/org/tree")
+    @PreAuthorize("hasAuthority('user:org:tree')")
+    public List<ZOrganizationTreeSelectDTO> orgTree() {
+        ZUser currentUser = CurrentUserUtils.getCurrentUser();
+        String parentId = null;
+        if (currentUser != null) {
+            parentId = currentUser.getOrgId();
+        }
+        return organizationService.treeForSelect(parentId);
+    }
+
+    @ApiOperation(value = "/user/add", notes = "添加用户", httpMethod = "POST")
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('user:add')")
     @NoRepeatSubmit
@@ -75,30 +87,30 @@ public class ZUserController {
         }
     }
 
-    @ApiOperation(value = "user/update", notes = "修改用户信息", httpMethod = "POST")
+    @ApiOperation(value = "/user/update", notes = "修改用户信息", httpMethod = "POST")
     @PostMapping("update")
     @PreAuthorize("hasAuthority('user:update')")
     @NoRepeatSubmit
     public void update(@RequestBody ZUserRoleSaveDTO zUserRoleSaveDTO) throws BaseException {
-        boolean s1 = userService.update(zUserRoleSaveDTO);
-        if (s1) {
+        if (!userService.update(zUserRoleSaveDTO)) {
             throw new BaseException("修改用户信息失败");
         }
     }
 
-    @ApiOperation(value = "user/delete", notes = "批量删除用户", httpMethod = "DELETE")
+    @ApiOperation(value = "/user/delete", notes = "批量删除用户", httpMethod = "DELETE")
     @DeleteMapping("delete")
     @PreAuthorize("hasAuthority('user:delete')")
     @NoRepeatSubmit
     public void delete(@RequestBody String[] userIds) throws BaseException {
-        boolean s1 = userService.removeByIds(Arrays.asList(userIds));
-        boolean s2 = userRoleService.removeByIds(Arrays.asList(userIds));
-        if (!s1 && !s2) {
-            throw new BaseException("删除用户失败！");
+        try {
+            userService.delete(userIds);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException("删除用户信息失败！");
         }
     }
 
-    @ApiOperation(value = "user/reset/password", notes = "批量重置密码", httpMethod = "POST")
+    @ApiOperation(value = "/user/reset/password", notes = "批量重置密码", httpMethod = "POST")
     @PostMapping("reset/password")
     @PreAuthorize("hasAuthority('user:reset:password')")
     @NoRepeatSubmit
@@ -106,7 +118,7 @@ public class ZUserController {
         userService.resetPassword(userIds);
     }
 
-    @ApiOperation(value = "user/edit/password", notes = "修改用户密码", httpMethod = "POST")
+    @ApiOperation(value = "/user/edit/password", notes = "修改用户密码", httpMethod = "POST")
     @PostMapping("edit/password")
     @NoRepeatSubmit
     public void editPassword(@RequestBody ZUserEditPasswordDTO passwordDTO) throws BaseException {
@@ -115,5 +127,18 @@ public class ZUserController {
             passwordDTO.setUserId(CurrentUserUtils.getCurrentUser().getUserId());
         }
         userService.editPassword(passwordDTO);
+    }
+
+    @ApiOperation(value = "/user/change/status", notes = "启用/禁用用户", httpMethod = "POST")
+    @PostMapping("change/status")
+    @PreAuthorize("hasAuthority('user:change:status')")
+    @NoRepeatSubmit
+    public void changeStatus(@RequestBody ZUserStatusDTO userStatusDTO) throws BaseException {
+        boolean update = userService.lambdaUpdate().set(ZUser::getStatus, userStatusDTO.getStatus())
+                .in(ZUser::getUserId, Arrays.asList(userStatusDTO.getUserIds()))
+                .update();
+        if (!update) {
+            throw new BaseException("用户状态更新失败！");
+        }
     }
 }

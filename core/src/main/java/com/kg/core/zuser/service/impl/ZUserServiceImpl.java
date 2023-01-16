@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.utils.GuidUtils;
 import com.kg.component.utils.PasswordRegexUtils;
+import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
 import com.kg.core.zsafety.entity.ZSafety;
 import com.kg.core.zsafety.service.ZSafetyService;
@@ -27,6 +28,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 /**
  * <p>
@@ -56,6 +58,8 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
         JSONObject paramObj = JSONUtil.parseObj(params);
         paramObj.set("offset", (page - 1) * limit);
         paramObj.set("limit", limit);
+        // 用户管理，排除开发管理员
+        paramObj.set("developer", LoginConstant.DEVELOPER_USER_IDS.split(","));
         result.setRecords(zUserMapper.getUserRoleList(paramObj));
         result.setTotal(zUserMapper.getUserRoleCount(paramObj));
         return result;
@@ -99,7 +103,7 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
         zUserRole.setRoleId(zUserRoleSaveDTO.getRoleId());
         boolean s3 = userRoleService.save(zUserRole);
 
-        return (!s1 && !s2 && !s3);
+        return s1 && s2 && s3;
     }
 
     @Override
@@ -163,6 +167,13 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
             e.printStackTrace();
             throw new BaseException("重置密码失败！");
         }
+    }
+
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public void delete(String[] userIds) {
+        removeByIds(Arrays.asList(userIds));
+        userRoleService.removeByIds(Arrays.asList(userIds));
     }
 
     /**

@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @ApiModel(value = "ZOrganizationCascaderDTO", description = "下拉选择框组织机构树")
-public class ZOrganizationCascaderDTO {
+public class ZOrganizationTreeSelectDTO {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "组织机构id")
@@ -26,5 +26,5 @@ public class ZOrganizationCascaderDTO {
     private String label;
 
     @ApiModelProperty(value = "子节点")
-    private List<ZOrganizationCascaderDTO> children;
+    private List<ZOrganizationTreeSelectDTO> children;
 }

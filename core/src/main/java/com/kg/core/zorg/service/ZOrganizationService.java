@@ -1,7 +1,7 @@
 package com.kg.core.zorg.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.kg.core.zorg.dto.ZOrganizationCascaderDTO;
+import com.kg.core.zorg.dto.ZOrganizationTreeSelectDTO;
 import com.kg.core.zorg.dto.ZOrganizationDTO;
 import com.kg.core.zorg.entity.ZOrganization;
 
@@ -40,5 +40,5 @@ public interface ZOrganizationService extends IService<ZOrganization> {
      * @param parentId 父级ID
      * @return 下拉选择框组织机构树
      */
-    List<ZOrganizationCascaderDTO> treeForSelect(String parentId);
+    List<ZOrganizationTreeSelectDTO> treeForSelect(String parentId);
 }

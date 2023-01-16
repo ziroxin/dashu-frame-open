@@ -47,8 +47,8 @@ service.interceptors.response.use(
     if (res.code == 200) {
       return res
     } else {
-      // 异常1：未正常登录！ 40001=用户名或者密码错误;40002=无效的TOKEN;40003=用户未登录;401无权限;
-      if (res.code == 40001 || res.code == 40002 || res.code == 40003 || res.code == 401) {
+      // 异常1：未正常登录！ 40001=用户名或者密码错误;40002=无效的TOKEN;40003=用户未登录;40004=用户已禁用;401=无权限;
+      if (res.code == 40001 || res.code == 40002 || res.code == 40003 || res.code == 40004 || res.code == 401) {
         MessageBox.confirm(res.message, '登录失败', {
           confirmButtonText: '刷新',
           cancelButtonText: '取消',

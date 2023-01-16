@@ -18,6 +18,7 @@ public enum BaseErrorCode {
     LOGIN_ERROR_USERNAME_OR_PASSWORD_WRONG(40001, "用户名或者密码错误！"),
     LOGIN_ERROR_TOKEN_INVALID(40002, "无效的TOKEN！"),
     LOGIN_ERROR_NOT_LOGIN(40003, "用户未登录！"),
+    LOGIN_ERROR_USER_DISABLED(40004, "用户已禁用！"),
     SERVER_ERROR(500, "服务器端错误！");
 
     private Integer code;

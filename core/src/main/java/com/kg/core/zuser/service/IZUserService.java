@@ -40,4 +40,11 @@ public interface IZUserService extends IService<ZUser> {
      * 重置密码
      */
     void resetPassword(String[] userIds) throws BaseException;
+
+    /**
+     * 批量删除用户
+     *
+     * @param userIds 用户id数组
+     */
+    void delete(String[] userIds);
 }

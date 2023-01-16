@@ -24,6 +24,9 @@ public class ZUserRoleSaveDTO implements BaseDTO {
     @ApiModelProperty("用户ID")
     private String userId;
 
+    @ApiModelProperty("用户所在部门ID")
+    private String orgId;
+
     @ApiModelProperty("用户名")
     private String userName;
 
@@ -48,7 +51,7 @@ public class ZUserRoleSaveDTO implements BaseDTO {
     @ApiModelProperty("手机号")
     private String phone;
 
-    @ApiModelProperty("用户状态(0停用1启用)")
+    @ApiModelProperty("用户状态(0禁用1正常)")
     private String status;
 
     @ApiModelProperty("创建时间")

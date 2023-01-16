@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelCommonUtils;
 import com.kg.component.utils.GuidUtils;
-import com.kg.core.zorg.dto.ZOrganizationCascaderDTO;
+import com.kg.core.zorg.dto.ZOrganizationTreeSelectDTO;
 import com.kg.core.zorg.dto.ZOrganizationDTO;
 import com.kg.core.zorg.dto.convert.ZOrganizationConvert;
 import com.kg.core.zorg.entity.ZOrganization;
@@ -130,18 +130,18 @@ public class ZOrganizationServiceImpl extends ServiceImpl<ZOrganizationMapper, Z
     }
 
     @Override
-    public List<ZOrganizationCascaderDTO> treeForSelect(String parentId) {
+    public List<ZOrganizationTreeSelectDTO> treeForSelect(String parentId) {
         // 查询
         List<ZOrganization> list = lambdaQuery()
                 .orderByAsc(ZOrganization::getOrgLevel)
                 .orderByAsc(ZOrganization::getOrderIndex).list();
-        List<ZOrganizationCascaderDTO> result = new ArrayList<>();
+        List<ZOrganizationTreeSelectDTO> result = new ArrayList<>();
         // 根据parentId查询
         if (StringUtils.hasText(parentId)) {
             // 取当前节点
             Optional<ZOrganization> first = list.stream().filter(org -> org.getOrgId().equals(parentId)).findFirst();
             if (first.isPresent()) {
-                ZOrganizationCascaderDTO cascaderDTO = new ZOrganizationCascaderDTO();
+                ZOrganizationTreeSelectDTO cascaderDTO = new ZOrganizationTreeSelectDTO();
                 cascaderDTO.setValue(first.get().getOrgId());
                 cascaderDTO.setLabel(first.get().getOrgName());
                 if (list.stream().filter(org -> org.getOrgParentId() != null && org.getOrgParentId().equals(parentId)).count() > 0) {
@@ -184,11 +184,11 @@ public class ZOrganizationServiceImpl extends ServiceImpl<ZOrganizationMapper, Z
      * @param list     待处理列表
      * @param parentId 父级id
      */
-    private List<ZOrganizationCascaderDTO> getOrgChildrenForTreeSelect(List<ZOrganization> list, String parentId) {
+    private List<ZOrganizationTreeSelectDTO> getOrgChildrenForTreeSelect(List<ZOrganization> list, String parentId) {
         return list.stream()
                 .filter(org -> org.getOrgParentId() != null && org.getOrgParentId().equals(parentId))
                 .map(org -> {
-                    ZOrganizationCascaderDTO dto = new ZOrganizationCascaderDTO();
+                    ZOrganizationTreeSelectDTO dto = new ZOrganizationTreeSelectDTO();
                     dto.setValue(org.getOrgId());
                     dto.setLabel(org.getOrgName());
                     if (list.stream().filter(o -> o.getOrgParentId() != null && o.getOrgParentId().equals(dto.getValue())).count() > 0) {

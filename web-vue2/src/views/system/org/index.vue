@@ -83,7 +83,7 @@ export default {
       dialogFormVisible: false,
       // 表单临时数据
       temp: {},
-      // 级联组织机构树
+      // 下拉树-组织机构
       treeSelectData: []
     }
   },

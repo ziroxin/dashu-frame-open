@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -38,6 +39,10 @@ public class SecurityUserDetailServiceImpl implements UserDetailsService {
         // 没查询到，用户名错误
         if (!zUser.isPresent()) {
             throw new BaseException(BaseErrorCode.LOGIN_ERROR_USERNAME_OR_PASSWORD_WRONG);
+        }
+        // 用户禁用
+        if (!StringUtils.hasText(zUser.get().getStatus()) || !"1".equals(zUser.get().getStatus())) {
+            throw new BaseException(BaseErrorCode.LOGIN_ERROR_USER_DISABLED);
         }
         // 查询用户权限列表
         List<String> lists = apiService.listApiByUserId(zUser.get().getUserId());

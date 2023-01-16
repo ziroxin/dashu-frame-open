@@ -1,11 +1,14 @@
 <template>
   <div class="app-container">
-
-    <!--  操作按钮  -->
-    <el-button type="primary" icon="el-icon-plus" style="margin-bottom: 20px;" v-permission="'user-add'" @click="userAdd">新增</el-button>
-    <el-button type="primary" icon="el-icon-edit" style="margin-bottom: 20px;" v-permission="'user-update'" @click="userUpdate">修改</el-button>
-    <el-button type="danger" icon="el-icon-delete" style="margin-bottom: 20px;" v-permission="'user-delete'" @click="userDelete">删除</el-button>
-    <el-button type="warning" icon="el-icon-refresh-right" style="margin-bottom: 20px;" v-permission="'reset-password'" @click="resetPassword">重置密码</el-button>
+    <div style="margin-bottom: 20px;">
+      <!--  操作按钮  -->
+      <el-button icon="el-icon-plus" v-permission="'user-add'" @click="userAdd">新增</el-button>
+      <el-button icon="el-icon-edit" v-permission="'user-update'" @click="userUpdate">修改</el-button>
+      <el-button type="danger" icon="el-icon-delete" v-permission="'user-delete'" @click="userDelete">删除</el-button>
+      <el-button type="primary" icon="el-icon-refresh-right" v-permission="'reset-password'" @click="resetPassword">重置密码</el-button>
+      <el-button type="warning" icon="el-icon-lock" v-permission="'change-status'" @click="changeStatus(0)">禁用</el-button>
+      <el-button type="success" icon="el-icon-unlock" v-permission="'change-status'" @click="changeStatus(1)">启用</el-button>
+    </div>
 
     <!-- 表格部分 -->
     <el-table :data="userTable" row-key="userId" style="width: 100%;" border @selection-change="selectionChangeHandlerOrder">
@@ -24,7 +27,7 @@
       </el-table-column>
       <el-table-column prop="status" label="状态" min-width="5%">
         <template slot-scope="scope">
-          <span v-if="scope.row.status === '1'" style="color: red;">锁定</span>
+          <span v-if="scope.row.status === '0'" style="color: red;">禁用</span>
           <span v-else style="color: green;">正常</span>
         </template>
       </el-table-column>
@@ -45,45 +48,43 @@
 
     <!--  弹窗  -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="userDataForm" :model="temp" :rules="rules" label-position="right" label-width="100px" style="width: 500px; margin-left: 50px;">
+      <el-form ref="userDataForm" :model="temp" :rules="rules" label-position="right"
+               label-width="100px" style="width: 500px; margin-left: 50px;">
         <el-form-item label="用户名：" prop="userName">
-          <el-input v-model="temp.userName"/>
+          <el-input v-model="temp.userName" placeholder="请输入用户名"/>
         </el-form-item>
-
-        <el-form-item label="密码：" prop="password">
-          <el-input v-model="temp.password" show-password/>
+        <el-form-item label="密码：" prop="password" v-if="this.dialogStatus=='create'">
+          <el-input v-model="temp.password" show-password placeholder="请输入密码"/>
         </el-form-item>
-
+        <el-form-item label="所在部门：" prop="orgId">
+          <select-tree v-model="temp.orgId" empty-text="请选择所在部门" empty-value=""
+                       :props="{children: 'children', label: 'label'}"
+                       :data="orgSelectTreeData" style="width: 400px;"></select-tree>
+        </el-form-item>
         <el-form-item label="角色：" prop="roleId">
-          <el-select v-model="temp.roleId" class="filter-item" placeholder="请选择角色">
+          <el-select v-model="temp.roleId" class="filter-item" style="width: 400px;" placeholder="请选择角色">
             <el-option v-for="item in roleNameOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId"/>
           </el-select>
         </el-form-item>
-
         <el-form-item label="性别：" prop="sex">
           <el-radio v-model="temp.sex" label="0">未知</el-radio>
           <el-radio v-model="temp.sex" label="1">男</el-radio>
           <el-radio v-model="temp.sex" label="2">女</el-radio>
         </el-form-item>
-
         <el-form-item label="昵称：" prop="nickName">
-          <el-input v-model="temp.nickName"/>
+          <el-input v-model="temp.nickName" placeholder="请输入昵称"/>
         </el-form-item>
-
         <el-form-item label="简介：" prop="introduce">
-          <el-input v-model="temp.introduce"/>
+          <el-input v-model="temp.introduce" type="textarea" placeholder="请输入简介"/>
         </el-form-item>
-
         <el-form-item label="头像：" prop="avatar">
           <image-avatar name="avatar" v-model="temp.avatar"></image-avatar>
         </el-form-item>
-
         <el-form-item label="姓名：" prop="name">
-          <el-input v-model="temp.name"/>
+          <el-input v-model="temp.name" placeholder="请输入姓名"/>
         </el-form-item>
-
         <el-form-item label="手机号：" prop="phone">
-          <el-input v-model="temp.phone"/>
+          <el-input v-model="temp.phone" placeholder="请输入手机号"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -97,9 +98,11 @@
 import {getUserList, userAdd, userDelete, userResetPassword, userUpdate} from '@/api/user'
 import {getRoleList} from '@/api/role';
 import ImageAvatar from "@/components/Upload/ImageAvatar";
+import request from "@/utils/request";
+import SelectTree from "@/components/SelectTree";
 
 export default {
-  components: {ImageAvatar},
+  components: {ImageAvatar, SelectTree},
   data() {
     return {
       // 表格数据
@@ -125,8 +128,9 @@ export default {
             (v && !(/^(?:(?:\+|00)86)?1\d{10}$/.test(v))) ? b('手机号格式不正确') : b()
           }
         }]
-      }
-
+      },
+      // 下拉树-组织机构
+      orgSelectTreeData: []
     }
   },
   created() {
@@ -141,6 +145,7 @@ export default {
     resetTemp() {
       this.temp = {
         userName: '',
+        orgId: '',
         roleId: '',
         password: '',
         sex: '0',
@@ -176,6 +181,7 @@ export default {
       this.dialogStatus = 'create'
       this.$nextTick(() => {
         this.$refs['userDataForm'].clearValidate()
+        this.loadOrgTreeForSelect()
       })
     },
     userUpdate() {
@@ -189,8 +195,17 @@ export default {
         this.dialogFormVisible = true
         this.$nextTick(() => {
           this.$refs['userDataForm'].clearValidate()
+          this.loadOrgTreeForSelect()
         })
       }
+    },
+    // 加载下拉选择框组织机构树
+    loadOrgTreeForSelect() {
+      request({
+        url: '/user/org/tree', method: 'get'
+      }).then((response) => {
+        this.orgSelectTreeData = response.data
+      })
     },
     // 提交数据
     submitJudgment() {
@@ -221,6 +236,7 @@ export default {
           confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
         }).then(() => {
           // 执行删除
+          this.userIds = []
           this.userIds.push(...this.changeData.map(r => r.userId))
           userDelete(this.userIds).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
@@ -232,7 +248,7 @@ export default {
     // 重置密码
     resetPassword() {
       if (this.changeData.length <= 0) {
-        this.$message({message: '请选择一个用户重置密码！', type: 'warning'})
+        this.$message({message: '至少选择一个用户重置密码！', type: 'error'})
       } else {
         this.$confirm('确定要重置密码吗?', '重置密码提醒', {
           confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
@@ -243,6 +259,22 @@ export default {
             this.getUserList()
           })
         })
+      }
+    },
+    // 启用/禁用用户
+    changeStatus(status) {
+      let msg = status == 0 ? '禁用' : '启用'
+      if (this.changeData.length <= 0) {
+        this.$message({message: '至少选择一个用户' + msg + '！', type: 'error'})
+      } else {
+        this.userIds = []
+        this.userIds.push(...this.changeData.map(r => r.userId))
+        let data = {userIds: this.userIds, status: status}
+        request({url: '/user/change/status', method: 'post', data})
+          .then(response => {
+            this.$message({type: 'success', message: '用户' + msg + '成功！'})
+            this.getUserList()
+          })
       }
     },
   }
