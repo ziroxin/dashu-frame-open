@@ -1,0 +1,177 @@
+package com.kg.component.utils;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Date;
+
+/**
+ * 时间处理工具封装
+ *
+ * @author ziro
+ * @date 2023-01-17 09:23:26
+ */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class TimeUtils {
+    /**
+     * 时间戳
+     */
+    private long timestamp;
+
+    /**
+     * 设置要操作的时间
+     *
+     * @param timeStamp 时间戳
+     */
+    public static TimeUtils setTime(long timeStamp) {
+        return new TimeUtils(timeStamp);
+    }
+
+    /**
+     * 设置要操作的时间
+     *
+     * @param date 日期时间
+     */
+    public static TimeUtils setTime(Date date) {
+        return new TimeUtils(date.getTime());
+    }
+
+    /**
+     * 设置要操作的时间
+     *
+     * @param localDateTime 时间
+     */
+    public static TimeUtils setTime(LocalDateTime localDateTime) {
+        return new TimeUtils(localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+    }
+
+    /**
+     * 操作当前时间
+     */
+    public static TimeUtils now() {
+        return new TimeUtils(Calendar.getInstance().getTimeInMillis());
+    }
+
+    /**
+     * 增加/减少 n 年
+     *
+     * @param amount 增加量（可以为负数，负数则是减时间）
+     */
+    public TimeUtils addYear(int amount) {
+        return add(Calendar.YEAR, amount);
+    }
+
+    /**
+     * 增加/减少 n 个月
+     *
+     * @param amount 增加量（可以为负数，负数则是减时间）
+     */
+    public TimeUtils addMonth(int amount) {
+        return add(Calendar.MONTH, amount);
+    }
+
+    /**
+     * 增加/减少 n 天
+     *
+     * @param amount 增加量（可以为负数，负数则是减时间）
+     */
+    public TimeUtils addDay(int amount) {
+        return add(Calendar.DAY_OF_MONTH, amount);
+    }
+
+    /**
+     * 增加/减少 n 小时
+     *
+     * @param amount 增加量（可以为负数，负数则是减时间）
+     */
+    public TimeUtils addHour(int amount) {
+        return add(Calendar.HOUR_OF_DAY, amount);
+    }
+
+    /**
+     * 增加/减少 n 分钟
+     *
+     * @param amount 增加量（可以为负数，负数则是减时间）
+     */
+    public TimeUtils addMinute(int amount) {
+        return add(Calendar.MINUTE, amount);
+    }
+
+    /**
+     * 增加/减少 n 秒
+     *
+     * @param amount 增加量（可以为负数，负数则是减时间）
+     */
+    public TimeUtils addSecond(int amount) {
+        return add(Calendar.SECOND, amount);
+    }
+
+    /**
+     * 增加/减少一段时间
+     *
+     * @param type   增加类型（例如：增加n分钟，Calendar.MINUTE）
+     * @param amount 增加量（可以为负数，负数则是减时间）
+     * @return 时间工具
+     */
+    public TimeUtils add(int type, int amount) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(this.timestamp);
+        calendar.add(type, amount);
+        return new TimeUtils(calendar.getTimeInMillis());
+    }
+
+    /**
+     * 输出Date格式日期
+     */
+    public Date toDate() {
+        return new Date(this.timestamp);
+    }
+
+    /**
+     * 输出LocalDateTime格式日期
+     */
+    public LocalDateTime toLocalDateTime() {
+        Instant instant = Instant.ofEpochMilli(this.timestamp);
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+    }
+
+    /**
+     * 输出Calendar
+     */
+    public Calendar toCalendar() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(this.timestamp);
+        return calendar;
+    }
+
+    /**
+     * 输出格式化字符串
+     *
+     * @param format 格式
+     */
+    public String toFormat(String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(new Date(this.timestamp));
+    }
+
+    public static void main(String[] args) {
+        // 使用示例
+        System.out.println(TimeUtils.now());// 操作当前时间
+        System.out.println(TimeUtils.setTime(new Date()));// 操作设置时间
+        // 操作示例
+        System.out.println(TimeUtils.now().addDay(1).toLocalDateTime());
+        System.out.println(TimeUtils.now().addDay(1).getTimestamp());
+        System.out.println(TimeUtils.now().addDay(-5).toFormat("yyyy-MM-dd"));
+        System.out.println(TimeUtils.now().addMinute(10).toFormat("yyyy-MM-dd HH:mm:ss"));
+    }
+}
