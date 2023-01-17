@@ -2,6 +2,7 @@ package com.kg.core.zlogin.controller;
 
 import com.kg.component.jwt.JwtUtils;
 import com.kg.component.redis.RedisUtils;
+import com.kg.component.utils.TimeUtils;
 import com.kg.core.annotation.AutoOperateLog;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.base.controller.BaseController;
@@ -18,7 +19,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Calendar;
 
 /**
  * 用户登录
@@ -60,9 +60,7 @@ public class ZLoginController implements BaseController {
         LoginSuccessDTO loginSuccessDTO = new LoginSuccessDTO();
         loginSuccessDTO.setAccessToken(JwtUtils.createToken(user.getUserId()));
         // JwtToken有效期
-        Calendar calendar = Calendar.getInstance();
-        calendar.getInstance().add(Calendar.MINUTE, LoginConstant.LOGIN_JWT_TOKEN_EXPIRY);
-        loginSuccessDTO.setAccessTokenValidTime(calendar.getTime());
+        loginSuccessDTO.setAccessTokenValidTime(TimeUtils.now().addMinute(LoginConstant.LOGIN_JWT_TOKEN_EXPIRY).toDate());
         // 延长redis中，用户有效期
         redisUtils.setExpire(LoginConstant.LOGIN_INFO_REDIS_PRE + user.getUserId(), LoginConstant.LOGIN_JWT_TOKEN_EXPIRY * 60L);
         return loginSuccessDTO;

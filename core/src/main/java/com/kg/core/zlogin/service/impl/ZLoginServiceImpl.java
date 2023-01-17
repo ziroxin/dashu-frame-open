@@ -4,6 +4,7 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import com.google.common.primitives.Ints;
 import com.kg.component.jwt.JwtUtils;
 import com.kg.component.redis.RedisUtils;
+import com.kg.component.utils.TimeUtils;
 import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
 import com.kg.core.exception.enums.BaseErrorCode;
@@ -30,7 +31,6 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
 
 /**
  * @author ziro
@@ -99,9 +99,7 @@ public class ZLoginServiceImpl implements ZLoginService {
         LoginSuccessDTO loginSuccessDTO = new LoginSuccessDTO();
         loginSuccessDTO.setAccessToken(JwtUtils.createToken(userId));
         // JwtToken有效期
-        Calendar calendar = Calendar.getInstance();
-        calendar.getInstance().add(Calendar.MINUTE, LoginConstant.LOGIN_JWT_TOKEN_EXPIRY);
-        loginSuccessDTO.setAccessTokenValidTime(calendar.getTime());
+        loginSuccessDTO.setAccessTokenValidTime(TimeUtils.now().addMinute(LoginConstant.LOGIN_JWT_TOKEN_EXPIRY).toDate());
         // 把用户信息存入redis
         redisUtils.set(LoginConstant.LOGIN_INFO_REDIS_PRE + userId, userDetailEntity,
                 LoginConstant.LOGIN_JWT_TOKEN_EXPIRY * 60L);
