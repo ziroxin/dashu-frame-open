@@ -3,7 +3,7 @@
     <!-- 组织机构表-管理按钮 -->
     <div style="margin-bottom: 20px;">
       <el-input v-model="searchData.orgName" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入名称查询"/>
+                class="filter-item" placeholder="请输入用户名/姓名查询"/>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="loadTableList">查询</el-button>
       <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh" @click="resetTableList">显示全部</el-button>
       <div style="float: right;">

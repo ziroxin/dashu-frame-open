@@ -1,60 +1,79 @@
 <template>
   <div class="app-container">
-    <div style="margin-bottom: 20px;">
-      <!--  操作按钮  -->
-      <el-button icon="el-icon-plus" v-permission="'user-add'" @click="userAdd">新增</el-button>
-      <el-button icon="el-icon-edit" v-permission="'user-update'" @click="userUpdate">修改</el-button>
-      <el-button type="danger" icon="el-icon-delete" v-permission="'user-delete'" @click="userDelete">删除</el-button>
-      <el-button type="primary" icon="el-icon-refresh-right" v-permission="'reset-password'" @click="resetPassword">重置密码</el-button>
-      <el-button type="warning" icon="el-icon-lock" v-permission="'change-status'" @click="changeStatus(0)">禁用</el-button>
-      <el-button type="success" icon="el-icon-unlock" v-permission="'change-status'" @click="changeStatus(1)">启用</el-button>
-    </div>
-
-    <!-- 表格部分 -->
-    <el-table :data="userTable" row-key="userId" style="width: 100%;" border @selection-change="selectionChangeHandlerOrder">
-      <el-table-column type="selection" width="40"/>
-      <el-table-column prop="roleName" label="角色" min-width="10%"/>
-      <el-table-column prop="userName" label="用户名" min-width="10%"/>
-      <el-table-column prop="name" label="姓名" min-width="10%"/>
-      <el-table-column prop="phone" label="手机号" min-width="12%"/>
-      <el-table-column prop="nickName" label="昵称" min-width="10%"/>
-      <el-table-column prop="sex" label="性别" min-width="5%">
-        <template slot-scope="scope">
-          <span v-if="scope.row.sex === '0'">未知</span>
-          <span v-else-if="scope.row.sex === '1'">男</span>
-          <span v-else-if="scope.row.sex === '2'">女</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="status" label="状态" min-width="5%">
-        <template slot-scope="scope">
-          <span v-if="scope.row.status === '0'" style="color: red;">禁用</span>
-          <span v-else style="color: green;">正常</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="avatar" label="头像" width="121px">
-        <template slot-scope="scope">
-          <img v-if="scope.row.avatar" :src="$baseServer+'/'+scope.row.avatar" style="max-width: 100px;max-height: 100px;object-fit: cover;"/>
-          <span v-if="!scope.row.avatar">未上传</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="introduce" label="简介" min-width="30%"/>
-    </el-table>
-
-    <!--分页-->
-    <el-pagination style="text-align: center;" background layout="total, pager"
-                   :page-size="pager.limit" :current-page="pager.page"
-                   :total="pager.totalCount" @current-change="handleCurrentChange"
-    />
+    <el-row :gutter="15">
+      <el-col :span="4">
+        <el-input placeholder="输入关键字进行过滤" v-model="filterText"
+                  style="margin-bottom: 10px;"></el-input>
+        <!-- 组织机构树 -->
+        <el-tree class="filter-tree" :data="orgSelectTreeData" :expand-on-click-node="false" :highlight-current="true"
+                 :props="{children: 'children',label: 'label'}" @node-click="treeNodeClick"
+                 default-expand-all :filter-node-method="filterNode" ref="tree"></el-tree>
+      </el-col>
+      <el-col :span="20" style="">
+        <div style="margin-bottom: 10px;">
+          <el-switch v-model="searchData.isSelf" active-value="self" inactive-value="notself" style="margin-right: 10px;"
+                     active-text="包含下级" inactive-text="只查本级" @change="getUserList"></el-switch>
+          <el-input v-model="searchData.userName" style="width: 180px;margin-right: 10px;"
+                    class="filter-item" placeholder="请输入用户名模糊查询"/>
+          <el-input v-model="searchData.name" style="width: 160px;margin-right: 10px;"
+                    class="filter-item" placeholder="请输入姓名模糊查询"/>
+          <el-button v-waves class="filter-item" icon="el-icon-search" type="primary" @click="getUserList">查询</el-button>
+          <el-button v-waves class="filter-item" icon="el-icon-refresh" type="info" @click="resetTableList">显示全部</el-button>
+        </div>
+        <div style="margin-bottom: 10px;">
+          <!--  操作按钮  -->
+          <el-button v-waves icon="el-icon-plus" v-permission="'user-add'" @click="userAdd">新增</el-button>
+          <el-button v-waves icon="el-icon-edit" v-permission="'user-update'" @click="userUpdate">修改</el-button>
+          <el-button v-waves type="danger" icon="el-icon-delete" v-permission="'user-delete'" @click="userDelete">删除</el-button>
+          <el-button v-waves type="primary" icon="el-icon-refresh-right" v-permission="'reset-password'" @click="resetPassword">重置密码</el-button>
+          <el-button v-waves type="warning" icon="el-icon-lock" v-permission="'change-status'" @click="changeStatus(0)">禁用</el-button>
+          <el-button v-waves type="success" icon="el-icon-unlock" v-permission="'change-status'" @click="changeStatus(1)">启用</el-button>
+        </div>
+        <!-- 表格部分 -->
+        <el-table :data="userTable" row-key="userId"
+                  :height="this.$windowHeight-255" style="width: 100%;"
+                  border @selection-change="selectionChangeHandlerOrder">
+          <el-table-column type="selection" width="40"/>
+          <el-table-column prop="roleName" label="角色" min-width="10%"/>
+          <el-table-column prop="orgName" label="部门" min-width="10%"/>
+          <el-table-column prop="userName" label="用户名" min-width="8%"/>
+          <el-table-column prop="name" label="姓名" min-width="8%"/>
+          <el-table-column prop="nickName" label="昵称" min-width="8%"/>
+          <el-table-column prop="sex" label="性别" min-width="5%">
+            <template slot-scope="scope">
+              <span v-if="scope.row.sex === '0'">未知</span>
+              <span v-else-if="scope.row.sex === '1'">男</span>
+              <span v-else-if="scope.row.sex === '2'">女</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="status" label="状态" min-width="5%">
+            <template slot-scope="scope">
+              <span v-if="scope.row.status === '0'" style="color: red;">禁用</span>
+              <span v-else style="color: green;">正常</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="avatar" label="头像" width="121px">
+            <template slot-scope="scope">
+              <img v-if="scope.row.avatar" :src="$baseServer+'/'+scope.row.avatar" style="max-width: 100px;max-height: 100px;object-fit: cover;"/>
+              <span v-if="!scope.row.avatar">未上传</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="introduce" label="简介" min-width="10%"/>
+        </el-table>
+        <!--分页-->
+        <el-pagination style="text-align: center;margin-top: 5px;" background layout="total, pager"
+                       :page-size="pager.limit" :current-page="pager.page"
+                       :total="pager.totalCount" @current-change="handleCurrentChange"
+        />
+      </el-col>
+    </el-row>
 
     <!--  弹窗  -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="textMap[dialogStatus]" top="5vh" :visible.sync="dialogFormVisible">
       <el-form ref="userDataForm" :model="temp" :rules="rules" label-position="right"
                label-width="100px" style="width: 500px; margin-left: 50px;">
         <el-form-item label="用户名：" prop="userName">
           <el-input v-model="temp.userName" placeholder="请输入用户名"/>
-        </el-form-item>
-        <el-form-item label="密码：" prop="password" v-if="this.dialogStatus=='create'">
-          <el-input v-model="temp.password" show-password placeholder="请输入密码"/>
         </el-form-item>
         <el-form-item label="所在部门：" prop="orgId">
           <select-tree v-model="temp.orgId" empty-text="请选择所在部门" empty-value=""
@@ -100,15 +119,18 @@ import {getRoleList} from '@/api/role';
 import ImageAvatar from "@/components/Upload/ImageAvatar";
 import request from "@/utils/request";
 import SelectTree from "@/components/SelectTree";
+import waves from "@/directive/waves";
 
 export default {
   components: {ImageAvatar, SelectTree},
+  directives: {waves},
   data() {
     return {
       // 表格数据
       userTable: [],
       // 分页数据
       pager: {page: 1, limit: 10, totalCount: 0},
+      searchData: {},
       roleNameOptions: [],
       textMap: {update: '修改', create: '新增'},
       // 对话框属性
@@ -129,15 +151,35 @@ export default {
           }
         }]
       },
-      // 下拉树-组织机构
-      orgSelectTreeData: []
+      // （新增/修改弹窗）下拉树-组织机构
+      orgSelectTreeData: [],
+      // 左侧组织机构树相关数据
+      filterText: '',
+      leftTreeData: [],
     }
   },
   created() {
+    this.loadOrgTreeForSelect()
     this.getUserList()
     this.getRoleList()
   },
+  watch: {
+    filterText(val) {
+      // 左侧组织机构树过滤
+      this.$refs.tree.filter(val);
+    }
+  },
   methods: {
+    // 左侧树过滤
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
+    },
+    // 点击左侧树
+    treeNodeClick(row) {
+      this.searchData.orgId = row.value
+      this.getUserList()
+    },
     // 表格勾选
     selectionChangeHandlerOrder(val) {
       this.changeData = val
@@ -156,23 +198,28 @@ export default {
         phone: ''
       }
     },
+    // 显示全部
+    resetTableList() {
+      this.searchData = {}
+      this.getUserList()
+    },
     //查询用户列表
     getUserList() {
-      getUserList().then(response => {
+      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      getUserList(params).then(response => {
         this.userTable = response.data.records
         this.pager.totalCount = response.data.total
-        // this.userTable = data.records
       })
     },
     //分页
     handleCurrentChange(page) {
       this.pager.page = page
+      this.getUserList()
     },
     // 查询角色
     getRoleList() {
-      getRoleList(this.pager).then(response => {
-        const {data} = response
-        this.roleNameOptions = data.records
+      getRoleList().then(response => {
+        this.roleNameOptions = response.data.records
       })
     },
     userAdd() {

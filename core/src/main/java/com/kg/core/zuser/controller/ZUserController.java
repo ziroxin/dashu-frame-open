@@ -7,6 +7,7 @@ import com.kg.core.exception.BaseException;
 import com.kg.core.security.util.CurrentUserUtils;
 import com.kg.core.zorg.dto.ZOrganizationTreeSelectDTO;
 import com.kg.core.zorg.service.ZOrganizationService;
+import com.kg.core.zuser.dto.ZUserDTO;
 import com.kg.core.zuser.dto.ZUserEditPasswordDTO;
 import com.kg.core.zuser.dto.ZUserRoleSaveDTO;
 import com.kg.core.zuser.dto.ZUserStatusDTO;
@@ -49,10 +50,10 @@ public class ZUserController {
     })
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('user:list')")
-    public Page<ZUserRoleSaveDTO> list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                       @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
-                                       @RequestParam(value = "params", required = false) String params) {
-        return userService.getUserRoleList(page, limit, params);
+    public Page<ZUserDTO> list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                               @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
+                               @RequestParam(value = "params", required = false) String params) {
+        return userService.getUserList(page, limit, params);
     }
 
     @ApiOperation(value = "/user/getById", notes = "用户详情", httpMethod = "GET")

@@ -10,6 +10,7 @@ import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
 import com.kg.core.zsafety.entity.ZSafety;
 import com.kg.core.zsafety.service.ZSafetyService;
+import com.kg.core.zuser.dto.ZUserDTO;
 import com.kg.core.zuser.dto.ZUserEditPasswordDTO;
 import com.kg.core.zuser.dto.ZUserRoleSaveDTO;
 import com.kg.core.zuser.entity.ZUser;
@@ -53,8 +54,8 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
-    public Page<ZUserRoleSaveDTO> getUserRoleList(Integer page, Integer limit, String params) {
-        Page<ZUserRoleSaveDTO> result = new Page<>(page, limit);
+    public Page<ZUserDTO> getUserList(Integer page, Integer limit, String params) {
+        Page<ZUserDTO> result = new Page<>(page, limit);
         JSONObject paramObj = JSONUtil.parseObj(params);
         paramObj.set("offset", (page - 1) * limit);
         paramObj.set("limit", limit);
@@ -72,7 +73,8 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
         ZUser zUser = new ZUser();
         BeanUtils.copyProperties(zUserRoleSaveDTO, zUser);
         zUser.setUserId(GuidUtils.getUuid());
-        zUser.setPassword(passwordEncoder.encode(zUser.getPassword()));
+        // 密码是默认密码
+        zUser.setPassword(passwordEncoder.encode(safetyService.getSafety().getDefaultPassword()));
         zUser.setCreateTime(LocalDateTime.now());
         boolean s1 = save(zUser);
 

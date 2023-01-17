@@ -3,6 +3,7 @@ package com.kg.core.zuser.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kg.core.exception.BaseException;
+import com.kg.core.zuser.dto.ZUserDTO;
 import com.kg.core.zuser.dto.ZUserEditPasswordDTO;
 import com.kg.core.zuser.dto.ZUserRoleSaveDTO;
 import com.kg.core.zuser.entity.ZUser;
@@ -17,7 +18,7 @@ import com.kg.core.zuser.entity.ZUser;
  */
 public interface IZUserService extends IService<ZUser> {
 
-    Page<ZUserRoleSaveDTO> getUserRoleList(Integer page, Integer limit, String params);
+    Page<ZUserDTO> getUserList(Integer page, Integer limit, String params);
 
     boolean add(ZUserRoleSaveDTO zUserRoleSaveDTO);
 

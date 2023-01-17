@@ -2,6 +2,7 @@ package com.kg.core.zuser.mapper;
 
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.kg.core.zuser.dto.ZUserDTO;
 import com.kg.core.zuser.dto.ZUserRoleSaveDTO;
 import com.kg.core.zuser.entity.ZUser;
 import org.apache.ibatis.annotations.Param;
@@ -20,7 +21,7 @@ import java.util.List;
 @Repository
 public interface ZUserMapper extends BaseMapper<ZUser> {
 
-    List<ZUserRoleSaveDTO> getUserRoleList(JSONObject paramObj);
+    List<ZUserDTO> getUserRoleList(JSONObject paramObj);
 
     Long getUserRoleCount(JSONObject paramObj);
 

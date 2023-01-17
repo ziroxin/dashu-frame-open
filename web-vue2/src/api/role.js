@@ -1,10 +1,9 @@
 import request from '@/utils/request'
 
-export function getRoleList(params) {
+export function getRoleList() {
   return request({
     url: '/role/list',
-    method: 'get',
-    params
+    method: 'get'
   })
 }
 
