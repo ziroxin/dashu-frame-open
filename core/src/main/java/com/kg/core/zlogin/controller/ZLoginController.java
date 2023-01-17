@@ -1,17 +1,24 @@
 package com.kg.core.zlogin.controller;
 
+import com.kg.component.jwt.JwtUtils;
+import com.kg.component.redis.RedisUtils;
 import com.kg.core.annotation.AutoOperateLog;
+import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.base.controller.BaseController;
+import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
+import com.kg.core.security.util.CurrentUserUtils;
 import com.kg.core.zlogin.dto.LoginFormDTO;
 import com.kg.core.zlogin.dto.LoginSuccessDTO;
 import com.kg.core.zlogin.service.ZLoginService;
+import com.kg.core.zuser.entity.ZUser;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Calendar;
 
 /**
  * 用户登录
@@ -27,6 +34,8 @@ public class ZLoginController implements BaseController {
 
     @Resource
     private ZLoginService zLoginService;
+    @Resource
+    private RedisUtils redisUtils;
 
     @ApiOperation(value = "登录", notes = "登录接口", httpMethod = "POST")
     @PostMapping("login")
@@ -41,4 +50,21 @@ public class ZLoginController implements BaseController {
         zLoginService.logout();
     }
 
+
+    @ApiOperation(value = "/login/refresh/token", notes = "刷新登录用户Token", httpMethod = "POST")
+    @PostMapping("refresh/token")
+    @NoRepeatSubmit
+    public LoginSuccessDTO refreshToken() {
+        ZUser user = CurrentUserUtils.getCurrentUser();
+        // 生成JwtToken
+        LoginSuccessDTO loginSuccessDTO = new LoginSuccessDTO();
+        loginSuccessDTO.setAccessToken(JwtUtils.createToken(user.getUserId()));
+        // JwtToken有效期
+        Calendar calendar = Calendar.getInstance();
+        calendar.getInstance().add(Calendar.MINUTE, LoginConstant.LOGIN_JWT_TOKEN_EXPIRY);
+        loginSuccessDTO.setAccessTokenValidTime(calendar.getTime());
+        // 延长redis中，用户有效期
+        redisUtils.setExpire(LoginConstant.LOGIN_INFO_REDIS_PRE + user.getUserId(), LoginConstant.LOGIN_JWT_TOKEN_EXPIRY * 60L);
+        return loginSuccessDTO;
+    }
 }

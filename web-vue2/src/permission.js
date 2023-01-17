@@ -5,7 +5,7 @@ import {Message} from 'element-ui'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 // 从Cookie中读取token
-import {getToken} from '@/utils/auth'
+import {getToken, getTokenValidTime} from '@/utils/auth'
 import getPageTitle from '@/utils/get-page-title'
 
 // 进度条配置
@@ -25,6 +25,13 @@ router.beforeEach(async (to, from, next) => {
   const hasToken = getToken()
 
   if (hasToken) {
+    // 判断token的有效期
+    let tokenValidTime = getTokenValidTime();
+    if ((new Date().getTime() + (10 * 60 * 1000)) > new Date(tokenValidTime).getTime()) {
+      // token失效前10分钟，刷新token
+      console.log('刷新token')
+      store.dispatch('user/refreshToken')
+    }
     if (to.path === '/login') {
       // 登录后，跳转到首页
       next({path: '/'})
@@ -59,7 +66,7 @@ router.beforeEach(async (to, from, next) => {
           // 出现错误，删除token，重新登录
           await store.dispatch('user/resetToken')
           // Message.error(error || 'Has Error')
-          Message.error({message:error || 'Has Error'})
+          Message.error({message: error || 'Has Error'})
           next(`/login?redirect=${to.path}`)
           NProgress.done()
         }

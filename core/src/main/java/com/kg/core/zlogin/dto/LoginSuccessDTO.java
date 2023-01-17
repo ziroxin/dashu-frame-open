@@ -3,6 +3,8 @@ package com.kg.core.zlogin.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 /**
  * @author ziro
  * @date 2022/5/2 22:17
@@ -14,6 +16,8 @@ public class LoginSuccessDTO {
     private String successMsg;
     // 登录获得的Token
     private String accessToken;
+    // Token有效期
+    private Date accessTokenValidTime;
     // 是否默认密码
     private boolean isDefaultPassword;
     // 密码是否已过期失效

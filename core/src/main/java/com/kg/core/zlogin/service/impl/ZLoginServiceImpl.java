@@ -30,6 +30,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 
 /**
  * @author ziro
@@ -97,6 +98,10 @@ public class ZLoginServiceImpl implements ZLoginService {
         // 生成JwtToken
         LoginSuccessDTO loginSuccessDTO = new LoginSuccessDTO();
         loginSuccessDTO.setAccessToken(JwtUtils.createToken(userId));
+        // JwtToken有效期
+        Calendar calendar = Calendar.getInstance();
+        calendar.getInstance().add(Calendar.MINUTE, LoginConstant.LOGIN_JWT_TOKEN_EXPIRY);
+        loginSuccessDTO.setAccessTokenValidTime(calendar.getTime());
         // 把用户信息存入redis
         redisUtils.set(LoginConstant.LOGIN_INFO_REDIS_PRE + userId, userDetailEntity,
                 LoginConstant.LOGIN_JWT_TOKEN_EXPIRY * 60L);

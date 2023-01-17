@@ -60,3 +60,10 @@ export function userResetPassword(data) {
     data
   })
 }
+
+export function refreshToken() {
+  return request({
+    url: '/login/refresh/token',
+    method: 'post'
+  })
+}

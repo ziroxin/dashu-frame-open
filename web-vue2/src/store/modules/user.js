@@ -1,5 +1,5 @@
-import {getInfo, login, logout} from '@/api/user'
-import {getToken, removeToken, setToken} from '@/utils/auth'
+import {getInfo, login, logout, refreshToken} from '@/api/user'
+import {getToken, removeToken, setToken, setTokenValidTime} from '@/utils/auth'
 import router, {resetRouter} from '@/router'
 import Cookies from "js-cookie";
 
@@ -41,6 +41,7 @@ const actions = {
         const {data} = response
         commit('SET_TOKEN', data.accessToken)
         setToken(data.accessToken)
+        setTokenValidTime(new Date(data.accessTokenValidTime))
         // 是默认密码
         Cookies.set("isDefaultPassword", data.defaultPassword)
         Cookies.set("isInvalidPassword", data.invalidPassword)
@@ -55,11 +56,9 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
         const {data} = response
-
         if (!data) {
           reject('验证失败，请重新登录！')
         }
-
         const {permissions, perrouters} = data
         const {nickName, avatar, introduce} = data.user
 
@@ -74,7 +73,6 @@ const actions = {
       })
     })
   },
-
   // 退出登录
   logout({commit, state, dispatch}) {
     return new Promise((resolve, reject) => {
@@ -94,7 +92,6 @@ const actions = {
       })
     })
   },
-
   // 清除Token
   resetToken({commit}) {
     return new Promise(resolve => {
@@ -105,7 +102,17 @@ const actions = {
       resolve()
     })
   },
-
+  // 刷新Token
+  refreshToken({commit}) {
+    return new Promise(resolve => {
+      refreshToken().then(response => {
+        const {data} = response
+        commit('SET_TOKEN', data.accessToken)
+        setToken(data.accessToken)
+        setTokenValidTime(new Date(data.accessTokenValidTime))
+      })
+    })
+  },
   // 动态修改权限
   async changeRoles({commit, dispatch}, role) {
     const token = role + '-token'
