@@ -66,7 +66,7 @@ public class ZUserController {
         return userService.getUserById(userId);
     }
 
-    @ApiOperation(value = "/user/org/tree", notes = "用户详情", httpMethod = "GET")
+    @ApiOperation(value = "/user/org/tree", notes = "用户管理组织机构树", httpMethod = "GET")
     @GetMapping("/org/tree")
     @PreAuthorize("hasAuthority('user:org:tree')")
     public List<ZOrganizationTreeSelectDTO> orgTree() {

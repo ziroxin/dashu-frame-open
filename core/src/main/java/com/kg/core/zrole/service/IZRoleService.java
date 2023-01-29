@@ -1,7 +1,7 @@
 package com.kg.core.zrole.service;
 
-import com.kg.core.zrole.entity.ZRole;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kg.core.zrole.entity.ZRole;
 
 /**
  * <p>
@@ -13,4 +13,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IZRoleService extends IService<ZRole> {
 
+    /**
+     * 复制角色
+     */
+    void copy(String roleId);
 }

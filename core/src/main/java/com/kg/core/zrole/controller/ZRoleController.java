@@ -78,4 +78,18 @@ public class ZRoleController {
             throw new BaseException("删除角色失败");
         }
     }
+
+    @ApiOperation(value = "role/copy", notes = "复制角色", httpMethod = "POST")
+    @PostMapping("copy")
+    @PreAuthorize("hasAuthority('role:copy')")
+    @NoRepeatSubmit
+    public void copy(String roleId) throws BaseException {
+        try {
+            roleService.copy(roleId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException("删除角色失败");
+        }
+    }
+
 }

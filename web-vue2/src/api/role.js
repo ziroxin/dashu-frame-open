@@ -31,6 +31,14 @@ export function deleteRoles(data) {
   })
 }
 
+export function copyRole(params) {
+  return request({
+    url: '/role/copy',
+    method: 'post',
+    params
+  })
+}
+
 export function getPermissionList(params) {
   return request({
     url: '/permission/listForRole',

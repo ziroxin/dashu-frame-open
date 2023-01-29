@@ -4,9 +4,10 @@
       <el-col :span="7">
         <!-- 角色管理按钮 -->
         <div style="margin-bottom: 5px;">
-          <el-button type="primary" plain icon="el-icon-plus" @click="roleAdd" v-permission="'system-role-add'">新增</el-button>
-          <el-button type="success" plain icon="el-icon-edit" @click="roleUpdate" v-permission="'system-role-update'">修改</el-button>
-          <el-button type="danger" icon="el-icon-delete" @click="roleDelete" v-permission="'system-role-delete'">删除</el-button>
+          <el-button type="primary" plain icon="el-icon-plus" @click="roleAdd" v-permission="'system-role-add'"></el-button>
+          <el-button type="success" plain icon="el-icon-edit" @click="roleUpdate" v-permission="'system-role-update'"></el-button>
+          <el-button type="danger" icon="el-icon-delete" @click="roleDelete" v-permission="'system-role-delete'"></el-button>
+          <el-button type="warning" icon="el-icon-copy-document" @click="roleCopy" v-permission="'system-role-copy'">复制角色</el-button>
         </div>
         <!-- 角色管理表格 -->
         <el-table ref="roleTable" :data="tableData" stripe border
@@ -93,7 +94,7 @@
 </template>
 
 <script>
-import {addRole, deleteRoles, getPermissionList, getRoleList, saveRolePermission, updateRole} from '@/api/role'
+import {addRole, copyRole, deleteRoles, getPermissionList, getRoleList, saveRolePermission, updateRole} from '@/api/role'
 
 export default {
   data() {
@@ -196,30 +197,32 @@ export default {
         })
       }
     },
+    // 复制角色
+    roleCopy() {
+      if (this.tableSelectRows.length != 1) {
+        this.$message({message: '请选择一个角色进行复制！', type: 'error'})
+      } else {
+        let params = {'roleId': this.tableSelectRows[0].roleId};
+        copyRole(params).then(response => {
+          this.$message({type: 'success', message: '复制角色成功！'})
+          this.loadRoleList()
+        })
+      }
+    },
     saveRoles() {
       this.$refs['roleDateForm'].validate((valid) => {
         if (valid) {
           if (this.dialogType === 'update') {
             updateRole(this.temp).then(response => {
-              const {code} = response
-              if (code === '200') {
-                this.$message({type: 'success', message: '修改成功！'})
-                this.loadRoleList()
-                this.dialogFormVisible = false
-              } else {
-                this.$message({type: 'error', message: '修改失败！'})
-              }
+              this.$message({type: 'success', message: '修改成功！'})
+              this.loadRoleList()
+              this.dialogFormVisible = false
             })
           } else {
             addRole(this.temp).then(response => {
-              const {code} = response
-              if (code === '200') {
-                this.$message({type: 'success', message: '添加成功！'})
-                this.loadRoleList()
-                this.dialogFormVisible = false
-              } else {
-                this.$message({type: 'error', message: '添加失败！'})
-              }
+              this.$message({type: 'success', message: '添加成功！'})
+              this.loadRoleList()
+              this.dialogFormVisible = false
             })
           }
         }
@@ -258,7 +261,6 @@ export default {
     },
     //设置权限按钮
     setMyApi(row) {
-      console.log('row', row)
       this.$refs.roleTable.clearSelection()
       this.$refs.roleTable.toggleRowSelection(row, true)
       this.roleId = row.roleId
@@ -282,7 +284,6 @@ export default {
     },
     //行选中
     table2RowSelect(selection, row) {
-      console.log('row select')
       let select = selection.filter(r => r.permissionId === row.permissionId).length > 0
       //设置当前行的选中状态
       this.$refs.permissionTable.toggleRowSelection(row, select)
@@ -298,7 +299,6 @@ export default {
     },
     //行点击
     table2RowClick(row) {
-      console.log('row click')
       let hasSelected = this.selectPermissionApiList2.filter(o => o == row.permissionId).length > 0
       //设置当前行的选中状态
       this.$refs.permissionTable.toggleRowSelection(row, !hasSelected)

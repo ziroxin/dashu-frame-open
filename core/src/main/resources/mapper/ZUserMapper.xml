@@ -35,6 +35,7 @@
                 #{id}
             </foreach>
         </if>
+        ORDER BY a.create_time DESC
         LIMIT #{offset},#{limit}
     </select>
 
