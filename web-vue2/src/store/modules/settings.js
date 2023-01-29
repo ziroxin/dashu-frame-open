@@ -1,7 +1,8 @@
 import variables from '@/styles/element-variables.scss'
 import defaultSettings from '@/settings'
+import Cookies from "js-cookie";
 
-const { title, showSettings, tagsView, fixedHeader, sidebarLogo } = defaultSettings
+const {title, showSettings, tagsView, fixedHeader, sidebarLogo} = JSON.parse(Cookies.get('settings')) || defaultSettings
 
 const state = {
   theme: variables.theme,
@@ -13,16 +14,17 @@ const state = {
 }
 
 const mutations = {
-  CHANGE_SETTING: (state, { key, value }) => {
-    // eslint-disable-next-line no-prototype-builtins
+  CHANGE_SETTING: (state, {key, value}) => {
     if (state.hasOwnProperty(key)) {
       state[key] = value
+      Cookies.set('settings', JSON.stringify(state))
     }
   }
 }
 
 const actions = {
-  changeSetting({ commit }, data) {
+  // 修改设置参数
+  changeSetting({commit}, data) {
     commit('CHANGE_SETTING', data)
   }
 }
