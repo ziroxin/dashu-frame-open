@@ -29,7 +29,6 @@ router.beforeEach(async (to, from, next) => {
     let tokenValidTime = getTokenValidTime();
     if ((new Date().getTime() + (10 * 60 * 1000)) > new Date(tokenValidTime).getTime()) {
       // token失效前10分钟，刷新token
-      console.log('刷新token')
       store.dispatch('user/refreshToken')
     }
     if (to.path === '/login') {
@@ -49,10 +48,8 @@ router.beforeEach(async (to, from, next) => {
           if (perrouters && perrouters.length > 0) {
             // 根据角色，生成可访问权限（路由）
             const accessRoutes = await store.dispatch('permission/generateRoutes', perrouters)
-
             // 动态加载路由
             router.addRoutes(accessRoutes)
-
             // 加载路由完成，跳转
             // replace: true 不缓存，每次页面都刷新
             next({...to, replace: true})

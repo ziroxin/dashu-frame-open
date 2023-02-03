@@ -8,7 +8,6 @@ import Element from 'element-ui'
 import './styles/element-variables.scss'
 // 如果使用中文语言包请默认支持，无需额外引入，请删除该依赖
 // import enLang from 'element-ui/lib/locale/lang/en'
-
 // 全局样式
 import '@/styles/index.scss'
 
@@ -25,6 +24,7 @@ import * as filters from './filters'
 // 导入权限指令
 import permission from '@/directive/permission';
 import mydate from '@/directive/mydate';
+import request from "@/utils/request";
 
 Vue.use(Element, {
   // 设置element-ui默认大小
@@ -43,7 +43,8 @@ Vue.directive('mydate', mydate)
 
 Object.assign(Vue.prototype, {
   $baseServer: process.env.VUE_APP_BASE_API,
-  $windowHeight: window.innerHeight
+  $windowHeight: window.innerHeight,
+  $request: request
 });
 
 // 开发时不提示生产环境
