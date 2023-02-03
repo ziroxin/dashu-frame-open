@@ -2,7 +2,7 @@ import variables from '@/styles/element-variables.scss'
 import defaultSettings from '@/settings'
 import Cookies from "js-cookie";
 
-const {title, showSettings, tagsView, fixedHeader, sidebarLogo} = JSON.parse(Cookies.get('settings')) || defaultSettings
+const {title, showSettings, tagsView, fixedHeader, sidebarLogo} = Cookies.get('settings') ? JSON.parse(Cookies.get('settings')) : defaultSettings
 
 const state = {
   theme: variables.theme,
