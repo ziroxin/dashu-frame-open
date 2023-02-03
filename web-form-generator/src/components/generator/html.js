@@ -173,7 +173,7 @@ const tags = {
     return `<${tag} ${vModel} ${placeholder} ${disabled} ${multiple} ${filterable} ${clearable} ${width}>${child}</${tag}>`
   },
   'el-radio-group': el => {
-    const { tag, disabled, vModel } = attrBuilder(el)
+    const {tag, disabled, vModel} = attrBuilder(el)
     const size = `size="${el.size}"`
     let child = buildElRadioGroupChild(el)
 
@@ -181,7 +181,7 @@ const tags = {
     return `<${tag} ${vModel} ${size} ${disabled}>${child}</${tag}>`
   },
   'el-checkbox-group': el => {
-    const { tag, disabled, vModel } = attrBuilder(el)
+    const {tag, disabled, vModel} = attrBuilder(el)
     const size = `size="${el.size}"`
     const min = el.min ? `:min="${el.min}"` : ''
     const max = el.max ? `:max="${el.max}"` : ''
@@ -191,7 +191,7 @@ const tags = {
     return `<${tag} ${vModel} ${min} ${max} ${size} ${disabled}>${child}</${tag}>`
   },
   'el-switch': el => {
-    const { tag, disabled, vModel } = attrBuilder(el)
+    const {tag, disabled, vModel} = attrBuilder(el)
     const activeText = el['active-text'] ? `active-text="${el['active-text']}"` : ''
     const inactiveText = el['inactive-text'] ? `inactive-text="${el['inactive-text']}"` : ''
     const activeColor = el['active-color'] ? `active-color="${el['active-color']}"` : ''
@@ -214,7 +214,7 @@ const tags = {
     return `<${tag} ${vModel} ${options} ${props} ${width} ${showAllLevels} ${placeholder} ${separator} ${filterable} ${clearable} ${disabled}></${tag}>`
   },
   'el-slider': el => {
-    const { tag, disabled, vModel } = attrBuilder(el)
+    const {tag, disabled, vModel} = attrBuilder(el)
     const min = el.min ? `:min='${el.min}'` : ''
     const max = el.max ? `:max='${el.max}'` : ''
     const step = el.step ? `:step='${el.step}'` : ''
@@ -252,7 +252,7 @@ const tags = {
     return `<${tag} ${type} ${vModel} ${format} ${valueFormat} ${width} ${placeholder} ${startPlaceholder} ${endPlaceholder} ${rangeSeparator} ${clearable} ${readonly} ${disabled}></${tag}>`
   },
   'el-rate': el => {
-    const { tag, disabled, vModel } = attrBuilder(el)
+    const {tag, disabled, vModel} = attrBuilder(el)
     const max = el.max ? `:max='${el.max}'` : ''
     const allowHalf = el['allow-half'] ? 'allow-half' : ''
     const showText = el['show-text'] ? 'show-text' : ''
@@ -261,7 +261,7 @@ const tags = {
     return `<${tag} ${vModel} ${max} ${allowHalf} ${showText} ${showScore} ${disabled}></${tag}>`
   },
   'el-color-picker': el => {
-    const { tag, disabled, vModel } = attrBuilder(el)
+    const {tag, disabled, vModel} = attrBuilder(el)
     const size = `size="${el.size}"`
     const showAlpha = el['show-alpha'] ? 'show-alpha' : ''
     const colorFormat = el['color-format'] ? `color-format="${el['color-format']}"` : ''
@@ -269,7 +269,7 @@ const tags = {
     return `<${tag} ${vModel} ${size} ${showAlpha} ${colorFormat} ${disabled}></${tag}>`
   },
   'el-upload': el => {
-    const { tag } = el.__config__
+    const {tag} = el.__config__
     const disabled = el.disabled ? ':disabled=\'true\'' : ''
     const action = el.action ? `:action="${el.__vModel__}Action"` : ''
     const multiple = el.multiple ? 'multiple' : ''
@@ -286,7 +286,7 @@ const tags = {
     return `<${tag} ${ref} ${fileList} ${action} ${autoUpload} ${multiple} ${beforeUpload} ${listType} ${accept} ${name} ${disabled}>${child}</${tag}>`
   },
   tinymce: el => {
-    const { tag, vModel, placeholder } = attrBuilder(el)
+    const {tag, vModel, placeholder} = attrBuilder(el)
     const height = el.height ? `:height="${el.height}"` : ''
     const branding = el.branding ? `:branding="${el.branding}"` : ''
     return `<${tag} ${vModel} ${placeholder} ${height} ${branding}></${tag}>`
@@ -330,9 +330,14 @@ function buildElInputChild(scheme) {
 // el-select 子级
 function buildElSelectChild(scheme) {
   const children = []
+  let label = 'label', value = 'value'
+  if (scheme.__config__.dataType === 'dynamic') {
+    label = scheme.props.props.label || 'label'
+    value = scheme.props.props.value || 'value'
+  }
   const slot = scheme.__slot__
   if (slot && slot.options && slot.options.length) {
-    children.push(`<el-option v-for="(item, index) in ${scheme.__vModel__}Options" :key="index" :label="item.label" :value="item.value" :disabled="item.disabled"></el-option>`)
+    children.push(`<el-option v-for="(item, index) in ${scheme.__vModel__}Options" :key="index" :label="item.${label}" :value="item.${value}" :disabled="item.disabled"></el-option>`)
   }
   return children.join('\n')
 }
@@ -385,7 +390,9 @@ export function makeUpHtml(formConfig, type) {
   someSpanIsNot24 = formConfig.fields.some(item => item.__config__.span !== 24)
   // 遍历渲染每个组件成html
   formConfig.fields.forEach(el => {
-    htmlList.push(layouts[el.__config__.layout](el))
+    if (el.__config__.tag !== 'el-key') {
+      htmlList.push(layouts[el.__config__.layout](el))
+    }
   })
   const htmlStr = htmlList.join('\n')
   // 将组件代码放进form标签

@@ -55,7 +55,7 @@ export default {
     return {
       formData: {
         fileName: undefined,
-        type: 'file'
+        type: 'dialog'
       },
       rules: {
         fileName: [{

@@ -1,5 +1,7 @@
 // 表单属性【右面板】
 export const formConf = {
+  tableName: 'tableName',
+  tableDecription: '表描述',
   formRef: 'formRef',
   formModel: 'formData',
   size: 'medium',
@@ -17,7 +19,30 @@ export const inputComponents = [
   {
     // 组件的自定义配置
     __config__: {
+      label: '主键',
+      fieldType: 'varchar',
+      fieldLength: '36',
+      pointLength: '0',
+      isKey: true,
+      tag: 'el-key',
+      tagIcon: 'key',
+      required: true,
+      layout: 'colFormItem',
+    },
+    // 组件的插槽属性
+    __slot__: {
+      prepend: '',
+      append: ''
+    }
+  },
+  {
+    // 组件的自定义配置
+    __config__: {
       label: '单行文本',
+      fieldType: 'varchar',
+      fieldLength: '200',
+      pointLength: '0',
+      isKey: false,
       labelWidth: null,
       showLabel: true,
       changeTag: true,
@@ -50,6 +75,10 @@ export const inputComponents = [
   {
     __config__: {
       label: '多行文本',
+      fieldType: 'varchar',
+      fieldLength: '1000',
+      pointLength: '0',
+      isKey: false,
       labelWidth: null,
       showLabel: true,
       tag: 'el-input',
@@ -77,6 +106,10 @@ export const inputComponents = [
   {
     __config__: {
       label: '密码',
+      fieldType: 'varchar',
+      fieldLength: '80',
+      pointLength: '0',
+      isKey: false,
       showLabel: true,
       labelWidth: null,
       changeTag: true,
@@ -107,6 +140,10 @@ export const inputComponents = [
   {
     __config__: {
       label: '计数器',
+      fieldType: 'int',
+      fieldLength: '11',
+      pointLength: '0',
+      isKey: false,
       showLabel: true,
       changeTag: true,
       labelWidth: null,
@@ -131,6 +168,10 @@ export const inputComponents = [
   {
     __config__: {
       label: '编辑器',
+      fieldType: 'longtext',
+      fieldLength: '0',
+      pointLength: '0',
+      isKey: false,
       showLabel: true,
       changeTag: true,
       labelWidth: null,
@@ -154,11 +195,21 @@ export const selectComponents = [
   {
     __config__: {
       label: '下拉选择',
+      fieldType: 'varchar',
+      fieldLength: '36',
+      pointLength: '0',
+      isKey: false,
+      url: '/role/list',
+      method: 'get',
+      dataPath: 'records',
+      dataConsumer: '__slot__.options',
       showLabel: true,
       labelWidth: null,
       tag: 'el-select',
       tagIcon: 'select',
       layout: 'colFormItem',
+      defaultValue: [],
+      dataType: 'dynamic',
       span: 24,
       required: true,
       regList: [],
@@ -176,15 +227,25 @@ export const selectComponents = [
     },
     placeholder: '请选择',
     style: {width: '100%'},
-    clearable: true,
+    props: {
+      props: {
+        label: 'label',
+        value: 'value',
+      }
+    },
     disabled: false,
+    clearable: true,
     filterable: false,
     multiple: false
   },
   {
     __config__: {
       label: '级联选择',
-      url: 'https://www.fastmock.site/mock/f8d7a54fb1e60561e2f720d5a810009d/fg/cascaderList',
+      fieldType: 'varchar',
+      fieldLength: '36',
+      pointLength: '0',
+      isKey: false,
+      url: '/接口地址',
       method: 'get',
       dataPath: 'list',
       dataConsumer: 'options',
@@ -230,6 +291,10 @@ export const selectComponents = [
   {
     __config__: {
       label: '单选框组',
+      fieldType: 'varchar',
+      fieldLength: '50',
+      pointLength: '0',
+      isKey: false,
       labelWidth: null,
       showLabel: true,
       tag: 'el-radio-group',
@@ -260,6 +325,10 @@ export const selectComponents = [
   {
     __config__: {
       label: '多选框组',
+      fieldType: 'varchar',
+      fieldLength: '255',
+      pointLength: '0',
+      isKey: false,
       tag: 'el-checkbox-group',
       tagIcon: 'checkbox',
       defaultValue: [],
@@ -291,7 +360,11 @@ export const selectComponents = [
   },
   {
     __config__: {
-      label: '开关',
+      label: '状态/开关',
+      fieldType: 'char',
+      fieldLength: '1',
+      pointLength: '0',
+      isKey: false,
       tag: 'el-switch',
       tagIcon: 'switch',
       defaultValue: false,
@@ -306,16 +379,20 @@ export const selectComponents = [
     },
     style: {},
     disabled: false,
-    'active-text': '',
-    'inactive-text': '',
+    'active-text': '是',
+    'inactive-text': '否',
     'active-color': null,
     'inactive-color': null,
-    'active-value': true,
-    'inactive-value': false
+    'active-value': '1',
+    'inactive-value': '0'
   },
   {
     __config__: {
       label: '滑块',
+      fieldType: 'int',
+      fieldLength: '11',
+      pointLength: '0',
+      isKey: false,
       tag: 'el-slider',
       tagIcon: 'slider',
       defaultValue: null,
@@ -338,6 +415,10 @@ export const selectComponents = [
   {
     __config__: {
       label: '时间选择',
+      fieldType: 'varchar',
+      fieldLength: '10',
+      pointLength: '0',
+      isKey: false,
       tag: 'el-time-picker',
       tagIcon: 'time',
       defaultValue: null,
@@ -363,6 +444,10 @@ export const selectComponents = [
   {
     __config__: {
       label: '时间范围',
+      fieldType: 'varchar',
+      fieldLength: '20',
+      pointLength: '0',
+      isKey: false,
       tag: 'el-time-picker',
       tagIcon: 'time-range',
       span: 24,
@@ -388,6 +473,10 @@ export const selectComponents = [
   {
     __config__: {
       label: '日期选择',
+      fieldType: 'datetime',
+      fieldLength: '0',
+      pointLength: '0',
+      isKey: false,
       tag: 'el-date-picker',
       tagIcon: 'date',
       defaultValue: null,
@@ -412,6 +501,10 @@ export const selectComponents = [
   {
     __config__: {
       label: '日期范围',
+      fieldType: 'varchar',
+      fieldLength: '50',
+      pointLength: '0',
+      isKey: false,
       tag: 'el-date-picker',
       tagIcon: 'date-range',
       defaultValue: null,
@@ -438,6 +531,10 @@ export const selectComponents = [
   {
     __config__: {
       label: '评分',
+      fieldType: 'tinyint',
+      fieldLength: '4',
+      pointLength: '0',
+      isKey: false,
       tag: 'el-rate',
       tagIcon: 'rate',
       defaultValue: 0,
@@ -460,6 +557,10 @@ export const selectComponents = [
   {
     __config__: {
       label: '颜色选择',
+      fieldType: 'varchar',
+      fieldLength: '20',
+      pointLength: '0',
+      isKey: false,
       tag: 'el-color-picker',
       tagIcon: 'color',
       span: 24,
@@ -480,6 +581,7 @@ export const selectComponents = [
   {
     __config__: {
       label: '上传',
+      isTableField: false,
       tag: 'el-upload',
       tagIcon: 'upload',
       layout: 'colFormItem',
@@ -499,7 +601,7 @@ export const selectComponents = [
     __slot__: {
       'list-type': true
     },
-    action: 'https://jsonplaceholder.typicode.com/posts/',
+    action: '/upload/images',
     disabled: false,
     accept: '',
     name: 'file',
@@ -513,9 +615,10 @@ export const selectComponents = [
 export const layoutComponents = [
   {
     __config__: {
+      label: '行容器',
+      isTableField: false,
       layout: 'rowFormItem',
       tagIcon: 'row',
-      label: '行容器',
       layoutTree: true,
       document: 'https://element.eleme.cn/#/zh-CN/component/layout#row-attributes'
     },
@@ -526,6 +629,7 @@ export const layoutComponents = [
   {
     __config__: {
       label: '按钮',
+      isTableField: false,
       showLabel: true,
       changeTag: true,
       labelWidth: null,
@@ -548,6 +652,8 @@ export const layoutComponents = [
   },
   {
     __config__: {
+      label: '表格[开发中]',
+      isTableField: false,
       layout: 'colFormItem',
       tagIcon: 'table',
       tag: 'el-table',
@@ -559,7 +665,6 @@ export const layoutComponents = [
       showLabel: true,
       changeTag: true,
       labelWidth: null,
-      label: '表格[开发中]',
       dataType: 'dynamic',
       method: 'get',
       dataPath: 'list',

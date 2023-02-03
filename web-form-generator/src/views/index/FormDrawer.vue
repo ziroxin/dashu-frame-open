@@ -39,20 +39,19 @@
           <el-col :md="24" :lg="12" class="right-preview">
             <div class="action-bar" :style="{'text-align': 'left'}">
               <span class="bar-btn" @click="runCode">
-                <i class="el-icon-refresh"/>
-                刷新
+                <i class="el-icon-refresh"/>刷新
               </span>
-              <span class="bar-btn" @click="exportFile">
-                <i class="el-icon-download"/>
-                导出vue文件
-              </span>
-              <span ref="copyBtn" class="bar-btn copy-btn">
-                <i class="el-icon-document-copy"/>
-                复制代码
+              <!--              <span class="bar-btn" @click="exportFile">
+                              <i class="el-icon-download"/>导出vue文件
+                            </span>
+                            <span ref="copyBtn" class="bar-btn copy-btn">
+                              <i class="el-icon-document-copy"/>复制代码
+                            </span>-->
+              <span class="bar-btn" @click="generate">
+                <i class="el-icon-s-promotion"/>生成代码
               </span>
               <span class="bar-btn delete-btn" @click="$emit('update:visible', false)">
-                <i class="el-icon-circle-close"/>
-                关闭
+                <i class="el-icon-circle-close"/>关闭
               </span>
             </div>
             <iframe
@@ -262,6 +261,25 @@ export default {
         const blob = new Blob([codeStr], {type: 'text/plain;charset=utf-8'})
         saveAs(blob, value)
       })
+    },
+    // 生成代码
+    generate() {
+      console.log(111, this.formData)
+      let table = {
+        tableDecription: this.formData.tableDecription,// 表注释
+        tableName: this.formData.tableName,// 表名
+      }
+      let fields = []
+      this.formData.fields.forEach(f => {
+        fields.push({
+          name: f.__vModel__,
+          title: f.__config__.label,
+          length: f.maxLength,
+        })
+      })
+      // let fields = [
+      //   {columnName:this.formData.fields.}
+      // ]
     },
     showResource() {
       this.resourceVisible = true

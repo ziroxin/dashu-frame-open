@@ -15,10 +15,10 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
+const port = process.env.port || process.env.npm_config_port || 7777 // dev port
+
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production'
-    ? '/form-generator/'
-    : '/',
+  publicPath: '/',
   pages: {
     index: {
       entry: 'src/views/index/main.js',
@@ -35,10 +35,19 @@ module.exports = {
       minify
     }
   },
+  productionSourceMap: false,
   devServer: {
+    port: port,
+    open: true,
+    proxy: {
+      '/dashuserver': {
+        target: 'http://localhost:8123',
+        changeOrigin: true,
+        pathRewrite: {"^/dashuserver": ""}
+      }
+    },
     overlay: false
   },
-  productionSourceMap: false,
   configureWebpack: {
     externals: {
       vue: 'Vue',

@@ -1,10 +1,15 @@
 import Vue from 'vue'
 import { loadScriptQueue } from '@/utils/loadScript'
-import axios from 'axios'
 import Tinymce from '@/components/tinymce/index.vue'
+import ElKey from "@/components/elkey";
+import request from "@/utils/request";
 
 Vue.component('tinymce', Tinymce)
-Vue.prototype.$axios = axios
+Vue.component('el-key', ElKey)
+Object.assign(Vue.prototype, {
+  $baseServer: process.env.VUE_APP_BASE_API,
+  $request: request
+})
 
 const $previewApp = document.getElementById('previewApp')
 const childAttrs = {

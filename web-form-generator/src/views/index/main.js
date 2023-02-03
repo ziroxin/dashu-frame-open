@@ -3,13 +3,19 @@ import App from './App.vue'
 import router from '@/router'
 import '@/styles/index.scss'
 import '@/icons'
-import axios from 'axios'
 import Tinymce from '@/components/tinymce/index.vue'
+import ElKey from '@/components/elkey/index.vue'
+import request from '@/utils/request'
 
 Vue.component('tinymce', Tinymce)
+Vue.component('el-key', ElKey)
+
+Object.assign(Vue.prototype, {
+  $baseServer: process.env.VUE_APP_BASE_API,
+  $request: request
+})
 
 Vue.config.productionTip = false
-Vue.prototype.$axios = axios
 
 new Vue({
   router,

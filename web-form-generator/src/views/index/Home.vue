@@ -52,17 +52,20 @@
     <div class="center-board">
       <div class="action-bar">
         <el-button icon="el-icon-video-play" type="text" @click="run">
-          运行
+          预览及生成
         </el-button>
         <el-button icon="el-icon-view" type="text" @click="showJson">
           查看json
         </el-button>
-        <el-button icon="el-icon-download" type="text" @click="download">
-          导出vue文件
+        <el-button icon="el-icon-folder-opened" type="text" @click="showJson">
+          已保存的表单
         </el-button>
-        <el-button class="copy-btn-main" icon="el-icon-document-copy" type="text" @click="copy">
-          复制代码
-        </el-button>
+        <!--        <el-button icon="el-icon-download" type="text" @click="download">
+                  导出vue文件
+                </el-button>
+                <el-button class="copy-btn-main" icon="el-icon-document-copy" type="text" @click="copy">
+                  复制代码
+                </el-button>-->
         <el-button class="delete-btn" icon="el-icon-delete" type="text" @click="empty">
           清空
         </el-button>
@@ -293,13 +296,12 @@ export default {
       const {dataType, method, url} = component.__config__
       if (dataType === 'dynamic' && method && url) {
         this.setLoading(component, true)
-        this.$axios({
-          method,
-          url
-        }).then(resp => {
+        this.$request({url: url, method: method}).then(resp => {
           this.setLoading(component, false)
           this.setRespData(component, resp.data)
         })
+      } else {
+        this.setRespData(component, {})
       }
     },
     setLoading(component, val) {
