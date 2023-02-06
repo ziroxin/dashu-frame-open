@@ -1,4 +1,4 @@
-package com.kg.module.quartz.job;
+package com.kg.core.quartz.job;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;

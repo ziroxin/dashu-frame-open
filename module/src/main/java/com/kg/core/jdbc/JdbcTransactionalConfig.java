@@ -1,4 +1,4 @@
-package com.kg.module.jdbc;
+package com.kg.core.jdbc;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
