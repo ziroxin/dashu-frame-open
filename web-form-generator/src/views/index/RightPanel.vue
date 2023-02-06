@@ -643,22 +643,40 @@
         <!-- 表单属性 -->
         <el-form v-show="currentTab === 'form'" size="small" label-width="90px">
           <el-form-item label="表描述">
-            <el-tooltip class="item" effect="dark" content="数据库表功能描述" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="数据库表功能描述" placement="left">
               <el-input v-model="formConf.tableDecription" placeholder="请输入表描述"/>
             </el-tooltip>
           </el-form-item>
           <el-form-item label="表名EN">
-            <el-tooltip class="item" effect="dark" content="数据库表名，英文" placement="bottom">
-              <el-input v-model="formConf.tableName" placeholder="请输入表名"/>
+            <el-tooltip class="item" effect="dark" content="数据库表名，英文" placement="left">
+              <el-input v-model="formConf.tableName" placeholder="请输入表名"
+                        @input="formConf.tablePackage=formConf.tableName.replaceAll('_','');
+                                formConf.viewPath='/'+formConf.tableName.replaceAll('_','');"/>
             </el-tooltip>
+          </el-form-item>
+          <el-form-item label="项目模块">
+            <el-tooltip class="item" effect="dark" content="后台项目根模块，要和后台文件夹保持一致）" placement="left">
+              <el-input v-model="formConf.basePackage" placeholder="请输入项目模块路径"/>
+            </el-tooltip>
+          </el-form-item>
+          <el-form-item label="本模块名">
+            <el-tooltip class="item" effect="dark" content="本模块包名" placement="left">
+              <el-input v-model="formConf.tablePackage" placeholder="请输入本模块名"/>
+            </el-tooltip>
+          </el-form-item>
+          <el-form-item label="前端路径">
+            <el-tooltip class="item" effect="dark" content="vue项目，views下的路径（同时用于生成权限sql）" placement="left">
+              <el-input v-model="formConf.viewPath" placeholder="请输入前端路径"/>
+            </el-tooltip>
+          </el-form-item>
+          <el-form-item label="作者">
+            <el-input v-model="formConf.author" placeholder="请输入作者"/>
           </el-form-item>
           <el-form-item label="表单名">
-            <el-tooltip class="item" effect="dark" content="Form表单的ref" placement="bottom">
-              <el-input v-model="formConf.formRef" placeholder="请输入表单名"/>
-            </el-tooltip>
+            <el-input v-model="formConf.formRef" placeholder="请输入表单名" disabled/>
           </el-form-item>
           <el-form-item label="表单模型">
-            <el-input v-model="formConf.formModel" placeholder="请输入数据模型"/>
+            <el-input v-model="formConf.formModel" placeholder="请输入数据模型" disabled/>
           </el-form-item>
           <el-form-item label="校验模型">
             <el-input v-model="formConf.formRules" placeholder="请输入校验模型"/>
@@ -694,9 +712,6 @@
           </el-form-item>
           <el-form-item label="栅格间隔">
             <el-input-number v-model="formConf.gutter" :min="0" placeholder="栅格间隔"/>
-          </el-form-item>
-          <el-form-item label="禁用表单">
-            <el-switch v-model="formConf.disabled"/>
           </el-form-item>
           <el-form-item label="表单按钮">
             <el-switch v-model="formConf.formBtns"/>

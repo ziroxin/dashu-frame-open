@@ -85,6 +85,10 @@ import {beautifierConf, exportDefault} from '@/utils/index'
 import ResourceDialog from './ResourceDialog'
 import loadMonaco from '@/utils/loadMonaco'
 import loadBeautifier from '@/utils/loadBeautifier'
+import request from "@/utils/request"
+import {generateHtml} from "@/components/generator/generateHtml"
+import {generateJs} from "@/components/generator/generateJs"
+import {generateCss} from "@/components/generator/generateCss"
 
 const editorObj = {
   html: null,
@@ -231,7 +235,6 @@ export default {
               links: this.links
             }
           }
-
           this.$refs.previewPage.contentWindow.postMessage(
             postData,
             location.origin
@@ -262,24 +265,37 @@ export default {
         saveAs(blob, value)
       })
     },
-    // 生成代码
+    // 生成表，并生成代码
     generate() {
-      console.log(111, this.formData)
-      let table = {
-        tableDecription: this.formData.tableDecription,// 表注释
-        tableName: this.formData.tableName,// 表名
+      let generateData = {
+        template: encodeURI(generateHtml(this.formData, this.generateConf)),
+        css: encodeURI(generateCss(this.formData)),
+        ...generateJs(this.formData, this.generateConf)
       }
+      let table = {...this.formData}
       let fields = []
       this.formData.fields.forEach(f => {
         fields.push({
           name: f.__vModel__,
           title: f.__config__.label,
-          length: f.maxLength,
+          type: f.__config__.fieldType,
+          length: f.__config__.fieldLength,
+          point: f.__config__.pointLength,
+          required: f.__config__.required,
+          key: f.__config__.isKey
         })
       })
-      // let fields = [
-      //   {columnName:this.formData.fields.}
-      // ]
+      // 调用接口，开始生成代码
+      this.$confirm('确定要生成表【' + table.tableName + '】吗？本操作将删除数据库中同名的表，无法恢复！！！', '生成代码提醒', {
+        confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+      }).then(() => {
+        let data = {...table, ...generateData, fields: fields}
+        request({url: '/generator/code/byform', method: 'post', data})
+          .then(resp => {
+            this.$message({type: 'success', message: '代码生成成功！'})
+            console.log("代码地址：\n", resp.data)
+          })
+      })
     },
     showResource() {
       this.resourceVisible = true

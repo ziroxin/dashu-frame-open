@@ -23,13 +23,20 @@ public class IndexVue implements ITemplate {
     private IndexVue() {
     }
 
+    // 生成文件地址
     private String viewPath;
-
+    // 是否覆盖代码
     private boolean fileOverride;
-
-    public void setViewPath(String viewPath) {
-        this.viewPath = viewPath;
-    }
+    // 生成代码-模板
+    private String templateHtml;
+    // 生成代码-脚本data
+    private String jsData;
+    // 生成代码-脚本created
+    private String jsCreated;
+    // 生成代码-脚本methods
+    private String jsMethods;
+    // 生成代码-样式
+    private String templateCss;
 
     public String getViewPath() {
         return this.viewPath;
@@ -37,6 +44,26 @@ public class IndexVue implements ITemplate {
 
     public boolean isFileOverride() {
         return fileOverride;
+    }
+
+    public String getTemplateHtml() {
+        return templateHtml;
+    }
+
+    public String getJsData() {
+        return jsData;
+    }
+
+    public String getJsCreated() {
+        return jsCreated;
+    }
+
+    public String getJsMethods() {
+        return jsMethods;
+    }
+
+    public String getTemplateCss() {
+        return templateCss;
     }
 
     @Override
@@ -49,6 +76,11 @@ public class IndexVue implements ITemplate {
         String buttonNamePre = (StringUtils.isNotBlank(config.getPackageConfig().getModuleName()) ? config.getPackageConfig().getModuleName() + "-" : "")
                 + tableInfo.getEntityPath() + "-";
         data.put("buttonNamePre", buttonNamePre);
+        data.put("templateHtml", getTemplateHtml());
+        data.put("jsData", getJsData());
+        data.put("jsCreated", getJsCreated());
+        data.put("jsMethods", getJsMethods());
+        data.put("templateCss", getTemplateCss());
         return data;
     }
 
@@ -62,6 +94,31 @@ public class IndexVue implements ITemplate {
 
         public Builder viewPath(String viewPath) {
             this.indexVue.viewPath = viewPath;
+            return this;
+        }
+
+        public Builder templateHtml(String templateHtml) {
+            this.indexVue.templateHtml = templateHtml;
+            return this;
+        }
+
+        public Builder jsData(String jsData) {
+            this.indexVue.jsData = jsData;
+            return this;
+        }
+
+        public Builder jsCreated(String jsCreated) {
+            this.indexVue.jsCreated = jsCreated;
+            return this;
+        }
+
+        public Builder jsMethods(String jsMethods) {
+            this.indexVue.jsMethods = jsMethods;
+            return this;
+        }
+
+        public Builder templateCss(String templateCss) {
+            this.indexVue.templateCss = templateCss;
             return this;
         }
 

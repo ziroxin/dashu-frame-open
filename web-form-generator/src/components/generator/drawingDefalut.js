@@ -20,7 +20,7 @@ export default [
   },
   {
     __config__: {
-      label: '单行文本',
+      label: '手机号',
       fieldType: 'varchar',
       fieldLength: '20',
       pointLength: '0',
@@ -56,5 +56,33 @@ export default [
     'show-word-limit': true,
     readonly: false,
     disabled: false
+  },
+  {
+    __config__: {
+      label: '顺序',
+      fieldType: 'int',
+      fieldLength: '11',
+      pointLength: '0',
+      isKey: false,
+      showLabel: true,
+      changeTag: true,
+      labelWidth: null,
+      tag: 'el-input-number',
+      tagIcon: 'number',
+      defaultValue: 0,
+      span: 24,
+      layout: 'colFormItem',
+      required: true,
+      regList: [],
+      document: 'https://element.eleme.cn/#/zh-CN/component/input-number'
+    },
+    placeholder: "请输入顺序",
+    min: 0,
+    max: undefined,
+    step: 1,
+    'step-strictly': false,
+    'controls-position': '',
+    disabled: false,
+    __vModel__: 'order_index'
   }
 ]

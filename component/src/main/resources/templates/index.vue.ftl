@@ -50,9 +50,12 @@
 		/>
 		<!-- 添加修改弹窗 -->
 		<el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible">
+<#if templateHtml??>
+			${templateHtml}
+<#else>
 			<el-form ref="dataForm" :model="temp" label-position="right" label-width="100px"
                style="width: 500px; margin-left: 50px;" :disabled="dialogType=='view'">
-<#list table.fields as field>
+  <#list table.fields as field>
 	<#if field.propertyName=='orderIndex'>
 				<el-form-item label="顺序" prop="orderIndex"
                       :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]">
@@ -98,8 +101,9 @@
 				</el-form-item>
         </#if>
 	</#if>
-</#list>
+  </#list>
 			</el-form>
+</#if>
 			<div slot="footer" class="dialog-footer">
 				<el-button v-waves type="primary" v-if="dialogType!='view'" @click="saveData">保存</el-button>
 				<el-button v-waves @click="dialogFormVisible=false">取消</el-button>
@@ -132,11 +136,17 @@ export default {
       dialogFormVisible: false,
       // 表单临时数据
       temp: {},
+<#if jsData??>
+      ${jsData}
+</#if>
     }
   },
   created() {
     this.loadTableList()
     this.resetTemp()
+<#if jsCreated??>
+    ${jsCreated}
+</#if>
   },
   methods: {
     // 显示全部
@@ -268,6 +278,14 @@ export default {
         link.click();
       })
     },
+<#if jsMethods??>
+    ${jsMethods}
+</#if>
   }
 }
 </script>
+<#if templateCss??>
+<style>
+    ${templateCss}
+</style>
+</#if>

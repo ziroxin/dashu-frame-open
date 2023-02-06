@@ -1,4 +1,5 @@
 import axios from 'axios'
+import {Message} from 'element-ui'
 import qs from 'qs'
 import {getToken} from "@/utils/auth";
 
@@ -40,7 +41,13 @@ service.interceptors.response.use(
   // 如果想获取完整http响应信息（如headers,status），可以直接返回response
   response => {
     const res = response.data
-    return res
+    if (res.code == 200) {
+      return res
+    } else {
+      console.log("response：", response);
+      Message({message: res.message, type: 'error', duration: 3 * 1000})
+      return Promise.reject(new Error(res.message || 'Error'))
+    }
   }, error => {
     console.log('err' + error) // for debug
     return Promise.reject(error)
