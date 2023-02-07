@@ -30,9 +30,14 @@ export function titleCase(str) {
   return str.replace(/( |^)[a-z]/g, L => L.toUpperCase())
 }
 
-// 下划转驼峰
+// 中划线转驼峰
 export function camelCase(str) {
   return str.replace(/-[a-z]/g, str1 => str1.substr(-1).toUpperCase())
+}
+
+// 下划线转驼峰
+export function camelCaseUnderline(str) {
+  return str.replace(/_[a-z]/g, str1 => str1.substr(-1).toUpperCase())
 }
 
 export function isNumberStr(str) {

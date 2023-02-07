@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import ruleTrigger from './ruleTrigger'
+import {camelCaseUnderline} from '@/utils'
 
 let confGlobal
 let someSpanIsNot24
@@ -94,7 +95,7 @@ const layouts = {
     }
     const required = !ruleTrigger[config.tag] && config.required ? 'required' : ''
     const tagDom = tags[config.tag] ? tags[config.tag](scheme) : null
-    let str = `<el-form-item ${labelWidth} ${label} prop="${scheme.__vModel__}" ${required}>
+    let str = `<el-form-item ${labelWidth} ${label} prop="${camelCaseUnderline(scheme.__vModel__)}" ${required}>
         ${tagDom}
       </el-form-item>`
     str = colWrapper(scheme, str)
@@ -207,8 +208,8 @@ const tags = {
     const {
       tag, disabled, vModel, clearable, placeholder, width
     } = attrBuilder(el)
-    const options = el.options ? `:options="${el.__vModel__}Options"` : ''
-    const props = el.props ? `:props="${el.__vModel__}Props"` : ''
+    const options = el.options ? `:options="${camelCaseUnderline(el.__vModel__)}Options"` : ''
+    const props = el.props ? `:props="${camelCaseUnderline(el.__vModel__)}Props"` : ''
     const showAllLevels = el['show-all-levels'] ? '' : ':show-all-levels="false"'
     const filterable = el.filterable ? 'filterable' : ''
     const separator = el.separator === '/' ? '' : `separator="${el.separator}"`
@@ -273,15 +274,15 @@ const tags = {
   'el-upload': el => {
     const {tag} = el.__config__
     const disabled = el.disabled ? ':disabled=\'true\'' : ''
-    const action = el.action ? `:action="${el.__vModel__}Action"` : ''
+    const action = el.action ? `:action="${camelCaseUnderline(el.__vModel__)}Action"` : ''
     const multiple = el.multiple ? 'multiple' : ''
     const listType = el['list-type'] !== 'text' ? `list-type="${el['list-type']}"` : ''
     const accept = el.accept ? `accept="${el.accept}"` : ''
     const name = el.name !== 'file' ? `name="${el.name}"` : ''
     const autoUpload = el['auto-upload'] === false ? ':auto-upload="false"' : ''
-    const beforeUpload = `:before-upload="${el.__vModel__}BeforeUpload"`
-    const fileList = `:file-list="${el.__vModel__}fileList"`
-    const ref = `ref="${el.__vModel__}"`
+    const beforeUpload = `:before-upload="${camelCaseUnderline(el.__vModel__)}BeforeUpload"`
+    const fileList = `:file-list="${camelCaseUnderline(el.__vModel__)}fileList"`
+    const ref = `ref="${camelCaseUnderline(el.__vModel__)}"`
     let child = buildElUploadChild(el)
 
     if (child) child = `${child}` // 换行
@@ -298,7 +299,7 @@ const tags = {
 function attrBuilder(el) {
   return {
     tag: el.__config__.tag,
-    vModel: `v-model="${confGlobal.formModel}.${el.__vModel__}"`,
+    vModel: `v-model="${confGlobal.formModel}.${camelCaseUnderline(el.__vModel__)}"`,
     clearable: el.clearable ? 'clearable' : '',
     placeholder: el.placeholder ? `placeholder="${el.placeholder}"` : '',
     width: el.style && el.style.width ? ':style="{width: \'100%\'}"' : '',
@@ -339,7 +340,7 @@ function buildElSelectChild(scheme) {
   }
   const slot = scheme.__slot__
   if (slot && slot.options && slot.options.length) {
-    children.push(`<el-option v-for="(item, index) in ${scheme.__vModel__}Options" :key="index" :label="item.${label}" :value="item.${value}" :disabled="item.disabled"></el-option>`)
+    children.push(`<el-option v-for="(item, index) in ${camelCaseUnderline(scheme.__vModel__)}Options" :key="index" :label="item.${label}" :value="item.${value}" :disabled="item.disabled"></el-option>`)
   }
   return children.join('')
 }
@@ -352,7 +353,7 @@ function buildElRadioGroupChild(scheme) {
   if (slot && slot.options && slot.options.length) {
     const tag = config.optionType === 'button' ? 'el-radio-button' : 'el-radio'
     const border = config.border ? 'border' : ''
-    children.push(`<${tag} v-for="(item, index) in ${scheme.__vModel__}Options" :key="index" :label="item.value" :disabled="item.disabled" ${border}>{{item.label}}</${tag}>`)
+    children.push(`<${tag} v-for="(item, index) in ${camelCaseUnderline(scheme.__vModel__)}Options" :key="index" :label="item.value" :disabled="item.disabled" ${border}>{{item.label}}</${tag}>`)
   }
   return children.join('')
 }
@@ -365,7 +366,7 @@ function buildElCheckboxGroupChild(scheme) {
   if (slot && slot.options && slot.options.length) {
     const tag = config.optionType === 'button' ? 'el-checkbox-button' : 'el-checkbox'
     const border = config.border ? 'border' : ''
-    children.push(`<${tag} v-for="(item, index) in ${scheme.__vModel__}Options" :key="index" :label="item.value" :disabled="item.disabled" ${border}>{{item.label}}</${tag}>`)
+    children.push(`<${tag} v-for="(item, index) in ${camelCaseUnderline(scheme.__vModel__)}Options" :key="index" :label="item.value" :disabled="item.disabled" ${border}>{{item.label}}</${tag}>`)
   }
   return children.join('')
 }

@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import { loadScriptQueue } from '@/utils/loadScript'
 import Tinymce from '@/components/tinymce/index.vue'
-import ElKey from "@/components/elkey";
-import request from "@/utils/request";
+import ElKey from '@/components/elkey'
+import request from '@/utils/request'
 
 Vue.component('tinymce', Tinymce)
 Vue.component('el-key', ElKey)

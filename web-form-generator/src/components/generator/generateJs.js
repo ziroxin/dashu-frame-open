@@ -1,5 +1,5 @@
 import {isArray} from 'util'
-import {deepClone, titleCase} from '@/utils/index'
+import {deepClone, titleCase, camelCaseUnderline} from '@/utils/index'
 import ruleTrigger from './ruleTrigger'
 
 const units = {
@@ -58,7 +58,7 @@ function buildAttributes(scheme, dataList, ruleList, optionsList, methodList, pr
   if (scheme.options || (slot && slot.options && slot.options.length)) {
     buildOptions(scheme, optionsList)
     if (config.dataType === 'dynamic') {
-      const model = `${scheme.__vModel__}Options`
+      const model = `${camelCaseUnderline(scheme.__vModel__)}Options`
       const options = titleCase(model)
       const methodName = `get${options}`
       buildOptionMethod(methodName, model, methodList, scheme)
@@ -74,8 +74,8 @@ function buildAttributes(scheme, dataList, ruleList, optionsList, methodList, pr
   // 处理el-upload的action
   if (scheme.action && config.tag === 'el-upload') {
     uploadVarList.push(
-      `${scheme.__vModel__}Action: '${scheme.action}',
-      ${scheme.__vModel__}fileList: [],`
+      `${camelCaseUnderline(scheme.__vModel__)}Action: '${scheme.action}',
+      ${camelCaseUnderline(scheme.__vModel__)}fileList: [],`
     )
     methodList.push(buildBeforeUpload(scheme))
     // 非自动上传时，生成手动上传的函数
@@ -124,7 +124,7 @@ function buildData(scheme, dataList) {
   const config = scheme.__config__
   if (scheme.__vModel__ === undefined) return
   const defaultValue = JSON.stringify(config.defaultValue)
-  dataList.push(`${scheme.__vModel__}: ${defaultValue},`)
+  dataList.push(`${camelCaseUnderline(scheme.__vModel__)}: ${defaultValue},`)
 }
 
 // 构建校验规则
@@ -148,7 +148,7 @@ function buildRules(scheme, ruleList) {
         }
       })
     }
-    ruleList.push(`${scheme.__vModel__}: [${rules.join(',')}],`)
+    ruleList.push(`${camelCaseUnderline(scheme.__vModel__)}: [${rules.join(',')}],`)
   }
 }
 
@@ -161,12 +161,12 @@ function buildOptions(scheme, optionsList) {
   if (scheme.__config__.dataType === 'dynamic') {
     options = []
   }
-  const str = `${scheme.__vModel__}Options: ${JSON.stringify(options)},`
+  const str = `${camelCaseUnderline(scheme.__vModel__)}Options: ${JSON.stringify(options)},`
   optionsList.push(str)
 }
 
 function buildProps(scheme, propsList) {
-  const str = `${scheme.__vModel__}Props: ${JSON.stringify(scheme.props.props)},`
+  const str = `${camelCaseUnderline(scheme.__vModel__)}Props: ${JSON.stringify(scheme.props.props)},`
   propsList.push(str)
 }
 
@@ -191,7 +191,7 @@ function buildBeforeUpload(scheme) {
     }`
     returnList.push('isAccept')
   }
-  const str = `${scheme.__vModel__}BeforeUpload(file) {
+  const str = `${camelCaseUnderline(scheme.__vModel__)}BeforeUpload(file) {
     ${rightSizeCode}
     ${acceptCode}
     return ${returnList.join('&&')}
@@ -202,7 +202,7 @@ function buildBeforeUpload(scheme) {
 // el-upload的submit
 function buildSubmitUpload(scheme) {
   const str = `submitUpload() {
-    this.$refs['${scheme.__vModel__}'].submit()
+    this.$refs['${camelCaseUnderline(scheme.__vModel__)}'].submit()
   },`
   return str
 }

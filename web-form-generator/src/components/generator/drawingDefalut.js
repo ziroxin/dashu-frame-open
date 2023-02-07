@@ -47,7 +47,7 @@ export default [
       append: ''
     },
     __vModel__: 'mobile',
-    placeholder: '请输入手机号',
+    placeholder: '请输入',
     style: {width: '100%'},
     clearable: true,
     'prefix-icon': 'el-icon-mobile',
@@ -76,7 +76,7 @@ export default [
       regList: [],
       document: 'https://element.eleme.cn/#/zh-CN/component/input-number'
     },
-    placeholder: "请输入顺序",
+    placeholder: "请输入",
     min: 0,
     max: undefined,
     step: 1,

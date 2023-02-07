@@ -232,8 +232,8 @@ export const selectComponents = [
     style: {width: '100%'},
     props: {
       props: {
-        label: 'label',
-        value: 'value',
+        label: 'roleName',
+        value: 'roleId',
       }
     },
     disabled: false,

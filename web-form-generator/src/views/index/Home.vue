@@ -210,14 +210,11 @@ export default {
   watch: {
     // eslint-disable-next-line func-names
     'activeData.__config__.label': function (val, oldVal) {
-      if (
-        this.activeData.placeholder === undefined
-        || !this.activeData.__config__.tag
-        || oldActiveId !== this.activeId
-      ) {
+      if (this.activeData.placeholder === undefined || this.activeData.placeholder.indexOf('请') < 0
+        || !this.activeData.__config__.tag || oldActiveId !== this.activeId) {
         return
       }
-      this.activeData.placeholder = this.activeData.placeholder.replace(oldVal, '') + val
+      this.activeData.placeholder = this.activeData.placeholder.substr(0, 3) + val
     },
     activeId: {
       handler(val) {
@@ -333,6 +330,7 @@ export default {
       const config = clone.__config__
       config.span = this.formConf.span // 生成代码时，会根据span做精简判断
       this.createIdAndKey(clone)
+      console.log('clone:', clone.placeholder)
       clone.placeholder !== undefined && (clone.placeholder += config.label)
       tempActiveData = clone
       return tempActiveData

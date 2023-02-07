@@ -370,6 +370,7 @@
                     <el-input v-model="activeData.props.props.value" placeholder="请输入值键名"/>
                   </el-form-item>
                 </template>
+
                 <div style="text-align: center;">
                   <el-button icon="el-icon-circle-plus-outline" type="text" @click="$emit('fetch-data', activeData)">
                     刷新数据
@@ -398,6 +399,10 @@
                              type="text" @click="addSelectItem">
                     添加选项
                   </el-button>
+
+                  <div style="font-size: 12px;color: #dd1100;margin-top: 5px;">
+                    注意：值类型要和表字段类型一致！否则可能导致无法回显（反例：选项值是数字，表字段是varchar）
+                  </div>
                 </div>
               </template>
               <el-divider/>
