@@ -1,5 +1,5 @@
 import {isArray} from 'util'
-import {exportDefault, titleCase, deepClone} from '@/utils/index'
+import {deepClone, exportDefault, titleCase} from '@/utils/index'
 import ruleTrigger from './ruleTrigger'
 
 const units = {
@@ -78,6 +78,11 @@ function buildAttributes(scheme, dataList, ruleList, optionsList, methodList, pr
       ${scheme.__vModel__}fileList: [],`
     )
     methodList.push(buildBeforeUpload(scheme))
+    methodList.push(buildUploadSuccess(scheme))
+    methodList.push(buildUploadRemove(scheme))
+    if (scheme.__config__.fileLimit != undefined && scheme.__config__.fileLimit > 0) {
+      methodList.push(buildUploadExceed(scheme))
+    }
     // 非自动上传时，生成手动上传的函数
     if (!scheme['auto-upload']) {
       methodList.push(buildSubmitUpload(scheme))
@@ -123,6 +128,7 @@ function mixinMethod(type) {
       handelConfirm: `handelConfirm() {
         this.$refs['${confGlobal.formRef}'].validate(valid => {
           if(!valid) return
+          console.log('表单信息：',this.${confGlobal.formModel});
           this.close()
         })
       },`
@@ -205,7 +211,9 @@ function buildBeforeUpload(scheme) {
     returnList.push('isRightSize')
   }
   if (scheme.accept) {
-    acceptCode = `let isAccept = new RegExp('${scheme.accept}').test(file.type)
+    acceptCode = `let ext = file.name.substring((file.name.lastIndexOf('.')))
+    let extArr = '${scheme.accept}'.split(',')
+    let isAccept = new RegExp('${scheme.accept}').test(file.type) || extArr.includes(ext)
     if(!isAccept){
       this.$message.error('应该选择${scheme.accept}类型的文件')
     }`
@@ -219,9 +227,48 @@ function buildBeforeUpload(scheme) {
   return returnList.length ? str : ''
 }
 
+// el-upload的on-success
+function buildUploadSuccess(scheme) {
+  if (scheme.__config__.isTableField) {
+    // 存主表
+    const str = `${scheme.__vModel__}OnSuccess(response, file, fileList) {
+      if(response.data&&response.data.length>0){
+        this.${confGlobal.formModel}.${scheme.__vModel__} = response.data[0].fileUrl
+      }
+    },`
+    return str
+  } else {
+    // 存子表
+  }
+
+}
+
+// el-upload的on-remove
+function buildUploadRemove(scheme) {
+  if (scheme.__config__.isTableField) {
+    // 存主表
+    const str = `${scheme.__vModel__}OnRemove(file, fileList) {
+      console.log('remove',file.name)
+      this.${confGlobal.formModel}.${scheme.__vModel__} = ''
+      console.log(this.${confGlobal.formModel}.${scheme.__vModel__})
+    },`
+    return str
+  } else {
+    // 存子表
+  }
+}
+
+// el-upload的on-exceed
+function buildUploadExceed(scheme) {
+  const str = `${scheme.__vModel__}OnExceed(files, fileList) {
+    this.$message.error('最多上传 ${scheme.__config__.fileLimit} 个文件')
+  },`
+  return str
+}
+
 // el-upload的submit
 function buildSubmitUpload(scheme) {
-  const str = `submitUpload() {
+  const str = `${scheme.__vModel__}SubmitUpload() {
     this.$refs['${scheme.__vModel__}'].submit()
   },`
   return str

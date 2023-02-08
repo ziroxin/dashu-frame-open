@@ -1,5 +1,5 @@
 import {isArray} from 'util'
-import {deepClone, titleCase, camelCaseUnderline} from '@/utils/index'
+import {camelCaseUnderline, deepClone, titleCase} from '@/utils/index'
 import ruleTrigger from './ruleTrigger'
 
 const units = {
@@ -78,6 +78,11 @@ function buildAttributes(scheme, dataList, ruleList, optionsList, methodList, pr
       ${camelCaseUnderline(scheme.__vModel__)}fileList: [],`
     )
     methodList.push(buildBeforeUpload(scheme))
+    methodList.push(buildUploadSuccess(scheme))
+    methodList.push(buildUploadRemove(scheme))
+    if (scheme.__config__.fileLimit != undefined && scheme.__config__.fileLimit > 0) {
+      methodList.push(buildUploadExceed(scheme))
+    }
     // 非自动上传时，生成手动上传的函数
     if (!scheme['auto-upload']) {
       methodList.push(buildSubmitUpload(scheme))
@@ -185,7 +190,9 @@ function buildBeforeUpload(scheme) {
     returnList.push('isRightSize')
   }
   if (scheme.accept) {
-    acceptCode = `let isAccept = new RegExp('${scheme.accept}').test(file.type)
+    acceptCode = `let ext = file.name.substring((file.name.lastIndexOf('.')))
+    let extArr = '${scheme.accept}'.split(',')
+    let isAccept = new RegExp('${scheme.accept}').test(file.type) || extArr.includes(ext)
     if(!isAccept){
       this.$message.error('应该选择${scheme.accept}类型的文件')
     }`
@@ -199,9 +206,48 @@ function buildBeforeUpload(scheme) {
   return returnList.length ? str : ''
 }
 
+// el-upload的on-success
+function buildUploadSuccess(scheme) {
+  if (scheme.__config__.isTableField) {
+    // 存主表
+    const str = `${camelCaseUnderline(scheme.__vModel__)}OnSuccess(response, file, fileList) {
+      if(response.data&&response.data.length>0){
+        this.${confGlobal.formModel}.${camelCaseUnderline(scheme.__vModel__)} = response.data[0].fileUrl
+      }
+    },`
+    return str
+  } else {
+    // 存子表
+  }
+
+}
+
+// el-upload的on-remove
+function buildUploadRemove(scheme) {
+  if (scheme.__config__.isTableField) {
+    // 存主表
+    const str = `${camelCaseUnderline(scheme.__vModel__)}OnRemove(file, fileList) {
+      console.log('remove',file.name)
+      this.${confGlobal.formModel}.${camelCaseUnderline(scheme.__vModel__)} = ''
+      console.log(this.${confGlobal.formModel}.${camelCaseUnderline(scheme.__vModel__)})
+    },`
+    return str
+  } else {
+    // 存子表
+  }
+}
+
+// el-upload的on-exceed
+function buildUploadExceed(scheme) {
+  const str = `${camelCaseUnderline(scheme.__vModel__)}OnExceed(files, fileList) {
+    this.$message.error('最多上传 ${scheme.__config__.fileLimit} 个文件')
+  },`
+  return str
+}
+
 // el-upload的submit
 function buildSubmitUpload(scheme) {
-  const str = `submitUpload() {
+  const str = `${camelCaseUnderline(scheme.__vModel__)}SubmitUpload() {
     this.$refs['${camelCaseUnderline(scheme.__vModel__)}'].submit()
   },`
   return str
@@ -231,9 +277,9 @@ function buildexport(conf, type, data, rules, selectOptions, uploadVar, props, m
       ${selectOptions}
       ${props}`
   const scriptObj = {
-    jsData: encodeURI(dataStr),
-    jsCreated: encodeURI(`${created}`),
-    jsMethods: encodeURI(`${methods}`)
+    jsData: encodeURIComponent(dataStr),
+    jsCreated: encodeURIComponent(`${created}`),
+    jsMethods: encodeURIComponent(`${methods}`)
   }
   return scriptObj
 }

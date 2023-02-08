@@ -23,6 +23,7 @@ export const inputComponents = [
     // 组件的自定义配置
     __config__: {
       label: '主键',
+      isTableField: true,
       fieldType: 'varchar',
       fieldLength: '36',
       pointLength: '0',
@@ -42,6 +43,7 @@ export const inputComponents = [
     // 组件的自定义配置
     __config__: {
       label: '单行文本',
+      isTableField: true,
       fieldType: 'varchar',
       fieldLength: '200',
       pointLength: '0',
@@ -78,6 +80,7 @@ export const inputComponents = [
   {
     __config__: {
       label: '多行文本',
+      isTableField: true,
       fieldType: 'varchar',
       fieldLength: '1000',
       pointLength: '0',
@@ -109,6 +112,7 @@ export const inputComponents = [
   {
     __config__: {
       label: '密码',
+      isTableField: true,
       fieldType: 'varchar',
       fieldLength: '80',
       pointLength: '0',
@@ -143,6 +147,7 @@ export const inputComponents = [
   {
     __config__: {
       label: '计数器',
+      isTableField: true,
       fieldType: 'int',
       fieldLength: '11',
       pointLength: '0',
@@ -171,6 +176,7 @@ export const inputComponents = [
   {
     __config__: {
       label: '编辑器',
+      isTableField: true,
       fieldType: 'longtext',
       fieldLength: '0',
       pointLength: '0',
@@ -198,6 +204,7 @@ export const selectComponents = [
   {
     __config__: {
       label: '下拉选择',
+      isTableField: true,
       fieldType: 'varchar',
       fieldLength: '36',
       pointLength: '0',
@@ -244,6 +251,7 @@ export const selectComponents = [
   {
     __config__: {
       label: '级联选择',
+      isTableField: true,
       fieldType: 'varchar',
       fieldLength: '36',
       pointLength: '0',
@@ -294,6 +302,7 @@ export const selectComponents = [
   {
     __config__: {
       label: '单选框组',
+      isTableField: true,
       fieldType: 'varchar',
       fieldLength: '50',
       pointLength: '0',
@@ -328,6 +337,7 @@ export const selectComponents = [
   {
     __config__: {
       label: '多选框组',
+      isTableField: true,
       fieldType: 'varchar',
       fieldLength: '255',
       pointLength: '0',
@@ -364,6 +374,7 @@ export const selectComponents = [
   {
     __config__: {
       label: '状态/开关',
+      isTableField: true,
       fieldType: 'char',
       fieldLength: '1',
       pointLength: '0',
@@ -392,6 +403,7 @@ export const selectComponents = [
   {
     __config__: {
       label: '滑块',
+      isTableField: true,
       fieldType: 'int',
       fieldLength: '11',
       pointLength: '0',
@@ -418,6 +430,7 @@ export const selectComponents = [
   {
     __config__: {
       label: '时间选择',
+      isTableField: true,
       fieldType: 'varchar',
       fieldLength: '10',
       pointLength: '0',
@@ -447,6 +460,7 @@ export const selectComponents = [
   {
     __config__: {
       label: '时间范围',
+      isTableField: true,
       fieldType: 'varchar',
       fieldLength: '20',
       pointLength: '0',
@@ -476,6 +490,7 @@ export const selectComponents = [
   {
     __config__: {
       label: '日期选择',
+      isTableField: true,
       fieldType: 'datetime',
       fieldLength: '0',
       pointLength: '0',
@@ -504,6 +519,7 @@ export const selectComponents = [
   {
     __config__: {
       label: '日期范围',
+      isTableField: true,
       fieldType: 'varchar',
       fieldLength: '50',
       pointLength: '0',
@@ -534,6 +550,7 @@ export const selectComponents = [
   {
     __config__: {
       label: '评分',
+      isTableField: true,
       fieldType: 'tinyint',
       fieldLength: '4',
       pointLength: '0',
@@ -560,6 +577,7 @@ export const selectComponents = [
   {
     __config__: {
       label: '颜色选择',
+      isTableField: true,
       fieldType: 'varchar',
       fieldLength: '20',
       pointLength: '0',
@@ -582,9 +600,14 @@ export const selectComponents = [
     size: 'medium'
   },
   {
+    // todo 上传文件，单表和多表区分
     __config__: {
       label: '上传',
       isTableField: false,
+      fieldType: 'varchar',
+      fieldLength: '200',
+      pointLength: '0',
+      isKey: false,
       tag: 'el-upload',
       tagIcon: 'upload',
       layout: 'colFormItem',
@@ -598,13 +621,14 @@ export const selectComponents = [
       regList: [],
       changeTag: true,
       fileSize: 2,
+      fileLimit: 0,
       sizeUnit: 'MB',
       document: 'https://element.eleme.cn/#/zh-CN/component/upload'
     },
     __slot__: {
       'list-type': true
     },
-    action: '/upload/images',
+    action: '/upload/files',
     disabled: false,
     accept: '',
     name: 'file',

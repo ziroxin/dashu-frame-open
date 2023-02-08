@@ -3,6 +3,7 @@ export default [
     // 组件的自定义配置
     __config__: {
       label: '主键',
+      isTableField: true,
       fieldType: 'varchar',
       fieldLength: '36',
       pointLength: '0',
@@ -21,6 +22,7 @@ export default [
   {
     __config__: {
       label: '手机号',
+      isTableField: true,
       fieldType: 'varchar',
       fieldLength: '20',
       pointLength: '0',
@@ -60,6 +62,7 @@ export default [
   {
     __config__: {
       label: '顺序',
+      isTableField: true,
       fieldType: 'int',
       fieldLength: '11',
       pointLength: '0',

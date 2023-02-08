@@ -24,8 +24,15 @@
             </el-select>
           </el-form-item>
 
-          <template v-if="activeData.__config__.isTableField !== false">
-            <el-divider>表属性</el-divider>
+          <template>
+            <el-form-item v-if="activeData.__config__.tag === 'el-upload'" label="是否单独存子表" label-width="110px">
+              <el-switch v-model="activeData.__config__.isTableField" active-color="#ff4949"
+                         active-text="存主表-限1附件" :active-value="true" inactive-text="存子表" :inactive-value="false"
+                         @change="activeData.__config__.fileLimit=activeData.__config__.isTableField?1:0"/>
+            </el-form-item>
+          </template>
+          <template v-if="activeData.__config__.isTableField">
+            <el-divider>字段属性</el-divider>
             <el-form-item v-if="activeData.__config__.label!==undefined" label="标题">
               <el-input v-model="activeData.__config__.label" placeholder="请输入标题" @input="changeRenderKey"/>
             </el-form-item>
@@ -237,25 +244,34 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item v-if="activeData.name !== undefined" label="文件字段名">
+            <el-form-item v-if="activeData.name !== undefined" label="input-name">
               <el-input v-model="activeData.name" placeholder="请输入上传文件字段名"/>
             </el-form-item>
-            <el-form-item v-if="activeData.accept !== undefined" label="文件类型">
-              <el-select
-                v-model="activeData.accept"
-                placeholder="请选择文件类型"
-                :style="{ width: '100%' }"
-                clearable
-              >
-                <el-option label="图片" value="image/*"/>
-                <el-option label="视频" value="video/*"/>
-                <el-option label="音频" value="audio/*"/>
-                <el-option label="excel" value=".xls,.xlsx"/>
-                <el-option label="word" value=".doc,.docx"/>
-                <el-option label="pdf" value=".pdf"/>
-                <el-option label="txt" value=".txt"/>
-              </el-select>
-            </el-form-item>
+            <template v-if="activeData.accept !== undefined">
+              <el-form-item label="文件类型">
+                <el-tooltip class="item" effect="dark" content="以本输入框内容为最终限制类型，为空时不限制文件类型（下拉框可快速选择常见类型）" placement="left">
+                  <el-input v-model="activeData.accept" placeholder="请输入文件类型"></el-input>
+                </el-tooltip>
+              </el-form-item>
+              <el-form-item label="">
+                <el-select v-model="activeData.acceptMulti" placeholder="请选择文件类型" :style="{ width: '100%' }"
+                           multiple clearable>
+                  <el-option label="图片-常用" value=".gif,.png,.bmp,.jpg,.jpeg"/>
+                  <el-option label="Excel" value=".xls,.xlsx"/>
+                  <el-option label="Word" value=".doc,.docx"/>
+                  <el-option label="PPT" value=".ppt,.pptx"/>
+                  <el-option label="Pdf" value=".pdf"/>
+                  <el-option label="Txt" value=".txt"/>
+                  <el-option label="Zip" value=".zip"/>
+                  <el-option label="Rar" value=".rar"/>
+                  <el-option label="Mp4" value=".mp4"/>
+                  <el-option label="Mp3" value=".mp3"/>
+                  <el-option label="图片-全" value="image/*"/>
+                  <el-option label="视频-全" value="video/*"/>
+                  <el-option label="音频-全" value="audio/*"/>
+                </el-select>
+              </el-form-item>
+            </template>
             <el-form-item v-if="activeData.__config__.fileSize !== undefined" label="文件大小">
               <el-input v-model.number="activeData.__config__.fileSize" placeholder="请输入文件大小">
                 <el-select slot="append" v-model="activeData.__config__.sizeUnit" :style="{ width: '66px' }">
@@ -264,6 +280,11 @@
                   <el-option label="GB" value="GB"/>
                 </el-select>
               </el-input>
+            </el-form-item>
+            <el-form-item v-if="activeData.__config__.fileLimit !== undefined" label="限制个数">
+              <el-tooltip class="item" effect="dark" content="上传文件限制个数（0-不限制）" placement="left">
+                <el-input-number v-model.number="activeData.__config__.fileLimit" :disabled="activeData.__config__.isTableField"></el-input-number>
+              </el-tooltip>
             </el-form-item>
             <el-form-item v-if="activeData.action !== undefined" label="上传地址">
               <el-input v-model="activeData.action" placeholder="请输入上传地址" clearable/>
@@ -583,7 +604,7 @@
             <el-form-item v-if="activeData.__config__.showTip !== undefined" label="显示提示">
               <el-switch v-model="activeData.__config__.showTip"/>
             </el-form-item>
-            <el-form-item v-if="activeData.__config__.tag === 'el-upload'" label="多选文件">
+            <el-form-item v-if="activeData.__config__.tag === 'el-upload' && !activeData.__config__.isTableField" label="多选文件">
               <el-switch v-model="activeData.multiple"/>
             </el-form-item>
             <el-form-item v-if="activeData['auto-upload'] !== undefined" label="自动上传">
@@ -768,85 +789,17 @@ export default {
       dialogVisible: false,
       iconsVisible: false,
       currentIconModel: null,
-      dateTypeOptions: [
-        {
-          label: '日(date)',
-          value: 'date'
-        },
-        {
-          label: '周(week)',
-          value: 'week'
-        },
-        {
-          label: '月(month)',
-          value: 'month'
-        },
-        {
-          label: '年(year)',
-          value: 'year'
-        },
-        {
-          label: '日期时间(datetime)',
-          value: 'datetime'
-        }
+      dateTypeOptions: [{label: '日(date)', value: 'date'}, {label: '周(week)', value: 'week'},
+        {label: '月(month)', value: 'month'}, {label: '年(year)', value: 'year'}, {label: '日期时间(datetime)', value: 'datetime'}
       ],
-      dateRangeTypeOptions: [
-        {
-          label: '日期范围(daterange)',
-          value: 'daterange'
-        },
-        {
-          label: '月范围(monthrange)',
-          value: 'monthrange'
-        },
-        {
-          label: '日期时间范围(datetimerange)',
-          value: 'datetimerange'
-        }
+      dateRangeTypeOptions: [{label: '日期范围(daterange)', value: 'daterange'},
+        {label: '月范围(monthrange)', value: 'monthrange'}, {label: '日期时间范围(datetimerange)', value: 'datetimerange'}
       ],
-      colorFormatOptions: [
-        {
-          label: 'hex',
-          value: 'hex'
-        },
-        {
-          label: 'rgb',
-          value: 'rgb'
-        },
-        {
-          label: 'rgba',
-          value: 'rgba'
-        },
-        {
-          label: 'hsv',
-          value: 'hsv'
-        },
-        {
-          label: 'hsl',
-          value: 'hsl'
-        }
+      colorFormatOptions: [{label: 'hex', value: 'hex'}, {label: 'rgb', value: 'rgb'},
+        {label: 'rgba', value: 'rgba'}, {label: 'hsv', value: 'hsv'}, {label: 'hsl', value: 'hsl'}
       ],
-      justifyOptions: [
-        {
-          label: 'start',
-          value: 'start'
-        },
-        {
-          label: 'end',
-          value: 'end'
-        },
-        {
-          label: 'center',
-          value: 'center'
-        },
-        {
-          label: 'space-around',
-          value: 'space-around'
-        },
-        {
-          label: 'space-between',
-          value: 'space-between'
-        }
+      justifyOptions: [{label: 'start', value: 'start'}, {label: 'end', value: 'end'},
+        {label: 'center', value: 'center'}, {label: 'space-around', value: 'space-around'}, {label: 'space-between', value: 'space-between'}
       ],
       layoutTreeProps: {
         label(data, node) {
@@ -858,7 +811,7 @@ export default {
         'varchar', 'char', 'int', 'tinyint', 'datetime', 'float', 'double', 'decimal', 'text',
         'bigint', 'smallint', 'longtext', 'blob', 'longblob', 'date', 'timestamp', 'time',
         'enum', 'mediumtext', 'varbinary', 'bit', 'set'
-      ]
+      ],
     }
   },
   computed: {
@@ -906,6 +859,12 @@ export default {
     }
   },
   watch: {
+    'activeData.acceptMulti'() {
+      if (this.activeData.acceptMulti === undefined || this.activeData.__config__.tag !== 'el-upload') {
+        return
+      }
+      this.activeData.accept = this.activeData.acceptMulti.join(',')
+    },
     formConf: {
       handler(val) {
         saveFormConf(val)

@@ -271,19 +271,22 @@ const tags = {
   'el-upload': el => {
     const {tag} = el.__config__
     const disabled = el.disabled ? ':disabled=\'true\'' : ''
-    const action = el.action ? `:action="${el.__vModel__}Action"` : ''
+    const action = el.action ? `:action="this.$baseServer+${el.__vModel__}Action"` : ''
     const multiple = el.multiple ? 'multiple' : ''
     const listType = el['list-type'] !== 'text' ? `list-type="${el['list-type']}"` : ''
     const accept = el.accept ? `accept="${el.accept}"` : ''
     const name = el.name !== 'file' ? `name="${el.name}"` : ''
     const autoUpload = el['auto-upload'] === false ? ':auto-upload="false"' : ''
     const beforeUpload = `:before-upload="${el.__vModel__}BeforeUpload"`
+    const onSuccess = `:on-success="${el.__vModel__}OnSuccess"`
+    const onRemove = `:on-remove="${el.__vModel__}OnRemove"`
+    const onExceed = el.__config__.fileLimit != undefined && el.__config__.fileLimit > 0 ? `:limit="${el.__config__.fileLimit}" :on-exceed="${el.__vModel__}OnExceed"` : ''
     const fileList = `:file-list="${el.__vModel__}fileList"`
     const ref = `ref="${el.__vModel__}"`
     let child = buildElUploadChild(el)
 
     if (child) child = `\n${child}\n` // 换行
-    return `<${tag} ${ref} ${fileList} ${action} ${autoUpload} ${multiple} ${beforeUpload} ${listType} ${accept} ${name} ${disabled}>${child}</${tag}>`
+    return `<${tag} ${ref} ${fileList} ${action} ${autoUpload} ${multiple} ${beforeUpload} ${onSuccess} ${onRemove} ${onExceed} ${listType} ${accept} ${name} ${disabled}>${child}</${tag}>`
   },
   tinymce: el => {
     const {tag, vModel, placeholder} = attrBuilder(el)

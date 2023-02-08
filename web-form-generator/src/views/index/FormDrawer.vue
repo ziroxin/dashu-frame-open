@@ -268,8 +268,8 @@ export default {
     // 生成表，并生成代码
     generate() {
       let generateData = {
-        template: encodeURI(generateHtml(this.formData, this.generateConf)),
-        css: encodeURI(generateCss(this.formData)),
+        template: encodeURIComponent(generateHtml(this.formData, this.generateConf)),
+        css: encodeURIComponent(generateCss(this.formData)),
         ...generateJs(this.formData, this.generateConf)
       }
       let table = {...this.formData}
