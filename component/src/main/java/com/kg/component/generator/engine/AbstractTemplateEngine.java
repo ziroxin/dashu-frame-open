@@ -357,10 +357,14 @@ public abstract class AbstractTemplateEngine {
                 outputService(tableInfo, objectMap);
                 // controller
                 outputController(tableInfo, objectMap);
-                // indexVue
-                outputIndexVue(tableInfo, objectMap);
-                // permissionSQL
-                outputPermissionSQL(tableInfo, objectMap);
+
+                // vue路径未配置时，不生成前端vue和权限sql
+                if (objectMap.get("permissionRouter") != null) {
+                    // indexVue
+                    outputIndexVue(tableInfo, objectMap);
+                    // permissionSQL
+                    outputPermissionSQL(tableInfo, objectMap);
+                }
             });
         } catch (Exception e) {
             throw new RuntimeException("无法创建文件，请检查配置信息！", e);
