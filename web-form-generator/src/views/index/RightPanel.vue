@@ -24,11 +24,14 @@
             </el-select>
           </el-form-item>
 
-          <template>
-            <el-form-item v-if="activeData.__config__.tag === 'el-upload'" label="是否单独存子表" label-width="110px">
+          <template v-if="activeData.__config__.tag === 'el-upload'">
+            <el-form-item label="是否单独存子表" label-width="110px">
               <el-switch v-model="activeData.__config__.isTableField" active-color="#ff4949"
                          active-text="存主表-限1附件" :active-value="true" inactive-text="存子表" :inactive-value="false"
                          @change="activeData.__config__.fileLimit=activeData.__config__.isTableField?1:0"/>
+            </el-form-item>
+            <el-form-item v-if="!activeData.__config__.isTableField" label="子表名">
+              <el-input v-model="activeData.__config__.childTableName" required placeholder="请输入子表名"/>
             </el-form-item>
           </template>
           <template v-if="activeData.__config__.isTableField">

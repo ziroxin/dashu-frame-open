@@ -218,6 +218,10 @@ function buildUploadSuccess(scheme) {
     return str
   } else {
     // 存子表
+    const str = `${camelCaseUnderline(scheme.__vModel__)}OnSuccess(response, file, fileList) {
+      this.${camelCaseUnderline(scheme.__vModel__)}fileList = fileList
+    },`
+    return str
   }
 
 }
@@ -227,13 +231,15 @@ function buildUploadRemove(scheme) {
   if (scheme.__config__.isTableField) {
     // 存主表
     const str = `${camelCaseUnderline(scheme.__vModel__)}OnRemove(file, fileList) {
-      console.log('remove',file.name)
       this.${confGlobal.formModel}.${camelCaseUnderline(scheme.__vModel__)} = ''
-      console.log(this.${confGlobal.formModel}.${camelCaseUnderline(scheme.__vModel__)})
     },`
     return str
   } else {
     // 存子表
+    const str = `${camelCaseUnderline(scheme.__vModel__)}OnRemove(file, fileList) {
+      this.${camelCaseUnderline(scheme.__vModel__)}fileList = fileList
+    },`
+    return str
   }
 }
 

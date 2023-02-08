@@ -282,7 +282,8 @@ export default {
           length: f.__config__.fieldLength,
           point: f.__config__.pointLength,
           required: f.__config__.required,
-          key: f.__config__.isKey
+          key: f.__config__.isKey,
+          childFileTable: f.__config__.childTableName
         })
       })
       // 调用接口，开始生成代码
