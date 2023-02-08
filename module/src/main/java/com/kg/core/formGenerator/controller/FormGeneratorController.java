@@ -1,5 +1,6 @@
 package com.kg.core.formGenerator.controller;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -25,10 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -70,16 +68,28 @@ public class FormGeneratorController {
          * 说明：表名、主键类型、包名、前端view路径，必须是一对一的数组
          */
         // 表名
-        String[] tableNames = new String[]{tableDTO.getTableName()};
+        LinkedList<String> tableNames = new LinkedList<>();
+        tableNames.add(tableDTO.getTableName());
         // 表主键类型（如：IdType.ASSIGN_UUID、IdType.ASSIGN_ID）
-        IdType[] idTypes = new IdType[]{IdType.ASSIGN_UUID};
+        LinkedList<IdType> idTypes = new LinkedList<>();
+        idTypes.add(IdType.ASSIGN_UUID);
         // 包名
-        String[] packages = new String[]{tableDTO.getTablePackage()};
+        LinkedList<String> packages = new LinkedList<>();
+        packages.add(tableDTO.getTablePackage());
         // 前端view路径
-        String[] viewpaths = new String[]{tableDTO.getViewPath()};
-
+        LinkedList<String> viewPaths = new LinkedList<>();
+        viewPaths.add(tableDTO.getViewPath());
+        // 处理附件子表
+        for (TableFieldDTO field : tableDTO.getFields()) {
+            if (StringUtils.hasText(field.getChildFileTable())) {
+                tableNames.add(field.getChildFileTable());
+                idTypes.add(IdType.ASSIGN_UUID);
+                packages.add(StrUtil.toCamelCase(field.getChildFileTable()));
+                viewPaths.add("");
+            }
+        }
         // ==================================开始执行生成=====================================
-        start(basePath, basePackage, author, tableNames, idTypes, packages, viewpaths, tableDTO);
+        start(basePath, basePackage, author, tableNames, idTypes, packages, viewPaths, tableDTO);
         // 打成压缩包
         String zipPath = basePath + ".zip";
         ZipUtil.zip(basePath, zipPath);
@@ -94,10 +104,9 @@ public class FormGeneratorController {
     }
 
     // 代码生成器开始生成
-    private void start(String basePath, String basePackage, String author, String[] tableNames,
-                       IdType[] idTypes, String[] packages, String[] viewpaths, TableDTO tableDTO) {
-
-        for (int i = 0; i < tableNames.length; i++) {
+    private void start(String basePath, String basePackage, String author, LinkedList<String> tableNames,
+                       LinkedList<IdType> idTypes, LinkedList<String> packages, LinkedList<String> viewPaths, TableDTO tableDTO) {
+        for (int i = 0; i < tableNames.size(); i++) {
             // ===========================================执行生成=======================
             // 配置文件路径
             Map<OutputFile, String> pathInfo = new HashMap<>();
@@ -119,7 +128,7 @@ public class FormGeneratorController {
                     })
                     .packageConfig(builder -> {
                         builder.parent(basePackage) // 设置父包名
-                                .moduleName(packages[finalIndex]) // 设置父包模块名
+                                .moduleName(packages.get(finalIndex)) // 设置父包模块名
                                 // 设置各包路径
                                 .entity("entity")
                                 .dto("dto")
@@ -135,18 +144,22 @@ public class FormGeneratorController {
                     })
                     .strategyConfig(builder -> {
                         try {
-                            builder.addInclude(tableNames[finalIndex])// 设置需要生成的表名
-                                    .indexVueBuilder()// ===============indexVue配置
-                                    .templateHtml(URLDecoder.decode(tableDTO.getTemplate(), "UTF-8"))
-                                    .jsData(URLDecoder.decode(tableDTO.getJsData(), "UTF-8"))
-                                    .jsCreated(URLDecoder.decode(tableDTO.getJsCreated(), "UTF-8"))
-                                    .jsMethods(URLDecoder.decode(tableDTO.getJsMethods(), "UTF-8"))
-                                    .templateCss(URLDecoder.decode(tableDTO.getCss(), "UTF-8"))
-                                    .enableFileOverride()
-                                    .viewPath(viewpaths[finalIndex])// 前端文件路径
-                                    .permissionSQLBuilder()// ==========permissionSQL配置
-                                    .enableFileOverride()
-                                    .controllerBuilder()// =============controller配置
+                            // 设置需要生成的表名
+                            builder.addInclude(tableNames.get(finalIndex));
+                            // ===============indexVue配置
+                            if (viewPaths.size() > finalIndex && StringUtils.hasText(viewPaths.get(finalIndex))) {
+                                builder.indexVueBuilder()
+                                        .templateHtml(URLDecoder.decode(tableDTO.getTemplate(), "UTF-8"))
+                                        .jsData(URLDecoder.decode(tableDTO.getJsData(), "UTF-8"))
+                                        .jsCreated(URLDecoder.decode(tableDTO.getJsCreated(), "UTF-8"))
+                                        .jsMethods(URLDecoder.decode(tableDTO.getJsMethods(), "UTF-8"))
+                                        .templateCss(URLDecoder.decode(tableDTO.getCss(), "UTF-8"))
+                                        .enableFileOverride()
+                                        .viewPath(viewPaths.get(finalIndex))// 前端文件路径
+                                        .permissionSQLBuilder()// ==========permissionSQL配置
+                                        .enableFileOverride();
+                            }
+                            builder.controllerBuilder()// =============controller配置
                                     .enableFileOverride()// 生成覆盖
                                     .enableRestStyle()// 开启RestController
                                     .serviceBuilder()// ================service配置
@@ -162,7 +175,7 @@ public class FormGeneratorController {
                                     .entityBuilder()// =================entity配置
                                     .enableFileOverride()
                                     .superClass(BaseEntity.class)
-                                    .idType(idTypes[finalIndex])// 生成id类型
+                                    .idType(idTypes.get(finalIndex))// 生成id类型
                                     .enableTableFieldAnnotation()// 生成TableField
                                     .addTableFills(new Column("create_time", FieldFill.INSERT))// 创建时间
                                     .addTableFills(new Column("update_time", FieldFill.INSERT_UPDATE))// 修改时间
@@ -213,10 +226,25 @@ public class FormGeneratorController {
             if (field.isKey()) {
                 keysArr.add(" `" + field.getName() + "` ");
             }
+            // 附件子表
+            if (StringUtils.hasText(field.getChildFileTable())) {
+                // 判断附件是否有此表
+                jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `" + field.getChildFileTable() + "` (" +
+                        "  `file_id` varchar(36) NOT NULL COMMENT '附件id'," +
+                        "  `" + tableDTO.getTableName() + "_id` varchar(36) NULL COMMENT '主表id'," +
+                        "  `file_url` varchar(100) NULL COMMENT '文件地址（文件访问地址）'," +
+                        "  `file_old_name` varchar(200) NULL COMMENT '原文件名'," +
+                        "  `file_name` varchar(100) NULL COMMENT '存储文件名'," +
+                        "  `file_extend` varchar(20) NULL COMMENT '文件扩展名'," +
+                        "  `file_size` bigint(20) NULL COMMENT '文件大小'," +
+                        "  `create_time` datetime(0) NULL COMMENT '附件上传时间'," +
+                        "  PRIMARY KEY (`file_id`) USING BTREE" +
+                        ") COMMENT = '" + tableDTO.getTableDecription() + "附件表';");
+            }
         }
         // 自动配置时间字段
-        fieldsArr.add("`create_time` datetime(0) NULL DEFAULT NULL COMMENT '添加时间'");
-        fieldsArr.add("`update_time` datetime(0) NULL DEFAULT NULL COMMENT '修改时间'");
+        fieldsArr.add("`create_time` datetime(0) NULL COMMENT '添加时间'");
+        fieldsArr.add("`update_time` datetime(0) NULL COMMENT '修改时间'");
         // 组装创建表sql
         StringBuilder createSql = new StringBuilder();
         createSql.append("CREATE TABLE ");

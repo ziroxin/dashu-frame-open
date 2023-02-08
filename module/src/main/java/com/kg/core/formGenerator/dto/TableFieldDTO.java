@@ -40,4 +40,8 @@ public class TableFieldDTO {
      * 注释
      */
     private String title;
+    /**
+     * 附件，子表名
+     */
+    private String childFileTable;
 }
