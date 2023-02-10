@@ -3,7 +3,9 @@ package com.kg.core.xss;
 import cn.hutool.core.util.EscapeUtil;
 import org.springframework.util.StringUtils;
 
+import java.util.LinkedList;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * XSS html处理工具类
@@ -47,11 +49,13 @@ public class XssFormatUtil {
                 value = scriptPattern.matcher(value).replaceAll("");
             }
         }
-        // " 替换成 ' （单引号不编码html）
-        value = value.replaceAll("\"", "'");
-        // 编译html
-        value = EscapeUtil.escapeHtml4(value);
-        return value;
+        // 根据 " 分成数组进行编码， " 为特殊字符，不编码
+        String[] strs = value.split("\"");
+        LinkedList<String> resultList = new LinkedList<>();
+        for (String str : strs) {
+            resultList.add(EscapeUtil.escapeHtml4(str));
+        }
+        return resultList.stream().collect(Collectors.joining("\""));
     }
 
     /**

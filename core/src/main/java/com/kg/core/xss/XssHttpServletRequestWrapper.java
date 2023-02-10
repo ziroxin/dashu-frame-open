@@ -135,17 +135,21 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
             // 为空时，直接返回
             return;
         }
-        Map<String, Object> bodyMap = JSONUtil.toBean(body, Map.class);
-        Map<String, Object> result = new HashMap<>(bodyMap.size());
-        for (String key : bodyMap.keySet()) {
-            Object val = bodyMap.get(key);
-            if (bodyMap.get(key) instanceof String) {
-                result.put(key, XssFormatUtil.cleanHtml(val.toString()));
-            } else {
-                result.put(key, val);
+        if (JSONUtil.isTypeJSONObject(body)) {
+            Map<String, Object> bodyMap = JSONUtil.toBean(body, Map.class);
+            Map<String, Object> result = new HashMap<>(bodyMap.size());
+            for (String key : bodyMap.keySet()) {
+                Object val = bodyMap.get(key);
+                if (bodyMap.get(key) instanceof String) {
+                    result.put(key, XssFormatUtil.cleanHtml(val.toString()));
+                } else {
+                    result.put(key, val);
+                }
             }
+            requestBody = JSONUtil.toJsonStr(result);
+        } else {
+            requestBody = XssFormatUtil.cleanHtml(body);
         }
-        requestBody = JSONUtil.toJsonStr(result);
     }
 
     @Override
