@@ -25,6 +25,8 @@
                 <item :icon="row.permissionIcon" :title="row.permissionTitle"/>
                 <el-tag v-if="row.permissionType === '0'" disable-transitions size="mini">路由</el-tag>
                 <el-tag v-if="row.permissionType === '2'" disable-transitions type="success" size="mini">外链</el-tag>
+                <el-tag v-if="!row.permissionIsShow" disable-transitions type="danger" size="mini">隐藏</el-tag>
+                <el-tag v-if="!row.permissionIsEnabled" disable-transitions type="danger" size="mini">禁用</el-tag>
               </li>
             </template>
           </el-table-column>
@@ -35,6 +37,11 @@
                   菜单标记：{{ row.permissionName }}
                   <br>菜单地址：{{ row.permissionRouter }}
                   <br>组件地址：{{ row.permissionComponent }}
+                  <br>noRedirect: {{ row.noRedirect }}
+                  <br>noCache: {{ row.noCache }}
+                  <br>breadcrumb: {{ row.breadcrumb }}
+                  <br>affix: {{ row.affix }}
+                  <br>activeMenu: {{ row.activeMenu }}
                 </div>
                 <el-button>{{ row.permissionRouter }}</el-button>
               </el-tooltip>
@@ -58,8 +65,8 @@
     </el-row>
 
     <!--    添加和修改菜单窗口-->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :close-on-click-modal="false">
-      <el-form ref="dataForm" :model="temp" :rules="rules" label-position="right" label-width="100px"
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="700px" :close-on-click-modal="false">
+      <el-form ref="dataForm" :model="temp" :rules="rules" label-position="right" label-width="110px"
                style="width: 600px; margin-left: 30px;"
       >
         <el-form-item label="菜单类型：" prop="permissionType">
@@ -87,6 +94,36 @@
           <el-input v-model="temp.permissionComponent" placeholder="组件完整地址（例：/system/menu/index）"/>
           <el-tag type="info">根节点请填写：/layout/index</el-tag>
         </el-form-item>
+
+        <el-form-item v-if="routerShow" label="是否显示：" prop="permissionIsShow">
+          <el-switch v-model="temp.permissionIsShow" :active-value="true" active-text="显示"
+                     :inactive-value="false" inactive-text="隐藏"></el-switch>
+        </el-form-item>
+        <el-form-item v-if="routerShow && !temp.permissionIsShow" label="activeMenu：" prop="activeMenu">
+          <el-input v-model="temp.activeMenu" placeholder="本路由hidden时，请填写菜单栏高亮显示的路由"/>
+        </el-form-item>
+
+        <el-form-item v-if="routerShow" label="redirect：" prop="noRedirect">
+          <el-switch v-model="temp.noRedirect" active-value="noRedirect" active-text="NoRedirect"
+                     inactive-value="" inactive-text="否"></el-switch>
+          <el-tag type="info" style="margin-left: 20px;">等于noRedirect时,在面包屑导航不可点击</el-tag>
+        </el-form-item>
+        <el-form-item v-if="routerShow" label="noCache：" prop="noCache">
+          <el-switch v-model="temp.noCache" :active-value="true" active-text="TRUE"
+                     :inactive-value="false" inactive-text="FALSE"></el-switch>
+          <el-tag type="info" style="margin-left: 20px;">默认false,为true时不被keep-alive缓存</el-tag>
+        </el-form-item>
+        <el-form-item v-if="routerShow" label="breadcrumb：" prop="breadcrumb">
+          <el-switch v-model="temp.breadcrumb" :active-value="true" active-text="TRUE"
+                     :inactive-value="false" inactive-text="FALSE"></el-switch>
+          <el-tag type="info" style="margin-left: 20px;">默认true,为false时不在面包屑中显示</el-tag>
+        </el-form-item>
+        <el-form-item v-if="routerShow" label="affix：" prop="affix">
+          <el-switch v-model="temp.affix" :active-value="true" active-text="TRUE"
+                     :inactive-value="false" inactive-text="FALSE"></el-switch>
+          <el-tag type="info" style="margin-left: 20px;">默认false,为true时固定在标签里</el-tag>
+        </el-form-item>
+
         <el-form-item label="菜单顺序：" prop="permissionOrder">
           <el-input-number v-model.number="temp.permissionOrder" :min="0"></el-input-number>
         </el-form-item>
@@ -193,8 +230,12 @@ export default {
         permissionIcon: '',
         permissionRouter: '',
         permissionComponent: '',
-        permissionIsShow: '1',
-        permissionIsEnabled: '1',
+        permissionIsEnabled: true,
+        permissionIsShow: true,
+        noRedirect: 'noRedirect',
+        noCache: false,
+        breadcrumb: true,
+        affix: false,
         permissionOrder: 0
       }
     },
@@ -227,6 +268,9 @@ export default {
       // 表单验证
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          if (this.temp.noRedirect !== 'noRedirect') {
+            this.temp.noRedirect = this.temp.permissionRouter
+          }
           permissionAdd(this.temp).then(response => {
             this.dialogFormVisible = false
             if (response.data) {
@@ -258,9 +302,8 @@ export default {
           type: 'warning'
         });
       } else {
-        const changeData = this.changeData
         // Object.assign：把changeData[0]的值复制到集合{}
-        this.temp = Object.assign({}, changeData[0])
+        this.temp = Object.assign({}, this.changeData[0])
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -298,6 +341,9 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          if (this.temp.noRedirect !== 'noRedirect') {
+            this.temp.noRedirect = this.temp.permissionRouter
+          }
           permissionUpdate(this.temp).then(response => {
             this.dialogFormVisible = false
             if (response.data) {

@@ -1,13 +1,16 @@
 package com.kg.core.zpermission.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.kg.core.base.model.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -17,6 +20,8 @@ import io.swagger.annotations.ApiModelProperty;
  * @author ziro
  * @since 2022-05-09
  */
+@Getter
+@Setter
 @TableName("z_permission")
 @ApiModel(value = "ZPermission对象", description = "资源权限表")
 public class ZPermission implements BaseEntity {
@@ -55,10 +60,30 @@ public class ZPermission implements BaseEntity {
     private String permissionConfig;
 
     @ApiModelProperty("是否可见（0隐藏1显示）")
-    private String permissionIsShow;
+    private boolean permissionIsShow;
 
     @ApiModelProperty("是否禁用（0禁用1启用）")
-    private String permissionIsEnabled;
+    private boolean permissionIsEnabled;
+
+    @ApiModelProperty("=noRedirect时,在面包屑导航不可点击")
+    @TableField("no_redirect")
+    private String noRedirect;
+
+    @ApiModelProperty("默认false,为true时不被<keep-alive>缓存")
+    @TableField("no_cache")
+    private boolean noCache;
+
+    @ApiModelProperty("默认true,为false时不在面包屑中显示")
+    @TableField("breadcrumb")
+    private boolean breadcrumb;
+
+    @ApiModelProperty("默认false,为true时固定在标签里")
+    @TableField("affix")
+    private boolean affix;
+
+    @ApiModelProperty("本路由hidden时，菜单栏高亮显示的路由")
+    @TableField("active_menu")
+    private String activeMenu;
 
     @ApiModelProperty("资源顺序")
     private Integer permissionOrder;
@@ -68,145 +93,4 @@ public class ZPermission implements BaseEntity {
 
     @ApiModelProperty("最后更新时间")
     private LocalDateTime updateTime;
-
-    public String getPermissionId() {
-        return permissionId;
-    }
-
-    public void setPermissionId(String permissionId) {
-        this.permissionId = permissionId;
-    }
-
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
-    public String getPermissionName() {
-        return permissionName;
-    }
-
-    public void setPermissionName(String permissionName) {
-        this.permissionName = permissionName;
-    }
-
-    public String getPermissionDescription() {
-        return permissionDescription;
-    }
-
-    public void setPermissionDescription(String permissionDescription) {
-        this.permissionDescription = permissionDescription;
-    }
-
-    public String getPermissionType() {
-        return permissionType;
-    }
-
-    public void setPermissionType(String permissionType) {
-        this.permissionType = permissionType;
-    }
-
-    public String getPermissionTitle() {
-        return permissionTitle;
-    }
-
-    public void setPermissionTitle(String permissionTitle) {
-        this.permissionTitle = permissionTitle;
-    }
-
-    public String getPermissionIcon() {
-        return permissionIcon;
-    }
-
-    public void setPermissionIcon(String permissionIcon) {
-        this.permissionIcon = permissionIcon;
-    }
-
-    public String getPermissionRouter() {
-        return permissionRouter;
-    }
-
-    public void setPermissionRouter(String permissionRouter) {
-        this.permissionRouter = permissionRouter;
-    }
-
-    public String getPermissionConfig() {
-        return permissionConfig;
-    }
-
-    public void setPermissionConfig(String permissionConfig) {
-        this.permissionConfig = permissionConfig;
-    }
-
-    public String getPermissionIsShow() {
-        return permissionIsShow;
-    }
-
-    public void setPermissionIsShow(String permissionIsShow) {
-        this.permissionIsShow = permissionIsShow;
-    }
-
-    public String getPermissionIsEnabled() {
-        return permissionIsEnabled;
-    }
-
-    public void setPermissionIsEnabled(String permissionIsEnabled) {
-        this.permissionIsEnabled = permissionIsEnabled;
-    }
-
-    public Integer getPermissionOrder() {
-        return permissionOrder;
-    }
-
-    public void setPermissionOrder(Integer permissionOrder) {
-        this.permissionOrder = permissionOrder;
-    }
-
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getPermissionComponent() {
-        return permissionComponent;
-    }
-
-    public void setPermissionComponent(String permissionComponent) {
-        this.permissionComponent = permissionComponent;
-    }
-
-    @Override
-    public String toString() {
-        return "ZPermission{" +
-                "permissionId=" + permissionId +
-                ", parentId=" + parentId +
-                ", permissionName=" + permissionName +
-                ", permissionDescription=" + permissionDescription +
-                ", permissionType=" + permissionType +
-                ", permissionTitle=" + permissionTitle +
-                ", permissionIcon=" + permissionIcon +
-                ", permissionRouter=" + permissionRouter +
-                ", permissionComponent=" + permissionComponent +
-                ", permissionConfig=" + permissionConfig +
-                ", permissionIsShow=" + permissionIsShow +
-                ", permissionIsEnabled=" + permissionIsEnabled +
-                ", permissionOrder=" + permissionOrder +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                "}";
-    }
 }

@@ -49,10 +49,25 @@ public class ZPermissionDTO implements BaseDTO {
     private String permissionConfig;
 
     @ApiModelProperty("是否可见（0隐藏1显示）")
-    private String permissionIsShow;
+    private boolean permissionIsShow;
 
     @ApiModelProperty("是否禁用（0禁用1启用）")
-    private String permissionIsEnabled;
+    private boolean permissionIsEnabled;
+
+    @ApiModelProperty("=noRedirect时,在面包屑导航不可点击")
+    private String noRedirect;
+
+    @ApiModelProperty("默认false,为true时不被<keep-alive>缓存")
+    private boolean noCache;
+
+    @ApiModelProperty("默认true,为false时不在面包屑中显示")
+    private boolean breadcrumb;
+
+    @ApiModelProperty("默认false,为true时固定在标签里")
+    private boolean affix;
+
+    @ApiModelProperty("本路由hidden时，菜单栏高亮显示的路由")
+    private String activeMenu;
 
     @ApiModelProperty("资源顺序")
     private Integer permissionOrder;

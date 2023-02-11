@@ -30,17 +30,23 @@ export function filterAsyncRoutes(routers, isTop) {
   const res = []
   // 遍历路由
   routers.forEach(route => {
-      // 是否显示，是否禁用
-      if (route.permissionIsShow && route.permissionIsEnabled) {
+      // 是否禁用
+      if (route.permissionIsEnabled) {
         if (route.children) {
-          // 包含子路由
+          // 包含子路由的父级路由
           const temp = {
+            hidden: !route.permissionIsShow,
             path: route.permissionRouter,
             component: isTop ? Layout : convertComponent(route.permissionComponent),
             name: route.permissionName || '',
+            redirect: route.noRedirect,
             meta: {
               title: route.permissionTitle,
-              icon: route.permissionIcon || ''
+              icon: route.permissionIcon || '',
+              activeMenu: !route.permissionIsShow ? route.activeMenu : '',
+              noCache: route.noCache,
+              breadcrumb: route.breadcrumb,
+              affix: route.affix
             },
             alwaysShow: true,
             // 迭代子路由
@@ -49,28 +55,41 @@ export function filterAsyncRoutes(routers, isTop) {
           res.push(temp)
         } else {
           if (isTop) {
+            // 顶级路由
             const temp = {
+              hidden: !route.permissionIsShow,
               path: route.permissionRouter,
               component: Layout,
+              redirect: route.noRedirect,
               children: [{
                 path: 'index',
                 component: convertComponent(route.permissionComponent),
                 name: route.permissionName || '',
                 meta: {
                   title: route.permissionTitle,
-                  icon: route.permissionIcon || ''
+                  icon: route.permissionIcon || '',
+                  activeMenu: !route.permissionIsShow ? route.activeMenu : '',
+                  noCache: route.noCache,
+                  breadcrumb: route.breadcrumb,
+                  affix: route.affix
                 }
               }]
             }
             res.push(temp)
           } else {
+            // 子路由（不能配置redirect）
             const temp = {
+              hidden: !route.permissionIsShow,
               path: route.permissionRouter,
               component: convertComponent(route.permissionComponent),
               name: route.permissionName || '',
               meta: {
                 title: route.permissionTitle,
-                icon: route.permissionIcon || ''
+                icon: route.permissionIcon || '',
+                activeMenu: !route.permissionIsShow ? route.activeMenu : '',
+                noCache: route.noCache,
+                breadcrumb: route.breadcrumb,
+                affix: route.affix
               }
             }
             res.push(temp)
