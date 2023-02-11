@@ -319,15 +319,14 @@ function buildOptionMethod(methodName, model, methodList, scheme) {
       method: '${config.method}',
       url: '${config.url}'
     }).then(resp => {
-      var { data } = resp
-      this.${model} = data.${config.dataPath}
+      this.${model} = resp.${config.dataPath}
     })
   },`
   methodList.push(str)
 }
 
 // js整体拼接
-function buildexport(conf, type, data, rules, selectOptions, uploadVar, props, methods, created, watch) {
+function buildexport(conf, type, data, rules, selectOptions, uploadVar, props, methods, created) {
   const str = `${exportDefault}{
   ${inheritAttrs[type]}
   components: {},
@@ -346,9 +345,7 @@ function buildexport(conf, type, data, rules, selectOptions, uploadVar, props, m
     }
   },
   computed: {},
-  watch: {
-    ${watch}
-  },
+  watch: {},
   created () {
     ${created}
   },

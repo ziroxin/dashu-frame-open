@@ -351,12 +351,17 @@ function buildElSelectChild(scheme) {
 // el-radio-group 子级
 function buildElRadioGroupChild(scheme) {
   const children = []
+  let label = 'label', value = 'value'
+  if (scheme.__config__.dataType === 'dynamic') {
+    label = scheme.props.props.label || 'label'
+    value = scheme.props.props.value || 'value'
+  }
   const slot = scheme.__slot__
   const config = scheme.__config__
   if (slot && slot.options && slot.options.length) {
     const tag = config.optionType === 'button' ? 'el-radio-button' : 'el-radio'
     const border = config.border ? 'border' : ''
-    children.push(`<${tag} v-for="(item, index) in ${camelCaseUnderline(scheme.__vModel__)}Options" :key="index" :label="item.value" :disabled="item.disabled" ${border}>{{item.label}}</${tag}>`)
+    children.push(`<${tag} v-for="(item, index) in ${camelCaseUnderline(scheme.__vModel__)}Options" :key="index" :label="item.${value}" :disabled="item.disabled" ${border}>{{item.${label}}}</${tag}>`)
   }
   return children.join('')
 }
@@ -364,12 +369,17 @@ function buildElRadioGroupChild(scheme) {
 // el-checkbox-group 子级
 function buildElCheckboxGroupChild(scheme) {
   const children = []
+  let label = 'label', value = 'value'
+  if (scheme.__config__.dataType === 'dynamic') {
+    label = scheme.props.props.label || 'label'
+    value = scheme.props.props.value || 'value'
+  }
   const slot = scheme.__slot__
   const config = scheme.__config__
   if (slot && slot.options && slot.options.length) {
     const tag = config.optionType === 'button' ? 'el-checkbox-button' : 'el-checkbox'
     const border = config.border ? 'border' : ''
-    children.push(`<${tag} v-for="(item, index) in ${camelCaseUnderline(scheme.__vModel__)}Options" :key="index" :label="item.value" :disabled="item.disabled" ${border}>{{item.label}}</${tag}>`)
+    children.push(`<${tag} v-for="(item, index) in ${camelCaseUnderline(scheme.__vModel__)}Options" :key="index" :label="item.${value}" :disabled="item.disabled" ${border}>{{item.${label}}}</${tag}>`)
   }
   return children.join('')
 }

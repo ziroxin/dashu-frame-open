@@ -374,7 +374,7 @@
                     clearable
                   >
                     <el-select slot="prepend" v-model="activeData.__config__.method"
-                               :style="{width: '85px'}" @change="$emit('fetch-data', activeData)">
+                               :style="{width: '85px'}">
                       <el-option label="get" value="get"/>
                       <el-option label="post" value="post"/>
                       <el-option label="put" value="put"/>
@@ -438,7 +438,8 @@
             <template v-if="['el-cascader', 'el-table'].includes(activeData.__config__.tag)">
               <el-divider>选项</el-divider>
               <el-form-item v-if="activeData.__config__.dataType" label="数据类型">
-                <el-radio-group v-model="activeData.__config__.dataType" size="small">
+                <el-radio-group v-model="activeData.__config__.dataType"
+                                size="small" @input="$emit('fetch-data', activeData)">
                   <el-radio-button label="dynamic">
                     动态数据
                   </el-radio-button>
@@ -456,13 +457,11 @@
                     :title="activeData.__config__.url"
                     placeholder="请输入接口地址"
                     clearable
-                    @blur="$emit('fetch-data', activeData)"
                   >
                     <el-select
                       slot="prepend"
                       v-model="activeData.__config__.method"
                       :style="{width: '85px'}"
-                      @change="$emit('fetch-data', activeData)"
                     >
                       <el-option label="get" value="get"/>
                       <el-option label="post" value="post"/>
@@ -471,11 +470,10 @@
                     </el-select>
                   </el-input>
                 </el-form-item>
-                <el-form-item label="数据位置">
+                <el-form-item label="数据字段">
                   <el-input
                     v-model="activeData.__config__.dataPath"
-                    placeholder="请输入数据位置"
-                    @blur="$emit('fetch-data', activeData)"
+                    placeholder="请输入数据字段"
                   />
                 </el-form-item>
 
@@ -490,6 +488,12 @@
                     <el-input v-model="activeData.props.props.children" placeholder="请输入子级键名"/>
                   </el-form-item>
                 </template>
+
+                <div style="text-align: center;">
+                  <el-button icon="el-icon-circle-plus-outline" type="text" @click="$emit('fetch-data', activeData)">
+                    刷新数据
+                  </el-button>
+                </div>
               </template>
 
               <!-- 级联选择静态树 -->

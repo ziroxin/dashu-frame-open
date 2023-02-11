@@ -279,7 +279,10 @@ export default {
     setRespData(component, resp) {
       const {dataPath, renderKey, dataConsumer} = component.__config__
       if (!dataPath || !dataConsumer) return
-      const respData = dataPath.split('.').reduce((pre, item) => pre[item], resp)
+      let respData = []
+      if (resp) {
+        respData = dataPath.split('.').reduce((pre, item) => pre[item], resp)
+      }
 
       // 将请求回来的数据，赋值到指定属性。
       // 以el-tabel为例，根据Element文档，应该将数据赋值给el-tabel的data属性，所以dataConsumer的值应为'data';
@@ -295,10 +298,11 @@ export default {
         this.setLoading(component, true)
         this.$request({url: url, method: method}).then(resp => {
           this.setLoading(component, false)
-          this.setRespData(component, resp.data)
+          this.setRespData(component, resp)
         })
       } else {
-        this.setRespData(component, {})
+        console.log('static', component)
+        this.setRespData(component)
       }
     },
     setLoading(component, val) {

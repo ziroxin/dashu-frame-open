@@ -105,7 +105,7 @@ function buildAttributes(scheme, dataList, ruleList, optionsList, methodList, pr
 
 // 在Created调用函数
 function callInCreated(methodName, created) {
-  created.push(`this.${methodName}()`)
+  created.push(`this.${methodName}();`)
 }
 
 // 混入处理函数
@@ -298,8 +298,7 @@ function buildOptionMethod(methodName, model, methodList, scheme) {
       method: '${config.method}',
       url: '${config.url}'
     }).then(resp => {
-      var { data } = resp
-      this.${model} = data.${config.dataPath}
+      this.${model} = resp.${config.dataPath}
     })
   },`
   methodList.push(str)
