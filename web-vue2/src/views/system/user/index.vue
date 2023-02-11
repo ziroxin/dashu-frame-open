@@ -238,7 +238,7 @@ export default {
         this.$message({type: 'warning', message: '修改时，只允许选择一条数据！'})
       } else {
         this.temp = Object.assign({}, this.changeData[0])
-        this.temp.roleId = this.changeData[0].roleId.split(',')
+        this.temp.roleId = this.changeData[0].roleId ? this.changeData[0].roleId.split(',') : []
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {
