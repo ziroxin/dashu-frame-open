@@ -23,6 +23,12 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
     </#if>
 </#if>
+<#if childTableList??>
+    <#list childTableList as child>
+import ${packageBaseParent}.${child}.entity.${child?cap_first};
+    </#list>
+import java.util.List;
+</#if>
 
 /**
  * <p>
@@ -82,6 +88,12 @@ public class ${dtoName} {
     </#if>
     private ${field.propertyType} ${field.propertyName};
 </#list>
+<#if childTableList??>
+    <#list childTableList as child>
+
+    private List<${child?cap_first}> ${child?lower_case}List;
+	</#list>
+</#if>
 <#------------  END 字段循环遍历  ---------->
 <#if !dtoLombokModel>
     <#list table.fields as field>

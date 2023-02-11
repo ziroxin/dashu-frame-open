@@ -1,15 +1,15 @@
 -- ----------------------------
 -- 生成菜单信息
 -- ----------------------------
-INSERT INTO `z_permission` VALUES ('${menuId}', '-1', '${permissionName}', '${table.comment!}', '0', '${table.comment!}', '', '${permissionRouter}', '${permissionCompontent}', NULL, '1', '1', 100, '${.now}', '${.now}');
+INSERT INTO `z_permission` VALUES ('${menuId}', '-1', '${permissionName}', '${table.comment!}', '0', '${table.comment!}', '', '${permissionRouter}', '${permissionCompontent}', NULL, 1, 1, 'noRedirect', 0, 1, 0, NULL, 100, '${.now}', '${.now}');
 
 -- ----------------------------
 -- 生成页面按钮信息（添加、修改、删除）
 -- ----------------------------
-INSERT INTO `z_permission` VALUES ('${addBtnId}', '${menuId}', '${permissionName}-add', '${table.comment!}-添加按钮', '1', '添加按钮', '', '', '', NULL, '1', '1', 1, '${.now}', '${.now}');
-INSERT INTO `z_permission` VALUES ('${updateBtnId}', '${menuId}', '${permissionName}-update', '${table.comment!}-修改按钮', '1', '修改按钮', '', '', '', NULL, '1', '1', 1, '${.now}', '${.now}');
-INSERT INTO `z_permission` VALUES ('${deleteBtnId}', '${menuId}', '${permissionName}-delete', '${table.comment!}-删除按钮', '1', '删除按钮', '', '', '', NULL, '1', '1', 1, '${.now}', '${.now}');
-INSERT INTO `z_permission` VALUES ('${exportExcelBtnId}', '${menuId}', '${permissionName}-exportExcel', '${table.comment!}-导出Excel按钮', '1', '导出Excel按钮', '', '', '', NULL, '1', '1', 1, '${.now}', '${.now}');
+INSERT INTO `z_permission` VALUES ('${addBtnId}', '${menuId}', '${permissionName}-add', '${table.comment!}-添加按钮', '1', '添加按钮', '', '', '', NULL, 1, 1, NULL, 0, 1, 0, NULL, 1, '${.now}', '${.now}');
+INSERT INTO `z_permission` VALUES ('${updateBtnId}', '${menuId}', '${permissionName}-update', '${table.comment!}-修改按钮', '1', '修改按钮', '', '', '', NULL, 1, 1, NULL, 0, 1, 0, NULL, 1, '${.now}', '${.now}');
+INSERT INTO `z_permission` VALUES ('${deleteBtnId}', '${menuId}', '${permissionName}-delete', '${table.comment!}-删除按钮', '1', '删除按钮', '', '', '', NULL, 1, 1, NULL, 0, 1, 0, NULL, 1, '${.now}', '${.now}');
+INSERT INTO `z_permission` VALUES ('${exportExcelBtnId}', '${menuId}', '${permissionName}-exportExcel', '${table.comment!}-导出Excel按钮', '1', '导出Excel按钮', '', '', '', NULL, 1, 1, NULL, 0, 1, 0, NULL, 1, '${.now}', '${.now}');
 
 -- ----------------------------
 -- 生成接口信息

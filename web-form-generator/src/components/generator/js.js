@@ -1,5 +1,5 @@
 import {isArray} from 'util'
-import {deepClone, exportDefault, titleCase} from '@/utils/index'
+import {camelCaseUnderline, deepClone, exportDefault, removeUnderline, titleCase} from '@/utils/index'
 import ruleTrigger from './ruleTrigger'
 
 const units = {
@@ -77,12 +77,18 @@ function buildAttributes(scheme, dataList, ruleList, optionsList, methodList, pr
       `${scheme.__vModel__}Action: '${scheme.action}',
       ${scheme.__vModel__}fileList: [],`
     )
+    // 上传前条件判断
     methodList.push(buildBeforeUpload(scheme))
+    // 上传成功
     methodList.push(buildUploadSuccess(scheme))
+    // 移除
     methodList.push(buildUploadRemove(scheme))
+    // 限制上传个数
     if (scheme.__config__.fileLimit != undefined && scheme.__config__.fileLimit > 0) {
       methodList.push(buildUploadExceed(scheme))
     }
+    // 加载fileList
+    methodList.push(buildLoadFileList(scheme))
     // 非自动上传时，生成手动上传的函数
     if (!scheme['auto-upload']) {
       methodList.push(buildSubmitUpload(scheme))
@@ -231,18 +237,21 @@ function buildBeforeUpload(scheme) {
 function buildUploadSuccess(scheme) {
   if (scheme.__config__.isTableField) {
     // 存主表
-    const str = `${scheme.__vModel__}OnSuccess(response, file, fileList) {
+    return `${scheme.__vModel__}OnSuccess(response, file, fileList) {
       if(response.data&&response.data.length>0){
         this.${confGlobal.formModel}.${scheme.__vModel__} = response.data[0].fileUrl
       }
     },`
-    return str
   } else {
     // 存子表
-    const str = `${scheme.__vModel__}OnSuccess(response, file, fileList) {
+    return `${scheme.__vModel__}OnSuccess(response, file, fileList) {
       this.${scheme.__vModel__}fileList = fileList
+      if(this.${confGlobal.formModel}.${removeUnderline(scheme.__config__.childTableName)}List){
+        this.${confGlobal.formModel}.${removeUnderline(scheme.__config__.childTableName)}List.push(response.data[0])
+      } else {
+        this.${confGlobal.formModel}.${removeUnderline(scheme.__config__.childTableName)}List = [response.data[0]]
+      }
     },`
-    return str
   }
 
 }
@@ -251,33 +260,55 @@ function buildUploadSuccess(scheme) {
 function buildUploadRemove(scheme) {
   if (scheme.__config__.isTableField) {
     // 存主表
-    const str = `${scheme.__vModel__}OnRemove(file, fileList) {
+    return `${scheme.__vModel__}OnRemove(file, fileList) {
       this.${confGlobal.formModel}.${scheme.__vModel__} = ''
     },`
-    return str
   } else {
     // 存子表
-    const str = `${scheme.__vModel__}OnRemove(file, fileList) {
+    return `${scheme.__vModel__}OnRemove(file, fileList) {
       this.${scheme.__vModel__}fileList = fileList
+      this.${confGlobal.formModel}.${removeUnderline(scheme.__config__.childTableName)}List = this.${confGlobal.formModel}.${removeUnderline(scheme.__config__.childTableName)}List.filter(f=>f.fileName!=file.fileName)
     },`
-    return str
   }
 }
 
 // el-upload的on-exceed
 function buildUploadExceed(scheme) {
-  const str = `${scheme.__vModel__}OnExceed(files, fileList) {
+  return `${scheme.__vModel__}OnExceed(files, fileList) {
     this.$message.error('最多上传 ${scheme.__config__.fileLimit} 个文件')
   },`
-  return str
+}
+
+// el-upload，加载文件列表
+function buildLoadFileList(scheme) {
+  if (scheme.__config__.isTableField) {
+    // 存主表
+    return `load${scheme.__vModel__}FileList() {
+      if (this.${confGlobal.formModel}.${scheme.__vModel__}) {
+        this.${scheme.__vModel__}fileList = {name: '附件', url: this.${confGlobal.formModel}.${scheme.__vModel__}}
+      } else {
+        this.${scheme.__vModel__}fileList = []
+      }
+    },`
+  } else {
+    // 存子表
+    return `load${camelCaseUnderline(scheme.__config__.childTableName)}FileList() {
+      if (this.${confGlobal.formModel}.${removeUnderline(scheme.__config__.childTableName)}List) {
+        this.${scheme.__vModel__}fileList = this.${confGlobal.formModel}.${removeUnderline(scheme.__config__.childTableName)}List.map(f => {
+          return {name: f.fileOldName, url: f.fileUrl, ...f}
+        })
+      } else {
+        this.${scheme.__vModel__}fileList = []
+      }
+    },`
+  }
 }
 
 // el-upload的submit
 function buildSubmitUpload(scheme) {
-  const str = `${scheme.__vModel__}SubmitUpload() {
+  return `${scheme.__vModel__}SubmitUpload() {
     this.$refs['${scheme.__vModel__}'].submit()
   },`
-  return str
 }
 
 function buildOptionMethod(methodName, model, methodList, scheme) {
@@ -296,7 +327,7 @@ function buildOptionMethod(methodName, model, methodList, scheme) {
 }
 
 // js整体拼接
-function buildexport(conf, type, data, rules, selectOptions, uploadVar, props, methods, created) {
+function buildexport(conf, type, data, rules, selectOptions, uploadVar, props, methods, created, watch) {
   const str = `${exportDefault}{
   ${inheritAttrs[type]}
   components: {},
@@ -315,7 +346,9 @@ function buildexport(conf, type, data, rules, selectOptions, uploadVar, props, m
     }
   },
   computed: {},
-  watch: {},
+  watch: {
+    ${watch}
+  },
   created () {
     ${created}
   },

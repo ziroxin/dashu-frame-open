@@ -363,7 +363,15 @@ export default {
     },
     execRun(data) {
       this.AssembleFormData()
-      this.drawerVisible = true
+      // 特殊判断：上传附件时-子表名未填写，提示必须填写
+      let errUp = this.formData.fields.filter(f => f.__config__.tag === 'el-upload' && !f.__config__.isTableField && !f.__config__.childTableName)
+      if (errUp.length > 0) {
+        let errMsg = '';
+        errUp.forEach(f => errMsg += `组件【${f.__config__.label}】的‘子表名’未填写正确，请检查<br/>`)
+        this.$message({dangerouslyUseHTMLString: true, showClose: true, type: 'error', message: errMsg})
+      } else {
+        this.drawerVisible = true
+      }
     },
     execDownload(data) {
       const codeStr = this.generateCode()

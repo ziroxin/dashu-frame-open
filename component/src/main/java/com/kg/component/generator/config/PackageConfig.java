@@ -110,6 +110,13 @@ public class PackageConfig {
     }
 
     /**
+     * 父包名 - 根路径
+     */
+    public String getBaseParent() {
+        return parent;
+    }
+
+    /**
      * 连接父子包名
      *
      * @param subPackage 子包名

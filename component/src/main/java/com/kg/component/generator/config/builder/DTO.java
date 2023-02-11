@@ -62,6 +62,12 @@ public class DTO implements ITemplate {
     private String superClass;
 
     /**
+     * 子表，表名列表
+     * （@ziro add at 20230209 用于生成附件子表List字段，例如：List<ATable2File> aTable2FileList;）
+     */
+    private List<String> childTableList;
+
+    /**
      * 自定义基础的DTO类，公共字段
      */
     private final Set<String> superDTOColumns = new HashSet<>();
@@ -245,6 +251,10 @@ public class DTO implements ITemplate {
         return superClass;
     }
 
+    public List<String> getChildTableList() {
+        return childTableList;
+    }
+
     public Set<String> getSuperDTOColumns() {
         return this.superDTOColumns;
     }
@@ -337,6 +347,10 @@ public class DTO implements ITemplate {
         data.put("dtoLombokModel", this.lombok);
         data.put("superDTOClassPackage", StringUtils.isBlank(superClass) ? null : superClass);
         data.put("superDTOClass", ClassUtils.getSimpleName(this.superClass));
+        if (this.childTableList != null && this.childTableList.size() > 0) {
+            data.put("childTableList", this.childTableList);
+            data.put("packageBaseParent", config.getPackageConfig().getBaseParent());
+        }
         data.put("dtoName", tableInfo.getDTOName());
         data.put("dtoconvertName", tableInfo.getDtoconvertName());
         return data;
@@ -382,6 +396,18 @@ public class DTO implements ITemplate {
             this.dto.superClass = superDTOClass;
             return this;
         }
+
+        /**
+         * 自定义子表列表
+         *
+         * @param childTableList 子表列表
+         * @return this
+         */
+        public Builder childTableList(List<String> childTableList) {
+            this.dto.childTableList = childTableList;
+            return this;
+        }
+
 
         /**
          * 禁用生成serialVersionUID

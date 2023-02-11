@@ -49,7 +49,7 @@
                    :total="pager.totalCount" @current-change="handleCurrentChange"
 		/>
 		<!-- 添加修改弹窗 -->
-		<el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible">
+		<el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible" @close="resetTemp">
 <#if templateHtml??>
 			${templateHtml}
 <#else>
@@ -177,6 +177,11 @@ export default {
     // 清空表单temp数据
     resetTemp() {
       this.temp = {orderIndex: 0}
+<#if childTableList??>
+	<#list childTableList as child>
+      this.load${child}FileList()
+	</#list>
+</#if>
     },
     // 打开添加窗口
     openAdd() {
@@ -196,6 +201,11 @@ export default {
       } else {
         // 修改弹窗
         this.temp = Object.assign({}, this.tableSelectRows[0])
+<#if childTableList??>
+	<#list childTableList as child>
+        this.load${child}FileList()
+	</#list>
+</#if>
         this.dialogType = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {

@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-restricted-syntax */
+
 /* eslint-disable guard-for-in */
 /**
  * num 小于0，左缩进num*2个空格； 大于0，右缩进num*2个空格。
@@ -9,7 +10,10 @@
  */
 export function indent(str, num, len = 2) {
   if (num === 0) return str
-  const isLeft = num < 0; const result = []; let reg; let
+  const isLeft = num < 0;
+  const result = [];
+  let reg;
+  let
     spaces = ''
   if (isLeft) {
     num *= -1
@@ -38,6 +42,11 @@ export function camelCase(str) {
 // 下划线转驼峰
 export function camelCaseUnderline(str) {
   return str.replace(/_[a-z]/g, str1 => str1.substr(-1).toUpperCase())
+}
+
+// 去下划线
+export function removeUnderline(str) {
+  return str.replaceAll('_', '')
 }
 
 export function isNumberStr(str) {
@@ -131,9 +140,15 @@ export function deepClone(obj) {
   // RegExp
   if (_toString.call(obj) === '[object RegExp]') {
     const flags = []
-    if (obj.global) { flags.push('g') }
-    if (obj.multiline) { flags.push('m') }
-    if (obj.ignoreCase) { flags.push('i') }
+    if (obj.global) {
+      flags.push('g')
+    }
+    if (obj.multiline) {
+      flags.push('m')
+    }
+    if (obj.ignoreCase) {
+      flags.push('i')
+    }
 
     return new RegExp(obj.source, flags.join(''))
   }
@@ -148,15 +163,19 @@ export function deepClone(obj) {
 }
 
 const toStr = Function.prototype.call.bind(Object.prototype.toString)
+
 export function isObjectObject(t) {
   return toStr(t) === '[object Object]'
 }
+
 export function isObjectArray(t) {
   return toStr(t) === '[object Array]'
 }
+
 export function isObjectNull(t) {
   return toStr(t) === '[object Null]'
 }
+
 export function isObjectUnde(t) {
   return toStr(t) === '[object Undefined]'
 }

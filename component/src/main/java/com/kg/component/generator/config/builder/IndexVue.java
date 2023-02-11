@@ -75,6 +75,7 @@ public class IndexVue implements ITemplate {
         data.put("controllerMapping", mapping);
         String buttonNamePre = (StringUtils.isNotBlank(config.getPackageConfig().getModuleName()) ? config.getPackageConfig().getModuleName() + "-" : "")
                 + tableInfo.getEntityPath() + "-";
+
         data.put("buttonNamePre", buttonNamePre);
         data.put("templateHtml", getTemplateHtml());
         data.put("jsData", getJsData());

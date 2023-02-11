@@ -79,17 +79,23 @@ public class FormGeneratorController {
         // 前端view路径
         LinkedList<String> viewPaths = new LinkedList<>();
         viewPaths.add(tableDTO.getViewPath());
+        // 子表名List
+        Map<String, Object> childTableMap = new HashMap<>();
+        LinkedList<String> childTableList = new LinkedList<>();
         // 处理附件子表
         for (TableFieldDTO field : tableDTO.getFields()) {
             if (StringUtils.hasText(field.getChildFileTable())) {
-                tableNames.add(field.getChildFileTable());
-                idTypes.add(IdType.ASSIGN_UUID);
-                packages.add(StrUtil.toCamelCase(field.getChildFileTable()));
-                viewPaths.add("");
+                tableNames.add(field.getChildFileTable());// 子表名
+                idTypes.add(IdType.ASSIGN_UUID);// 子表字段类型
+                packages.add(StrUtil.toCamelCase(field.getChildFileTable()));// 子表包名
+                viewPaths.add("");// 子表前端（不生成前端，所以置空）
+                // 子表名，列表（驼峰）
+                childTableList.add(StrUtil.toCamelCase(field.getChildFileTable()));
             }
         }
+        childTableMap.put(tableDTO.getTableName(), childTableList);// 只有主表存储子表信息
         // ==================================开始执行生成=====================================
-        start(basePath, basePackage, author, tableNames, idTypes, packages, viewPaths, tableDTO);
+        start(basePath, basePackage, author, tableNames, idTypes, packages, viewPaths, tableDTO, childTableMap);
         // 打成压缩包
         String zipPath = basePath + ".zip";
         ZipUtil.zip(basePath, zipPath);
@@ -104,8 +110,8 @@ public class FormGeneratorController {
     }
 
     // 代码生成器开始生成
-    private void start(String basePath, String basePackage, String author, LinkedList<String> tableNames,
-                       LinkedList<IdType> idTypes, LinkedList<String> packages, LinkedList<String> viewPaths, TableDTO tableDTO) {
+    private void start(String basePath, String basePackage, String author, LinkedList<String> tableNames, LinkedList<IdType> idTypes,
+                       LinkedList<String> packages, LinkedList<String> viewPaths, TableDTO tableDTO, Map<String, Object> childTableMap) {
         for (int i = 0; i < tableNames.size(); i++) {
             // ===========================================执行生成=======================
             // 配置文件路径
@@ -159,17 +165,28 @@ public class FormGeneratorController {
                                         .permissionSQLBuilder()// ==========permissionSQL配置
                                         .enableFileOverride();
                             }
-                            builder.controllerBuilder()// =============controller配置
+                            // ====================DTO配置
+                            LinkedList<String> childTableList = (LinkedList) childTableMap.get(tableNames.get(finalIndex));
+                            if (childTableList != null && childTableList.size() > 0) {
+                                builder.dtoBuilder()
+                                        .enableFileOverride()
+                                        .superClass(BaseDTO.class)
+                                        .childTableList(childTableList)
+                                        .enableLombok();
+                            } else {
+                                builder.dtoBuilder()
+                                        .enableFileOverride()
+                                        .superClass(BaseDTO.class)
+                                        .enableLombok();
+                            }
+                            // =============controller配置
+                            builder.controllerBuilder()
                                     .enableFileOverride()// 生成覆盖
                                     .enableRestStyle()// 开启RestController
                                     .serviceBuilder()// ================service配置
                                     .enableFileOverride()
                                     .mapperBuilder()// =================mapper配置
                                     .enableFileOverride()
-                                    .dtoBuilder()// ====================DTO配置
-                                    .enableFileOverride()
-                                    .superClass(BaseDTO.class)
-                                    .enableLombok()
                                     .excelsBuilder()// =================excel配置
                                     .enableFileOverride()
                                     .entityBuilder()// =================entity配置
