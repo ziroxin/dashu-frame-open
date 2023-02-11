@@ -1,7 +1,5 @@
 package com.kg.core.zuser.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.kg.core.base.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 public class ZUserRoleSaveDTO implements BaseDTO {
 
     @ApiModelProperty("角色Id")
-    private String roleId;
+    private List<String> roleId;
 
     @ApiModelProperty("角色名称")
     private String roleName;

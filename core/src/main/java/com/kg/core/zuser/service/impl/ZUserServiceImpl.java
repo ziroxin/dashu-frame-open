@@ -68,7 +68,7 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean add(ZUserRoleSaveDTO zUserRoleSaveDTO) {
+    public void add(ZUserRoleSaveDTO zUserRoleSaveDTO) {
         // 保存用户
         ZUser zUser = new ZUser();
         BeanUtils.copyProperties(zUserRoleSaveDTO, zUser);
@@ -76,36 +76,33 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
         // 密码是默认密码
         zUser.setPassword(passwordEncoder.encode(safetyService.getSafety().getDefaultPassword()));
         zUser.setCreateTime(LocalDateTime.now());
-        boolean s1 = save(zUser);
-
+        save(zUser);
         // 保存用户角色
-        ZUserRole zUserRole = new ZUserRole();
-        zUserRole.setUserId(zUser.getUserId());
-        zUserRole.setRoleId(zUserRoleSaveDTO.getRoleId());
-        boolean s2 = userRoleService.save(zUserRole);
-
+        for (String roleId : zUserRoleSaveDTO.getRoleId()) {
+            ZUserRole zUserRole = new ZUserRole();
+            zUserRole.setUserId(zUser.getUserId());
+            zUserRole.setRoleId(roleId);
+            userRoleService.save(zUserRole);
+        }
         // 保存用户密码记录
         userPasswordUpdateLog(zUser);
-
-        return s1 && s2;
     }
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public boolean update(ZUserRoleSaveDTO zUserRoleSaveDTO) {
+    public void update(ZUserRoleSaveDTO zUserRoleSaveDTO) {
         ZUser zUser = new ZUser();
         BeanUtils.copyProperties(zUserRoleSaveDTO, zUser);
         zUser.setUpdateTime(LocalDateTime.now());
-        boolean s1 = updateById(zUser);
+        updateById(zUser);
 
-        boolean s2 = userRoleService.removeById(zUser.getUserId());
-
-        ZUserRole zUserRole = new ZUserRole();
-        zUserRole.setUserId(zUser.getUserId());
-        zUserRole.setRoleId(zUserRoleSaveDTO.getRoleId());
-        boolean s3 = userRoleService.save(zUserRole);
-
-        return s1 && s2 && s3;
+        userRoleService.removeById(zUser.getUserId());
+        for (String roleId : zUserRoleSaveDTO.getRoleId()) {
+            ZUserRole zUserRole = new ZUserRole();
+            zUserRole.setUserId(zUser.getUserId());
+            zUserRole.setRoleId(roleId);
+            userRoleService.save(zUserRole);
+        }
     }
 
     @Override

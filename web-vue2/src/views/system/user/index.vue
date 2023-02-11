@@ -81,7 +81,7 @@
                        :data="orgSelectTreeData" style="width: 400px;"></select-tree>
         </el-form-item>
         <el-form-item label="角色：" prop="roleId">
-          <el-select v-model="temp.roleId" class="filter-item" style="width: 400px;" placeholder="请选择角色">
+          <el-select v-model="temp.roleId" class="filter-item" :multiple="true" style="width: 400px;" placeholder="请选择角色">
             <el-option v-for="item in roleNameOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId"/>
           </el-select>
         </el-form-item>
@@ -188,7 +188,7 @@ export default {
       this.temp = {
         userName: '',
         orgId: '',
-        roleId: '',
+        roleId: [],
         password: '',
         sex: '0',
         nickName: '',
@@ -238,6 +238,7 @@ export default {
         this.$message({type: 'warning', message: '修改时，只允许选择一条数据！'})
       } else {
         this.temp = Object.assign({}, this.changeData[0])
+        this.temp.roleId = this.changeData[0].roleId.split(',')
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {

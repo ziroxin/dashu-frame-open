@@ -83,7 +83,10 @@ public class ZUserController {
     @PreAuthorize("hasAuthority('user:add')")
     @NoRepeatSubmit
     public void add(@RequestBody ZUserRoleSaveDTO zUserRoleSaveDTO) throws BaseException {
-        if (!userService.add(zUserRoleSaveDTO)) {
+        try {
+            userService.add(zUserRoleSaveDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
             throw new BaseException("添加用户失败!");
         }
     }
@@ -93,7 +96,10 @@ public class ZUserController {
     @PreAuthorize("hasAuthority('user:update')")
     @NoRepeatSubmit
     public void update(@RequestBody ZUserRoleSaveDTO zUserRoleSaveDTO) throws BaseException {
-        if (!userService.update(zUserRoleSaveDTO)) {
+        try {
+            userService.update(zUserRoleSaveDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
             throw new BaseException("修改用户信息失败");
         }
     }
