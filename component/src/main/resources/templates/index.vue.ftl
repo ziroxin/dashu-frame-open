@@ -182,6 +182,9 @@ export default {
       this.load${child}FileList()
 	</#list>
 </#if>
+<#if jsMethods??>
+      this.loadChkStr2Arr()
+</#if>
     },
     // 打开添加窗口
     openAdd() {
@@ -205,6 +208,9 @@ export default {
 	<#list childTableList as child>
         this.load${child}FileList()
 	</#list>
+</#if>
+<#if jsMethods??>
+        this.loadChkStr2Arr()
 </#if>
         this.dialogType = 'update'
         this.dialogFormVisible = true
@@ -230,6 +236,9 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+<#if jsMethods??>
+          this.loadChkArr2Str()
+</#if>
           var data = this.temp;
           if (this.dialogType === 'update') {
             request({

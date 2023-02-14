@@ -181,7 +181,8 @@ const tags = {
     return `<${tag} ${vModel} ${size} ${disabled}>${child}</${tag}>`
   },
   'el-checkbox-group': el => {
-    const {tag, disabled, vModel} = attrBuilder(el)
+    const {tag, disabled} = attrBuilder(el)
+    const vModel = `v-model="${el.__vModel__}Array"`
     const size = `size="${el.size}"`
     const min = el.min ? `:min="${el.min}"` : ''
     const max = el.max ? `:max="${el.max}"` : ''

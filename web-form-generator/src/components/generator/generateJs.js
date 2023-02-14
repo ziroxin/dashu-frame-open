@@ -32,6 +32,18 @@ export function generateJs(formConfig, type) {
     buildAttributes(el, dataList, ruleList, optionsList, methodList, propsList, uploadVarList, created)
   })
 
+  // 单独处理el-checkbox-group的数据转换问题
+  const chkStr2Arr = []
+  const chkArr2Str = [];
+  formConfig.fields.forEach(el => {
+    if (el.__config__.tag === 'el-checkbox-group') {
+      chkStr2Arr.push(`this.${camelCaseUnderline(el.__vModel__)}Array = this.${confGlobal.formModel}.${camelCaseUnderline(el.__vModel__)} ? this.${confGlobal.formModel}.${camelCaseUnderline(el.__vModel__)}.split(",") : [];`)
+      chkArr2Str.push(`this.${confGlobal.formModel}.${camelCaseUnderline(el.__vModel__)} = this.${camelCaseUnderline(el.__vModel__)}Array.join(',');`)
+    }
+  })
+  methodList.push(`loadChkStr2Arr() {${chkStr2Arr.join(' ')}},`)
+  methodList.push(`loadChkArr2Str() {${chkArr2Str.join(' ')}},`)
+
   const script = buildexport(
     formConfig,
     type,
@@ -172,8 +184,20 @@ function buildOptions(scheme, optionsList) {
   if (scheme.__config__.dataType === 'dynamic') {
     options = []
   }
+  // options根据字段类型，转换value的类型
+  if (['varchar', 'char'].findIndex(k => k === scheme.__config__.fieldType) >= 0) {
+    options = options.map(o => {
+      return {...o, value: String(o.value)}
+    })
+  }
   const str = `${camelCaseUnderline(scheme.__vModel__)}Options: ${JSON.stringify(options)},`
   optionsList.push(str)
+
+  // 处理el-checkbox-group的绑定值
+  if (scheme.__config__.tag === 'el-checkbox-group') {
+    const defaultValue = JSON.stringify(scheme.__config__.defaultValue)
+    optionsList.push(`${camelCaseUnderline(scheme.__vModel__)}Array: ${defaultValue},`)
+  }
 }
 
 function buildProps(scheme, propsList) {
