@@ -12,7 +12,7 @@ import getPageTitle from '@/utils/get-page-title'
 NProgress.configure({showSpinner: false})
 
 // 单页白名单
-const whiteList = ['/login', '/auth-redirect']
+const whiteList = ['/login', '/auth-redirect','/index']
 
 router.beforeEach(async (to, from, next) => {
   // 进度条
