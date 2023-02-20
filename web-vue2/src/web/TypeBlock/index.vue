@@ -33,6 +33,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.block:hover {
+  background-color: rgba(24, 144, 255, 0.1);
+}
+
 .block {
   display: inline-block;
   width: 280px;
@@ -42,6 +46,7 @@ export default {
   border: 1px solid #ccc;
   border-radius: 10px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 
   .block-info {
     border-radius: 10px;
