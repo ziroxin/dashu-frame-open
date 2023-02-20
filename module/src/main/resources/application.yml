@@ -54,9 +54,9 @@ com:
       grantType: xxxxx
     #文件上传配置
     file:
-      #允许上传的文件格式（防止攻击类脚本文件上传）
-      allow-extend: jpg|jpeg|png|gif|bpm|
-      #允许上传的图片格式（图片需要压缩，格式必须正确）
+      #允许上传的文件格式（防止攻击类脚本文件上传，以|结尾）
+      allow-extend: jpg|jpeg|png|gif|bpm|mp3|mp4|doc|docx|xls|xlsx|pdf|zip|rar|txt|
+      #允许上传的图片格式（图片需要压缩，格式必须正确，以|结尾）
       image-extend: jpg|jpeg|png|gif|bpm|
       #默认上传路径（文件保存的物理绝对路径;不要使用\）
       save-path: e:/IdeaProjects/fwwbsyb/dashu-frame-open/component/target/myupload/files

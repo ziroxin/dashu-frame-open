@@ -30,7 +30,7 @@ public class UploadFileUtils {
      * @param dirName 自定义文件夹
      * @return 上传文件列表
      */
-    public static List<FileDTO> uploadFile(HttpServletRequest request, String dirName) throws IOException {
+    public static List<FileDTO> upload(HttpServletRequest request, String dirName) throws IOException {
         List<FileDTO> resultList = new ArrayList<>();
         // 上传文件请求处理
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
