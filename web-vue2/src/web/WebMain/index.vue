@@ -2,7 +2,7 @@
   <div class="main">
     <div class="main-left">
       <div class="main-left-title">
-        目<span style="margin-left: 20px;">&nbsp;</span>录
+        学习目录
       </div>
       <el-menu
         default-active="2"
@@ -37,6 +37,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.el-menu {
+  border-right: 0px !important;
+}
+
 .main {
   .main-right {
     padding: 0px 0px 0px 20px;
@@ -54,15 +58,13 @@ export default {
     box-shadow: 0 3px 5px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
 
     .main-left-title {
-      font-weight: bold;
       font-size: 16px;
-      color: #D7000F;
       width: 100%;
       border-radius: 10px 10px 0px 0px;
       border-bottom: 1px solid #ccc;
-      line-height: 30px;
-      padding: 5px;
       text-align: center;
+      line-height: 30px;
+      padding: 5px 20px;
       background-color: #F1F2E5;
     }
   }

@@ -1,16 +1,15 @@
 <template>
   <div class="block">
-    <div class="block-info"
-         :style="{background:'linear-gradient(rgba(40,140,234,0.5),rgba(40,140,234,0.3)),url('+img+') no-repeat 120px 0px/ 150px 150px'}"
-    >
+    <div class="block-info">
       <div class="block-title">
-        <div class="block-index">{{ index }}</div>
-        <span style="float: right">{{ title }}</span>
+        <div class="block-index">{{ index }} [{{ title }}]</div>
+        <img :src="img">
       </div>
       <div class="block-content">{{ content }}</div>
     </div>
-    <el-progress v-if="progress" :text-inside="true" :stroke-width="20"
-                 :percentage="progress" :color="customColors"
+
+    <el-progress v-if="progress" :text-inside="true" style="margin:0px 20px;"
+                 :stroke-width="20" :percentage="progress" :color="customColors"
     />
   </div>
 </template>
@@ -37,51 +36,46 @@ export default {
 .block {
   display: inline-block;
   width: 280px;
-  height: 180px;
-  margin: 5px 10px;
+  height: 150px;
+  margin: 20px 10px;
   vertical-align: top;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 
   .block-info {
     border-radius: 10px;
     line-height: 40px;
-    padding: 10px;
+    padding: 0px 10px;
     margin-bottom: 10px;
 
     .block-title {
       height: 50px;
       line-height: 50px;
+      color: #1890ff;
 
       img {
-        float: right;
-        width: 50px;
-        height: 50px;
+        max-width: 50px;
+        max-height: 50px;
+        line-height: 50px;
+        vertical-align: middle;
         object-fit: cover;
-      }
-
-      span {
-        float: right;
-        font-size: 18px;
-        font-weight: bold;
+        margin-left: 10px;
       }
 
       .block-index {
-        float: left;
-        width: 30px;
-        height: 30px;
-        line-height: 30px;
-        font-size: 12px;
-        border-radius: 100%;
-        background-color: #D7000F;
-        color: #fff;
+        display: inline-block;
+        font-size: 18px;
+        border-radius: 5px;
         text-align: center;
       }
     }
 
     .block-content {
-      height: 80px;
-      line-height: 40px;
+      height: 60px;
+      line-height: 30px;
       font-size: 14px;
-      color: #00afff;
+      color: #303133;
     }
   }
 }

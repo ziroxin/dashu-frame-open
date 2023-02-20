@@ -56,7 +56,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 body {
-  font-family: 'Hiragino Sans GB'
+  font-family: 'Hiragino Sans GB';
+  letter-spacing: 5px!important;
 }
 
 .el-menu.el-menu--horizontal {
@@ -64,6 +65,8 @@ body {
 }
 
 .el-container {
+  letter-spacing: 3px!important;
+
   .el-header {
     height: 61px !important;
     border-bottom: 1px solid #D7000F;
