@@ -46,13 +46,13 @@ public class MybatisPlusGenerator {
          * 说明：表名、主键类型、包名、前端view路径，必须是一对一的数组
          */
         // 表名
-        String[] tableNames = new String[]{"a_test"};
+        String[] tableNames = new String[]{"news"};
         // 表主键类型（如：IdType.ASSIGN_UUID、IdType.ASSIGN_ID）
         IdType[] idTypes = new IdType[]{IdType.ASSIGN_UUID};
         // 包名
-        String[] packages = new String[]{"atest"};
+        String[] packages = new String[]{"news"};
         // 前端view路径
-        String[] viewpaths = new String[]{"/atest"};
+        String[] viewpaths = new String[]{"/news"};
 
         // ==================================开始执行生成=====================================
         start(basePath, module, author, vueFolder, tableNames, idTypes, packages, viewpaths);
