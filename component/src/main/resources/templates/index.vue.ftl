@@ -49,12 +49,11 @@
                    :total="pager.totalCount" @current-change="handleCurrentChange"
 		/>
 		<!-- 添加修改弹窗 -->
-		<el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible" @close="resetTemp">
+		<el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible" @close="resetTemp" width="600px">
 <#if templateHtml??>
 			${templateHtml}
 <#else>
-			<el-form ref="dataForm" :model="temp" label-position="right" label-width="100px"
-               style="width: 500px; margin-left: 50px;" :disabled="dialogType=='view'">
+			<el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType=='view'">
   <#list table.fields as field>
 	<#if field.propertyName=='orderIndex'>
 				<el-form-item label="顺序" prop="orderIndex"

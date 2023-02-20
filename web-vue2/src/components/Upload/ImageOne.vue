@@ -13,7 +13,7 @@
     <el-upload ref="imageOne"
                :data="{'path':path}"
                :name="name"
-               :action="action==''?this.$baseServer+'/upload/images':action"
+               :action="action"
                :file-list.sync="imgList"
                :multiple="false"
                :on-preview="imgPreview"
@@ -24,7 +24,7 @@
                list-type="picture-card"
                accept="image/*"
     >
-      <i class="el-icon-plus"/>
+      <i class="el-icon-plus" />
     </el-upload>
   </div>
 </template>
@@ -38,7 +38,7 @@ export default {
     // 表单名称
     name: {type: String, default: ''},
     // 上传接口地址
-    action: {type: String, default: ''},
+    action: {type: String, default: process.env.VUE_APP_BASE_API + '/upload/images'},
     // 上传文件路径，可为空
     path: {type: String, default: ''},
     // 上传文件大小限制，单位：kb（默认1mb）

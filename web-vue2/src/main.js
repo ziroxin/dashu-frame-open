@@ -22,9 +22,9 @@ import './utils/error-log'
 // 导入全局filters
 import * as filters from './filters'
 // 导入权限指令
-import permission from '@/directive/permission';
-import mydate from '@/directive/mydate';
-import request from "@/utils/request";
+import permission from '@/directive/permission'
+import mydate from '@/directive/mydate'
+import request from '@/utils/request'
 
 Vue.use(Element, {
   // 设置element-ui默认大小
