@@ -45,6 +45,23 @@ export default {
     padding-top: 84px;
   }
 }
+
+.fixed-header-hor+.app-main {
+  /* 100 = navbar + breadcrumb = 57 + 50 */
+  min-height: calc(100vh - 107px);
+  padding-top: 107px;
+}
+
+.hasTagsViewHor {
+  .app-main {
+    /* 134 = navbar + tags-view + breadcrumb = 57 + 34 + 50 */
+    min-height: calc(100vh - 141px);
+  }
+
+  .fixed-header-hor+.app-main {
+    padding-top: 141px;
+  }
+}
 </style>
 
 <style lang="scss">

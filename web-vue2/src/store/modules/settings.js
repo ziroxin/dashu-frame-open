@@ -1,8 +1,8 @@
 import variables from '@/styles/element-variables.scss'
 import defaultSettings from '@/settings'
-import Cookies from "js-cookie";
+import Cookies from 'js-cookie';
 
-const {title, showSettings, tagsView, fixedHeader, sidebarLogo} = Cookies.get('settings') ? JSON.parse(Cookies.get('settings')) : defaultSettings
+const {title, showSettings, tagsView, fixedHeader, sidebarLogo, layout} = Cookies.get('settings') ? JSON.parse(Cookies.get('settings')) : defaultSettings
 
 const state = {
   theme: variables.theme,
@@ -10,7 +10,8 @@ const state = {
   showSettings: showSettings,
   tagsView: tagsView,
   fixedHeader: fixedHeader,
-  sidebarLogo: sidebarLogo
+  sidebarLogo: sidebarLogo,
+  layout: layout
 }
 
 const mutations = {

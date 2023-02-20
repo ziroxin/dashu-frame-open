@@ -5,22 +5,30 @@
 
       <div class="drawer-item">
         <span>主题颜色</span>
-        <theme-picker style="float: right;height: 26px;margin: -3px 8px 0 0;" @change="themeChange"/>
+        <theme-picker style="float: right;height: 26px;margin: -3px 8px 0 0;" @change="themeChange" />
+      </div>
+
+      <div class="drawer-item">
+        <span>布局</span>
+        <el-radio-group v-model="layout">
+          <el-radio-button label="vertical">纵向布局</el-radio-button>
+          <el-radio-button label="horizontal">横向布局</el-radio-button>
+        </el-radio-group>
       </div>
 
       <div class="drawer-item">
         <span>是否开启标签</span>
-        <el-switch v-model="tagsView" class="drawer-switch"/>
+        <el-switch v-model="tagsView" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
         <span>是否固定头部</span>
-        <el-switch v-model="fixedHeader" class="drawer-switch"/>
+        <el-switch v-model="fixedHeader" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
         <span>是否显示Logo</span>
-        <el-switch v-model="sidebarLogo" class="drawer-switch"/>
+        <el-switch v-model="sidebarLogo" class="drawer-switch" />
       </div>
 
     </div>
@@ -54,6 +62,17 @@ export default {
       set(val) {
         this.$store.dispatch('settings/changeSetting', {
           key: 'tagsView',
+          value: val
+        })
+      }
+    },
+    layout: {
+      get() {
+        return this.$store.state.settings.layout
+      },
+      set(val) {
+        this.$store.dispatch('settings/changeSetting', {
+          key: 'layout',
           value: val
         })
       }

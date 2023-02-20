@@ -14,6 +14,11 @@ module.exports = {
   tagsView: true,
 
   /**
+   * 布局：vertical:纵向布局;horizontal:横向布局
+   */
+  layout: 'vertical',
+
+  /**
    * @type {boolean} true | false
    * @description 是否固定头部
    */

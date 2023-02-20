@@ -14,6 +14,7 @@ const getters = {
   permissions: state => state.user.permissions,
   //组装好的路由
   permission_routes: state => state.permission.routes,
-  errorLogs: state => state.errorLog.logs
+  errorLogs: state => state.errorLog.logs,
+  settings: state => state.settings
 }
 export default getters
