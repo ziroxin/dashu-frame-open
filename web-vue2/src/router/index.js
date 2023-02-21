@@ -77,11 +77,6 @@ export const constantRoutes = [
         meta: {title: 'Dashboard', icon: 'dashboard', affix: true}
       }
     ]
-  },
-  {
-    path: '/index',
-    component: () => import('@/web/index'),
-    hidden: true
   }
 ]
 
