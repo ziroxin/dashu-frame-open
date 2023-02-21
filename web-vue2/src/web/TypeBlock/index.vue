@@ -9,7 +9,7 @@
     </div>
 
     <el-progress v-if="progress" :text-inside="true" style="margin:0px 20px;"
-                 :stroke-width="20" :percentage="progress" :color="customColors"
+                 :stroke-width="15" :percentage="progress" color="#"
     />
   </div>
 </template>
@@ -57,7 +57,7 @@ export default {
     .block-title {
       height: 50px;
       line-height: 50px;
-      color: #1890ff;
+      color: #D7000F;
 
       img {
         max-width: 50px;

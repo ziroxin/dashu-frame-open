@@ -22,15 +22,17 @@
         </el-menu>
       </div>
     </el-header>
+    <!-- 中间主要区域 -->
     <el-main>
       <web-main />
     </el-main>
+    <!-- 底部 -->
     <el-footer>
-      <el-link type="primary" :underline="false" target="_blank" href="//www.java119.cn">java119.cn</el-link>
+      <el-link type="primary" :underline="false" target="_blank" class="chinaRedColor" href="//www.java119.cn">java119.cn</el-link>
       <el-link type="info" :underline="false">— All Rights Reserved.</el-link>
       <el-link type="info" :underline="false">@ 2022-2032</el-link>
-      <el-link type="primary" target="_blank" href="https://beian.miit.gov.cn/">鲁ICP备2022008798号-1</el-link>
-      <el-link type="info" :underline="false" style="float:right;color: #D7000F;">网站主色调：中国红（#D7000F）</el-link>
+      <el-link type="primary" target="_blank" class="chinaRedColor" href="https://beian.miit.gov.cn/">鲁ICP备2022008798号-1</el-link>
+      <el-link type="info" :underline="false" class="chinaRedColor" style="float:right;">本站主色调：中国红（#D7000F）</el-link>
     </el-footer>
   </el-container>
 </template>
@@ -57,7 +59,11 @@ export default {
 <style lang="scss" scoped>
 body {
   font-family: 'Hiragino Sans GB';
-  letter-spacing: 5px!important;
+  letter-spacing: 5px !important;
+}
+
+.chinaRedColor {
+  color: #D7000F;
 }
 
 .el-menu.el-menu--horizontal {
@@ -65,7 +71,7 @@ body {
 }
 
 .el-container {
-  letter-spacing: 3px!important;
+  letter-spacing: 3px !important;
 
   .el-header {
     height: 61px !important;
@@ -100,7 +106,7 @@ body {
   .el-footer {
     max-height: 45px;
     line-height: 45px;
-    background-color: #F1F2E5;
+    background-color: #fff;
     font-size: 12px;
     text-align: center;
     border-top: 1px solid #D7000F;

@@ -1,5 +1,6 @@
 <template>
   <div class="main">
+    <!-- 左侧导航 -->
     <div class="main-left">
       <div class="main-left-title">
         学习目录
@@ -18,6 +19,7 @@
         </el-menu-item>
       </el-menu>
     </div>
+    <!-- 右侧主要区域 -->
     <div class="main-right">
       <type-panel class-id="sdfsdf" class-name="Java基础" />
     </div>
@@ -40,6 +42,9 @@ export default {
 .el-menu {
   border-right: 0px !important;
 }
+.el-menu-item.is-active{
+  color: #D7000F;
+}
 
 .main {
   .main-right {
@@ -52,7 +57,7 @@ export default {
     width: 200px;
     vertical-align: top;
     display: inline-block;
-    border: 1px solid #ccc;
+    border: 1px solid #e8e8e8;
     border-radius: 10px;
     padding-bottom: 10px;
     box-shadow: 0 3px 5px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
@@ -61,11 +66,11 @@ export default {
       font-size: 16px;
       width: 100%;
       border-radius: 10px 10px 0px 0px;
-      border-bottom: 1px solid #ccc;
+      border-bottom: 1px solid #e8e8e8;
       text-align: center;
       line-height: 30px;
       padding: 5px 20px;
-      background-color: #F1F2E5;
+      background-color: #f5f5f5;
     }
   }
 }
