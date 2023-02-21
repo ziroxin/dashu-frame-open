@@ -24,7 +24,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@TableName("news")
+@TableName("demo_news")
 @ApiModel(value = "News对象", description = "新闻表-测试")
 public class News implements BaseEntity {
 
