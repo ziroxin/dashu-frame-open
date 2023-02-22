@@ -1,5 +1,5 @@
 <template>
-  <!-- 横向布局 -->
+  <!-- ==================================横向布局================================== -->
   <div v-if="'horizontal' === layout" class="app-wrapper">
     <div :class="{hasTagsViewHor:needTagsView}">
       <!--顶部-->
@@ -20,7 +20,8 @@
     </right-panel>
     <user-edit-password v-model="editPassword" :info="editPasswordInfo" />
   </div>
-  <!-- 纵向布局 -->
+
+  <!-- ==================================纵向布局================================== -->
   <div v-else :class="classObj" class="app-wrapper">
     <!--手机端显示蒙版-->
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />

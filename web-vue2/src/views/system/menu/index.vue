@@ -4,25 +4,25 @@
       <el-col :span="elColSpanValue">
         <!--  操作按钮  -->
         <div style="margin-bottom: 20px;">
-          <el-button type="primary" icon="el-icon-plus" @click="permissionAdd" v-permission="'system-menu-add'">新增
+          <el-button v-permission="'system-menu-add'" type="primary" icon="el-icon-plus" @click="permissionAdd">新增
           </el-button>
-          <el-button type="info" icon="el-icon-edit" @click="permissionUpdate" v-permission="'system-menu-update'">修改
+          <el-button v-permission="'system-menu-update'" type="info" icon="el-icon-edit" @click="permissionUpdate">修改
           </el-button>
-          <el-button type="danger" icon="el-icon-delete" @click="permissionDelete" v-permission="'system-menu-delete'">删除
+          <el-button v-permission="'system-menu-delete'" type="danger" icon="el-icon-delete" @click="permissionDelete">删除
           </el-button>
-          <el-button type="warning" icon="el-icon-sort" @click="permissionUpdateParent" v-permission="'system-menu-update-parent'">修改上下级
+          <el-button v-permission="'system-menu-update-parent'" type="warning" icon="el-icon-sort" @click="permissionUpdateParent">修改上下级
           </el-button>
         </div>
         <!-- 表格部分 -->
         <el-table :data="tableData" row-key="permissionId" :height="this.$windowHeight-180"
                   border :tree-props="{children: 'children'}" :default-expand-all="true"
-                  @selection-change="selectionChangeHandlerOrder" highlight-current-row
+                  highlight-current-row @selection-change="selectionChangeHandlerOrder"
         >
-          <el-table-column type="selection" width="50" header-align="center" align="center"/>
+          <el-table-column type="selection" width="50" header-align="center" align="center" />
           <el-table-column prop="permissionTitle" label="菜单名称" min-width="60%">
             <template v-slot="{row}">
               <li class="menu-item">
-                <item :icon="row.permissionIcon" :title="row.permissionTitle"/>
+                <item :icon="row.permissionIcon" :title="row.permissionTitle" />
                 <el-tag v-if="row.permissionType === '0'" disable-transitions size="mini">路由</el-tag>
                 <el-tag v-if="row.permissionType === '2'" disable-transitions type="success" size="mini">外链</el-tag>
                 <el-tag v-if="!row.permissionIsShow" disable-transitions type="danger" size="mini">隐藏</el-tag>
@@ -46,7 +46,8 @@
                 <el-button>{{ row.permissionRouter }}</el-button>
               </el-tooltip>
               <a v-else :href="row.permissionRouter" style="text-decoration: underline;color: #1890ff;"
-                 target="_blank">{{ row.permissionRouter }}</a>
+                 target="_blank"
+              >{{ row.permissionRouter }}</a>
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="140" header-align="center" align="center">
@@ -60,7 +61,7 @@
         </el-table>
       </el-col>
       <el-col v-if="buttonTableVisible" :span="8" :style="rightStyle">
-        <PermissionButton :current-permission-row="currentPermissionRow" :close-button-table="closeButtonTable"/>
+        <PermissionButton :current-permission-row="currentPermissionRow" :close-button-table="closeButtonTable" />
       </el-col>
     </el-row>
 
@@ -74,58 +75,64 @@
           <el-radio v-model="temp.permissionType" label="2" @change="routerShow=false">外链</el-radio>
         </el-form-item>
         <el-form-item label="菜单名称：" prop="permissionTitle">
-          <el-input v-model="temp.permissionTitle" placeholder="菜单显示名称"/>
+          <el-input v-model="temp.permissionTitle" placeholder="菜单显示名称" />
         </el-form-item>
         <el-form-item v-if="routerShow" label="菜单标记：" prop="permissionName">
-          <el-input v-model="temp.permissionName" placeholder="唯一标记-用于控制权限，推荐格式：父包-模块（例：system-menu）"/>
+          <el-input v-model="temp.permissionName" placeholder="唯一标记-用于控制权限，推荐格式：父包-模块（例：system-menu）" />
         </el-form-item>
         <el-form-item label="菜单描述：" prop="permissionDescription">
-          <el-input v-model="temp.permissionDescription" type="textarea" placeholder="菜单功能简介"/>
+          <el-input v-model="temp.permissionDescription" type="textarea" placeholder="菜单功能简介" />
         </el-form-item>
         <el-form-item label="菜单图标：" prop="permissionIcon">
-          <IconPicker v-model="temp.permissionIcon" :icon="temp.permissionIcon" @iconName="getIconName"/>
+          <IconPicker v-model="temp.permissionIcon" :icon="temp.permissionIcon" @iconName="getIconName" />
         </el-form-item>
         <el-form-item label="菜单地址：" prop="permissionRouter">
           <el-input v-if="routerShow" v-model="temp.permissionRouter" placeholder="菜单地址，不含/index（例：/system/menu）"
-                    @input="temp.permissionComponent = temp.permissionRouter + '/index'"></el-input>
-          <el-input v-else v-model="temp.permissionRouter" placeholder="外链以 http:// 或 https:// 开头"></el-input>
+                    @input="temp.permissionComponent = temp.permissionRouter + '/index'"
+          />
+          <el-input v-else v-model="temp.permissionRouter" placeholder="外链以 http:// 或 https:// 开头" />
         </el-form-item>
         <el-form-item v-if="routerShow" label="组件地址：" prop="permissionComponent">
-          <el-input v-model="temp.permissionComponent" placeholder="组件完整地址（例：/system/menu/index）"/>
+          <el-input v-model="temp.permissionComponent" placeholder="组件完整地址（例：/system/menu/index）" />
           <el-tag type="info">根节点请填写：/layout/index</el-tag>
         </el-form-item>
 
         <el-form-item v-if="routerShow" label="是否显示：" prop="permissionIsShow">
           <el-switch v-model="temp.permissionIsShow" :active-value="true" active-text="显示"
-                     :inactive-value="false" inactive-text="隐藏"></el-switch>
+                     :inactive-value="false" inactive-text="隐藏"
+          />
         </el-form-item>
         <el-form-item v-if="routerShow && !temp.permissionIsShow" label="activeMenu：" prop="activeMenu">
-          <el-input v-model="temp.activeMenu" placeholder="本路由hidden时，请填写菜单栏高亮显示的路由"/>
+          <el-input v-model="temp.activeMenu" placeholder="本路由hidden时，请填写菜单栏高亮显示的路由" />
         </el-form-item>
 
         <el-form-item v-if="routerShow" label="redirect：" prop="noRedirect">
           <el-switch v-model="temp.noRedirect" active-value="noRedirect" active-text="NoRedirect"
-                     inactive-value="" inactive-text="否"></el-switch>
+                     inactive-value="" inactive-text="否"
+          />
           <el-tag type="info" style="margin-left: 20px;">等于noRedirect时,在面包屑导航不可点击</el-tag>
         </el-form-item>
         <el-form-item v-if="routerShow" label="noCache：" prop="noCache">
           <el-switch v-model="temp.noCache" :active-value="true" active-text="TRUE"
-                     :inactive-value="false" inactive-text="FALSE"></el-switch>
+                     :inactive-value="false" inactive-text="FALSE"
+          />
           <el-tag type="info" style="margin-left: 20px;">默认false,为true时不被keep-alive缓存</el-tag>
         </el-form-item>
         <el-form-item v-if="routerShow" label="breadcrumb：" prop="breadcrumb">
           <el-switch v-model="temp.breadcrumb" :active-value="true" active-text="TRUE"
-                     :inactive-value="false" inactive-text="FALSE"></el-switch>
+                     :inactive-value="false" inactive-text="FALSE"
+          />
           <el-tag type="info" style="margin-left: 20px;">默认true,为false时不在面包屑中显示</el-tag>
         </el-form-item>
         <el-form-item v-if="routerShow" label="affix：" prop="affix">
           <el-switch v-model="temp.affix" :active-value="true" active-text="TRUE"
-                     :inactive-value="false" inactive-text="FALSE"></el-switch>
+                     :inactive-value="false" inactive-text="FALSE"
+          />
           <el-tag type="info" style="margin-left: 20px;">默认false,为true时固定在标签里</el-tag>
         </el-form-item>
 
         <el-form-item label="菜单顺序：" prop="permissionOrder">
-          <el-input-number v-model.number="temp.permissionOrder" :min="0"></el-input-number>
+          <el-input-number v-model.number="temp.permissionOrder" :min="0" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -410,7 +417,12 @@ export default {
         })
       } else {
         this.resetTemp()
-        this.temp.parentId = row.permissionId
+        this.temp = {
+          ...this.temp,
+          parentId: row.permissionId,
+          permissionName: row.permissionName + '-',
+          permissionRouter: row.permissionRouter + '/'
+        }
         this.dialogFormVisible = true
         this.dialogStatus = 'subordinates'
         this.$nextTick(() => {
