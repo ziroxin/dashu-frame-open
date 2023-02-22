@@ -6,6 +6,7 @@ import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
 import com.kg.core.exception.enums.BaseErrorCode;
 import com.kg.core.security.entity.SecurityUserDetailEntity;
+import com.kg.core.security.util.SecurityIgnoreUtils;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,6 +35,12 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
     @SneakyThrows
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
+        // security.ignore忽略名单
+        if (SecurityIgnoreUtils.matcher(request.getServletPath())) {
+            // 放行，不验证token
+            filterChain.doFilter(request, response);
+            return;
+        }
         // 获取token
         String jwtToken = request.getHeader(LoginConstant.LOGIN_JWT_TOKEN_KEY);// header中的token
         if (!StringUtils.hasText(jwtToken)) {
