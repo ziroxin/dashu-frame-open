@@ -49,9 +49,9 @@ public class MybatisPlusGenerator {
         String[] tableNames = new String[]{"news"};
         // 表主键类型（如：IdType.ASSIGN_UUID、IdType.ASSIGN_ID）
         IdType[] idTypes = new IdType[]{IdType.ASSIGN_UUID};
-        // 包名
+        // 包名（支持多层包名，例如：system.role）
         String[] packages = new String[]{"news"};
-        // 前端view路径
+        // 前端view路径（支持多层领，例如：/system/role）
         String[] viewpaths = new String[]{"/news"};
 
         // ==================================开始执行生成=====================================
