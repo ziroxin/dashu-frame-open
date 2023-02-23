@@ -124,13 +124,17 @@ public class ZLoginServiceImpl implements ZLoginService {
 
     @Override
     public void logout() {
-        // 从SecurityContextHolder中获取用户信息
-        SecurityUserDetailEntity userDetailEntity =
-                (SecurityUserDetailEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String userId = userDetailEntity.getZUser().getUserId();
-        // 清空redis中的登录信息
-        redisUtils.delete(LoginConstant.LOGIN_INFO_REDIS_PRE + userId);
-        // 清空上下文
-        SecurityContextHolder.clearContext();
+        try {
+            // 从SecurityContextHolder中获取用户信息
+            SecurityUserDetailEntity userDetailEntity =
+                    (SecurityUserDetailEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String userId = userDetailEntity.getZUser().getUserId();
+            // 清空redis中的登录信息
+            redisUtils.delete(LoginConstant.LOGIN_INFO_REDIS_PRE + userId);
+            // 清空上下文
+            SecurityContextHolder.clearContext();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
