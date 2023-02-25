@@ -3,14 +3,14 @@
     <!--    操作按钮  -->
     <div style="margin: 10px 0px;text-align: center;">
       {{ currentPermissionRow.permissionTitle }}：
-      <el-button type="primary" icon="el-icon-plus" circle @click="permissionButtonAdd"/>
-      <el-button type="info" icon="el-icon-edit" circle @click="permissionButtonUpdate"/>
-      <el-button type="danger" icon="el-icon-delete" circle @click="permissionButtonDelete"/>
-      <el-button type="warning" icon="el-icon-close" circle @click="permissionButtonClose"/>
+      <el-button type="primary" icon="el-icon-plus" circle @click="permissionButtonAdd" />
+      <el-button type="info" icon="el-icon-edit" circle @click="permissionButtonUpdate" />
+      <el-button type="danger" icon="el-icon-delete" circle @click="permissionButtonDelete" />
+      <el-button type="warning" icon="el-icon-close" circle @click="permissionButtonClose" />
     </div>
     <!--   表格部分 -->
     <el-table :data="tableData" style="margin-bottom: 20px;" border @selection-change="selectionChangeHandlerOrder">
-      <el-table-column type="selection" width="55" header-align="center" align="center"/>
+      <el-table-column type="selection" width="55" header-align="center" align="center" />
       <el-table-column label="元素名称" header-align="center" align="center">
         <template slot-scope="{row}">
           <el-tooltip :key="'tip'+row.permissionId" placement="bottom">
@@ -25,7 +25,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column prop="permissionOrder" label="顺序" width="80" sortable align="center"/>
+      <el-table-column prop="permissionOrder" label="顺序" width="80" sortable align="center" />
     </el-table>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :close-on-click-modal="false">
@@ -33,27 +33,30 @@
                style="width: 650px;"
       >
         <el-form-item label="名称：" prop="permissionTitle">
-          <el-input v-model="temp.permissionTitle" placeholder="按钮名称"
-                    v-if="this.dialogStatus==='update'"></el-input>
+          <el-input v-if="this.dialogStatus==='update'" v-model="temp.permissionTitle"
+                    placeholder="按钮名称"
+          />
           <el-input v-else v-model="temp.permissionTitle" placeholder="按钮名称"
-                    @input="temp.permissionDescription=currentPermissionRow.permissionTitle+'-'+temp.permissionTitle"></el-input>
+                    @input="temp.permissionDescription=currentPermissionRow.permissionTitle+'-'+temp.permissionTitle"
+          />
         </el-form-item>
         <el-form-item label="标记：" prop="permissionName">
           <el-input v-model="temp.permissionName"
-                    placeholder="唯一标记-用于控制权限，推荐格式：模块名-按钮名（例：system-menu-add）"/>
+                    placeholder="唯一标记-用于控制权限，推荐格式：模块名-按钮名（例：system-menu-add）"
+          />
         </el-form-item>
         <el-form-item label="描述：" prop="permissionDescription">
-          <el-input v-model="temp.permissionDescription" type="textarea" placeholder="按钮简介"/>
+          <el-input v-model="temp.permissionDescription" type="textarea" placeholder="按钮简介" />
         </el-form-item>
         <el-form-item label="类型：" prop="permissionType">
           <el-radio v-model="temp.permissionType" label="1">按钮</el-radio>
           <el-radio v-model="temp.permissionType" label="3">其他</el-radio>
         </el-form-item>
         <el-form-item label="图标：" prop="permissionIcon">
-          <IconPicker v-model="temp.permissionIcon" :icon="temp.permissionIcon" @iconName="getIconName"/>
+          <IconPicker v-model="temp.permissionIcon" />
         </el-form-item>
         <el-form-item label="顺序：" prop="permissionOrder">
-          <el-input-number v-model.number="temp.permissionOrder" :min="0"></el-input-number>
+          <el-input-number v-model.number="temp.permissionOrder" :min="0" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -139,10 +142,6 @@ export default {
         permissionIsEnabled: '1',
         permissionOrder: 0
       }
-    },
-    // 查询图标名称
-    getIconName(value) {
-      this.temp.permissionIcon = value;
     },
     //  点击添加按钮后
     permissionButtonAdd() {

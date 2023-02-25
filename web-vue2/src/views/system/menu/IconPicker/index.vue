@@ -4,14 +4,14 @@
     <el-popover width="600" trigger="click">
       <div style="max-height:400px;overflow-y: scroll;overflow-x:hidden">
         <el-button v-for="(item,index) in iconList" :key="index" plain style="margin:2px;" @click="iconName=item">
-          <eIcon :icon-name="item" style="font-size: 20px;"/>
+          <eIcon :icon-name="item" style="font-size: 20px;" />
         </el-button>
       </div>
 
       <el-button slot="reference">
         <span v-if="iconName==''">请选择图标</span>
         <span v-else>
-          <eIcon :icon-name="iconName"/>
+          <eIcon :icon-name="iconName" />
         </span>
       </el-button>
     </el-popover>
@@ -27,28 +27,21 @@ import elementIcons from '@/views/icons/element-icons'
 export default {
   name: 'IconPicker',
   components: {eIcon},
-  props: {
-    icon: String
-  },
-
+  props: {value: String},
   data() {
     return {
       svgIcons,
       elementIcons,
-      iconName: this.icon,
+      iconName: this.value,
       iconList: []
     };
   },
   watch: {
-    icon: {
-      handler: function (newValue) {
-        this.iconName = newValue;
-      }
+    iconName() {
+      this.$emit('input', this.iconName)
     },
-    iconName: {
-      handler: function (value) {
-        this.$emit('iconName', value);
-      }
+    value() {
+      this.iconName = this.value
     }
   },
   mounted() {

@@ -84,7 +84,7 @@
           <el-input v-model="temp.permissionDescription" type="textarea" placeholder="菜单功能简介" />
         </el-form-item>
         <el-form-item label="菜单图标：" prop="permissionIcon">
-          <IconPicker v-model="temp.permissionIcon" :icon="temp.permissionIcon" @iconName="getIconName" />
+          <IconPicker v-model="temp.permissionIcon" />
         </el-form-item>
         <el-form-item label="菜单地址：" prop="permissionRouter">
           <el-input v-if="routerShow" v-model="temp.permissionRouter" placeholder="菜单地址，不含/index（例：/system/menu）"
@@ -252,10 +252,6 @@ export default {
         this.tableData = response.data
         this.total = response.data.length
       })
-    },
-    // 查询图标名称
-    getIconName(value) {
-      this.temp.permissionIcon = value;
     },
     // 表格勾选
     selectionChangeHandlerOrder(val) {
