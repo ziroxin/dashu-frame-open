@@ -30,12 +30,6 @@ router.beforeEach(async (to, from, next) => {
     const hasToken = getToken()
 
     if (hasToken) {
-      // 判断token的有效期
-      let tokenValidTime = getTokenValidTime();
-      if ((new Date().getTime() + (10 * 60 * 1000)) > new Date(tokenValidTime).getTime()) {
-        // token失效前10分钟，刷新token
-        store.dispatch('user/refreshToken')
-      }
       if (to.path === '/login') {
         // 登录后，跳转到首页
         next({path: '/'})
