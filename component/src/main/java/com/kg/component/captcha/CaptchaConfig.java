@@ -39,17 +39,17 @@ public class CaptchaConfig {
         config.setHeight(height);
     }
 
-    @Value("${com.kg.captcha.fontFamily:Default}")
+    @Value("${com.kg.captcha.font-family:Default}")
     public void setFontFamily(String fontFamily) {
         config.setFontFamily(fontFamily);
     }
 
-    @Value("${com.kg.captcha.fontSize:20}")
+    @Value("${com.kg.captcha.font-size:20}")
     public void setFontSize(int fontSize) {
         config.setFontSize(fontSize);
     }
 
-    @Value("${com.kg.captcha.fontStyle:0}")
+    @Value("${com.kg.captcha.font-style:0}")
     public void setFontStyle(int fontStyle) {
         config.setFontStyle(fontStyle);
     }

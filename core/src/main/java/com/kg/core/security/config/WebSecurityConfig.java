@@ -45,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * 配置是否允许跨域，默认false
      */
-    @Value("${com.kg.cors.enable}")
+    @Value("${com.kg.cors-enable}")
     private Boolean isCorsEnable;
 
     /**

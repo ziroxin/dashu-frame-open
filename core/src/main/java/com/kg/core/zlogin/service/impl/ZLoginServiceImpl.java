@@ -51,7 +51,7 @@ public class ZLoginServiceImpl implements ZLoginService {
 
     @Resource
     private ZCaptchaService captchaService;
-    @Value("${com.kg.login.isYzm}")
+    @Value("${com.kg.login.is-yzm}")
     private boolean IS_YZM;
 
     @Override
@@ -100,6 +100,9 @@ public class ZLoginServiceImpl implements ZLoginService {
         loginSuccessDTO.setAccessToken(JwtUtils.createToken(userId));
         // JwtToken有效期
         loginSuccessDTO.setAccessTokenValidTime(TimeUtils.now().addMinute(LoginConstant.LOGIN_JWT_TOKEN_EXPIRY).toDate());
+        // 缓存用户登录的最新token
+        redisUtils.set(LoginConstant.LAST_LOGIN_TOKEN_PRE + userId, loginSuccessDTO.getAccessToken(),
+                LoginConstant.LOGIN_JWT_TOKEN_EXPIRY * 60L);
         // 把用户信息存入redis
         redisUtils.set(LoginConstant.LOGIN_INFO_REDIS_PRE + userId, userDetailEntity,
                 LoginConstant.LOGIN_JWT_TOKEN_EXPIRY * 60L);
@@ -129,8 +132,14 @@ public class ZLoginServiceImpl implements ZLoginService {
             SecurityUserDetailEntity userDetailEntity =
                     (SecurityUserDetailEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String userId = userDetailEntity.getZUser().getUserId();
+            // 清空redis中的token
+            if (redisUtils.hasKey(LoginConstant.LAST_LOGIN_TOKEN_PRE + userId)) {
+                redisUtils.delete(LoginConstant.LAST_LOGIN_TOKEN_PRE + userId);
+            }
             // 清空redis中的登录信息
-            redisUtils.delete(LoginConstant.LOGIN_INFO_REDIS_PRE + userId);
+            if (redisUtils.hasKey(LoginConstant.LOGIN_INFO_REDIS_PRE + userId)) {
+                redisUtils.delete(LoginConstant.LOGIN_INFO_REDIS_PRE + userId);
+            }
             // 清空上下文
             SecurityContextHolder.clearContext();
         } catch (Exception e) {

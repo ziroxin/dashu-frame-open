@@ -27,7 +27,7 @@ public class BaiduAccessToken {
     /**
      * 百度API Key
      */
-    @Value("${com.kg.baidu.clientId}")
+    @Value("${com.kg.baidu.client-id}")
     public void setClientId(String str) {
         CLIENT_ID = str;
     }
@@ -35,7 +35,7 @@ public class BaiduAccessToken {
     /**
      * 百度Secret Key
      */
-    @Value("${com.kg.baidu.clientSecret}")
+    @Value("${com.kg.baidu.client-secret}")
     public void setClientSecret(String str) {
         BaiduAccessToken.CLIENT_SECRET = str;
     }
@@ -43,7 +43,7 @@ public class BaiduAccessToken {
     /**
      * 百度grant_type
      */
-    @Value("${com.kg.baidu.grantType}")
+    @Value("${com.kg.baidu.grant-type}")
     public void setGrantType(String str) {
         BaiduAccessToken.GRANT_TYPE = str;
     }

@@ -24,7 +24,7 @@ public class JwtUtils {
     // 生成Token的有效期（单位：分，默认：120分钟）
     private static Integer JWT_EXPIRE_TIME;
 
-    @Value("${com.kg.login.jwt.token.expiry}")
+    @Value("${com.kg.login.jwt-token-expiry}")
     public void setJwtTokenKey(Integer expiry) {
         JwtUtils.JWT_EXPIRE_TIME = expiry;
     }

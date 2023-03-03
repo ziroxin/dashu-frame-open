@@ -43,15 +43,6 @@ mybatis-plus:
 #自定义配置
 com:
   kg:
-    #微信配置
-    weixin:
-      appid: xxxxx
-      secret: xxxxx
-    #百度OCR配置
-    baidu:
-      clientId: xxxxx
-      clientSecret: xxxxx
-      grantType: xxxxx
     #文件上传配置
     file:
       #允许上传的文件格式（防止攻击类脚本文件上传，以|结尾）
@@ -62,33 +53,18 @@ com:
       save-path: e:/IdeaProjects/fwwbsyb/dashu-frame-open/component/target/myupload/files
       #隐藏上传路径（用于访问的路径，通过spring代理;不要使用\;要在security.ignore放开）
       url-pre: /upload
-    #swagger相关配置
-    swagger:
-      title: "大树快速开发平台API"
-      description: "基于swagger的Api接口信息"
-      termsOfServiceUrl: "http://www.keepgrown.com"
-      version: "1.0.0"
-      concat:
-        name: "ziro"
-        www: "http://www.keepgrown.com"
-        email: "877185959@qq.com"
-    #开发管理员配置
-    developer:
-      user:
-        # 所有开发管理员的ids，多个用逗号隔开
-        ids: 1
     #登录常量配置
     login:
+      #是否单例登录
+      is-only-one: false
       #登录是否需要验证验证码
-      isYzm: true
-      jwt:
-        token:
-          #token过期时限，单位：分钟
-          expiry: 120
-    #跨域配置
-    cors:
-      # 是否开启跨域：默认关闭（true开启；false关闭）
-      enable: false
+      is-yzm: true
+      #jwtToken过期时限，单位：分钟
+      jwt-token-expiry: 120
+    #开发管理员配置 (所有开发管理员的ids，多个用逗号隔开)
+    developer-user-ids: 1
+    #跨域配置 (是否开启跨域：默认关闭（true开启；false关闭）)
+    cors-enable: false
     #验证码配置
     captcha:
       #类型枚举 ARITHMETIC-算数；CHINESE-中文；CHINESE_GIF-中文闪图；GIF-闪图；SPEC-常规
@@ -101,10 +77,29 @@ com:
       width: 163
       height: 49
       #字体样式
-      fontFamily: Default
-      fontSize: 20
+      font-family: Default
+      font-size: 20
       #0正常、1加粗、2斜体
-      fontStyle: 0
+      font-style: 0
+    #swagger相关配置
+    swagger:
+      title: "大树快速开发平台API"
+      description: "基于swagger的Api接口信息"
+      terms-of-service-url: "http://www.keepgrown.com"
+      version: "1.0.0"
+      concat:
+        name: "ziro"
+        www: "http://www.keepgrown.com"
+        email: "877185959@qq.com"
+    #微信配置
+    weixin:
+      appid: xxxxx
+      secret: xxxxx
+    #百度OCR配置
+    baidu:
+      client-id: xxxxx
+      client-secret: xxxxx
+      grant-type: xxxxx
 #输出日志配置
 logging:
   level:

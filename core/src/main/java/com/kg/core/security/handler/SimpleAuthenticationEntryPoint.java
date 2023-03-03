@@ -1,14 +1,12 @@
 package com.kg.core.security.handler;
 
 import com.kg.component.utils.ResponseWriteUtils;
+import com.kg.core.exception.enums.BaseErrorCode;
 import com.kg.core.web.ResponseResult;
-import lombok.SneakyThrows;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -24,9 +22,10 @@ public class SimpleAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+        // 认证异常（无token或者token无效）
         String result = ResponseResult.builder()
-                .code("" + HttpStatus.UNAUTHORIZED.value())
-                .message("用户认证失败，您未登录！").toString();
+                .code("" + BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID.getCode())
+                .message(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID.getInfo()).toString();
         ResponseWriteUtils.writeJson200(response, result);
     }
 }

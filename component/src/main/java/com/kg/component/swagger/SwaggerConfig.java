@@ -27,7 +27,7 @@ public class SwaggerConfig {
     @Value("${com.kg.swagger.description}")
     private String description;
     // API协议地址
-    @Value("${com.kg.swagger.termsOfServiceUrl}")
+    @Value("${com.kg.swagger.terms-of-service-url}")
     private String termsOfServiceUrl;
     @Value("${com.kg.swagger.version}")
     private String version;

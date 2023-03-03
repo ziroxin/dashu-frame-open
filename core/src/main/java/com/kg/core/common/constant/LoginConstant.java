@@ -15,6 +15,8 @@ public class LoginConstant {
     public static final String LOGIN_INFO_REDIS_PRE = "zlogin@";
     // 登录token的key
     public static final String LOGIN_JWT_TOKEN_KEY = "z_jwt_token";
+    // 用户最后一次登录的token前缀
+    public static final String LAST_LOGIN_TOKEN_PRE = "lasg_login_token@";
     // 权限信息存储到redis的前缀
     public static final String PERMISSION_REDIS_PRE = "zpermission@";
     // 角色和api关联关系redis缓存key
@@ -31,14 +33,25 @@ public class LoginConstant {
     public static final String USER_LOCK_REDIS_PRE = "z_user_lock@";
     // 缓存中锁定用户的列表记录
     public static final String USER_LOCKED_LIST_REDIS_KEY = "user_locked_list_redis";
+    // 是否开启单例登录：true开启，false关闭
+    public static boolean IS_USER_LOGIN_ONLY_ONE = false;
 
-    @Value("${com.kg.login.jwt.token.expiry}")
+    // 读取配置：jwtToken的有效期
+    @Value("${com.kg.login.jwt-token-expiry}")
     public void setLoginJwtTokenExpiry(Integer expiry) {
         LoginConstant.LOGIN_JWT_TOKEN_EXPIRY = expiry;
     }
 
-    @Value("${com.kg.developer.user.ids}")
+    // 读取配置：开发管理员的ids
+    @Value("${com.kg.developer-user-ids}")
     public void setDeveloperUserIds(String userIds) {
         LoginConstant.DEVELOPER_USER_IDS = userIds;
     }
+
+    // 读取配置：是否单例登录
+    @Value("${com.kg.login.is-only-one}")
+    public void setDeveloperUserIds(boolean onlyOne) {
+        LoginConstant.IS_USER_LOGIN_ONLY_ONE = onlyOne;
+    }
+
 }

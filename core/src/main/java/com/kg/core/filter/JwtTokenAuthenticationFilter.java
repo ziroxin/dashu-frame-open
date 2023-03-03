@@ -8,7 +8,6 @@ import com.kg.core.exception.enums.BaseErrorCode;
 import com.kg.core.security.entity.SecurityUserDetailEntity;
 import com.kg.core.security.util.SecurityIgnoreUtils;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -16,6 +15,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Component
 public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
-    @Autowired
+    @Resource
     private RedisUtils redisUtils;
 
     @SneakyThrows
@@ -37,40 +37,51 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
         // ============ 1. 是否忽略列表（在忽略列表中时，不抛异常） ============
         boolean isIgnore = SecurityIgnoreUtils.matcher(request.getServletPath());
-        // ============ 2. 获取token ============
-        String jwtToken = request.getHeader(LoginConstant.LOGIN_JWT_TOKEN_KEY);// header中的token
-        if (!StringUtils.hasText(jwtToken)) {
-            jwtToken = request.getParameter(LoginConstant.LOGIN_JWT_TOKEN_KEY);// 参数中的token
+        if (isIgnore) {
+            // 忽略列表，也可能需要加载当前登录用户信息，所以继续执行；但遇到异常，无需抛出异常
+            doIgnoreFilter(request, response, filterChain);
+        } else {
+            // 非忽略列表，正常逻辑判断
+            // ============ 2. 获取token ============
+            String jwtToken = request.getHeader(LoginConstant.LOGIN_JWT_TOKEN_KEY);// header中的token
             if (!StringUtils.hasText(jwtToken)) {
-                // 无token放行（后边security会判断权限）
-                filterChain.doFilter(request, response);
-                return;
+                jwtToken = request.getParameter(LoginConstant.LOGIN_JWT_TOKEN_KEY);// 参数中的token
+                if (!StringUtils.hasText(jwtToken)) {
+                    // 无token放行（后边security会判断权限）
+                    filterChain.doFilter(request, response);
+                    return;
+                }
             }
-        }
-        // ============ 3. 解析token ============
-        Object userId = null;
-        boolean tokenFlag = true;
-        try {
-            userId = JwtUtils.parseToken(jwtToken);
-            if (ObjectUtils.isEmpty(userId)) {
-                tokenFlag = false;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            tokenFlag = false;
-        }
-        if (!tokenFlag) {
-            // token解析出错，且不在忽略列表，返回，抛异常
-            if (!isIgnore) {
+            // ============ 3. 解析token ============
+            Object userId;
+            try {
+                userId = JwtUtils.parseToken(jwtToken);
+            } catch (Exception e) {
+                e.printStackTrace();
                 throw new BaseException(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID);
             }
-        } else {
-            // ============ 4. 加载当前登录用户信息 ============
-            boolean userFlag = true;
+            if (ObjectUtils.isEmpty(userId)) {
+                throw new BaseException(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID);
+            }
+            // ============ 4. 判断是否单例登录 ============
+            System.out.println("IS_USER_LOGIN_ONLY_ONE:::" + LoginConstant.IS_USER_LOGIN_ONLY_ONE);
+            if (LoginConstant.IS_USER_LOGIN_ONLY_ONE) {
+                // 登录登录
+                if (!redisUtils.hasKey(LoginConstant.LAST_LOGIN_TOKEN_PRE + userId)) {
+                    // 无缓存的token，抛出token无效异常
+                    throw new BaseException(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID);
+                }
+                Object lastToken = redisUtils.get(LoginConstant.LAST_LOGIN_TOKEN_PRE + userId);
+                if (lastToken == null || !jwtToken.equals(lastToken.toString())) {
+                    // 无缓存token or 请求的token != 缓存的token，抛出token无效异常
+                    throw new BaseException(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID);
+                }
+            }
+            // ============ 5. 加载当前登录用户信息 ============
             // 从redis中读取用户信息
             SecurityUserDetailEntity userDetailEntity = (SecurityUserDetailEntity) redisUtils.get(LoginConstant.LOGIN_INFO_REDIS_PRE + userId);
             if (ObjectUtils.isEmpty(userDetailEntity)) {
-                userFlag = false;
+                throw new BaseException(BaseErrorCode.LOGIN_ERROR_NOT_LOGIN);
             } else {
                 try {
                     // 存入SecurityContextHolder
@@ -79,16 +90,51 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    userFlag = false;
+                    throw new BaseException(BaseErrorCode.LOGIN_ERROR_NOT_LOGIN);
                 }
             }
-            if (!isIgnore && !userFlag) {
-                // user加载出错，且不在忽略列表，返回，抛异常
-                throw new BaseException(BaseErrorCode.LOGIN_ERROR_NOT_LOGIN);
+
+            // ============ 6. 继续请求动作 ============
+            filterChain.doFilter(request, response);
+        }
+    }
+
+    @SneakyThrows
+    private void doIgnoreFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
+        // ============ 2. 获取token ============
+        String jwtToken = request.getHeader(LoginConstant.LOGIN_JWT_TOKEN_KEY);// header中的token
+        if (!StringUtils.hasText(jwtToken)) {
+            jwtToken = request.getParameter(LoginConstant.LOGIN_JWT_TOKEN_KEY);// 参数中的token
+            if (!StringUtils.hasText(jwtToken)) {
+                // 无token放行
+                filterChain.doFilter(request, response);
+                return;
             }
         }
+        // ============ 3. 解析token ============
+        Object userId = null;
+        try {
+            userId = JwtUtils.parseToken(jwtToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        // ============ 5. 继续请求动作 ============
+        if (!ObjectUtils.isEmpty(userId)) {
+            // ============ 5. 加载当前登录用户信息 ============
+            // 从redis中读取用户信息
+            SecurityUserDetailEntity userDetailEntity = (SecurityUserDetailEntity) redisUtils.get(LoginConstant.LOGIN_INFO_REDIS_PRE + userId);
+            if (!ObjectUtils.isEmpty(userDetailEntity)) {
+                try {
+                    // 存入SecurityContextHolder
+                    UsernamePasswordAuthenticationToken authenticationToken =
+                            new UsernamePasswordAuthenticationToken(userDetailEntity, null, userDetailEntity.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        // ============ 6. 继续请求动作 ============
         filterChain.doFilter(request, response);
     }
 }

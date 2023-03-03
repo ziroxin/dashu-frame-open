@@ -61,6 +61,8 @@ public class ZLoginController implements BaseController {
         loginSuccessDTO.setAccessToken(JwtUtils.createToken(user.getUserId()));
         // JwtToken有效期
         loginSuccessDTO.setAccessTokenValidTime(TimeUtils.now().addMinute(LoginConstant.LOGIN_JWT_TOKEN_EXPIRY).toDate());
+        // 缓存用户登录的最新token
+        redisUtils.set(LoginConstant.LAST_LOGIN_TOKEN_PRE + user.getUserId(), loginSuccessDTO.getAccessToken(), LoginConstant.LOGIN_JWT_TOKEN_EXPIRY * 60L);
         // 延长redis中，用户有效期
         redisUtils.setExpire(LoginConstant.LOGIN_INFO_REDIS_PRE + user.getUserId(), LoginConstant.LOGIN_JWT_TOKEN_EXPIRY * 60L);
         return loginSuccessDTO;
