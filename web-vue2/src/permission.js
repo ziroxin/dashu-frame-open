@@ -5,14 +5,12 @@ import {Message} from 'element-ui'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 // 从Cookie中读取token
-import {getToken, getTokenValidTime} from '@/utils/auth'
+import {getToken} from '@/utils/auth'
 import getPageTitle from '@/utils/get-page-title'
+import {isWhiteList} from '@/utils/white-list'
 
 // 进度条配置
 NProgress.configure({showSpinner: false})
-
-// 单页白名单
-const whiteList = ['/login', '/auth-redirect']
 
 router.beforeEach(async (to, from, next) => {
   // 进度条
@@ -22,7 +20,7 @@ router.beforeEach(async (to, from, next) => {
   document.title = getPageTitle(to.meta.title)
 
   // 路由白名单，直接跳转（不需检测token）
-  if (whiteList.indexOf(to.path) !== -1) {
+  if (isWhiteList(to.path)) {
     next()
     NProgress.done()
   } else {

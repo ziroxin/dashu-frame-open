@@ -3,6 +3,7 @@ import {Message, MessageBox} from 'element-ui'
 import store from '@/store'
 import {getToken, getTokenValidTime} from '@/utils/auth'
 import qs from 'qs'
+import {isWhiteList} from '@/utils/white-list'
 
 // 创建axios
 const service = axios.create({
@@ -18,10 +19,9 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // 发送请求前操作
-
     if (store.getters.token) {
       const hasToken = getToken()
-      if (hasToken && config.url !== '/login/refresh/token') {
+      if (hasToken && config.url !== '/login/refresh/token' && !isWhiteList(config.url)) {
         // 判断token的有效期
         let tokenValidTime = getTokenValidTime();
         if ((new Date().getTime() + (10 * 60 * 1000)) > new Date(tokenValidTime).getTime()) {
