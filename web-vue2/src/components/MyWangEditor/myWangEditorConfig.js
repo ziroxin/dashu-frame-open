@@ -68,7 +68,8 @@ export function customParseVideoSrc(src) {
 
 // 自定义转换图片地址
 export function customParseImageSrc(src) {
-  if (src) {
+  if (src && src.indexOf('data:image/png;base64,') === -1) {
+    // 非base64地址，要追加$baseServer路径
     return process.env.VUE_APP_BASE_API + src
   }
   return src
