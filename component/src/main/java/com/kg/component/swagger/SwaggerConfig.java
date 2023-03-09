@@ -66,12 +66,12 @@ public class SwaggerConfig {
     public Docket api1() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
-                .groupName("test")
+                .groupName("news")
                 .select()
                 // 这里采用包含注解的方式来确定要显示的接口(建议使用这种)
                 .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 // 以/test/开头的接口
-                .paths(PathSelectors.ant("/test/**"))
+                .paths(PathSelectors.ant("/news/**"))
                 // 所有接口
                 //.paths(PathSelectors.any())
                 .build();
