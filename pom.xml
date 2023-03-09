@@ -50,6 +50,7 @@
         <org.quartz.version>2.3.2</org.quartz.version>
         <whvcse.easy-captcha.version>1.6.2</whvcse.easy-captcha.version>
         <poi.version>4.1.2</poi.version>
+        <guava.version>31.1-jre</guava.version>
 
         <!-- 打包信息 -->
         <finalpackage.path>${project.build.directory}/package-jar</finalpackage.path>
@@ -191,6 +192,13 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-jdbc</artifactId>
                 <version>${spring-boot.version}</version>
+            </dependency>
+
+            <!-- google guava -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
