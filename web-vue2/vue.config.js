@@ -54,6 +54,8 @@ module.exports = {
       }
     }
   },
+  // 解决导入第三方包时，因为es语法导致的错误（让源码中的es6、es7的特性转换为es5）
+  transpileDependencies: ['swagger-ui-dist'],
   chainWebpack(config) {
     // it can improve the speed of the first screen, it is recommended to turn on preload
     // it can improve the speed of the first screen, it is recommended to turn on preload
