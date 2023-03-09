@@ -21,12 +21,15 @@ service.interceptors.request.use(
     // 发送请求前操作
     if (store.getters.token) {
       const hasToken = getToken()
-      if (hasToken && config.url !== '/login/refresh/token' && !isWhiteList(config.url)) {
-        // 判断token的有效期
-        let tokenValidTime = getTokenValidTime();
-        if ((new Date().getTime() + (10 * 60 * 1000)) > new Date(tokenValidTime).getTime()) {
-          // token失效前10分钟，刷新token
-          store.dispatch('user/refreshToken')
+      if (hasToken) {
+        if (config.url !== '/login/refresh/token' && !isWhiteList(config.url)) {
+          // 判断token的有效期
+          let tokenValidTime = getTokenValidTime();
+          if (new Date().getTime() < new Date(tokenValidTime).getTime() &&
+            (new Date().getTime() + (10 * 60 * 1000)) > new Date(tokenValidTime).getTime()) {
+            // token失效前10分钟，刷新token
+            store.dispatch('user/refreshToken')
+          }
         }
         // 给每个请求头，加上TOKEN：z_jwt_token
         config.headers['z_jwt_token'] = hasToken
@@ -53,11 +56,11 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     // 成功
-    if (res.code == 200) {
+    if (res.code === '200') {
       return res
     } else {
       // 异常1：未正常登录！ 40001=用户名或者密码错误;40002=无效的TOKEN;40003=用户未登录;40004=用户已禁用;401=无权限;
-      if (res.code == 40001 || res.code == 40002 || res.code == 40003 || res.code == 40004 || res.code == 401) {
+      if (res.code === '40001' || res.code === '40002' || res.code === '40003' || res.code === '40004' || res.code === '401') {
         MessageBox.confirm(res.message, '登录失败', {
           confirmButtonText: '刷新',
           cancelButtonText: '取消',
@@ -70,13 +73,13 @@ service.interceptors.response.use(
         })
       }
       // 异常2：服务器端异常
-      if (res.code == 500) {
+      if (res.code === '500') {
         console.log('服务端出错(' + res.code + ')：' + res.message);
         Message({message: res.message, type: 'error', duration: 3 * 1000})
         return Promise.reject(new Error(res.message || 'Error'))
       }
       // 异常3：客户端异常
-      if (res.code == 400 || res.code == 403 || res.code == 405) {
+      if (res.code === '400' || res.code === '403' || res.code === '405') {
         console.log('客户端出错(' + res.code + ')：' + res.message);
         Message({message: res.message, type: 'error', duration: 3 * 1000})
       }
