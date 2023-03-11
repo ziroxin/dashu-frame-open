@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 public class LoginConstant {
     // 登录信息存储到reids的前缀
     public static final String LOGIN_INFO_REDIS_PRE = "zlogin@";
-    // 登录token的key
-    public static final String LOGIN_JWT_TOKEN_KEY = "z_jwt_token";
+    // 用户token的key
+    public static final String LOGIN_JWT_TOKEN_KEY = "UserJwtToken";
     // 用户最后一次登录的token前缀
     public static final String LAST_LOGIN_TOKEN_PRE = "lasg_login_token@";
     // 权限信息存储到redis的前缀

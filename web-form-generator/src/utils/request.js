@@ -18,8 +18,8 @@ service.interceptors.request.use(
   config => {
     // 发送请求前操作
 
-    // 给每个请求头，加上TOKEN：z_jwt_token
-    config.headers['z_jwt_token'] = getToken()
+    // 给每个请求头，加上TOKEN：UserJwtToken
+    config.headers['UserJwtToken'] = getToken()
 
     if (config.method === 'get') {
       // 若是是get请求，且params是数组类型如arr=[1,2]，则转换成arr=1&arr=2

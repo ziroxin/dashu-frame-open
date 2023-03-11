@@ -31,8 +31,8 @@ service.interceptors.request.use(
             store.dispatch('user/refreshToken')
           }
         }
-        // 给每个请求头，加上TOKEN：z_jwt_token
-        config.headers['z_jwt_token'] = hasToken
+        // 给每个请求头，加上TOKEN：UserJwtToken
+        config.headers['UserJwtToken'] = hasToken
       }
     }
     if (config.method === 'get') {
