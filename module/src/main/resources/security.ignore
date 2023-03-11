@@ -4,12 +4,15 @@
 # 登录登出接口
 /login/login
 /login/logout
+/favicon.ico
 
 # 验证码
 /captcha/get
 
 # swagger api 地址（注意：生产环境请删除）
 /v2/api-docs
+/swagger-resources
+/swagger-resources/**
 
 # 静态资源映射路径（上传文件）
 /upload/**

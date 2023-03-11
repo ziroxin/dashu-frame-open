@@ -16,6 +16,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // 配置 /upload/** 映射到  /SAVE_PATH/**
         String fileUploadPath = FilePathConfig.SAVE_PATH + "/";
         registry.addResourceHandler(FilePathConfig.URL_PRE + "/**")
                 .addResourceLocations("file:" + fileUploadPath.replaceAll("//", "/"));
