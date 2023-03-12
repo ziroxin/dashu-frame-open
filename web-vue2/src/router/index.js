@@ -77,6 +77,12 @@ export const constantRoutes = [
         meta: {title: 'Dashboard', icon: 'dashboard', affix: true}
       }
     ]
+  },
+  {
+    // 错误页跳转404
+    path: '*',
+    redirect: '/404',
+    hidden: true
   }
 ]
 
