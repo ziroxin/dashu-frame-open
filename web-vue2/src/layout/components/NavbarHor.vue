@@ -8,49 +8,21 @@
       </router-link>
     </div>
     <!-- 顶部菜单 -->
-    <topbar />
+    <topbar/>
     <!-- 头像菜单 -->
     <div class="right-menu">
       <template v-if="device!=='mobile'">
         <!--PC菜单-->
-        <search id="header-search" class="right-menu-item" />
-        <error-log class="errLog-container right-menu-item hover-effect" />
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
+        <search id="header-search" class="right-menu-item"/>
+        <error-log class="errLog-container right-menu-item hover-effect"/>
+        <screenfull id="screenfull" class="right-menu-item hover-effect"/>
         <!--<el-tooltip content="全局文字大小配置" effect="dark" placement="bottom">
                   <size-select id="size-select" class="right-menu-item hover-effect"/>
                 </el-tooltip>-->
       </template>
 
-      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
-        <div class="avatar-wrapper">
-          <img v-if="avatar!=null" :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <img v-else src="@/assets/images/avatar.png" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
-        </div>
-        <el-dropdown-menu slot="dropdown">
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>
-              <i class="el-icon-document" />
-              文档
-            </el-dropdown-item>
-          </a>
-          <a @click="editPassword=true">
-            <el-dropdown-item>
-              <i class="el-icon-key" />
-              修改密码
-            </el-dropdown-item>
-          </a>
-          <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">
-              <svg-icon icon-class="exit" />
-              退出
-            </span>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
+      <header-user-setting/>
     </div>
-    <!-- 修改密码弹窗 -->
-    <user-edit-password v-model="editPassword" :show-close-btn="true" />
   </div>
 </template>
 
@@ -61,13 +33,13 @@ import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 // import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
-import UserEditPassword from '@/views/system/user/UserEditPassword';
 import variables from '@/styles/variables.scss';
 import Topbar from './Topbar/index'
+import HeaderUserSetting from "@/layout/components/HeaderUserSetting";
 
 export default {
   components: {
-    UserEditPassword,
+    HeaderUserSetting,
     Hamburger,
     ErrorLog,
     Screenfull,
@@ -77,8 +49,6 @@ export default {
   },
   data() {
     return {
-      // 个人用户修改密码
-      editPassword: false,
       logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
     }
   },
@@ -86,7 +56,6 @@ export default {
     ...mapGetters([
       'permission_routes',
       'sidebar',
-      'avatar',
       'device',
       'settings'
     ]),
@@ -107,10 +76,6 @@ export default {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
-    async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-    }
   }
 }
 </script>
@@ -194,30 +159,6 @@ export default {
 
         &:hover {
           background: rgba(0, 0, 0, .025)
-        }
-      }
-    }
-
-    .avatar-container {
-      margin-right: 30px;
-
-      .avatar-wrapper {
-        margin-top: 5px;
-        position: relative;
-
-        .user-avatar {
-          cursor: pointer;
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
-        }
-
-        .el-icon-caret-bottom {
-          cursor: pointer;
-          position: absolute;
-          right: -20px;
-          top: 25px;
-          font-size: 12px;
         }
       }
     }
