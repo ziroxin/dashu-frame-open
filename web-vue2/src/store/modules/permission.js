@@ -1,4 +1,5 @@
 import Layout from '@/layout'
+import {errorRoute} from "@/router";
 
 // 转换成组件
 function convertComponent(component) {
@@ -23,8 +24,6 @@ function convertComponent(component) {
 
 /**
  * 迭代（递归）循环出动态路由
- * @param routes asyncRoutes
- * @param permissions
  */
 export function filterAsyncRoutes(routers, isTop) {
   const res = []
@@ -117,7 +116,7 @@ const actions = {
       // 动态生成菜单
       const accessedRoutes = filterAsyncRoutes(routers, true)
       commit('SET_ROUTES', accessedRoutes)
-      resolve(accessedRoutes)
+      resolve(accessedRoutes.concat(errorRoute))
     })
   }
 }

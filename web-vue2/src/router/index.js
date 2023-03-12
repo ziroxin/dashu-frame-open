@@ -77,20 +77,25 @@ export const constantRoutes = [
         meta: {title: 'Dashboard', icon: 'dashboard', affix: true}
       }
     ]
-  },
-  {
-    // 错误页跳转404
-    path: '*',
-    redirect: '/404',
-    hidden: true
   }
 ]
 
-/**
- * 根据角色动态加载路由
- */
-export const asyncRoutes = []
+// 错误页跳转404
+export const errorRoute = {
+  path: '*',
+  redirect: '/404',
+  hidden: true
+}
 
+
+// 重置路由
+export function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
+}
+
+// 初始化路由（动态路由，src/permission.js里动态addRoutes）
+// 文档（see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465）
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({y: 0}),
@@ -98,11 +103,5 @@ const createRouter = () => new Router({
 })
 
 const router = createRouter()
-
-// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
-export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
-}
 
 export default router
