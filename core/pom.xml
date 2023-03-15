@@ -9,8 +9,9 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>core</artifactId>
+    <artifactId>dashu-frame-core</artifactId>
     <description>Core::核心代码模块</description>
+    <version>${currentVersion}</version>
 
     <dependencies>
         <dependency>

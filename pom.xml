@@ -19,11 +19,14 @@
 
     <!-- 子模块 -->
     <modules>
+        <module>component</module>
+        <module>core</module>
         <module>module</module>
     </modules>
 
     <properties>
-        <currentVersion>1.0.3</currentVersion>
+        <!-- 当前框架jar版本 -->
+        <currentVersion>1.0.4</currentVersion>
     </properties>
 
 </project>

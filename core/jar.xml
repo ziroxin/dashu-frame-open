@@ -9,9 +9,14 @@
         <version>2.6.7</version>
     </parent>
 
+    <!-- 发布命令：mvn clean deploy -Dfile=jar.xml -->
+    <properties>
+        <jarVersion>1.0.4</jarVersion>
+    </properties>
+
     <groupId>com.gitee.ziro</groupId>
     <artifactId>dashu-frame-core</artifactId>
-    <version>1.0.4</version>
+    <version>${jarVersion}</version>
     <packaging>jar</packaging>
     <name>dashu-frame-core</name>
     <description>大树快速开发平台::Core::核心代码模块</description>
@@ -21,7 +26,7 @@
         <dependency>
             <groupId>com.gitee.ziro</groupId>
             <artifactId>dashu-frame-component</artifactId>
-            <version>1.0.4</version>
+            <version>${jarVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
