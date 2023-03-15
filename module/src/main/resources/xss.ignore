@@ -5,3 +5,6 @@
 
 # 表单代码生成器
 /generator/code/byform
+
+# 上传附件相关链接
+/upload/**
