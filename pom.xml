@@ -10,197 +10,20 @@
     </parent>
 
     <!-- 父级项目配置信息 -->
-    <groupId>com.keepgrown</groupId>
-    <artifactId>dashu-frame</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
-    <name>dashu-frame-open</name>
-    <description>大树快速开发平台</description>
+    <groupId>com.gitee.ziro</groupId>
+    <artifactId>dashu-frame-quicker</artifactId>
+    <version>1.0.0</version>
+    <name>dashu-frame-quicker</name>
+    <description>大树快速开发平台-脚手架</description>
+    <url>https://gitee.com/ziro/dashu-frame-quicker</url>
 
     <!-- 子模块 -->
     <modules>
-        <module>core</module>
-        <module>component</module>
         <module>module</module>
     </modules>
 
-    <!-- 依赖版本控制 -->
     <properties>
-        <dashu-frame.version>1.0.1-SNAPSHOT</dashu-frame.version>
-        <java.version>1.8</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.resources.sourceEncoding>UTF-8</project.resources.sourceEncoding>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-
-        <lombok.version>1.18.24</lombok.version>
-        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-
-        <mybatis-plus.version>3.5.1</mybatis-plus.version>
-        <spring-boot.version>2.6.7</spring-boot.version>
-
-        <fastjson.version>1.2.83</fastjson.version>
-        <hutool.version>5.8.0.M3</hutool.version>
-        <springfox.version>2.6.1</springfox.version>
-        <mapstruct.version>1.4.1.Final</mapstruct.version>
-        <reflection.version>0.10.2</reflection.version>
-        <commons.io.version>2.11.0</commons.io.version>
-        <commons.fileupload.version>1.4</commons.fileupload.version>
-        <com.baidubce.version>1.0.3.1</com.baidubce.version>
-        <org.jetbrains.version>23.0.0</org.jetbrains.version>
-        <org.quartz.version>2.3.2</org.quartz.version>
-        <whvcse.easy-captcha.version>1.6.2</whvcse.easy-captcha.version>
-        <poi.version>4.1.2</poi.version>
-        <guava.version>31.1-jre</guava.version>
-
-        <!-- 打包信息 -->
-        <finalpackage.path>${project.build.directory}/package-jar</finalpackage.path>
-        <finalpackage.name>app</finalpackage.name>
+        <currentVersion>1.0.3</currentVersion>
     </properties>
-
-    <!-- 依赖Jar包控制 -->
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.keepgrown</groupId>
-                <artifactId>core</artifactId>
-                <version>${dashu-frame.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.keepgrown</groupId>
-                <artifactId>component</artifactId>
-                <version>${dashu-frame.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-            </dependency>
-            <!-- mybatis plus -->
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-generator</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-            <!--数据库驱动-->
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql.version}</version>
-            </dependency>
-            <!-- fastjson -->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${fastjson.version}</version>
-            </dependency>
-            <!-- hutool -->
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-all</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <!-- freemarker jar -->
-            <dependency>
-                <groupId>org.freemarker</groupId>
-                <artifactId>freemarker</artifactId>
-                <version>${freemarker.version}</version>
-            </dependency>
-            <!-- swagger2 核心依赖 -->
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${springfox.version}</version>
-            </dependency>
-            <!-- entity和dto转换依赖 -->
-            <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct</artifactId>
-                <version>${mapstruct.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct-processor</artifactId>
-                <version>${mapstruct.version}</version>
-            </dependency>
-            <!-- Java反射依赖 -->
-            <dependency>
-                <groupId>org.reflections</groupId>
-                <artifactId>reflections</artifactId>
-                <version>${reflection.version}</version>
-            </dependency>
-
-            <!-- io常用工具类 -->
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons.io.version}</version>
-            </dependency>
-
-            <!-- 文件上传工具类 -->
-            <dependency>
-                <groupId>commons-fileupload</groupId>
-                <artifactId>commons-fileupload</artifactId>
-                <version>${commons.fileupload.version}</version>
-            </dependency>
-
-            <!-- 百度OCR依赖 -->
-            <dependency>
-                <groupId>com.baidubce</groupId>
-                <artifactId>api-explorer-sdk</artifactId>
-                <version>${com.baidubce.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jetbrains</groupId>
-                <artifactId>annotations</artifactId>
-                <version>${org.jetbrains.version}</version>
-            </dependency>
-
-            <!-- Quartz -->
-            <dependency>
-                <groupId>org.quartz-scheduler</groupId>
-                <artifactId>quartz</artifactId>
-                <version>${org.quartz.version}</version>
-            </dependency>
-
-            <!-- 验证码 -->
-            <dependency>
-                <groupId>com.github.whvcse</groupId>
-                <artifactId>easy-captcha</artifactId>
-                <version>${whvcse.easy-captcha.version}</version>
-            </dependency>
-
-            <!-- poi工具 -->
-            <dependency>
-                <groupId>org.apache.poi</groupId>
-                <artifactId>poi</artifactId>
-                <version>${poi.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.poi</groupId>
-                <artifactId>poi-ooxml</artifactId>
-                <version>${poi.version}</version>
-            </dependency>
-
-            <!-- JDBC依赖 -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-jdbc</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
-
-            <!-- google guava -->
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
 </project>
