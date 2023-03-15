@@ -1,5 +1,6 @@
 package com.kg.core.formGenerator.controller;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
 import com.baomidou.mybatisplus.annotation.FieldFill;
@@ -57,6 +58,9 @@ public class FormGeneratorController {
 
     // 生成代码
     private String generateCode(TableDTO tableDTO) {
+        if (!FileUtil.isDirectory(FilePathConfig.SAVE_PATH)) {
+            FileUtil.mkdir(FilePathConfig.SAVE_PATH);
+        }
         // 输出临时
         String basePath = FilePathConfig.SAVE_PATH + "/generate/code/temp/" + tableDTO.getTableName();
         basePath = basePath.replaceAll("//", "/");
@@ -217,31 +221,9 @@ public class FormGeneratorController {
         List<String> fieldsArr = new ArrayList<>();
         List<String> keysArr = new ArrayList<>();
         for (TableFieldDTO field : fields) {
-            StringBuilder str = new StringBuilder();
-            // 字段名
-            str.append(" `" + field.getName() + "` ");
-            // 字段类型和长度
-            if (field.getType().equalsIgnoreCase("float")
-                    || field.getType().equalsIgnoreCase("double")
-                    || field.getType().equalsIgnoreCase("decimal")) {
-                str.append(field.getType() + " (" + field.getLength() + "," + field.getPoint() + ") ");
-            } else {
-                str.append(field.getType() + " (" + field.getLength() + ") ");
-            }
-            // 是否必填
-            if (field.isRequired()) {
-                str.append(" NOT NULL ");
-            } else {
-                str.append(" NULL ");
-            }
-            // 注释
-            if (StringUtils.hasText(field.getTitle())) {
-                str.append(" COMMENT '" + field.getTitle() + "' ");
-            }
-            fieldsArr.add(str.toString());
-            // 是否主键
-            if (field.isKey()) {
-                keysArr.add(" `" + field.getName() + "` ");
+            if (!StringUtils.hasText(field.getName())) {
+                // 无字段名，跳过（如行容器）
+                continue;
             }
             // 附件子表
             if (StringUtils.hasText(field.getChildFileTable())) {
@@ -257,6 +239,37 @@ public class FormGeneratorController {
                         "  `create_time` datetime(0) NULL COMMENT '附件上传时间'," +
                         "  PRIMARY KEY (`file_id`) USING BTREE" +
                         ") COMMENT = '" + tableDTO.getTableDecription() + "附件表';");
+            } else {
+                StringBuilder str = new StringBuilder();
+                // 字段名
+                str.append(" `" + field.getName() + "` ");
+                // 字段类型和长度
+                if (field.getType().equalsIgnoreCase("float")
+                        || field.getType().equalsIgnoreCase("double")
+                        || field.getType().equalsIgnoreCase("decimal")) {
+                    str.append(field.getType() + " (" + field.getLength() + "," + field.getPoint() + ") ");
+                } else {
+                    if (field.getLength() > 0) {
+                        str.append(field.getType() + " (" + field.getLength() + ") ");
+                    } else {
+                        str.append(field.getType() + " ");
+                    }
+                }
+                // 是否必填
+                if (field.isRequired()) {
+                    str.append(" NOT NULL ");
+                } else {
+                    str.append(" NULL ");
+                }
+                // 注释
+                if (StringUtils.hasText(field.getTitle())) {
+                    str.append(" COMMENT '" + field.getTitle() + "' ");
+                }
+                fieldsArr.add(str.toString());
+                // 是否主键
+                if (field.isKey()) {
+                    keysArr.add(" `" + field.getName() + "` ");
+                }
             }
         }
         // 自动配置时间字段
