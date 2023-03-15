@@ -1,24 +1,17 @@
 package ${package.Controller};
 
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-<#if idType == "ASSIGN_UUID">
-import com.kg.component.utils.GuidUtils;
-</#if>
+
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import ${package.DTO}.${dtoName};
 import ${package.Convert}.${dtoconvertName};
-import ${package.Entity}.${entity};
 import ${package.Service}.${service};
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 <#if !restControllerStyle>
 	import org.springframework.stereotype.Controller;
@@ -28,7 +21,6 @@ import ${superControllerClassPackage};
 </#if>
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 /**
@@ -78,28 +70,10 @@ public class ${table.controllerName} {
     })
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('${controllerAuthorizePre}list')")
-    public Page<${entity}> list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+    public Page<${dtoName}> list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                     @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
                                     @RequestParam(value = "params", required = false) String params) {
-        Page<${entity}> pager = new Page<>(page, limit);
-        // 根据条件查询
-        QueryWrapper<${entity}> wrapper = new QueryWrapper<>();
-        if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
-<#list table.fields as field>
-            if (paramObj.containsKey("${field.propertyName}")) {
-                wrapper.lambda().eq(${entity}::get${field.propertyName?cap_first}, paramObj.getStr("${field.propertyName}"));
-            }
-</#list>
-        }
-
-<#list table.fields as field>
-    <#if field.propertyName=="orderIndex">
-        // 默认排序
-        wrapper.lambda().orderByAsc(${entity}::getOrderIndex);
-    </#if>
-</#list>
-        return ${table.serviceName?uncap_first}.page(pager, wrapper);
+        return ${table.serviceName?uncap_first}.pagelist(page, limit, params);
     }
 
     @ApiOperation(value = "${controllerMapping}/add", notes = "新增-${table.comment!}", httpMethod = "POST")
@@ -109,55 +83,41 @@ public class ${table.controllerName} {
     @NoRepeatSubmit
     public void add(@RequestBody ${dtoName} ${dtoName?uncap_first}) throws BaseException {
         try {
-            ${entity} ${entity?uncap_first} = ${dtoconvertName?uncap_first}.dtoToEntity(${dtoName?uncap_first});
-<#if idType == "ASSIGN_UUID">
-            ${entity?uncap_first}.set${entityKeyName?cap_first}(GuidUtils.getUuid());
-</#if>
-<#list table.fields as field>
-    <#if field.propertyName=="createTime">
-            ${entity?uncap_first}.setCreateTime(LocalDateTime.now());
-    </#if>
-</#list>
-            ${table.serviceName?uncap_first}.save(${entity?uncap_first});
+            ${table.serviceName?uncap_first}.add(${dtoName?uncap_first});
         } catch (Exception e) {
             e.printStackTrace();
-            throw new BaseException("新增失败！请重试");
+            throw new BaseException(e.getMessage() != null ? e.getMessage() : "新增失败！请重试");
         }
     }
 
-    @ApiOperation(value = "${controllerMapping}/update", notes = "修改-${table.comment!}", httpMethod = "POST")
+    @ApiOperation(value = "${controllerMapping}/update", notes = "修改-${table.comment!}", httpMethod = "PUT")
     @ApiImplicitParams({})
-    @PostMapping("/update")
+    @PutMapping("/update")
     @PreAuthorize("hasAuthority('${controllerAuthorizePre}update')")
     @NoRepeatSubmit
     public void update(@RequestBody ${dtoName} ${dtoName?uncap_first}) throws BaseException {
         try {
-            ${entity} ${entity?uncap_first} = ${dtoconvertName?uncap_first}.dtoToEntity(${dtoName?uncap_first});
-<#list table.fields as field>
-    <#if field.propertyName=="updateTime">
-            ${entity?uncap_first}.setUpdateTime(LocalDateTime.now());
-    </#if>
-</#list>
-            ${table.serviceName?uncap_first}.updateById(${entity?uncap_first});
+            ${table.serviceName?uncap_first}.update(${dtoName?uncap_first});
         } catch (Exception e) {
             e.printStackTrace();
-            throw new BaseException("修改失败！请重试");
+            throw new BaseException(e.getMessage() != null ? e.getMessage() : "修改失败！请重试");
         }
     }
 
-    @ApiOperation(value = "${controllerMapping}/delete", notes = "删除-${table.comment!}", httpMethod = "POST")
+    @ApiOperation(value = "${controllerMapping}/delete", notes = "删除-${table.comment!}", httpMethod = "DELETE")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "${entityKeyName}s", value = "待删除id列表", paramType = "query", required = true, dataType = "String")
     })
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     @PreAuthorize("hasAuthority('${controllerAuthorizePre}delete')")
     @NoRepeatSubmit
     public void delete(@RequestBody String[] ${entityKeyName}s) throws BaseException {
         try {
-            ${table.serviceName?uncap_first}.removeBatchByIds(Arrays.asList(${entityKeyName}s));
+
+            ${table.serviceName?uncap_first}.delete(Arrays.asList(${entityKeyName}s));
         } catch (Exception e) {
             e.printStackTrace();
-            throw new BaseException("删除失败！请重试");
+            throw new BaseException(e.getMessage() != null ? e.getMessage() : "删除失败！请重试");
         }
     }
 

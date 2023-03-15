@@ -1,7 +1,10 @@
 package ${package.Service};
 
 import ${superServiceClassPackage};
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import ${package.Entity}.${entity};
+import ${package.DTO}.${dtoName};
+import java.util.List;
 
 /**
  * <p>
@@ -17,11 +20,43 @@ interface ${table.serviceName} : ${superServiceClass}<${entity}>
 public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
 
     /**
+     *  分页列表
+     *
+     * @param page 页码
+     * @param limit 条数
+     * @param params 查询条件
+     * @return
+     */
+     Page<${dtoName}> pagelist(Integer page, Integer limit, String params);
+
+    /**
+     * 新增
+     *
+     * @param ${dtoName?uncap_first} 新增实体
+     */
+     void add(${dtoName} ${dtoName?uncap_first});
+
+    /**
+     * 修改
+     *
+     * @param ${dtoName?uncap_first} 编辑实体
+     */
+     void update(${dtoName} ${dtoName?uncap_first});
+
+    /**
+     * 删除
+     *
+     * @param idlist 删除id列表
+     */
+     void delete(List<String> idlist);
+
+
+    /**
      * 导出Excel
      *
      * @param params 查询参数
      * @return 导出后的文件url
      */
-    String exportExcel(String params);
+     String exportExcel(String params);
 }
 </#if>
