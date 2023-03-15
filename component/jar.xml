@@ -9,15 +9,10 @@
         <version>2.6.7</version>
     </parent>
 
-    <!-- 发布命令：mvn clean deploy -Dfile=jar.xml -->
-    <properties>
-        <jarVersion>1.0.4</jarVersion>
-    </properties>
-
-    <!-- 发布命令：mvn clean deploy -Dfile=jar.xml -->
+    <!-- 发布命令：mvn clean deploy -P release -f jar.xml -->
     <groupId>com.gitee.ziro</groupId>
     <artifactId>dashu-frame-component</artifactId>
-    <version>${jarVersion}</version>
+    <version>1.0.4</version>
     <packaging>jar</packaging>
     <name>dashu-frame-component</name>
     <description>大树快速开发平台::Component::组件库</description>
@@ -104,4 +99,97 @@
             <version>31.1-jre</version>
         </dependency>
     </dependencies>
+
+    <!-- 许可证信息，这里是Apache 2.0的许可证 -->
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version2.0</name>
+            <url>https://www.apache.org/licenses/</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <!-- 仓库信息 -->
+    <scm>
+        <url>https://gitee.com/ziro/dashu-frame-open</url>
+        <connection>https://gitee.com/ziro/dashu-frame-open.git</connection>
+        <developerConnection>https://gitee.com/ziro/dashu-frame-open</developerConnection>
+    </scm>
+
+    <!-- 开发者信息 -->
+    <developers>
+        <developer>
+            <name>ziroxin</name>
+            <email>877185959@qq.com</email>
+            <url>https://gitee.com/ziro</url>
+        </developer>
+    </developers>
+
+    <!-- 中央仓库地址配置 -->
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <!-- 发布到中心仓库：打开本模块文件夹; 打开cmd; 输入 mvn clean deploy 发布; 弹窗输入gpg密码 xxx666888 -->
+    <build>
+        <!-- 下列插件是发布到中央仓库所需要的 -->
+        <plugins>
+            <!-- 源码生成插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- javadoc文档生成插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.4.0</version>
+                <configuration>
+                    <!-- 忽略javadoc格式验证 -->
+                    <doclint>none</doclint>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- gpg签名插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
