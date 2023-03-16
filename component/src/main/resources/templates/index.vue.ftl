@@ -49,7 +49,8 @@
                    :total="pager.totalCount" @current-change="handleCurrentChange"
 		/>
 		<!-- 添加修改弹窗 -->
-		<el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible" @close="resetTemp" width="600px">
+		<el-dialog :title="titleMap[dialogType]" :close-on-click-modal="false"
+				   :visible.sync="dialogFormVisible" @close="resetTemp" width="600px">
 <#if templateHtml??>
 			${templateHtml}
 <#else>
