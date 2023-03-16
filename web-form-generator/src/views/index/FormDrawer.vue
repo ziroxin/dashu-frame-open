@@ -275,16 +275,34 @@ export default {
       let table = {...this.formData}
       let fields = []
       this.formData.fields.forEach(f => {
-        fields.push({
-          name: f.__vModel__,
-          title: f.__config__.label,
-          type: f.__config__.fieldType,
-          length: f.__config__.fieldLength,
-          point: f.__config__.pointLength,
-          required: f.__config__.required,
-          key: f.__config__.isKey,
-          childFileTable: f.__config__.childTableName
-        })
+        if (f.__vModel__) {
+          fields.push({
+            name: f.__vModel__,
+            title: f.__config__.label,
+            type: f.__config__.fieldType,
+            length: f.__config__.fieldLength,
+            point: f.__config__.pointLength,
+            required: f.__config__.required,
+            key: f.__config__.isKey,
+            childFileTable: f.__config__.childTableName
+          })
+        } else {
+          // 行容器中的字段
+          if (f.__config__.children) {
+            f.__config__.children.forEach(c => {
+              fields.push({
+                name: c.__vModel__,
+                title: c.__config__.label,
+                type: c.__config__.fieldType,
+                length: c.__config__.fieldLength,
+                point: c.__config__.pointLength,
+                required: c.__config__.required,
+                key: c.__config__.isKey,
+                childFileTable: c.__config__.childTableName
+              })
+            })
+          }
+        }
       })
       // 调用接口，开始生成代码
       this.$confirm('确定要生成表【' + table.tableName + '】吗？本操作将删除数据库中同名的表，无法恢复！！！', '生成代码提醒', {
