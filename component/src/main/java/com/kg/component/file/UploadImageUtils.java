@@ -103,7 +103,7 @@ public class UploadImageUtils {
                         + "/" + file.getFileName();
                 File saveFile = new File(savePath.replaceAll("//", "/"));
                 FileUtil.mkParentDirs(saveFile);
-                if (isCompress) {
+                if (isCompress && !"gif".equalsIgnoreCase(extend)) {
                     // 压缩
                     Img.from(multipartFile.getInputStream())
                             .setQuality(0.6)// 压缩比率60%
