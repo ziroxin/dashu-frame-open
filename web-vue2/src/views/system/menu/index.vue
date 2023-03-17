@@ -6,8 +6,6 @@
         <div style="margin-bottom: 20px;">
           <el-button v-permission="'system-menu-add'" type="primary" icon="el-icon-plus" @click="permissionAdd">新增
           </el-button>
-          <el-button v-permission="'system-menu-update'" type="info" icon="el-icon-edit" @click="permissionUpdate">修改
-          </el-button>
           <el-button v-permission="'system-menu-delete'" type="danger" icon="el-icon-delete" @click="permissionDelete">删除
           </el-button>
           <el-button v-permission="'system-menu-update-parent'" type="warning" icon="el-icon-sort" @click="permissionUpdateParent">修改上下级
@@ -50,11 +48,17 @@
               >{{ row.permissionRouter }}</a>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作" width="140" header-align="center" align="center">
+          <el-table-column fixed="right" label="操作" width="210" header-align="center" align="center">
             <template slot-scope="{row}">
               <div v-if="row.permissionType === '0'">
-                <el-button type="text" @click="subordinatesAdd(row)">添加下级</el-button>
-                <el-button type="text" @click="openButtonTable(row)">按钮</el-button>
+                <el-button v-permission="'system-menu-update-parent'" type="text" plain
+                           icon="el-icon-sort" size="mini" @click="permissionUpdateParent(row)"
+                />
+                <el-button v-permission="'system-menu-update'" type="text" plain size="mini" @click="permissionUpdate(row)">修改</el-button>
+                <el-button v-if="row.permissionIsEnabled" type="text" plain size="mini" @click="changeIsEnabled(row, false)">禁用</el-button>
+                <el-button v-else type="text" plain size="mini" @click="changeIsEnabled(row, true)">启用</el-button>
+                <el-button type="text" plain size="mini" @click="subordinatesAdd(row)">添加下级</el-button>
+                <el-button type="text" plain size="mini" @click="openButtonTable(row)">按钮</el-button>
               </div>
             </template>
           </el-table-column>
@@ -143,8 +147,10 @@
     <!--    修改上下级菜单-->
     <el-dialog title="修改上下级" :visible.sync="parentDialogVisible" width="400px">
       <el-form ref="parentDataForm" :model="temp2">
+        <el-button v-if="temp2.parentId==='-1'" type="danger">已选择顶级</el-button>
+        <el-button v-else @click="handleNodeClick('-1')">顶级</el-button>
         <el-divider content-position="center">请选择父级菜单</el-divider>
-        <el-tree :key="temp2.permissionId" :data="tableData"
+        <el-tree ref="parentTree" :key="temp2.permissionId" :data="tableData"
                  :props="{children: 'children',label: 'permissionTitle'}" :highlight-current="true"
                  :default-expand-all="true"
                  :expand-on-click-node="false" node-key="permissionId" :current-node-key.sync="temp2.parentId"
@@ -166,6 +172,7 @@ import IconPicker from '@/views/system/menu/IconPicker/index';
 import PermissionButton from '@/views/system/menu/permissionButton/index'
 // 菜单项目
 import Item from '@/layout/components/Sidebar/Item';
+import request from '@/utils/request';
 
 export default {
   components: {IconPicker, PermissionButton, Item},
@@ -293,7 +300,11 @@ export default {
       })
     },
     // 点击修改按钮后
-    permissionUpdate() {
+    permissionUpdate(row) {
+      if (row) {
+        this.changeData = []
+        this.changeData.push(row)
+      }
       if (this.changeData.length <= 0) {
         this.$message({
           message: '请选择一条数据进行修改！',
@@ -318,7 +329,11 @@ export default {
       }
     },
     // 修改上下级关系
-    permissionUpdateParent() {
+    permissionUpdateParent(row) {
+      if (row) {
+        this.changeData = []
+        this.changeData.push(row)
+      }
       if (this.changeData.length <= 0) {
         this.$message({
           message: '请选择一条数据进行修改！',
@@ -426,6 +441,16 @@ export default {
         })
       }
     },
+    // 启用/禁用
+    changeIsEnabled(row, isEnabled) {
+      let data = {permissionId: row.permissionId, permissionIsEnabled: isEnabled}
+      request({
+        url: '/permission/changeIsEnabled', method: 'post', data
+      }).then((response) => {
+        this.$message({type: 'success', message: isEnabled ? '启用菜单成功！' : '禁用菜单成功！'})
+        this.getPermissionTreeList()
+      })
+    },
     // 对话框提交判断
     submitJudgment(dialogStatus) {
       if (dialogStatus === 'update') {
@@ -447,7 +472,12 @@ export default {
     },
     // 选择父级菜单点击事件
     handleNodeClick(node) {
-      this.temp2.parentId = node.permissionId
+      if (node === '-1') {
+        this.temp2.parentId = '-1'
+        this.$refs.parentTree.setCurrentKey(null)
+      } else {
+        this.temp2.parentId = node.permissionId
+      }
     },
     // 保存上下级关系
     submitPermissionParent() {

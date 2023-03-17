@@ -114,6 +114,22 @@ public class ZPermissionController {
         return false;
     }
 
+    @ApiOperation(value = "permission/changeIsEnabled", notes = "启用/禁用菜单", httpMethod = "POST")
+    @ApiImplicitParams({
+    })
+    @PostMapping("/changeIsEnabled")
+    @PreAuthorize("hasAuthority('permission:changeIsEnabled')")
+    @NoRepeatSubmit
+    public void changeIsEnabled(@RequestBody ZPermission zPermission) throws BaseException {
+        try {
+            permissionService.lambdaUpdate().set(ZPermission::isPermissionIsEnabled, zPermission.isPermissionIsEnabled())
+                    .eq(ZPermission::getPermissionId, zPermission.getPermissionId()).update();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException(zPermission.isPermissionIsEnabled() ? "启用菜单失败！" : "禁用菜单失败！");
+        }
+    }
+
     @ApiOperation(value = "permission/tree/list", notes = "查询资源树表格", httpMethod = "GET")
     @ApiImplicitParams({
     })
