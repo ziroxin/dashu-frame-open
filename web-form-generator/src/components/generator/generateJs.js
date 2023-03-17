@@ -288,7 +288,8 @@ function buildLoadFileList(scheme) {
     // 存主表
     return `load${camelCaseUnderline(scheme.__vModel__)}FileList() {
       if (this.${confGlobal.formModel}.${camelCaseUnderline(scheme.__vModel__)}) {
-        this.${camelCaseUnderline(scheme.__vModel__)}fileList = {name: '附件', url: this.${confGlobal.formModel}.${camelCaseUnderline(scheme.__vModel__)}}
+        this.${camelCaseUnderline(scheme.__vModel__)}fileList = []
+        this.${camelCaseUnderline(scheme.__vModel__)}fileList.push({name: '附件', url: this.$baseServer + this.${confGlobal.formModel}.${camelCaseUnderline(scheme.__vModel__)}})
       } else {
         this.${camelCaseUnderline(scheme.__vModel__)}fileList = []
       }

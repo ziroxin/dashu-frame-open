@@ -309,7 +309,8 @@ function buildLoadFileList(scheme) {
     // 存主表
     return `load${scheme.__vModel__}FileList() {
       if (this.${confGlobal.formModel}.${scheme.__vModel__}) {
-        this.${scheme.__vModel__}fileList = {name: '附件', url: this.${confGlobal.formModel}.${scheme.__vModel__}}
+        this.${scheme.__vModel__}fileList = []
+        this.${scheme.__vModel__}fileList.push({name: '附件', url: this.$baseServer + this.${confGlobal.formModel}.${scheme.__vModel__}})
       } else {
         this.${scheme.__vModel__}fileList = []
       }
