@@ -262,18 +262,28 @@ function buildUploadSuccess(scheme) {
   if (scheme.__config__.isTableField) {
     // 存主表
     return `${scheme.__vModel__}OnSuccess(response, file, fileList) {
-      if(response.data&&response.data.length>0){
-        this.${confGlobal.formModel}.${scheme.__vModel__} = response.data[0].fileUrl
+      if (response.code === '200') {
+        if(response.data&&response.data.length>0){
+          this.${confGlobal.formModel}.${scheme.__vModel__} = response.data[0].fileUrl
+        }
+      } else {
+        this.${scheme.__vModel__}fileList = []
+        this.$message.error(response.message)
       }
     },`
   } else {
     // 存子表
     return `${scheme.__vModel__}OnSuccess(response, file, fileList) {
-      this.${scheme.__vModel__}fileList = fileList
-      if(this.${confGlobal.formModel}.${removeUnderline(scheme.__config__.childTableName)}List){
-        this.${confGlobal.formModel}.${removeUnderline(scheme.__config__.childTableName)}List.push(response.data[0])
+      if (response.code === '200') {
+        this.${scheme.__vModel__}fileList = fileList
+        if(this.${confGlobal.formModel}.${removeUnderline(scheme.__config__.childTableName)}List){
+          this.${confGlobal.formModel}.${removeUnderline(scheme.__config__.childTableName)}List.push(response.data[0])
+        } else {
+          this.${confGlobal.formModel}.${removeUnderline(scheme.__config__.childTableName)}List = [response.data[0]]
+        }
       } else {
-        this.${confGlobal.formModel}.${removeUnderline(scheme.__config__.childTableName)}List = [response.data[0]]
+        this.${scheme.__vModel__}fileList = fileList.filter(f => !f.response || f.response === '200')
+        this.$message.error(response.message)
       }
     },`
   }
