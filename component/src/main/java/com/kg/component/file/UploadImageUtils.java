@@ -80,8 +80,8 @@ public class UploadImageUtils {
                 file.setFileOldName(oldFileName);
 
                 // 判断文件扩展名
-                String extend = FileType.getFileType(multipartFile.getBytes()).toLowerCase();
-                if (FilePathConfig.UPLOAD_FILE_ALLOW_EXTEND.toLowerCase().indexOf(extend) < 0) {
+                String extend = FileType.getFileType(multipartFile.getBytes());
+                if (!StringUtils.hasText(extend) || FilePathConfig.UPLOAD_FILE_ALLOW_EXTEND.toLowerCase().indexOf(extend) < 0) {
                     throw new IOException("您上传的文件格式不正确！请检查");
                 }
                 file.setFileExtend(extend);

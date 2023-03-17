@@ -126,6 +126,9 @@ public class FileType {
     public static String getFileType(byte[] fileBytes) throws IOException {
         byte[] bytes = new byte[10];
         for (int i = 0; i < bytes.length; i++) {
+            if (fileBytes.length == 0 || fileBytes.length <= i) {
+                break;
+            }
             bytes[i] = fileBytes[i];
         }
         return assertFileType(bytes);
@@ -197,7 +200,7 @@ public class FileType {
             }
             if (type1 == null) {
                 System.out.println("------------------------------------------------------------------------------------------------------" +
-                    type2 + "==============" + ls[i].getName());
+                        type2 + "==============" + ls[i].getName());
                 continue;
             }
             System.out.print(type2);

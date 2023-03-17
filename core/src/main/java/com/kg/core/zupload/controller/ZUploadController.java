@@ -6,6 +6,7 @@ import com.kg.component.file.UploadImageUtils;
 import com.kg.core.annotation.IsResponseResult;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.base.controller.BaseController;
+import com.kg.core.exception.BaseException;
 import com.kg.core.zupload.dto.WangImageDTO;
 import com.kg.core.zupload.dto.WangVideoDTO;
 import io.swagger.annotations.Api;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -39,9 +39,14 @@ public class ZUploadController implements BaseController {
     })
     @PostMapping("images")
     @NoRepeatSubmit
-    public List<FileDTO> images(HttpServletRequest request, String path) throws IOException {
-        // 图片上传，自动压缩
-        return UploadImageUtils.upload(request, StringUtils.hasText(path) ? path : "images");
+    public List<FileDTO> images(HttpServletRequest request, String path) throws BaseException {
+        try {
+            // 图片上传，自动压缩
+            return UploadImageUtils.upload(request, StringUtils.hasText(path) ? path : "images");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException(StringUtils.hasText(e.getMessage()) ? e.getMessage() : "上传图片失败！请重试");
+        }
     }
 
     @ApiOperation(value = "upload/files", notes = "上传文件", httpMethod = "POST")
@@ -51,9 +56,14 @@ public class ZUploadController implements BaseController {
     })
     @PostMapping("files")
     @NoRepeatSubmit
-    public List<FileDTO> files(HttpServletRequest request, String path) throws IOException {
-        // 普通文件上传
-        return UploadFileUtils.upload(request, StringUtils.hasText(path) ? path : "files");
+    public List<FileDTO> files(HttpServletRequest request, String path) throws BaseException {
+        try {
+            // 普通文件上传
+            return UploadFileUtils.upload(request, StringUtils.hasText(path) ? path : "files");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException(StringUtils.hasText(e.getMessage()) ? e.getMessage() : "上传图片失败！请重试");
+        }
     }
 
     @ApiOperation(value = "upload/wang/images", notes = "WangEditor的上传图片接口", httpMethod = "POST")

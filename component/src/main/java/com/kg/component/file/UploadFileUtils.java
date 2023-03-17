@@ -50,10 +50,15 @@ public class UploadFileUtils {
                 // 旧文件名
                 file.setFileOldName(oldFileName);
 
-                // 判断文件扩展名
-                String extend = FileType.getFileType(multipartFile.getBytes()).toLowerCase();
+                // 获取文件扩展名
+                String extend = FileUtil.extName(oldFileName).toLowerCase();
+                // 根据头判断格式是否正确
+                String extendStr = FileType.getFileType(multipartFile.getBytes());
+                if (StringUtils.hasText(extendStr) && extendStr.indexOf(extend) < 0) {
+                    throw new IOException("您上传的文件格式与扩展名不符！请检查");
+                }
                 if (FilePathConfig.UPLOAD_FILE_ALLOW_EXTEND.toLowerCase().indexOf(extend) < 0) {
-                    throw new IOException("您上传的文件格式不正确！请检查");
+                    throw new IOException("您上传的文件格式不被允许！请检查");
                 }
                 file.setFileExtend(extend);
 
