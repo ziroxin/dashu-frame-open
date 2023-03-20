@@ -203,7 +203,7 @@ public class Mapper implements ITemplate {
         @Deprecated
         public Builder enableMapperAnnotation() {
             this.mapper.mapperAnnotation = true;
-            //TODO 因为现在mybatis-plus传递mybatis-spring依赖，这里是没问题的，但后面如果考虑脱离mybatis-spring的时候就需要把这里处理掉，建议使用mapperAnnotation方法来标记自己的注解。
+            // 因为现在mybatis-plus传递mybatis-spring依赖，这里是没问题的，但后面如果考虑脱离mybatis-spring的时候就需要把这里处理掉，建议使用mapperAnnotation方法来标记自己的注解。
             this.mapper.mapperAnnotationClass = org.apache.ibatis.annotations.Mapper.class;
             return this;
         }

@@ -165,7 +165,7 @@ public class TableInfo {
      */
     public TableInfo setEntityName(@NotNull String entityName) {
         this.entityName = entityName;
-        //TODO 先放置在这里
+        // 先放置在这里
         setConvert();
         return this;
     }
@@ -205,7 +205,6 @@ public class TableInfo {
      * 转换filed实体为 xml mapper 中的 base column 字符串信息
      */
     public String getFieldNames() {
-        //TODO 感觉这个也啥必要,不打算公开set方法了
         if (StringUtils.isBlank(fieldNames)) {
             this.fieldNames = this.fields.stream().map(TableField::getColumnName).collect(Collectors.joining(", "));
         }
@@ -261,7 +260,7 @@ public class TableInfo {
             if (null != field.getFill()) {
                 // 填充字段
                 importPackages.add(com.baomidou.mybatisplus.annotation.TableField.class.getCanonicalName());
-                //TODO 好像default的不用处理也行,这个做优化项目.
+                // 好像default的不用处理也行,这个做优化项目.
                 importPackages.add(FieldFill.class.getCanonicalName());
             }
             if (field.isVersionField()) {
@@ -292,7 +291,7 @@ public class TableInfo {
     }
 
     public TableInfo setComment(String comment) {
-        //TODO 暂时挪动到这
+        // 暂时挪动到这
         this.comment = this.globalConfig.isSwagger()
                 && StringUtils.isNotBlank(comment) ? comment.replace("\"", "\\\"") : comment;
         return this;
