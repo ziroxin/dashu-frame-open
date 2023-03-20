@@ -138,8 +138,14 @@ export default {
         permissionType: '1',
         permissionTitle: '',
         permissionIcon: '',
-        permissionIsShow: '1',
-        permissionIsEnabled: '1',
+        permissionIsShow: true,
+        permissionIsEnabled: true,
+        permissionRouter: '',
+        permissionComponent: '',
+        noRedirect: 'noRedirect',
+        noCache: false,
+        breadcrumb: true,
+        affix: false,
         permissionOrder: 0
       }
     },
