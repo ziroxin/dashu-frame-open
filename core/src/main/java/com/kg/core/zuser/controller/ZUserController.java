@@ -67,13 +67,21 @@ public class ZUserController {
     }
 
     @ApiOperation(value = "/user/org/tree", notes = "用户管理组织机构树", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "parentId", value = "父节点ID（若不传，则根据当前用户查询）", paramType = "query", required = false, dataType = "String")
+    })
     @GetMapping("/org/tree")
     @PreAuthorize("hasAuthority('user:org:tree')")
-    public List<ZOrganizationTreeSelectDTO> orgTree() {
+    public List<ZOrganizationTreeSelectDTO> orgTree(String parentId) {
         ZUser currentUser = CurrentUserUtils.getCurrentUser();
-        String parentId = null;
-        if (currentUser != null) {
-            parentId = currentUser.getOrgId();
+        if (!StringUtils.hasText(parentId)) {
+            if (currentUser != null && StringUtils.hasText(currentUser.getOrgId())) {
+                // 未传parentId，则根据当前用户查询
+                parentId = currentUser.getOrgId();
+            } else {
+                // 当前用户无组织机构，则查全部
+                parentId = "-1";
+            }
         }
         return organizationService.treeForSelect(parentId);
     }

@@ -7,11 +7,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kg.component.utils.GuidUtils;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
-import com.kg.core.zorg.dto.ZOrganizationTreeSelectDTO;
 import com.kg.core.zorg.dto.ZOrganizationDTO;
+import com.kg.core.zorg.dto.ZOrganizationTreeSelectDTO;
 import com.kg.core.zorg.dto.convert.ZOrganizationConvert;
 import com.kg.core.zorg.entity.ZOrganization;
 import com.kg.core.zorg.service.ZOrganizationService;
+import com.kg.core.zuser.entity.ZUser;
+import com.kg.core.zuser.service.IZUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -43,6 +45,8 @@ public class ZOrganizationController {
     private ZOrganizationService zOrganizationService;
     @Resource
     private ZOrganizationConvert zOrganizationConvert;
+    @Resource
+    private IZUserService userService;
 
     @ApiOperation(value = "/zorg/zOrganization/tree", notes = "组织机构树", httpMethod = "GET")
     @ApiImplicitParams({
@@ -199,6 +203,13 @@ public class ZOrganizationController {
     @PreAuthorize("hasAuthority('zorg:zOrganization:delete')")
     @NoRepeatSubmit
     public void delete(@RequestBody String[] orgIds) throws BaseException {
+        // 是否满足删除条件：1 没有子级 2 没有归属用户
+        if (zOrganizationService.lambdaQuery().in(ZOrganization::getOrgParentId, orgIds).count() > 0) {
+            throw new BaseException("删除失败！您要删除的组织机构，存在子节点，请先删除子节点");
+        }
+        if (userService.lambdaQuery().in(ZUser::getOrgId, orgIds).count() > 0) {
+            throw new BaseException("删除失败！您要删除的组织机构，已被用户使用，请先删除关联关系");
+        }
         try {
             zOrganizationService.removeBatchByIds(Arrays.asList(orgIds));
         } catch (Exception e) {
