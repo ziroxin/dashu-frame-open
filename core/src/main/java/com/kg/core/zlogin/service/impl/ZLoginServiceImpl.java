@@ -126,8 +126,10 @@ public class ZLoginServiceImpl implements ZLoginService {
     }
 
     @Override
-    public void logout() {
+    public void logout(String token) {
         try {
+            /*
+            // @ziro 20230320 不清空redis存储的用户信息，多用户同时登录时，清空会造成bug：一个用户退出，其他用户都退出了
             // 从SecurityContextHolder中获取用户信息
             SecurityUserDetailEntity userDetailEntity =
                     (SecurityUserDetailEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -140,6 +142,9 @@ public class ZLoginServiceImpl implements ZLoginService {
             if (redisUtils.hasKey(LoginConstant.LOGIN_INFO_REDIS_PRE + userId)) {
                 redisUtils.delete(LoginConstant.LOGIN_INFO_REDIS_PRE + userId);
             }
+            */
+            // 设置token失效
+            JwtUtils.removeToken(token);
             // 清空上下文
             SecurityContextHolder.clearContext();
         } catch (Exception e) {

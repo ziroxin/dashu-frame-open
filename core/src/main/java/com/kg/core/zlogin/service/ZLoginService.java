@@ -11,5 +11,5 @@ import com.kg.core.zlogin.dto.LoginSuccessDTO;
 public interface ZLoginService {
     LoginSuccessDTO login(LoginFormDTO zUser) throws BaseException;
 
-    void logout();
+    void logout(String token);
 }

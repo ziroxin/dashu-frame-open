@@ -15,10 +15,12 @@ import com.kg.core.zlogin.service.ZLoginService;
 import com.kg.core.zuser.entity.ZUser;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 用户登录
@@ -46,8 +48,12 @@ public class ZLoginController implements BaseController {
 
     @ApiOperation(value = "登出", notes = "退出接口", httpMethod = "POST")
     @GetMapping("logout")
-    public void logout() {
-        zLoginService.logout();
+    public void logout(HttpServletRequest request) {
+        String jwtToken = request.getHeader(LoginConstant.LOGIN_JWT_TOKEN_KEY);// header中的token
+        if (!StringUtils.hasText(jwtToken)) {
+            jwtToken = request.getParameter(LoginConstant.LOGIN_JWT_TOKEN_KEY);// 参数中的token
+        }
+        zLoginService.logout(jwtToken);
     }
 
 

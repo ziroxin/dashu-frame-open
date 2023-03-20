@@ -66,7 +66,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
             // ============ 4. 判断是否单例登录 ============
             System.out.println("IS_USER_LOGIN_ONLY_ONE:::" + LoginConstant.IS_USER_LOGIN_ONLY_ONE);
             if (LoginConstant.IS_USER_LOGIN_ONLY_ONE) {
-                // 登录登录
+                // 登录
                 if (!redisUtils.hasKey(LoginConstant.LAST_LOGIN_TOKEN_PRE + userId)) {
                     // 无缓存的token，抛出token无效异常
                     throw new BaseException(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID);

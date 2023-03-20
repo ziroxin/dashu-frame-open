@@ -2,6 +2,8 @@ package com.kg.component.jwt;
 
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTUtil;
+import com.kg.component.redis.RedisUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +31,13 @@ public class JwtUtils {
         JwtUtils.JWT_EXPIRE_TIME = expiry;
     }
 
+    private static RedisUtils redisUtils;
+
+    @Autowired
+    public JwtUtils(RedisUtils redisUtils) {
+        JwtUtils.redisUtils = redisUtils;
+    }
+
     /**
      * 生成 jwt_token
      *
@@ -36,10 +45,12 @@ public class JwtUtils {
      * @return jwt_token
      */
     public static String createToken(Object value) {
-        return JWT.create().setKey(JWT_TOKEN_KEY)
+        String token = JWT.create().setKey(JWT_TOKEN_KEY)
                 .setExpiresAt(Date.from(LocalDateTime.now().plusMinutes(JWT_EXPIRE_TIME).atZone(ZoneId.systemDefault()).toInstant()))
                 .setPayload(TOKEN_VALUE_NAME, value)
                 .sign();
+        redisUtils.set(token, true, JWT_EXPIRE_TIME * 60l);
+        return token;
     }
 
     /**
@@ -63,7 +74,18 @@ public class JwtUtils {
      * @return jwt_token是否正确
      */
     public static boolean verifyToken(String token) {
-        return JWT.of(token).setKey(JWT_TOKEN_KEY).validate(0);
+        return redisUtils.hasKey(token) && JWT.of(token).setKey(JWT_TOKEN_KEY).validate(0);
+    }
+
+    /**
+     * 移除有效token（使token失效）
+     *
+     * @param token jwt_token
+     */
+    public static void removeToken(String token) {
+        if (redisUtils.hasKey(token)) {
+            redisUtils.delete(token);
+        }
     }
 
 }
