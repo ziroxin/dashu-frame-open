@@ -61,7 +61,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         JSONObject paramObj = JSONUtil.parseObj(params);
         <#list table.fields as field>
             if (paramObj.containsKey("${field.propertyName}")) {
-                wrapper.lambda().eq(${entity}::get${field.propertyName?cap_first}, paramObj.getStr("${field.propertyName}"));
+                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("${field.propertyName}")), ${entity}::get${field.propertyName?cap_first}, paramObj.getStr("${field.propertyName}"));
             }
         </#list>
         }
@@ -147,7 +147,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
                 JSONObject paramObj = JSONUtil.parseObj(params);
 <#list table.fields as field>
                 if (paramObj.containsKey("${field.propertyName}")) {
-                    wrapper.lambda().eq(${entity}::get${field.propertyName?cap_first}, paramObj.getStr("${field.propertyName}"));
+                    wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("${field.propertyName}")), ${entity}::get${field.propertyName?cap_first}, paramObj.getStr("${field.propertyName}"));
                 }
 </#list>
             }
