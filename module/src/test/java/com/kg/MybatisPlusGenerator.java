@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,8 +35,8 @@ public class MybatisPlusGenerator {
 
     @Test
     public void generator() {
-        // 输出目录
-        String basePath = "E:/IdeaProjects/fwwbsyb/dashu-frame-open";
+        // 输出目录（当前项目根目录）例如：E:/IdeaProjects/fwwbsyb/dashu-frame-open
+        String basePath = System.getProperty("user.dir").replace(File.separator, "/").replace("/module", "");
         // pom后台模块名（要和后台文件夹保持一致）
         String module = "module";
         // vue项目文件夹
@@ -46,13 +47,13 @@ public class MybatisPlusGenerator {
          * 说明：表名、主键类型、包名、前端view路径，必须是一对一的数组
          */
         // 表名
-        String[] tableNames = new String[]{"news"};
+        String[] tableNames = new String[]{"a_test"};
         // 表主键类型（如：IdType.ASSIGN_UUID、IdType.ASSIGN_ID）
         IdType[] idTypes = new IdType[]{IdType.ASSIGN_UUID};
         // 包名（支持多层包名，例如：system.role）
-        String[] packages = new String[]{"news"};
+        String[] packages = new String[]{"atest"};
         // 前端view路径（支持多层领，例如：/system/role）
-        String[] viewpaths = new String[]{"/news"};
+        String[] viewpaths = new String[]{"/atest"};
 
         // ==================================开始执行生成=====================================
         start(basePath, module, author, vueFolder, tableNames, idTypes, packages, viewpaths);
