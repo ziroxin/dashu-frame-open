@@ -9,19 +9,21 @@ import ${superServiceImplClassPackage};
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelCommonUtils;
 import com.kg.component.utils.GuidUtils;
-import ${package.Entity}.${entity};
 import ${package.DTO}.${dtoName};
 import ${package.Convert}.${dtoconvertName};
+import ${package.Entity}.${entity};
 import ${package.ExcelConstant}.${entity}ExcelConstant;
 import ${package.ExcelOut}.${entity}ExcelOutDTO;
 import ${package.Mapper}.${table.mapperName};
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 /**
@@ -43,14 +45,13 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     @Resource
     private ${dtoconvertName} ${dtoconvertName?uncap_first};
 
-
     /**
-     *  分页列表
+     * 分页列表
      *
-     * @param page 页码
-     * @param limit 条数
+     * @param page   页码
+     * @param limit  条数
      * @param params 查询条件
-     * @return
+     * @return 分页列表
      */
     @Override
     public Page<${dtoName}> pagelist(Integer page, Integer limit, String params) {
@@ -58,7 +59,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         // 根据条件查询
         QueryWrapper<${entity}> wrapper = new QueryWrapper<>();
         if (StringUtils.hasText(params)) {
-        JSONObject paramObj = JSONUtil.parseObj(params);
+            JSONObject paramObj = JSONUtil.parseObj(params);
         <#list table.fields as field>
             if (paramObj.containsKey("${field.propertyName}")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("${field.propertyName}")), ${entity}::get${field.propertyName?cap_first}, paramObj.getStr("${field.propertyName}"));
@@ -80,14 +81,13 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         return result;
     }
 
-
-
-   /**
-    * 新增
-    *
-    * @param ${dtoName?uncap_first} 新增实体
-    */
+    /**
+     * 新增
+     *
+     * @param ${dtoName?uncap_first} 新增实体
+     */
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public void add(${dtoName} ${dtoName?uncap_first}) {
         ${entity} ${entity?uncap_first} = ${dtoconvertName?uncap_first}.dtoToEntity(${dtoName?uncap_first});
         <#if idType == "ASSIGN_UUID">
@@ -102,11 +102,12 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     }
 
     /**
-    * 修改
-    *
-    * @param ${dtoName?uncap_first} 编辑实体
-    */
+     * 修改
+     *
+     * @param ${dtoName?uncap_first} 编辑实体
+     */
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public void update(${dtoName} ${dtoName?uncap_first}) {
         ${entity} ${entity?uncap_first} = ${dtoconvertName?uncap_first}.dtoToEntity(${dtoName?uncap_first});
         <#list table.fields as field>
@@ -117,13 +118,13 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         updateById(${entity?uncap_first});
     }
 
-
     /**
-    * 删除
-    *
-    * @param idlist 删除id列表
-    */
+     * 删除
+     *
+     * @param idlist 删除id列表
+     */
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public void delete(List<String> idlist) {
         removeBatchByIds(idlist);
     }
@@ -156,6 +157,10 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             List<${entity}ExcelOutDTO> dataList = list.stream()
                     .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d), ${entity}ExcelOutDTO.class))
                     .collect(Collectors.toList());
+            if (dataList == null || dataList.size() <= 0) {
+                // 未查到数据时，模拟一行空数据
+                dataList.add(new ${entity}ExcelOutDTO());
+            }
             // 第一行标题
             String title = "${table.comment!}";
             // 写入导出excel文件
@@ -168,7 +173,26 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         return "error";
     }
 
-
+    /**
+     * 导入Excel
+     *
+     * @param request 请求文件
+     */
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public void importExcel(HttpServletRequest request) {
+        // 读取导入数据
+        List<${entity}> importData =
+                ExcelCommonUtils.read(request, 1, 2, ${entity}.class, ${entity}ExcelConstant.IMPORT_EXCEL_COLUMN);
+        // 处理数据
+        List<${entity}> saveData = importData.stream().map(o -> {
+            o.set${entityKeyName?cap_first}(GuidUtils.getUuid());
+            o.setCreateTime(LocalDateTime.now());
+            return o;
+        }).collect(Collectors.toList());
+        // 保存
+        saveBatch(saveData);
+    }
 
 }
 </#if>

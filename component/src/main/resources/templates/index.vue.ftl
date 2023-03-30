@@ -26,6 +26,12 @@
 				<el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds"
                    v-permission="'${buttonNamePre}delete'">删除
 				</el-button>
+				<el-upload v-permission="'${buttonNamePre}importExcel'" style="display: inline-block;margin: 0px 10px;"
+						   :action="this.$baseServer+'${controllerMapping}/import/excel'" :headers="this.$headerToken"
+						   :on-success="importExcelSuccess" accept=".xls,.xlsx"
+						   :show-file-list="false" :auto-upload="true">
+					<el-button v-waves type="warning" icon="el-icon-upload2">导入Excel</el-button>
+				</el-upload>
 				<el-button v-waves type="success" icon="el-icon-printer" @click="exportExcel"
 						   v-permission="'${buttonNamePre}exportExcel'">导出Excel
 				</el-button>
@@ -296,6 +302,15 @@ export default {
         document.body.appendChild(link);
         link.click();
       })
+    },
+    // 导入Excel成功，提示
+    importExcelSuccess(response) {
+      if (response.code === '200') {
+        this.$message({type: 'success', message: '导入成功！'})
+        this.loadTableList()
+      } else {
+        this.$message({type: 'error', message: response.message})
+      }
     },
 <#if jsMethods??>
     ${jsMethods}

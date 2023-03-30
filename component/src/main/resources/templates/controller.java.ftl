@@ -1,7 +1,6 @@
 package ${package.Controller};
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import ${package.DTO}.${dtoName};
@@ -21,6 +20,7 @@ import ${superControllerClassPackage};
 </#if>
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
 /**
@@ -71,8 +71,8 @@ public class ${table.controllerName} {
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('${controllerAuthorizePre}list')")
     public Page<${dtoName}> list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                    @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
-                                    @RequestParam(value = "params", required = false) String params) {
+                               @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
+                               @RequestParam(value = "params", required = false) String params) {
         return ${table.serviceName?uncap_first}.pagelist(page, limit, params);
     }
 
@@ -113,7 +113,6 @@ public class ${table.controllerName} {
     @NoRepeatSubmit
     public void delete(@RequestBody String[] ${entityKeyName}s) throws BaseException {
         try {
-
             ${table.serviceName?uncap_first}.delete(Arrays.asList(${entityKeyName}s));
         } catch (Exception e) {
             e.printStackTrace();
@@ -133,6 +132,22 @@ public class ${table.controllerName} {
             throw new BaseException("导出Excel失败，请重试！");
         }
         return result;
+    }
+
+    @ApiOperation(value = "${controllerMapping}/import/excel", notes = "导入excel-${table.comment!}", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "request", value = "请求", paramType = "query", required = false, dataType = "HttpServletRequest")
+    })
+    @PostMapping("/import/excel")
+    @PreAuthorize("hasAuthority('${controllerAuthorizePre}import:excel')")
+    @NoRepeatSubmit
+    public void importExcel(HttpServletRequest request) throws BaseException {
+        try {
+            ${table.serviceName?uncap_first}.importExcel(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException("导入Excel失败，请重试！");
+        }
     }
 }
 </#if>

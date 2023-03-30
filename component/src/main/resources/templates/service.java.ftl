@@ -1,9 +1,11 @@
 package ${package.Service};
 
-import ${superServiceClassPackage};
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import ${package.Entity}.${entity};
+import ${superServiceClassPackage};
 import ${package.DTO}.${dtoName};
+import ${package.Entity}.${entity};
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -20,36 +22,35 @@ interface ${table.serviceName} : ${superServiceClass}<${entity}>
 public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
 
     /**
-     *  分页列表
+     * 分页列表
      *
-     * @param page 页码
-     * @param limit 条数
+     * @param page   页码
+     * @param limit  条数
      * @param params 查询条件
      * @return
      */
-     Page<${dtoName}> pagelist(Integer page, Integer limit, String params);
+    Page<${dtoName}> pagelist(Integer page, Integer limit, String params);
 
     /**
      * 新增
      *
      * @param ${dtoName?uncap_first} 新增实体
      */
-     void add(${dtoName} ${dtoName?uncap_first});
+    void add(${dtoName} ${dtoName?uncap_first});
 
     /**
      * 修改
      *
      * @param ${dtoName?uncap_first} 编辑实体
      */
-     void update(${dtoName} ${dtoName?uncap_first});
+    void update(${dtoName} ${dtoName?uncap_first});
 
     /**
      * 删除
      *
      * @param idlist 删除id列表
      */
-     void delete(List<String> idlist);
-
+    void delete(List<String> idlist);
 
     /**
      * 导出Excel
@@ -57,6 +58,13 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
      * @param params 查询参数
      * @return 导出后的文件url
      */
-     String exportExcel(String params);
+    String exportExcel(String params);
+
+    /**
+     * 导入Excel
+     *
+     * @param request 请求文件
+     */
+    void importExcel(HttpServletRequest request);
 }
 </#if>

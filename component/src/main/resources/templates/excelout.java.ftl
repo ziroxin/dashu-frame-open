@@ -5,7 +5,6 @@ package ${package.ExcelOut};
 import ${pkg};
     </#if>
 </#list>
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kg.core.base.dto.BaseDTO;
 import lombok.Getter;

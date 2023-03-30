@@ -54,10 +54,12 @@ public class PermissionSQL implements ITemplate {
         data.put("updateBtnId", GuidUtils.getUuid());
         data.put("deleteBtnId", GuidUtils.getUuid());
         data.put("exportExcelBtnId", GuidUtils.getUuid());
+        data.put("importExcelBtnId", GuidUtils.getUuid());
         data.put("addApiId", GuidUtils.getUuid());
         data.put("updateApiId", GuidUtils.getUuid());
         data.put("deleteApiId", GuidUtils.getUuid());
         data.put("exportExcelApiId", GuidUtils.getUuid());
+        data.put("importExcelApiId", GuidUtils.getUuid());
         data.put("listApiId", GuidUtils.getUuid());
         data.put("getByIdApiId", GuidUtils.getUuid());
         return data;
