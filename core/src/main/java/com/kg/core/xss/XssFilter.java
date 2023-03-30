@@ -45,8 +45,9 @@ public class XssFilter implements Filter {
                 }
             }
         }
-        if (isIgnore) {
-            // 忽略
+        String contentType = request.getHeader("Content-Type");
+        if (isIgnore || (contentType != null && contentType.toLowerCase().contains("multipart/form-data"))) {
+            // 忽略 or 文件上传
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
             // xss过滤

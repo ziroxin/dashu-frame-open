@@ -25,6 +25,7 @@ import * as filters from './filters'
 import permission from '@/directive/permission'
 import mydate from '@/directive/mydate'
 import request from '@/utils/request'
+import {getTokenHeader} from '@/utils/auth';
 
 Vue.use(Element, {
   // 设置element-ui默认大小
@@ -44,7 +45,8 @@ Vue.directive('mydate', mydate)
 Object.assign(Vue.prototype, {
   $baseServer: process.env.VUE_APP_BASE_API,
   $windowHeight: window.innerHeight,
-  $request: request
+  $request: request,
+  $headerToken: getTokenHeader()
 });
 
 // 开发时不提示生产环境
