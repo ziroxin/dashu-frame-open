@@ -19,10 +19,10 @@ import java.util.List;
 public interface ATestService extends IService<ATest> {
 
     /**
-     *  分页列表
+     * 分页列表
      *
-     * @param page 页码
-     * @param limit 条数
+     * @param page   页码
+     * @param limit  条数
      * @param params 查询条件
      * @return
      */

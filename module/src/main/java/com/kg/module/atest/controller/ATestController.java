@@ -54,8 +54,8 @@ public class ATestController {
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('atest:aTest:list')")
     public Page<ATestDTO> list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                    @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
-                                    @RequestParam(value = "params", required = false) String params) {
+                               @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
+                               @RequestParam(value = "params", required = false) String params) {
         return aTestService.pagelist(page, limit, params);
     }
 
