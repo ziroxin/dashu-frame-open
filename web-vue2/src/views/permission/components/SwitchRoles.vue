@@ -22,9 +22,9 @@ export default {
         return this.roles[0]
       },
       set(val) {
-        this.$store.dispatch('user/changeRoles', val).then(() => {
-          this.$emit('change')
-        })
+        // this.$store.dispatch('user/changeRoles', val).then(() => {
+        //   this.$emit('change')
+        // })
       }
     }
   }

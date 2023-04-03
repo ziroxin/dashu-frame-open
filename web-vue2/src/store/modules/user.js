@@ -1,7 +1,7 @@
 import {getInfo, login, logout, refreshToken} from '@/api/user'
 import {getToken, removeToken, setToken, setTokenValidTime} from '@/utils/auth'
-import router, {resetRouter} from '@/router'
-import Cookies from "js-cookie";
+import {resetRouter} from '@/router'
+import Cookies from 'js-cookie';
 
 const state = {
   token: getToken(),
@@ -40,11 +40,11 @@ const actions = {
       login(userInfo).then(response => {
         const {data} = response
         commit('SET_TOKEN', data.accessToken)
-        setToken(data.accessToken)
+        setToken(data.accessToken, new Date(data.accessTokenValidTime))
         setTokenValidTime(new Date(data.accessTokenValidTime))
         // 是默认密码
-        Cookies.set("isDefaultPassword", data.defaultPassword)
-        Cookies.set("isInvalidPassword", data.invalidPassword)
+        Cookies.set('isDefaultPassword', data.defaultPassword)
+        Cookies.set('isInvalidPassword', data.invalidPassword)
         resolve()
       }).catch(error => {
         reject(error)
@@ -108,29 +108,10 @@ const actions = {
       refreshToken().then(response => {
         const {data} = response
         commit('SET_TOKEN', data.accessToken)
-        setToken(data.accessToken)
+        setToken(data.accessToken, new Date(data.accessTokenValidTime))
         setTokenValidTime(new Date(data.accessTokenValidTime))
       })
     })
-  },
-  // 动态修改权限
-  async changeRoles({commit, dispatch}, role) {
-    const token = role + '-token'
-
-    commit('SET_TOKEN', token)
-    setToken(token)
-
-    const {roles} = await dispatch('getInfo')
-
-    resetRouter()
-
-    // generate accessible routes map based on roles
-    const accessRoutes = await dispatch('permission/generateRoutes', roles, {root: true})
-    // dynamically add accessible routes
-    router.addRoutes(accessRoutes)
-
-    // reset visited views and cached views
-    dispatch('tagsView/delAllViews', null, {root: true})
   }
 }
 
