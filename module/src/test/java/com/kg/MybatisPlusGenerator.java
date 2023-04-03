@@ -21,7 +21,7 @@ import java.util.Map;
  *
  * @author ziro
  * @date 2022/4/30 14:29
- * @see <a href="https://www.mybatis-plus.com/guide/generator-new.html#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8">代码生成器入门</a>
+ * @see <a href="https://baomidou.com/pages/779a6e/#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8">代码生成器入门</a>
  */
 @SpringBootTest
 public class MybatisPlusGenerator {
