@@ -24,8 +24,10 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: '/',
+  // 静态资源路径，使用相对路径
+  publicPath: './',
   outputDir: 'dist',
+  // 把静态资源都放入static
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
