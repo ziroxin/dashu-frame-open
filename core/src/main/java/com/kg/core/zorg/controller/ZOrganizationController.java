@@ -197,7 +197,7 @@ public class ZOrganizationController {
 
     @ApiOperation(value = "/zorg/zOrganization/delete", notes = "删除-组织机构表", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "orgIds", value = "待删除id列表", paramType = "query", required = true, dataType = "String")
+            @ApiImplicitParam(name = "orgIds", value = "待删除id列表", paramType = "body", required = true, allowMultiple = true, dataType = "String")
     })
     @PostMapping("/delete")
     @PreAuthorize("hasAuthority('zorg:zOrganization:delete')")

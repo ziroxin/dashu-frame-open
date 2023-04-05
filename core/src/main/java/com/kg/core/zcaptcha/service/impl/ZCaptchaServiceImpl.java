@@ -42,6 +42,8 @@ public class ZCaptchaServiceImpl implements ZCaptchaService {
     public boolean checkCaptcha(String codeUuid, String codeValue) {
         if (redisUtils.hasKey(CAPTCHA_PREFIX + codeUuid)) {
             String value = redisUtils.get(CAPTCHA_PREFIX + codeUuid).toString();
+            // 验证码用完一次，就销毁
+            redisUtils.delete(CAPTCHA_PREFIX + codeUuid);
             if (value.equals(codeValue)) {
                 return true;
             }
