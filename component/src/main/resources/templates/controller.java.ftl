@@ -106,7 +106,7 @@ public class ${table.controllerName} {
 
     @ApiOperation(value = "${controllerMapping}/delete", notes = "删除-${table.comment!}", httpMethod = "DELETE")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "${entityKeyName}s", value = "待删除id列表", paramType = "query", required = true, dataType = "String")
+            @ApiImplicitParam(name = "${entityKeyName}s", value = "待删除id列表", paramType = "body", required = true, allowMultiple = true, dataType = "String")
     })
     @DeleteMapping("/delete")
     @PreAuthorize("hasAuthority('${controllerAuthorizePre}delete')")
