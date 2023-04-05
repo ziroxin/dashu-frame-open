@@ -52,21 +52,21 @@ export default {
         legend: {
           left: 'center',
           bottom: '10',
-          data: ['Industries', 'Technology', 'Forex', 'Gold', 'Forecasts']
+          data: ['行业类', '科技类', '外汇类', '黄金类', '预测类']
         },
         series: [
           {
-            name: 'WEEKLY WRITE ARTICLES',
+            name: '文章数周统计',
             type: 'pie',
             roseType: 'radius',
             radius: [15, 95],
             center: ['50%', '38%'],
             data: [
-              { value: 320, name: 'Industries' },
-              { value: 240, name: 'Technology' },
-              { value: 149, name: 'Forex' },
-              { value: 100, name: 'Gold' },
-              { value: 59, name: 'Forecasts' }
+              { value: 320, name: '行业类' },
+              { value: 240, name: '科技类' },
+              { value: 149, name: '外汇类' },
+              { value: 100, name: '黄金类' },
+              { value: 59, name: '预测类' }
             ],
             animationEasing: 'cubicInOut',
             animationDuration: 2600

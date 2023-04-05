@@ -1,22 +1,20 @@
 <template>
   <div class="dashboard-container">
-    <!--    <component :is="currentRole" />-->
-    {{ currentRole }}
+    <admin-dashboard></admin-dashboard>
   </div>
 </template>
 
 <script>
-// import adminDashboard from './admin'
-// import editorDashboard from './editor'
+import adminDashboard from './admin'
+
 export default {
   name: 'Dashboard',
-  // components: { adminDashboard, editorDashboard },
+  components: {adminDashboard},
   data() {
     return {
       currentRole: 'adminDashboard'
     }
   },
-  computed: {
-  }
+  computed: {}
 }
 </script>

@@ -6,7 +6,8 @@
       </div>
     </div>
     <!-- eslint-disable-next-line -->
-    <div :style="{backgroundImage: `url(${image})`}" class="pan-thumb"></div>
+    <div v-if="image" :style="{backgroundImage: `url(${image})`}" class="pan-thumb"></div>
+    <img v-else src="@/assets/images/avatar.png" class="pan-thumb">
   </div>
 </template>
 
@@ -16,7 +17,7 @@ export default {
   props: {
     image: {
       type: String,
-      required: true
+      required: false
     },
     zIndex: {
       type: Number,

@@ -1,5 +1,5 @@
 <template>
-  <a :class="className" class="link--mallki" href="#">
+  <a :class="className" class="link--mallki" target="_blank" :href="href">
     {{ text }}
     <span :data-letters="text" />
     <span :data-letters="text" />
@@ -16,7 +16,11 @@ export default {
     text: {
       type: String,
       default: 'vue-element-admin'
-    }
+    },
+    href: {
+      type: String,
+      default: 'https://gitee.com/ziro/dashu-frame-open'
+    },
   }
 }
 </script>
