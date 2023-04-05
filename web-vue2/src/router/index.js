@@ -9,7 +9,7 @@ Vue.use(Router)
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
- * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
+ * Detail see: https://panjiachen.gitee.io/vue-element-admin-site/zh/guide/essentials/router-and-nav.html
  *
  * hidden: true                   if set true, item will not show in the sidebar(default is false)
  * alwaysShow: true               if set true, will always show the root menu
@@ -29,9 +29,8 @@ Vue.use(Router)
  */
 
 /**
- * constantRoutes
- * a base page that does not have permission requirements
- * all roles can be accessed
+ * 静态录用
+ * 不需要权限控制的公开路由
  */
 export const constantRoutes = [
   {
@@ -87,17 +86,16 @@ export const errorRoute = {
   hidden: true
 }
 
-
 // 重置路由
 export function resetRouter() {
   const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  router.matcher = newRouter.matcher
 }
 
 // 初始化路由（动态路由，src/permission.js里动态addRoutes）
-// 文档（see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465）
+// 文档（see: https://panjiachen.gitee.io/vue-element-admin-site/zh/guide/essentials/router-and-nav.html）
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
+  // mode: 'history', // 默认使用：hashHistory，如果需要browserHistory则开启
   scrollBehavior: () => ({y: 0}),
   routes: constantRoutes
 })
