@@ -65,7 +65,7 @@
         <el-table ref="permissionTable" :height="this.$windowHeight-170" style="width: 100%;"
                   :default-expand-all="isExpand" :data="tableData2" row-key="permissionId"
                   :tree-props="{children: 'children'}" @row-click="table2RowClick"
-                  @selection-change="handleTable2SelectChange" @select="table2RowSelect">
+                  @select="table2RowSelect">
           <el-table-column type="selection" width="50" align="center" header-align="center"/>
           <el-table-column label="路由/外链" min-width="25%">
             <template v-slot="{row}">
@@ -114,7 +114,9 @@ export default {
       tableData2: [],
       currentRow: 0,
       isExpand: true,
+      // 按钮-权限idList
       selectPermissionApiList: [],
+      // 菜单-权限idList
       selectPermissionApiList2: [],
       isSaveBtn: false
     }
@@ -237,6 +239,7 @@ export default {
           this.tableData2 = data
           this.$nextTick(() => {
             this.selectPermissionApiList = []
+            this.selectPermissionApiList2 = []
             this.toggleRowSelectionAll(this.tableData2)
           })
         })
@@ -267,6 +270,7 @@ export default {
       this.isSaveBtn = true
       this.loadPermissionTreeList()
     },
+    // 设置权限-按钮点击时-权限行选中
     toggleRowSelectionAll(data) {
       data.forEach(item => {
         //按钮列表
@@ -276,6 +280,9 @@ export default {
           }
         })
         //权限列表
+        if (item.hasPermission) {
+          this.selectPermissionApiList2.push(item.permissionId)
+        }
         this.$refs.permissionTable.toggleRowSelection(item, item.hasPermission)
         if (item.children !== undefined && item.children !== null) {
           this.toggleRowSelectionAll(item.children)
@@ -286,6 +293,11 @@ export default {
     table2RowSelect(selection, row) {
       let select = selection.filter(r => r.permissionId === row.permissionId).length > 0
       //设置当前行的选中状态
+      if (select) {
+        this.selectPermissionApiList2.push(row.permissionId)
+      } else {
+        this.selectPermissionApiList2 = this.selectPermissionApiList2.filter(o => o != row.permissionId)
+      }
       this.$refs.permissionTable.toggleRowSelection(row, select)
       //设置按钮选中状态
       this.cancelButtonChecked(this.tableData2, row.permissionId, select)
@@ -295,12 +307,19 @@ export default {
       }
       //设置子级选中状态
       this.allChildrenSelected(this.tableData2, row.permissionId, false, select)
+      //去重
       this.selectPermissionApiList = [...new Set(this.selectPermissionApiList)]
+      this.selectPermissionApiList2 = [...new Set(this.selectPermissionApiList2)]
     },
     //行点击
     table2RowClick(row) {
       let hasSelected = this.selectPermissionApiList2.filter(o => o == row.permissionId).length > 0
       //设置当前行的选中状态
+      if (!hasSelected) {
+        this.selectPermissionApiList2.push(row.permissionId)
+      } else {
+        this.selectPermissionApiList2 = this.selectPermissionApiList2.filter(o => o != row.permissionId)
+      }
       this.$refs.permissionTable.toggleRowSelection(row, !hasSelected)
       //设置按钮选中状态
       this.cancelButtonChecked(this.tableData2, row.permissionId, !hasSelected)
@@ -310,7 +329,9 @@ export default {
       }
       //设置子级选中状态
       this.allChildrenSelected(this.tableData2, row.permissionId, false, !hasSelected)
+      //去重
       this.selectPermissionApiList = [...new Set(this.selectPermissionApiList)]
+      this.selectPermissionApiList2 = [...new Set(this.selectPermissionApiList2)]
     },
     cancelButtonChecked(data, rowId, hasSelected) {
       data.forEach(item => {
@@ -338,6 +359,8 @@ export default {
     parentRowSelected(data, parentId, level) {
       data.forEach(item => {
         if (item.permissionId === parentId) {
+          //选了子级，自动选择父级
+          this.selectPermissionApiList2.push(item.permissionId)
           this.$refs.permissionTable.toggleRowSelection(item, true)
           if (level != 0) {
             //再遍历父级
@@ -368,11 +391,19 @@ export default {
           //按钮列表
           item.buttonList.forEach(btn => {
             if (!hasSelected) {
+              //取消选择按钮
               this.selectPermissionApiList = this.selectPermissionApiList.filter(o => o != btn.permissionId)
             } else {
+              //选择按钮
               this.selectPermissionApiList.push(btn.permissionId)
             }
           })
+          //菜单行
+          if (hasSelected) {
+            this.selectPermissionApiList2.push(item.permissionId)
+          } else {
+            this.selectPermissionApiList2 = this.selectPermissionApiList2.filter(o => o != item.permissionId)
+          }
           this.$refs.permissionTable.toggleRowSelection(item, hasSelected)
           if (item.children !== undefined && item.children !== null) {
             this.allChildrenSelected(item.children, parentId, true, hasSelected)//继续选中
@@ -380,17 +411,14 @@ export default {
         })
       }
     },
-    //权限表，选中行改变事件
-    handleTable2SelectChange(rows) {
-      this.selectPermissionApiList2 = []
-      rows.forEach(row => {
-        this.selectPermissionApiList2.push(row.permissionId)
-      })
-    },
     //按钮checkbox（选择按钮，自动选择上级路由）
     buttonCheckChange(val, item) {
       if (val === true) {
+        this.selectPermissionApiList2.push(item.permissionId)
+        //自动选中父级
+        this.parentRowSelected(this.tableData2, item.parentId, 0)
         this.$refs.permissionTable.toggleRowSelection(item, true)
+        this.selectPermissionApiList2 = [...new Set(this.selectPermissionApiList2)]
       }
     },
     //保存角色权限
