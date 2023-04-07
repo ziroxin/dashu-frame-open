@@ -43,9 +43,16 @@
 <#list table.fields as field>
 			<el-table-column label="${field.comment}" prop="${field.propertyName}" align="center"/>
 </#list>
-			<el-table-column fixed="right" label="操作" width="100">
+			<el-table-column fixed="right" label="操作" width="120">
 				<template v-slot="scope">
-					<el-button type="text" size="small" @click="openView(scope.row)">查看详情</el-button>
+					<el-button type="text" style="color: #13ce66;"
+							   size="small" @click="openView(scope.row)">查看详情</el-button>
+					<el-button v-permission="'${buttonNamePre}update'"
+							   type="text" size="small" @click="openUpdate(scope.row)">修改
+					</el-button>
+					<el-button v-permission="'${buttonNamePre}delete'" style="color: #ff6d6d;"
+							   type="text" size="small" @click="deleteByIds(scope.row)">删除
+					</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -202,7 +209,11 @@ export default {
       })
     },
     // 打开修改窗口
-    openUpdate() {
+    openUpdate(row) {
+      if (row) {
+        this.tableSelectRows = []
+        this.tableSelectRows.push(row)
+      }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据修改！', type: 'warning'})
       } else if (this.tableSelectRows.length > 1) {
@@ -267,7 +278,11 @@ export default {
       })
     },
     // 删除
-    deleteByIds() {
+    deleteByIds(row) {
+      if (row) {
+        this.tableSelectRows = []
+        this.tableSelectRows.push(row)
+      }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据删除！', type: 'warning'})
       } else {
