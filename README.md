@@ -38,6 +38,7 @@ Node + Npm 等
 
 如下图所示，项目中有多个分支
 
+![分支截图](https://gitee.com/ziro/dashu-frame-docs/raw/master/docs/public/img/fenzhi.png)
 ![分支截图](http://docs.java119.cn/img/fenzhi.png)
 
 - **master** 是项目[**源码**]
