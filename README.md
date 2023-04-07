@@ -39,7 +39,6 @@ Node + Npm 等
 如下图所示，项目中有多个分支
 
 ![分支截图](https://gitee.com/ziro/dashu-frame-docs/raw/master/docs/public/img/fenzhi.png)
-![分支截图](http://docs.java119.cn/img/fenzhi.png)
 
 - **master** 是项目[**源码**]
 - **其他分支** 是[**脚手架**]，命名格式：quicker+日期（最新日期代表最新版本）
@@ -60,7 +59,7 @@ master分支，是完全开源的源码分支。
 ```
 
 ## 下载完成预览
-![项目目录](http://docs.java119.cn/img/mulu.png)
+![项目目录](https://gitee.com/ziro/dashu-frame-docs/raw/master/docs/public/img/mulu.png)
 
 ## 鸣谢
 
