@@ -1,16 +1,16 @@
-# Vue Element Admin 官方文档
-https://panjiachen.github.io/vue-element-admin-site/zh/guide/#%E5%AE%89%E8%A3%85
+#### 安装
+```
+npm install
+```
 
-# Element-ui 官方文档
-https://element.eleme.cn/#/zh-CN/component/installation
-
-# VUE 中文文档
-https://cn.vuejs.org/v2/guide/
-
-# 安装
-npm config set registry=https://registry.npm.taobao.org
-npm config get registry
-npm install --force
-
-# 项目启动
+#### 开发
+环境变量：.env.development
+```
 npm run dev
+```
+
+#### 打包发布
+环境变量：.env.production
+```
+npm run build:prod
+```
