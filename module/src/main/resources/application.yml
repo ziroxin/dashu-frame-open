@@ -88,6 +88,7 @@ com:
       font-style: 0
     #swagger相关配置
     swagger:
+      enable: false
       title: "大树快速开发平台API"
       description: "基于swagger的Api接口信息"
       terms-of-service-url: "http://www.keepgrown.com"
