@@ -126,6 +126,8 @@ public class ZQuartzController {
             zQuartz.setQuartzId(GuidUtils.getUuid());
             zQuartz.setCreateTime(LocalDateTime.now());
             zQuartzService.save(zQuartz);
+            // 刷新所有定时任务状态
+            quartzConfig.refreshQuartzList();
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException("新增失败！请重试");
@@ -146,6 +148,8 @@ public class ZQuartzController {
             ZQuartz zQuartz = zQuartzConvert.dtoToEntity(zQuartzDTO);
             zQuartz.setUpdateTime(LocalDateTime.now());
             zQuartzService.updateById(zQuartz);
+            // 刷新所有定时任务状态
+            quartzConfig.refreshQuartzList();
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException("修改失败！请重试");
@@ -162,6 +166,8 @@ public class ZQuartzController {
     public void delete(@RequestBody String[] quartzIds) throws BaseException {
         try {
             zQuartzService.removeBatchByIds(Arrays.asList(quartzIds));
+            // 刷新所有定时任务状态
+            quartzConfig.refreshQuartzList();
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException("删除失败！请重试");

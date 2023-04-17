@@ -1,6 +1,5 @@
 package com.kg.core.zquartz.config;
 
-import cn.hutool.core.thread.ThreadUtil;
 import com.kg.component.utils.QuartzManagerUtils;
 import com.kg.core.zquartz.entity.ZQuartz;
 import com.kg.core.zquartz.service.ZQuartzService;
@@ -31,27 +30,16 @@ public class QuartzConfig {
     private List<String> hasOpenedJobsList = new ArrayList<>();
 
     /**
-     * 配置定时任务
+     * 交给spring，启动时自动执行一次
      */
     @Bean
     public void QuartzInitialization() {
-        System.out.println("========启动定时任务扫描=============");
-        ThreadUtil.execute(() -> {
-            try {
-                while (true) {
-                    refreshQuartzList();
-                    // 每30s，刷新一次定时任务状态
-                    Thread.sleep(30000);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
+        refreshQuartzList();
     }
 
     public void refreshQuartzList() {
         try {
-            System.out.println("刷新定时任务");
+            System.out.println("========刷新定时任务========");
             // 查询数据库中，定时任务列表
             List<ZQuartz> list = quartzService.list();
             if (list != null) {

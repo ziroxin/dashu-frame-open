@@ -3,39 +3,57 @@
     <!-- 定时任务调度表-管理按钮 -->
     <div style="margin-bottom: 10px;">
       <el-input v-model="searchData.jobName" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入名称查询"/>
+                class="filter-item" placeholder="请输入名称查询"
+      />
       <el-input v-model="searchData.jobClass" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入类名查询"/>
+                class="filter-item" placeholder="请输入类名查询"
+      />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="loadTableList">查询</el-button>
       <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh" @click="resetTableList">显示全部</el-button>
       <div style="float: right;">
-        <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd"
-                   v-permission="'zquartz-zQuartz-add'">新增
+        <el-button v-waves v-permission="'zquartz-zQuartz-add'" type="primary" icon="el-icon-plus"
+                   @click="openAdd"
+        >新增
         </el-button>
-        <el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate"
-                   v-permission="'zquartz-zQuartz-update'">修改
-        </el-button>
-        <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds"
-                   v-permission="'zquartz-zQuartz-delete'">删除
+        <el-button v-waves v-permission="'zquartz-zQuartz-delete'" type="danger" icon="el-icon-delete"
+                   @click="deleteByIds"
+        >删除
         </el-button>
       </div>
     </div>
-    <div style="margin-bottom: 10px;float:right;">
-      <el-button v-waves icon="el-icon-refresh" @click="refresh"
-                 v-permission="'zquartz-zQuartz-refresh'">手动刷新（开启某个定时任务后，可点此按钮手动刷新后台状态；不点则默认30s会自动刷新）
-      </el-button>
-    </div>
     <!-- 定时任务调度表-列表 -->
     <el-table :data="tableData" stripe border @selection-change="handleTableSelectChange">
-      <el-table-column type="selection" width="50" align="center" header-align="center"/>
-      <el-table-column label="任务名称" prop="jobName" align="center" min-width="10%"/>
-      <el-table-column label="任务执行类" prop="jobClass" align="center" min-width="20%"/>
-      <el-table-column label="任务执行时间" prop="jobTimeCron" align="center" min-width="10%"/>
-      <el-table-column label="任务描述" prop="description" align="center" min-width="20%"/>
+      <el-table-column type="selection" width="50" align="center" header-align="center" />
+      <el-table-column label="任务名称" prop="jobName" align="center" min-width="10%" />
+      <el-table-column label="任务执行类" prop="jobClass" align="center" min-width="20%" />
+      <el-table-column label="任务执行时间" prop="jobTimeCron" align="center" min-width="10%" />
+      <el-table-column label="任务描述" prop="description" align="center" min-width="20%" />
       <el-table-column label="状态" align="center" min-width="10%">
         <template v-slot="scope">
-          <span v-if="scope.row.status=='1'" style="color: #2ac06d;">开启</span>
-          <span v-if="scope.row.status!='1'" style="color: #dd1100;">关闭</span>
+          <span v-if="scope.row.status==='1'" style="color: #2ac06d;">开启</span>
+          <span v-else style="color: #dd1100;">关闭</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="状态" align="center" width="160px">
+        <template v-slot="{row}">
+          <template v-if="row.status==='1'">
+            <el-tooltip effect="dark" content="请先停用！才能修改" placement="top">
+              <el-button type="info" size="mini" icon="el-icon-edit">修改</el-button>
+            </el-tooltip>
+            <el-button v-waves size="mini" type="danger" @click="updateStatus(row,0)">
+              停用
+            </el-button>
+          </template>
+          <template v-else>
+            <el-button v-waves v-permission="'zquartz-zQuartz-update'" size="mini" icon="el-icon-edit"
+                       @click="openUpdate(row)"
+            >修改
+            </el-button>
+            <el-button v-waves
+                       size="mini" type="success" @click="updateStatus(row,1)"
+            >启用
+            </el-button>
+          </template>
         </template>
       </el-table-column>
     </el-table>
@@ -47,33 +65,39 @@
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px"
-               style="width: 500px; margin-left: 50px;" :disabled="dialogType=='view'">
+               style="width: 500px; margin-left: 50px;" :disabled="dialogType==='view'"
+      >
         <el-form-item label="定时任务id" prop="quartzId" style="display: none;">
-          <el-input v-model="temp.quartzId" placeholder="请输入定时任务id"/>
+          <el-input v-model="temp.quartzId" placeholder="请输入定时任务id" />
         </el-form-item>
         <el-form-item label="任务名称" prop="jobName"
-                      :rules="[]">
-          <el-input v-model="temp.jobName" placeholder="请输入任务名称（不能重复）"/>
+                      :rules="[]"
+        >
+          <el-input v-model="temp.jobName" placeholder="请输入任务名称（不能重复）" />
         </el-form-item>
         <el-form-item label="任务执行类" prop="jobClass"
-                      :rules="[]">
-          <el-input v-model="temp.jobClass" placeholder="请输入任务执行类（该类必须实现org.quartz.Job）"/>
+                      :rules="[]"
+        >
+          <el-input v-model="temp.jobClass" placeholder="请输入任务执行类（该类必须实现org.quartz.Job）" />
         </el-form-item>
         <el-form-item label="任务执行时间" prop="jobTimeCron"
-                      :rules="[]">
-          <el-input v-model="temp.jobTimeCron" placeholder="请输入任务执行时间（Cron表达式：秒 分 时 日 月 年）"/>
+                      :rules="[]"
+        >
+          <el-input v-model="temp.jobTimeCron" placeholder="请输入任务执行时间（Cron表达式：秒 分 时 日 月 年）" />
         </el-form-item>
         <el-form-item label="任务描述" prop="description">
-          <el-input v-model="temp.description" placeholder="请输入任务描述"/>
+          <el-input v-model="temp.description" placeholder="请输入任务描述" />
         </el-form-item>
         <el-form-item label="状态" prop="status"
-                      :rules="[]">
+                      :rules="[]"
+        >
           <el-switch v-model="temp.status" active-text="开启" inactive-text="关闭"
-                     active-value="1" inactive-value="0"></el-switch>
+                     active-value="1" inactive-value="0"
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button v-waves type="primary" v-if="dialogType!='view'" @click="saveData">保存</el-button>
+        <el-button v-if="dialogType!=='view'" v-waves type="primary" @click="saveData">保存</el-button>
         <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
       </div>
     </el-dialog>
@@ -103,7 +127,7 @@ export default {
       // 弹窗显示隐藏
       dialogFormVisible: false,
       // 表单临时数据
-      temp: {},
+      temp: {}
     }
   },
   created() {
@@ -150,7 +174,11 @@ export default {
       })
     },
     // 打开修改窗口
-    openUpdate() {
+    openUpdate(row) {
+      if (row) {
+        this.tableSelectRows = []
+        this.tableSelectRows.push(row)
+      }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据修改！', type: 'warning'})
       } else if (this.tableSelectRows.length > 1) {
@@ -219,6 +247,21 @@ export default {
         })
       }
     },
+    // 启用/停用
+    updateStatus(row, status) {
+      row.status = status
+      let data = {...row};
+      request({
+        url: '/zquartz/zQuartz/update', method: 'post', data
+      }).then(response => {
+        if (status === '1') {
+          this.$message({type: 'success', message: '启用成功！'})
+        } else {
+          this.$message({type: 'success', message: '停用成功！'})
+        }
+        this.loadTableList()
+      })
+    },
     // 刷新状态
     refresh() {
       request({
@@ -245,7 +288,7 @@ export default {
         document.body.appendChild(link);
         link.click();
       })
-    },
+    }
   }
 }
 </script>
