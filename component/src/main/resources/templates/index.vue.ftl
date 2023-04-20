@@ -68,7 +68,7 @@
 <#if templateHtml??>
 			${templateHtml}
 <#else>
-			<el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType=='view'">
+			<el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
   <#list table.fields as field>
 	<#if field.propertyName=='orderIndex'>
 				<el-form-item label="顺序" prop="orderIndex"
@@ -119,7 +119,7 @@
 			</el-form>
 </#if>
 			<div slot="footer" class="dialog-footer">
-				<el-button v-waves type="primary" v-if="dialogType!='view'" @click="saveData">保存</el-button>
+				<el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
 				<el-button v-waves @click="dialogFormVisible=false">取消</el-button>
 			</div>
 		</el-dialog>
