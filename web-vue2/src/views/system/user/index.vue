@@ -2,43 +2,49 @@
   <div class="app-container">
     <el-row :gutter="15">
       <el-col :span="4">
-        <el-input placeholder="输入关键字进行过滤" v-model="filterText"
-                  style="margin-bottom: 10px;"></el-input>
+        <el-input v-model="filterText" placeholder="输入关键字进行过滤"
+                  style="margin-bottom: 10px;"
+        />
         <!-- 组织机构树 -->
-        <el-tree class="filter-tree" :data="orgSelectTreeData" :expand-on-click-node="false" :highlight-current="true"
-                 :props="{children: 'children',label: 'label'}" @node-click="treeNodeClick"
-                 default-expand-all :filter-node-method="filterNode" ref="tree"></el-tree>
+        <el-tree ref="tree" class="filter-tree" :data="orgSelectTreeData" :expand-on-click-node="false"
+                 :highlight-current="true" :props="{children: 'children',label: 'label'}"
+                 default-expand-all :filter-node-method="filterNode" @node-click="treeNodeClick"
+        />
       </el-col>
       <el-col :span="20" style="">
         <div style="margin-bottom: 10px;">
           <el-switch v-model="searchData.isSelf" active-value="self" inactive-value="notself" style="margin-right: 10px;"
-                     active-text="包含下级" inactive-text="只查本级" @change="getUserList"></el-switch>
+                     active-text="包含下级" inactive-text="只查本级" @change="getUserList"
+          />
           <el-input v-model="searchData.userName" style="width: 180px;margin-right: 10px;"
-                    class="filter-item" placeholder="请输入用户名模糊查询"/>
+                    class="filter-item" placeholder="请输入用户名模糊查询"
+          />
           <el-input v-model="searchData.name" style="width: 160px;margin-right: 10px;"
-                    class="filter-item" placeholder="请输入姓名模糊查询"/>
+                    class="filter-item" placeholder="请输入姓名模糊查询"
+          />
           <el-button v-waves class="filter-item" icon="el-icon-search" type="primary" @click="getUserList">查询</el-button>
           <el-button v-waves class="filter-item" icon="el-icon-refresh" type="info" @click="resetTableList">显示全部</el-button>
         </div>
         <div style="margin-bottom: 10px;">
           <!--  操作按钮  -->
-          <el-button v-waves icon="el-icon-plus" v-permission="'user-add'" @click="userAdd">新增</el-button>
-          <el-button v-waves icon="el-icon-edit" v-permission="'user-update'" @click="userUpdate">修改</el-button>
-          <el-button v-waves type="danger" icon="el-icon-delete" v-permission="'user-delete'" @click="userDelete">删除</el-button>
-          <el-button v-waves type="primary" icon="el-icon-refresh-right" v-permission="'reset-password'" @click="resetPassword">重置密码</el-button>
-          <el-button v-waves type="warning" icon="el-icon-lock" v-permission="'change-status'" @click="changeStatus(0)">禁用</el-button>
-          <el-button v-waves type="success" icon="el-icon-unlock" v-permission="'change-status'" @click="changeStatus(1)">启用</el-button>
+          <el-button v-waves v-permission="'user-add'" icon="el-icon-plus" @click="userAdd">新增</el-button>
+          <el-button v-waves v-permission="'user-update'" icon="el-icon-edit" @click="userUpdate">修改</el-button>
+          <el-button v-waves v-permission="'user-delete'" type="danger" icon="el-icon-delete" @click="userDelete">删除</el-button>
+          <el-button v-waves v-permission="'reset-password'" type="primary" icon="el-icon-refresh-right" @click="resetPassword">重置密码</el-button>
+          <el-button v-waves v-permission="'change-status'" type="warning" icon="el-icon-lock" @click="changeStatus(0)">禁用</el-button>
+          <el-button v-waves v-permission="'change-status'" type="success" icon="el-icon-unlock" @click="changeStatus(1)">启用</el-button>
         </div>
         <!-- 表格部分 -->
         <el-table :data="userTable" row-key="userId"
                   :height="this.$windowHeight-255" style="width: 100%;"
-                  border @selection-change="selectionChangeHandlerOrder">
-          <el-table-column type="selection" width="40"/>
-          <el-table-column prop="roleName" label="角色" min-width="10%"/>
-          <el-table-column prop="orgName" label="部门" min-width="10%"/>
-          <el-table-column prop="userName" label="用户名" min-width="8%"/>
-          <el-table-column prop="name" label="姓名" min-width="8%"/>
-          <el-table-column prop="nickName" label="昵称" min-width="8%"/>
+                  border @selection-change="selectionChangeHandlerOrder"
+        >
+          <el-table-column type="selection" width="40" />
+          <el-table-column prop="roleName" label="角色" min-width="10%" />
+          <el-table-column prop="orgName" label="部门" min-width="10%" />
+          <el-table-column prop="userName" label="用户名" min-width="8%" />
+          <el-table-column prop="name" label="姓名" min-width="8%" />
+          <el-table-column prop="nickName" label="昵称" min-width="8%" />
           <el-table-column prop="sex" label="性别" min-width="5%">
             <template slot-scope="scope">
               <span v-if="scope.row.sex === '0'">未知</span>
@@ -54,11 +60,11 @@
           </el-table-column>
           <el-table-column prop="avatar" label="头像" width="121px">
             <template slot-scope="scope">
-              <img v-if="scope.row.avatar" :src="$baseServer+'/'+scope.row.avatar" style="max-width: 100px;max-height: 100px;object-fit: cover;"/>
+              <img v-if="scope.row.avatar" :src="$baseServer+'/'+scope.row.avatar" style="max-width: 100px;max-height: 100px;object-fit: cover;">
               <span v-if="!scope.row.avatar">未上传</span>
             </template>
           </el-table-column>
-          <el-table-column prop="introduce" label="简介" min-width="10%"/>
+          <el-table-column prop="introduce" label="简介" min-width="10%" />
         </el-table>
         <!--分页-->
         <el-pagination style="text-align: center;margin-top: 5px;" background layout="total, pager"
@@ -71,18 +77,20 @@
     <!--  弹窗  -->
     <el-dialog :title="textMap[dialogStatus]" top="5vh" :visible.sync="dialogFormVisible">
       <el-form ref="userDataForm" :model="temp" :rules="rules" label-position="right"
-               label-width="100px" style="width: 500px; margin-left: 50px;">
+               label-width="100px" style="width: 500px; margin-left: 50px;"
+      >
         <el-form-item label="用户名：" prop="userName">
-          <el-input v-model="temp.userName" placeholder="请输入用户名"/>
+          <el-input v-model="temp.userName" placeholder="请输入用户名" />
         </el-form-item>
         <el-form-item label="所在部门：" prop="orgId">
           <select-tree v-model="temp.orgId" empty-text="请选择所在部门" empty-value=""
                        :props="{children: 'children', label: 'label'}"
-                       :data="orgSelectTreeData" style="width: 400px;"></select-tree>
+                       :data="orgSelectTreeData" style="width: 400px;"
+          />
         </el-form-item>
         <el-form-item label="角色：" prop="roleId">
           <el-select v-model="temp.roleId" class="filter-item" :multiple="true" style="width: 400px;" placeholder="请选择角色">
-            <el-option v-for="item in roleNameOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId"/>
+            <el-option v-for="item in roleNameOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId" />
           </el-select>
         </el-form-item>
         <el-form-item label="性别：" prop="sex">
@@ -91,19 +99,19 @@
           <el-radio v-model="temp.sex" label="2">女</el-radio>
         </el-form-item>
         <el-form-item label="昵称：" prop="nickName">
-          <el-input v-model="temp.nickName" placeholder="请输入昵称"/>
+          <el-input v-model="temp.nickName" placeholder="请输入昵称" />
         </el-form-item>
         <el-form-item label="简介：" prop="introduce">
-          <el-input v-model="temp.introduce" type="textarea" placeholder="请输入简介"/>
+          <el-input v-model="temp.introduce" type="textarea" placeholder="请输入简介" />
         </el-form-item>
         <el-form-item label="头像：" prop="avatar">
-          <image-avatar name="avatar" v-model="temp.avatar"></image-avatar>
+          <image-avatar v-model="temp.avatar" name="avatar" />
         </el-form-item>
         <el-form-item label="姓名：" prop="name">
-          <el-input v-model="temp.name" placeholder="请输入姓名"/>
+          <el-input v-model="temp.name" placeholder="请输入姓名" />
         </el-form-item>
         <el-form-item label="手机号：" prop="phone">
-          <el-input v-model="temp.phone" placeholder="请输入手机号"/>
+          <el-input v-model="temp.phone" placeholder="请输入手机号" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -116,10 +124,10 @@
 <script>
 import {getUserList, userAdd, userDelete, userResetPassword, userUpdate} from '@/api/user'
 import {getRoleList} from '@/api/role';
-import ImageAvatar from "@/components/Upload/ImageAvatar";
-import request from "@/utils/request";
-import SelectTree from "@/components/SelectTree";
-import waves from "@/directive/waves";
+import ImageAvatar from '@/components/Upload/ImageAvatar';
+import request from '@/utils/request';
+import SelectTree from '@/components/SelectTree';
+import waves from '@/directive/waves';
 
 export default {
   components: {ImageAvatar, SelectTree},
@@ -155,19 +163,19 @@ export default {
       orgSelectTreeData: [],
       // 左侧组织机构树相关数据
       filterText: '',
-      leftTreeData: [],
+      leftTreeData: []
     }
-  },
-  created() {
-    this.loadOrgTreeForSelect()
-    this.getUserList()
-    this.getRoleList()
   },
   watch: {
     filterText(val) {
       // 左侧组织机构树过滤
       this.$refs.tree.filter(val);
     }
+  },
+  created() {
+    this.loadOrgTreeForSelect()
+    this.getUserList()
+    this.getRoleList()
   },
   methods: {
     // 左侧树过滤
@@ -311,7 +319,7 @@ export default {
     },
     // 启用/禁用用户
     changeStatus(status) {
-      let msg = status == 0 ? '禁用' : '启用'
+      let msg = status === 0 ? '禁用' : '启用'
       if (this.changeData.length <= 0) {
         this.$message({message: '至少选择一个用户' + msg + '！', type: 'error'})
       } else {
@@ -324,7 +332,7 @@ export default {
             this.getUserList()
           })
       }
-    },
+    }
   }
 }
 </script>

@@ -4,11 +4,9 @@
       <el-col :span="elColSpanValue">
         <!--  操作按钮  -->
         <div style="margin-bottom: 20px;">
-          <el-button v-permission="'system-menu-add'" type="primary" icon="el-icon-plus" @click="permissionAdd">新增
+          <el-button v-permission="'system-menu-add'" type="primary" icon="el-icon-plus" @click="permissionAdd">新增一级菜单
           </el-button>
-          <el-button v-permission="'system-menu-delete'" type="danger" icon="el-icon-delete" @click="permissionDelete">删除
-          </el-button>
-          <el-button v-permission="'system-menu-update-parent'" type="warning" icon="el-icon-sort" @click="permissionUpdateParent">修改上下级
+          <el-button v-permission="'system-menu-delete'" type="danger" icon="el-icon-delete" @click="permissionDelete">批量删除
           </el-button>
         </div>
         <!-- 表格部分 -->
@@ -16,19 +14,26 @@
                   border :tree-props="{children: 'children'}" :default-expand-all="true"
                   highlight-current-row @selection-change="selectionChangeHandlerOrder"
         >
-          <el-table-column type="selection" width="50" header-align="center" align="center"/>
+          <el-table-column type="selection" width="50" header-align="center" align="center" />
           <el-table-column prop="permissionTitle" label="菜单名称" min-width="60%">
             <template v-slot="{row}">
               <li class="menu-item">
-                <item :icon="row.permissionIcon" :title="row.permissionTitle"/>
+                <item :icon="row.permissionIcon" :title="row.permissionTitle" />
                 <el-tag v-if="row.permissionType === '0'" disable-transitions size="mini">路由</el-tag>
                 <el-tag v-if="row.permissionType === '2'" disable-transitions type="success" size="mini">外链</el-tag>
                 <el-tag v-if="!row.permissionIsShow" disable-transitions type="danger" size="mini">隐藏</el-tag>
                 <el-tag v-if="!row.permissionIsEnabled" disable-transitions type="danger" size="mini">禁用</el-tag>
+                <div v-if="!buttonTableVisible" style="display: inline-block;margin-left: 20px;">
+                  <el-button v-permission="'system-menu-update-parent'" type="text" plain
+                             icon="el-icon-sort" size="mini" @click="permissionUpdateParent(row)"
+                  />
+                  <el-button v-permission="'system-menu-update'" type="text" plain size="mini" @click="permissionUpdate(row)">修改</el-button>
+                  <el-button v-if="row.permissionType === '0'" type="text" plain size="mini" @click="subordinatesAdd(row)">添加下级</el-button>
+                </div>
               </li>
             </template>
           </el-table-column>
-          <el-table-column prop="permissionRouter" label="菜单详情" min-width="30%" :show-overflow-tooltip="true">
+          <el-table-column prop="permissionRouter" label="菜单详情" width="200" :show-overflow-tooltip="true">
             <template v-slot="{row}">
               <el-tooltip v-if="row.permissionType === '0'" class="item" effect="dark" placement="left">
                 <div slot="content" :key="'tipcontent'+row.permissionId" style="line-height: 30px;">
@@ -48,23 +53,14 @@
               >{{ row.permissionRouter }}</a>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作" width="210" header-align="center" align="center">
+          <el-table-column fixed="right" label="操作" width="100" header-align="center" align="center">
             <template slot-scope="{row}">
-              <div v-if="row.permissionType === '0'">
-                <el-button v-permission="'system-menu-update-parent'" type="text" plain
-                           icon="el-icon-sort" size="mini" @click="permissionUpdateParent(row)"
-                />
-                <el-button v-permission="'system-menu-update'" type="text" plain size="mini" @click="permissionUpdate(row)">修改</el-button>
+              <div>
                 <el-button v-if="row.permissionIsEnabled" type="text" plain size="mini" @click="changeIsEnabled(row, false)">禁用</el-button>
                 <el-button v-else type="text" plain size="mini" @click="changeIsEnabled(row, true)">启用</el-button>
-                <el-button type="text" plain size="mini" @click="subordinatesAdd(row)">添加下级</el-button>
-                <el-button type="text" plain size="mini" @click="openButtonTable(row)">按钮</el-button>
+                <el-button v-if="row.permissionType === '0'" type="text" plain size="mini" @click="openButtonTable(row)">按钮</el-button>
               </div>
               <div v-if="row.permissionType === '2'">
-                <el-button v-permission="'system-menu-update-parent'" type="text" plain
-                           icon="el-icon-sort" size="mini" @click="permissionUpdateParent(row)"
-                />
-                <el-button v-permission="'system-menu-update'" type="text" plain size="mini" @click="permissionUpdate(row)">修改</el-button>
                 <el-button v-if="row.permissionIsEnabled" type="text" plain size="mini" @click="changeIsEnabled(row, false)">禁用</el-button>
                 <el-button v-else type="text" plain size="mini" @click="changeIsEnabled(row, true)">启用</el-button>
               </div>
@@ -73,7 +69,7 @@
         </el-table>
       </el-col>
       <el-col v-if="buttonTableVisible" :span="8" :style="rightStyle">
-        <PermissionButton :current-permission-row="currentPermissionRow" :close-button-table="closeButtonTable"/>
+        <PermissionButton :current-permission-row="currentPermissionRow" :close-button-table="closeButtonTable" />
       </el-col>
     </el-row>
 
@@ -87,25 +83,25 @@
           <el-radio v-model="temp.permissionType" label="2" @change="routerShow=false">外链</el-radio>
         </el-form-item>
         <el-form-item label="菜单名称：" prop="permissionTitle">
-          <el-input v-model="temp.permissionTitle" placeholder="菜单显示名称"/>
+          <el-input v-model="temp.permissionTitle" placeholder="菜单显示名称" />
         </el-form-item>
         <el-form-item v-if="routerShow" label="菜单标记：" prop="permissionName">
-          <el-input v-model="temp.permissionName" placeholder="唯一标记-用于控制权限，推荐格式：父包-模块（例：system-menu）"/>
+          <el-input v-model="temp.permissionName" placeholder="唯一标记-用于控制权限，推荐格式：父包-模块（例：system-menu）" />
         </el-form-item>
         <el-form-item label="菜单描述：" prop="permissionDescription">
-          <el-input v-model="temp.permissionDescription" type="textarea" placeholder="菜单功能简介"/>
+          <el-input v-model="temp.permissionDescription" type="textarea" placeholder="菜单功能简介" />
         </el-form-item>
         <el-form-item label="菜单图标：" prop="permissionIcon">
-          <IconPicker v-model="temp.permissionIcon"/>
+          <IconPicker v-model="temp.permissionIcon" />
         </el-form-item>
         <el-form-item label="菜单地址：" prop="permissionRouter">
           <el-input v-if="routerShow" v-model="temp.permissionRouter" placeholder="菜单地址，不含/index（例：/system/menu）"
                     @input="temp.permissionComponent = temp.permissionRouter + '/index'"
           />
-          <el-input v-else v-model="temp.permissionRouter" placeholder="外链以 http:// 或 https:// 开头"/>
+          <el-input v-else v-model="temp.permissionRouter" placeholder="外链以 http:// 或 https:// 开头" />
         </el-form-item>
         <el-form-item v-if="routerShow" label="组件地址：" prop="permissionComponent">
-          <el-input v-model="temp.permissionComponent" placeholder="组件完整地址（例：/system/menu/index）"/>
+          <el-input v-model="temp.permissionComponent" placeholder="组件完整地址（例：/system/menu/index）" />
           <el-tag type="info">根节点请填写：/layout/index</el-tag>
         </el-form-item>
 
@@ -115,7 +111,7 @@
           />
         </el-form-item>
         <el-form-item v-if="routerShow && !temp.permissionIsShow" label="activeMenu：" prop="activeMenu">
-          <el-input v-model="temp.activeMenu" placeholder="本路由hidden时，请填写菜单栏高亮显示的路由"/>
+          <el-input v-model="temp.activeMenu" placeholder="本路由hidden时，请填写菜单栏高亮显示的路由" />
         </el-form-item>
 
         <el-form-item v-if="routerShow" label="redirect：" prop="noRedirect">
@@ -144,7 +140,7 @@
         </el-form-item>
 
         <el-form-item label="菜单顺序：" prop="permissionOrder">
-          <el-input-number v-model.number="temp.permissionOrder" :min="0"/>
+          <el-input-number v-model.number="temp.permissionOrder" :min="0" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

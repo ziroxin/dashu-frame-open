@@ -1,22 +1,22 @@
 <template>
   <div class="navbar">
     <!-- 显示隐藏侧边栏按钮 -->
-    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar"/>
+    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
     <!-- 面包屑 -->
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container"/>
+    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
     <!-- 顶部右侧菜单 -->
     <div class="right-menu">
       <template v-if="device!=='mobile'">
         <!--PC菜单-->
-        <search id="header-search" class="right-menu-item"/>
-        <error-log class="errLog-container right-menu-item hover-effect"/>
-        <screenfull id="screenfull" class="right-menu-item hover-effect"/>
+        <search id="header-search" class="right-menu-item" />
+        <error-log class="errLog-container right-menu-item hover-effect" />
+        <screenfull id="screenfull" class="right-menu-item hover-effect" />
         <!--<el-tooltip content="全局文字大小配置" effect="dark" placement="bottom">
                   <size-select id="size-select" class="right-menu-item hover-effect"/>
                 </el-tooltip>-->
       </template>
 
-      <header-user-setting/>
+      <header-user-setting />
     </div>
   </div>
 </template>
@@ -27,9 +27,8 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
-// import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
-import HeaderUserSetting from "@/layout/components/HeaderUserSetting";
+import HeaderUserSetting from '@/layout/components/HeaderUserSetting';
 
 export default {
   components: {
@@ -38,7 +37,6 @@ export default {
     Hamburger,
     ErrorLog,
     Screenfull,
-    // SizeSelect,
     Search
   },
   data() {
@@ -56,7 +54,7 @@ export default {
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
-    },
+    }
   }
 }
 </script>

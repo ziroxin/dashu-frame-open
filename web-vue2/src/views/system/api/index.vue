@@ -42,13 +42,15 @@
           <div :style="'height:' + ( this.$windowHeight - 170 ) + 'px;overflow-y: auto;'">
             <el-collapse v-model="activeNames" style="padding-top: 5px;">
               <el-collapse-item v-for="group2 in tableData2" :key="group2.apiGroupId"
-                                :name="group2.apiGroupId">
+                                :name="group2.apiGroupId"
+              >
                 <template slot="title">
                   <div class="collapse-title">
                     分组：{{ group2.groupName }}
-                    <el-button v-if="group2.apiGroupId!='no_group_api'" type="danger"
+                    <el-button v-if="group2.apiGroupId!=='no_group_api'" type="danger"
                                icon="el-icon-delete" size="mini" circle
-                               @click.stop="deleteGroup(group2.apiGroupId)"></el-button>
+                               @click.stop="deleteGroup(group2.apiGroupId)"
+                    />
                   </div>
                 </template>
                 <el-checkbox-group v-model="selectPermissionApiList" style="line-height: 50px;">
@@ -82,17 +84,18 @@
           <el-radio v-model="isNewGroup" label="0" @change="isNewGroup='0';temp={};">创建新分组</el-radio>
           <el-radio v-model="isNewGroup" label="1" @change="isNewGroup='1'">加入已有分组</el-radio>
         </el-form-item>
-        <el-form-item label="分组名称：" prop="groupName" v-if="isNewGroup==='0'">
-          <el-input v-model="temp.groupName" placeholder="请输入分组名称"/>
+        <el-form-item v-if="isNewGroup==='0'" label="分组名称：" prop="groupName">
+          <el-input v-model="temp.groupName" placeholder="请输入分组名称" />
         </el-form-item>
-        <el-form-item label="选择分组：" prop="apiGroupId" v-else>
+        <el-form-item v-else label="选择分组：" prop="apiGroupId">
           <el-select v-model="temp.apiGroupId" placeholder="请选择分组" @change="groupSelectChange">
             <el-option v-for="item in groupList" :key="item.apiGroupId"
-                       :label="item.groupName" :value="item.apiGroupId"></el-option>
+                       :label="item.groupName" :value="item.apiGroupId"
+            />
           </el-select>
         </el-form-item>
-        <el-form-item label="分组顺序：" prop="groupOrder" v-if="isNewGroup==='0'">
-          <el-input-number v-model="temp.groupOrder"></el-input-number>
+        <el-form-item v-if="isNewGroup==='0'" label="分组顺序：" prop="groupOrder">
+          <el-input-number v-model="temp.groupOrder" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -124,9 +127,9 @@ export default {
       temp: {},
       rules: {
         groupName: [{required: true, message: '分组名称必填', trigger: 'blur'}],
-        groupOrder: [{required: true, message: '分组顺序必填'}],
+        groupOrder: [{required: true, message: '分组顺序必填'}]
       },
-      groupList: [],
+      groupList: []
     }
   },
   created() {
@@ -249,7 +252,7 @@ export default {
     },
     saveGroupInfo() {
       if (this.isNewGroup === '1') {
-        if (this.temp.apiGroupId == undefined) {
+        if (this.temp.apiGroupId === undefined) {
           this.$message({type: 'error', message: '请选择分组'})
           return
         }

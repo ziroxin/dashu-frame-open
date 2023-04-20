@@ -9,7 +9,7 @@
                class="avatar-uploader"
                :data="{'path':path}"
                :name="name"
-               :action="action==''?this.$baseServer+'/upload/images':action"
+               :action="action===''?this.$baseServer+'/upload/images':action"
                :show-file-list="false"
                :multiple="false"
                :before-upload="imgBeforeUpload"
@@ -17,14 +17,14 @@
                accept="image/*"
     >
       <img v-if="dialogImageUrl" :src="dialogImageUrl" class="avatar">
-      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+      <i v-else class="el-icon-plus avatar-uploader-icon" />
     </el-upload>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'imageAvatar',
+  name: 'ImageAvatar',
   props: {
     // 上传图片路径
     value: {type: String, default: ''},
@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     loadImg() {
-      if (this.value != null && this.value != '') {
+      if (this.value !== null && this.value !== '') {
         this.dialogImageUrl = this.$baseServer + this.value
       } else {
         this.dialogImageUrl = ''
@@ -79,7 +79,7 @@ export default {
         this.$message.error('请选择正确的图片！')
       }
       return isRightSize && isAccept
-    },
+    }
   }
 }
 </script>

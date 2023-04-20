@@ -52,7 +52,7 @@
     <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible" width="900px" :close-on-click-modal="dialogType !== 'view' ? false : true"
                @close="resetTemp"
     >
-      <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType=='view'">
+      <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
         <el-form-item label-width="0px" prop="newsTitle">
           <el-input v-model="temp.newsTitle" :rules="[]" maxlength="30" :show-word-limit="true"
                     placeholder="请输入新闻标题"
@@ -76,13 +76,11 @@
 </template>
 
 <script>
-import waves from '@/directive/waves'
 import request from '@/utils/request'
 import MyWangEditor from '@/components/MyWangEditor';
 
 export default {
   components: {MyWangEditor},
-  directives: {waves},
   data() {
     return {
       // 分页数据

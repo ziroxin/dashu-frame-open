@@ -7,7 +7,7 @@ import 'nprogress/nprogress.css'
 // 从Cookie中读取token
 import {getToken} from '@/utils/auth'
 import getPageTitle from '@/utils/get-page-title'
-import {isWhiteList} from '@/utils/white-list'
+import {isWhiteList} from '@/router/white-list'
 
 // 进度条配置
 NProgress.configure({showSpinner: false})

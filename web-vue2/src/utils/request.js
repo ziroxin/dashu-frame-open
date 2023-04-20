@@ -3,7 +3,7 @@ import {Message, MessageBox} from 'element-ui'
 import store from '@/store'
 import {getToken, getTokenValidTime} from '@/utils/auth'
 import qs from 'qs'
-import {isWhiteList} from '@/utils/white-list'
+import {isWhiteList} from '@/router/white-list'
 
 // 创建axios
 const service = axios.create({

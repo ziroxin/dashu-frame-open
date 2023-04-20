@@ -1,3 +1,11 @@
+/**
+ * 权限指令
+ * 使用方法：
+ *    用于控制html标签的显示和隐藏
+ *    v-permission可以加在任意标签，支持数组
+ *    权限根据表字段：permission_name 来匹配
+ *    <el-button v-permission="['admin']">按钮</el-button>
+ */
 import store from '@/store'
 
 function checkPermission(el, binding) {

@@ -9,7 +9,7 @@
       </div>
 
       <el-button slot="reference">
-        <span v-if="iconName==''">请选择图标</span>
+        <span v-if="iconName===''">请选择图标</span>
         <span v-else>
           <eIcon :icon-name="iconName" />
         </span>
@@ -26,8 +26,12 @@ import elementIcons from '@/views/icons/element-icons'
 
 export default {
   name: 'IconPicker',
-  components: {eIcon},
-  props: {value: String},
+  components: {
+    eIcon
+  },
+  props: {
+    value: String
+  },
   data() {
     return {
       svgIcons,

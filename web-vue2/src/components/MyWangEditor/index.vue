@@ -63,13 +63,12 @@ export default {
       this.$emit('input', this.html)
     },
     value() {
-      console.log(this.value)
       this.html = this.value
     }
   },
   beforeDestroy() {
     const editor = this.editor
-    if (editor == null) return
+    if (editor === null) return
     editor.destroy() // 组件销毁时，及时销毁编辑器
   },
   methods: {

@@ -16,8 +16,12 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      const ui = SwaggerUIBundle({
-        url: this.$baseServer + '/v2/api-docs?group=news',
+      let server = this.$baseServer
+      if (server.indexOf('http') < 0) {
+        server = location.origin + server;
+      }
+      SwaggerUIBundle({
+        url: server + '/v2/api-docs?group=news',
         dom_id: '#swagger-ui',
         deepLinking: true,
         presets: [

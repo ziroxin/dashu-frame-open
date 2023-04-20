@@ -3,56 +3,67 @@
     <!-- 组织机构表-管理按钮 -->
     <div style="margin-bottom: 20px;">
       <el-input v-model="searchData.orgName" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入用户名/姓名查询"/>
+                class="filter-item" placeholder="请输入用户名/姓名查询"
+      />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="loadTableList">查询</el-button>
       <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh" @click="resetTableList">显示全部</el-button>
       <div style="float: right;">
-        <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd"
-                   v-permission="'zorg-zOrganization-add'">新增
+        <el-button v-waves v-permission="'zorg-zOrganization-add'" type="primary" icon="el-icon-plus"
+                   @click="openAdd"
+        >新增
         </el-button>
-        <el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate"
-                   v-permission="'zorg-zOrganization-update'">修改
+        <el-button v-waves v-permission="'zorg-zOrganization-update'" type="info" icon="el-icon-edit"
+                   @click="openUpdate"
+        >修改
         </el-button>
-        <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds"
-                   v-permission="'zorg-zOrganization-delete'">删除
+        <el-button v-waves v-permission="'zorg-zOrganization-delete'" type="danger" icon="el-icon-delete"
+                   @click="deleteByIds"
+        >删除
         </el-button>
       </div>
     </div>
     <!-- 组织机构表-列表 -->
-    <el-table :data="tableData" @selection-change="handleTableSelectChange"
-              :tree-props="{children: 'children'}"
-              row-key="orgId" default-expand-all border stripe>
-      <el-table-column type="selection" width="50" align="center" header-align="center"/>
-      <el-table-column label="组织机构名称" prop="orgName" min-width="30%"/>
-      <el-table-column label="备注" prop="remarks" align="center" min-width="40%"/>
-      <el-table-column label="层级" prop="orgLevel" align="center" width="100"/>
-      <el-table-column label="顺序" prop="orderIndex" align="center" width="100"/>
+    <el-table :data="tableData" :tree-props="{children: 'children'}"
+              row-key="orgId"
+              default-expand-all border stripe @selection-change="handleTableSelectChange"
+    >
+      <el-table-column type="selection" width="50" align="center" header-align="center" />
+      <el-table-column label="组织机构名称" prop="orgName" min-width="30%" />
+      <el-table-column label="备注" prop="remarks" align="center" min-width="40%" />
+      <el-table-column label="层级" prop="orgLevel" align="center" width="100" />
+      <el-table-column label="顺序" prop="orderIndex" align="center" width="100" />
     </el-table>
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px"
-               style="width: 500px; margin-left: 50px;" :disabled="dialogType=='view'">
+               style="width: 500px; margin-left: 50px;" :disabled="dialogType==='view'"
+      >
         <el-form-item label="组织机构名称" prop="orgName"
-                      :rules="[]">
-          <el-input v-model="temp.orgName" placeholder="请输入组织机构名称"/>
+                      :rules="[]"
+        >
+          <el-input v-model="temp.orgName" placeholder="请输入组织机构名称" />
         </el-form-item>
         <el-form-item label="父级ID" prop="orgParentId"
-                      :rules="[]">
+                      :rules="[]"
+        >
           <select-tree v-model="temp.orgParentId" empty-text="请选择" empty-value="-1"
                        :props="{children: 'children', label: 'label'}"
-                       :data="treeSelectData" style="width: 400px;"></select-tree>
+                       :data="treeSelectData" style="width: 400px;"
+          />
         </el-form-item>
         <el-form-item label="顺序" prop="orderIndex"
-                      :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]">
-          <el-input-number v-model="temp.orderIndex" :min="0"/>
+                      :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]"
+        >
+          <el-input-number v-model="temp.orderIndex" :min="0" />
         </el-form-item>
         <el-form-item label="备注" prop="remarks">
           <el-input v-model="temp.remarks" placeholder="请输入备注" type="textarea"
-                    :autosize="{minRows: 2, maxRows: 5}" maxlength="300"/>
+                    :autosize="{minRows: 2, maxRows: 5}" maxlength="300"
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button v-waves type="primary" v-if="dialogType!='view'" @click="saveData">保存</el-button>
+        <el-button v-if="dialogType!=='view'" v-waves type="primary" @click="saveData">保存</el-button>
         <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
       </div>
     </el-dialog>
@@ -62,7 +73,7 @@
 <script>
 import waves from '@/directive/waves'
 import request from '@/utils/request'
-import SelectTree from "@/components/SelectTree";
+import SelectTree from '@/components/SelectTree';
 
 export default {
   components: {SelectTree},
@@ -108,7 +119,7 @@ export default {
     },
     // 加载下拉选择框组织机构树
     loadOrgTreeForSelect(parentId) {
-      let params = parentId == undefined ? {} : {parentId: parentId}
+      let params = parentId === undefined ? {} : {parentId: parentId}
       request({
         url: '/zorg/zOrganization/treeForSelect', method: 'get', params
       }).then((response) => {
@@ -227,7 +238,7 @@ export default {
         document.body.appendChild(link);
         link.click();
       })
-    },
+    }
   }
 }
 </script>

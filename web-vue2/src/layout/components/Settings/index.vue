@@ -75,6 +75,9 @@ export default {
           key: 'layout',
           value: val
         })
+        if (val === 'vertical') {
+          this.$router.go(0)
+        }
       }
     },
     sidebarLogo: {

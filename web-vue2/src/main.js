@@ -19,11 +19,14 @@ import './icons'
 import './permission'
 import './utils/error-log'
 
-// 导入全局filters
+// 导入全局过滤器filters
 import * as filters from './filters'
-// 导入权限指令
+// 导入全局指令directive
 import permission from '@/directive/permission'
 import mydate from '@/directive/mydate'
+import waves from '@/directive/waves/index'
+import clipboard from '@/directive/clipboard'
+// 导入全局变量
 import request from '@/utils/request'
 import {getTokenHeader} from '@/utils/auth';
 
@@ -34,14 +37,16 @@ Vue.use(Element, {
   //, locale: enLang
 })
 
-// 注册全局过滤器
+// 注册全局过滤器filters
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
-// 注册权限指令
+// 注册全局指令directive
 Vue.directive('permission', permission)
 Vue.directive('mydate', mydate)
-
+Vue.directive('waves', waves)
+Vue.directive('clipboard', clipboard)
+// 注册全局变量
 Object.assign(Vue.prototype, {
   $baseServer: process.env.VUE_APP_BASE_API,
   $windowHeight: window.innerHeight,

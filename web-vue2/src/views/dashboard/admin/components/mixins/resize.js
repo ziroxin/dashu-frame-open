@@ -1,4 +1,4 @@
-import { debounce } from '@/utils'
+import {debounce} from 'lodash'
 
 export default {
   data() {
@@ -20,8 +20,7 @@ export default {
     this.$_destroyResizeEvent()
     this.$_destroySidebarResizeEvent()
   },
-  // to fixed bug when cached by keep-alive
-  // https://github.com/PanJiaChen/vue-element-admin/issues/2116
+  // 修复了keep-alive缓存的bug  @see:https://github.com/PanJiaChen/vue-element-admin/issues/2116
   activated() {
     this.$_initResizeEvent()
     this.$_initSidebarResizeEvent()
@@ -31,8 +30,7 @@ export default {
     this.$_destroySidebarResizeEvent()
   },
   methods: {
-    // use $_ for mixins properties
-    // https://vuejs.org/v2/style-guide/index.html#Private-property-names-essential
+    // 使用 $_ mixins 属性 @see:https://vuejs.org/v2/style-guide/index.html#Private-property-names-essential
     $_initResizeEvent() {
       window.addEventListener('resize', this.$_resizeHandler)
     },

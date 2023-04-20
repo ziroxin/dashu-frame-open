@@ -20,7 +20,7 @@
                :before-upload="imgBeforeUpload"
                :on-success="imgUploadSuccess"
                :on-remove="imgRemove"
-               :class="value!=''?'hidden-btn':''"
+               :class="value!==''?'hidden-btn':''"
                list-type="picture-card"
                accept="image/*"
     >
@@ -64,7 +64,7 @@ export default {
   methods: {
     loadImg() {
       this.imgList = []
-      if (this.value != '') {
+      if (this.value !== '') {
         let file = {url: this.$baseServer + this.value}
         this.imgList[0] = file
       }

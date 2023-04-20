@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import {transactionList} from '@/api/remote-search'
 
 export default {
   filters: {
@@ -54,7 +53,7 @@ export default {
         {order_no: 5, price: 50, status: 'success'},
         {order_no: 7, price: 70, status: 'success'},
         {order_no: 7, price: 70, status: 'success'},
-        {order_no: 10, price: 100, status: 'pending'},
+        {order_no: 10, price: 100, status: 'pending'}
       ]
     }
   }

@@ -3,23 +3,25 @@
     <el-row>
       <el-col :span="7">
         <!-- 角色管理按钮 -->
-        <div style="margin-bottom: 5px;">
-          <el-button type="primary" plain icon="el-icon-plus" @click="roleAdd" v-permission="'system-role-add'"></el-button>
-          <el-button type="success" plain icon="el-icon-edit" @click="roleUpdate" v-permission="'system-role-update'"></el-button>
-          <el-button type="danger" icon="el-icon-delete" @click="roleDelete" v-permission="'system-role-delete'"></el-button>
-          <el-button type="warning" icon="el-icon-copy-document" @click="roleCopy" v-permission="'system-role-copy'">复制角色</el-button>
+        <div style="margin-bottom: 15px;">
+          <el-button v-permission="'system-role-add'" type="primary" plain icon="el-icon-plus" size="small" @click="roleAdd" />
+          <el-button v-permission="'system-role-update'" type="success" plain icon="el-icon-edit" size="small" @click="roleUpdate" />
+          <el-button v-permission="'system-role-delete'" type="danger" plain icon="el-icon-delete" size="small" @click="roleDelete" />
+          <el-button v-permission="'system-role-copy'" type="warning" plain icon="el-icon-copy-document" size="small" @click="roleCopy">复制</el-button>
         </div>
         <!-- 角色管理表格 -->
         <el-table ref="roleTable" :data="tableData" stripe border
                   :height="this.$windowHeight-200" style="width: 95%"
-                  @selection-change="handleTableSelectChange">
-          <el-table-column type="selection" width="50" align="center" header-align="center"/>
+                  @selection-change="handleTableSelectChange"
+        >
+          <el-table-column type="selection" width="50" align="center" header-align="center" />
           <el-table-column label="角色" align="center">
             <template slot-scope="scope">
               <el-popover trigger="hover" placement="right"
-                          :title="scope.row.roleName">
+                          :title="scope.row.roleName"
+              >
                 <p>
-                  顺序：{{ scope.row.roleOrder }}<br/>描述：{{ scope.row.roleDescription }}
+                  顺序：{{ scope.row.roleOrder }}<br>描述：{{ scope.row.roleDescription }}
                 </p>
                 <span slot="reference" style="cursor: pointer;">{{ scope.row.roleName }}</span>
               </el-popover>
@@ -34,20 +36,23 @@
         <!-- 分页 -->
         <el-pagination style="text-align: center;" background layout="total, pager"
                        :page-size="pager.limit" :current-page="pager.page"
-                       :total="totalCount" @current-change="handleCurrentChange"></el-pagination>
+                       :total="totalCount" @current-change="handleCurrentChange"
+        />
         <!-- 添加修改弹窗 -->
         <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible">
           <el-form ref="roleDateForm" :model="temp" label-position="left" label-width="100px"
-                   style="width: 500px; margin-left: 50px;">
+                   style="width: 500px; margin-left: 50px;"
+          >
             <el-form-item label="角色名称" prop="roleName" :rules="{required: true, message: '角色名称不能为空'}">
-              <el-input v-model="temp.roleName"/>
+              <el-input v-model="temp.roleName" />
             </el-form-item>
             <el-form-item label="角色描述" prop="roleDescription">
-              <el-input v-model="temp.roleDescription" type="textarea"/>
+              <el-input v-model="temp.roleDescription" type="textarea" />
             </el-form-item>
             <el-form-item label="角色顺序" prop="roleOrder"
-                          :rules="[{required: true, message: '角色顺序不能为空'},{type: 'number', message: '必须为数字'}]">
-              <el-input v-model.number="temp.roleOrder"/>
+                          :rules="[{required: true, message: '角色顺序不能为空'},{type: 'number', message: '必须为数字'}]"
+            >
+              <el-input v-model.number="temp.roleOrder" />
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -59,14 +64,15 @@
       <el-col :span="17" style="padding-left: 20px;border-left: 1px solid #dedede;">
         <!--        资源权限表格-->
         <div style="margin-bottom: 5px;">
-          <el-button type="primary" v-show="isSaveBtn" @click="saveRolePermission()" v-permission="'system-role-save-permission'">保存角色权限</el-button>
+          <el-button v-show="isSaveBtn" v-permission="'system-role-save-permission'" type="primary" @click="saveRolePermission()">保存角色权限</el-button>
           <el-button @click="toggleTableOprate">全部{{ isExpand ? '收起' : '展开' }}</el-button>
         </div>
         <el-table ref="permissionTable" :height="this.$windowHeight-170" style="width: 100%;"
                   :default-expand-all="isExpand" :data="tableData2" row-key="permissionId"
                   :tree-props="{children: 'children'}" @row-click="table2RowClick"
-                  @select="table2RowSelect">
-          <el-table-column type="selection" width="50" align="center" header-align="center"/>
+                  @select="table2RowSelect"
+        >
+          <el-table-column type="selection" width="50" align="center" header-align="center" />
           <el-table-column label="路由/外链" min-width="25%">
             <template v-slot="{row}">
               <el-tag v-if="row.permissionType === '0'" disable-transitions size="mini">路由</el-tag>
@@ -79,8 +85,9 @@
               <div @click.stop="">
                 <el-checkbox-group v-model="selectPermissionApiList">
                   <el-checkbox v-for="perm in row.buttonList" :key="perm.permissionId"
-                               @change="(val)=>buttonCheckChange(val,row)"
-                               :label="perm.permissionId" style="margin-left: 0px!important;">
+                               :label="perm.permissionId"
+                               style="margin-left: 0px!important;" @change="(val)=>buttonCheckChange(val,row)"
+                  >
                     {{ perm.permissionTitle }}
                   </el-checkbox>
                 </el-checkbox-group>
@@ -201,7 +208,7 @@ export default {
     },
     // 复制角色
     roleCopy() {
-      if (this.tableSelectRows.length != 1) {
+      if (this.tableSelectRows.length !== 1) {
         this.$message({message: '请选择一个角色进行复制！', type: 'error'})
       } else {
         let params = {'roleId': this.tableSelectRows[0].roleId};
@@ -296,7 +303,7 @@ export default {
       if (select) {
         this.selectPermissionApiList2.push(row.permissionId)
       } else {
-        this.selectPermissionApiList2 = this.selectPermissionApiList2.filter(o => o != row.permissionId)
+        this.selectPermissionApiList2 = this.selectPermissionApiList2.filter(o => o !== row.permissionId)
       }
       this.$refs.permissionTable.toggleRowSelection(row, select)
       //设置按钮选中状态
@@ -313,12 +320,12 @@ export default {
     },
     //行点击
     table2RowClick(row) {
-      let hasSelected = this.selectPermissionApiList2.filter(o => o == row.permissionId).length > 0
+      let hasSelected = this.selectPermissionApiList2.filter(o => o === row.permissionId).length > 0
       //设置当前行的选中状态
       if (!hasSelected) {
         this.selectPermissionApiList2.push(row.permissionId)
       } else {
-        this.selectPermissionApiList2 = this.selectPermissionApiList2.filter(o => o != row.permissionId)
+        this.selectPermissionApiList2 = this.selectPermissionApiList2.filter(o => o !== row.permissionId)
       }
       this.$refs.permissionTable.toggleRowSelection(row, !hasSelected)
       //设置按钮选中状态
@@ -340,7 +347,7 @@ export default {
             if (!hasSelected) {
               // 取消选中，本行所有按钮
               item.buttonList.forEach(btn => {
-                this.selectPermissionApiList = this.selectPermissionApiList.filter(o => o != btn.permissionId)
+                this.selectPermissionApiList = this.selectPermissionApiList.filter(o => o !== btn.permissionId)
               })
             } else {
               // 选中，本行所有按钮
@@ -362,7 +369,7 @@ export default {
           //选了子级，自动选择父级
           this.selectPermissionApiList2.push(item.permissionId)
           this.$refs.permissionTable.toggleRowSelection(item, true)
-          if (level != 0) {
+          if (level !== 0) {
             //再遍历父级
             this.parentRowSelected(data, item.parentId)
           }
@@ -392,7 +399,7 @@ export default {
           item.buttonList.forEach(btn => {
             if (!hasSelected) {
               //取消选择按钮
-              this.selectPermissionApiList = this.selectPermissionApiList.filter(o => o != btn.permissionId)
+              this.selectPermissionApiList = this.selectPermissionApiList.filter(o => o !== btn.permissionId)
             } else {
               //选择按钮
               this.selectPermissionApiList.push(btn.permissionId)
@@ -402,7 +409,7 @@ export default {
           if (hasSelected) {
             this.selectPermissionApiList2.push(item.permissionId)
           } else {
-            this.selectPermissionApiList2 = this.selectPermissionApiList2.filter(o => o != item.permissionId)
+            this.selectPermissionApiList2 = this.selectPermissionApiList2.filter(o => o !== item.permissionId)
           }
           this.$refs.permissionTable.toggleRowSelection(item, hasSelected)
           if (item.children !== undefined && item.children !== null) {

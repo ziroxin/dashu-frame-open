@@ -6,25 +6,14 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'vue Element Admin' // page title
+const name = defaultSettings.title || '大树快速开发平台'
 
-// If your port is set to 80,
-// use administrator privileges to execute the command line.
-// For example, Mac: sudo npm run
-// You can change the port by the following method:
-// port = 9527 npm run dev OR npm run dev --port = 9527
+// 带端口运行命令：npm run dev --port = 9527
 const port = process.env.port || process.env.npm_config_port || 9527 // dev port
 
-// All configuration item explanations can be find in https://cli.vuejs.org/config/
+// 配置说明：https://cli.vuejs.org/zh/config/index.html
 module.exports = {
-  /**
-   * You will need to set publicPath if you plan to deploy your site under a sub path,
-   * for example GitHub Pages. If you plan to deploy your site to https://foo.github.io/bar/,
-   * then publicPath should be set to "/bar/".
-   * In most cases please use '/' !!!
-   * Detail: https://cli.vuejs.org/config/#publicpath
-   */
-  // 静态资源路径，使用相对路径
+  // 静态资源路径，使用相对路径 @see:https://cli.vuejs.org/zh/config/index.html#publicpath
   publicPath: './',
   outputDir: 'dist',
   // 把静态资源都放入static
@@ -47,8 +36,7 @@ module.exports = {
     }
   },
   configureWebpack: {
-    // provide the app's title in webpack's name field, so that
-    // it can be accessed in index.html to inject the correct title.
+    // 打包时，给index.html设置title
     name: name,
     resolve: {
       alias: {
@@ -59,37 +47,23 @@ module.exports = {
   // 解决导入第三方包时，因为es语法导致的错误（让源码中的es6、es7的特性转换为es5）
   transpileDependencies: ['swagger-ui-dist'],
   chainWebpack(config) {
-    // it can improve the speed of the first screen, it is recommended to turn on preload
-    // it can improve the speed of the first screen, it is recommended to turn on preload
-    config.plugin('preload').tap(() => [
-      {
-        rel: 'preload',
-        // to ignore runtime.js
-        // https://github.com/vuejs/vue-cli/blob/dev/packages/@vue/cli-service/lib/config/app.js#L171
-        fileBlacklist: [/\.map$/, /hot-update\.js$/, /runtime\..*\.js$/],
-        include: 'initial'
-      }
-    ])
+    // Preload： 用于标记页面加载后即将用到的资源，浏览器将在主体渲染前加载preload标记文件。
+    // 预加载（建议开启，可提高运行速度）
+    config.plugin('preload').tap(() => [{
+      rel: 'preload',
+      // 忽略 runtime.js @see:https://github.com/vuejs/vue-cli/blob/dev/packages/@vue/cli-service/lib/config/app.js#L171
+      fileBlacklist: [/\.map$/, /hot-update\.js$/, /runtime\..*\.js$/],
+      include: 'initial'
+    }])
 
-    // when there are many pages, it will cause too many meaningless requests
+    // Prefetch: 用于标记浏览器在页面加载完成后，利用空闲时间预加载的内容。
+    // 文件太多时，预读无意义，删除预读
     config.plugins.delete('prefetch')
 
-    // set svg-sprite-loader
-    config.module
-      .rule('svg')
-      .exclude.add(resolve('src/icons'))
-      .end()
-    config.module
-      .rule('icons')
-      .test(/\.svg$/)
-      .include.add(resolve('src/icons'))
-      .end()
-      .use('svg-sprite-loader')
-      .loader('svg-sprite-loader')
-      .options({
-        symbolId: 'icon-[name]'
-      })
-      .end()
+    // svg-sprite-loader设置
+    config.module.rule('svg').exclude.add(resolve('src/icons')).end()
+    config.module.rule('icons').test(/\.svg$/).include.add(resolve('src/icons')).end()
+      .use('svg-sprite-loader').loader('svg-sprite-loader').options({symbolId: 'icon-[name]'}).end()
 
     config
       .when(process.env.NODE_ENV !== 'development',
@@ -98,7 +72,7 @@ module.exports = {
             .plugin('ScriptExtHtmlWebpackPlugin')
             .after('html')
             .use('script-ext-html-webpack-plugin', [{
-              // `runtime` must same as runtimeChunk name. default is `runtime`
+              // `runtime` 和 runtimeChunk 相同。默认：`runtime`
               inline: /runtime\..*\.js$/
             }])
             .end()
@@ -126,7 +100,7 @@ module.exports = {
               }
             }
           })
-          // https:// webpack.js.org/configuration/optimization/#optimizationruntimechunk
+          // @see:https://webpack.js.org/configuration/optimization/#optimizationruntimechunk
           config.optimization.runtimeChunk('single')
         }
       )
