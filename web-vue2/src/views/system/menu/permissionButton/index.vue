@@ -28,7 +28,9 @@
       <el-table-column prop="permissionOrder" label="顺序" width="80" sortable align="center" />
     </el-table>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :close-on-click-modal="false">
+    <el-dialog :title="textMap[dialogStatus]" width="700px"
+               :visible.sync="dialogFormVisible" :close-on-click-modal="false"
+    >
       <el-form ref="dataForm" :model="temp" :rules="rules" label-position="right" label-width="100px"
                style="width: 650px;"
       >

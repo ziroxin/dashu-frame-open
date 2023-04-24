@@ -1,6 +1,7 @@
 package com.kg.module.test.controller;
 
 import com.kg.core.annotation.IsResponseResult;
+import com.kg.core.exception.BaseException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,6 +64,16 @@ public class TestController {
     @GetMapping("abc4")
     @IsResponseResult(value = false)
     public String abc4() {
-        return "get abc4 test! no login";
+        return "get abc4 test! ResponseResult false";
+    }
+
+    /**
+     * 自定义全局异常
+     * BaseException
+     */
+    @GetMapping("abc5")
+    @IsResponseResult(value = false)
+    public String abc5() throws BaseException {
+        throw new BaseException("get abc5 test! no login");
     }
 }

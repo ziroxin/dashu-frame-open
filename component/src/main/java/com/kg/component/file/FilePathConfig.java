@@ -12,9 +12,21 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class FilePathConfig extends FilenameUtils {
+    /**
+     * 允许上传的文件扩展名
+     */
     public static String UPLOAD_FILE_ALLOW_EXTEND;
+    /**
+     * 图片格式扩展名
+     */
     public static String DEFAULT_IMAGE_FILE_EXTEND;
+    /**
+     * 文件存储绝对路径
+     */
     public static String SAVE_PATH;
+    /**
+     * 文件上传url前缀
+     */
     public static String URL_PRE;
 
     /**

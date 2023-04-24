@@ -58,39 +58,40 @@ public class SwaggerConfig {
     }
 
     /**
-     * 创建api扫描规则
-     * <p>可以配置多个Docket，作为不同分组</p>
-     * <p>以下配置例子：显示所有/test/开头的api</p>
-     *
-     * @return
+     * 全部API
+     */
+    @Bean
+    public Docket allApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(apiInfo())
+                .groupName("allApi")
+                .select()
+                // 这里采用包含注解的方式来确定要显示的接口(建议使用这种)
+                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                // 所有接口
+                .paths(PathSelectors.any())
+                .build();
+    }
+
+    /**
+     * 如需把API分组，采用以下例子
      */
     @Bean
     public Docket api1() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
+                // 分组
                 .groupName("news")
                 .select()
                 // 这里采用包含注解的方式来确定要显示的接口(建议使用这种)
                 .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
-                // 以/test/开头的接口
+                // =======================paths支持多种匹配方式=================================
+                // demo1: 以/news/开头的接口
                 .paths(PathSelectors.ant("/news/**"))
-                // 所有接口
-                //.paths(PathSelectors.any())
-                .build();
-    }
-
-    @Bean
-    public Docket api2() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo())
-                .groupName("login")
-                .select()
-                // 这里采用包含注解的方式来确定要显示的接口(建议使用这种)
-                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
-                // 以/test/开头的接口
-                .paths(PathSelectors.ant("/login/**"))
-                // 所有接口
-                //.paths(PathSelectors.any())
+                // demo2: /news/list接口
+//                .paths(path -> "/news/list".equals(path))
+                // demo2: 所有接口
+//                .paths(PathSelectors.any())
                 .build();
     }
 

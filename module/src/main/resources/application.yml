@@ -88,14 +88,14 @@ com:
       font-style: 0
     #swagger相关配置
     swagger:
-      enable: false
+      enable: true
       title: "大树快速开发平台API"
       description: "基于swagger的Api接口信息"
-      terms-of-service-url: "http://www.keepgrown.com"
+      terms-of-service-url: "https://www.java119.cn"
       version: "1.0.0"
       concat:
         name: "ziro"
-        www: "http://www.keepgrown.com"
+        www: "https://www.java119.cn"
         email: "877185959@qq.com"
     #微信配置
     weixin:

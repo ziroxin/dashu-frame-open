@@ -867,7 +867,20 @@ function menuClick(key) {
 }
 
 function tabEditCallback(targetKey, action) {
-  state[action](targetKey);
+  // state[action](targetKey);
+  // @wangning 修复tab无法操作bug
+  if (action == 'remove') {
+    let index = '';
+    state.panels.forEach((tab) => {
+      if (tab.key == targetKey) {
+        index = state.panels.indexOf(tab);
+        state.panels.splice(index, 1);
+      }
+      if (index - 1 >= 0) {
+        tabChange(state.panels[index - 1].key);
+      }
+    });
+  }
 }
 
 const router = useRouter()

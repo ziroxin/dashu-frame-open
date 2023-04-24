@@ -39,6 +39,7 @@ export default defineConfig({
     }
   },
   server: {
+    port: 9900,
     host: true,
     proxy: {
       '/api': {
@@ -50,7 +51,7 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      input: 'doc.html',
+      input: 'index.html',
       output: {
         chunkFileNames: 'webjars/js/[name]-[hash].js',
         entryFileNames: 'webjars/js/[name]-[hash].js',
