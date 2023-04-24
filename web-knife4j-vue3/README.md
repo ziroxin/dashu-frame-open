@@ -11,8 +11,4 @@ npm run dev
 ```
 
 
-#### 访问(首次加载有点慢)
-http://localhost:9900/doc.html
-
-
 #### 无需打包

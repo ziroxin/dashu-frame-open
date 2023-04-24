@@ -347,7 +347,7 @@ SwaggerBootstrapUi.prototype.analysisGroup = function () {
       var loc = window.location.pathname;
       // 默认根目录
       var code = 'ROOT';
-      var reg = new RegExp('(?:/(.*?))?/doc.html', 'ig');
+      var reg = new RegExp('(?:/(.*?))?/index.html', 'ig');
       if (reg.exec(loc)) {
         var c = RegExp.$1;
         if (KUtils.strNotBlank(c)) {
