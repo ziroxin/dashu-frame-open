@@ -20,10 +20,10 @@
 				<el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd"
                    v-permission="'${buttonNamePre}add'">新增
 				</el-button>
-				<el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate"
+				<el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate(null)"
                    v-permission="'${buttonNamePre}update'">修改
 				</el-button>
-				<el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds"
+				<el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)"
                    v-permission="'${buttonNamePre}delete'">删除
 				</el-button>
 				<el-upload v-permission="'${buttonNamePre}importExcel'" style="display: inline-block;margin: 0px 10px;"
