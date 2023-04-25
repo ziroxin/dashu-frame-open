@@ -151,7 +151,7 @@ const actions = {
       // 单独处理隐藏路由
       accessedRoutes.push(...filterAsyncRoutes4Hidden(routers, true))
       // 404路由
-      accessedRoutes.concat(errorRoute)
+      accessedRoutes.push(errorRoute)
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })
