@@ -26,6 +26,7 @@ export default {
   props: {
     // 双向绑定值
     value: {type: String, default: ''},
+    // 空白提示
     placeholder: {type: String, default: '请输入...'},
     // 上传图片地址
     imageServer: {type: String, default: process.env.VUE_APP_BASE_API + '/upload/wang/images'},
@@ -34,13 +35,17 @@ export default {
     // 上传视频地址
     videoServer: {type: String, default: process.env.VUE_APP_BASE_API + '/upload/wang/videos'},
     // 上传视频大小限制（默认：50MB，2*1024*1024）
-    videoSizeLimit: {type: Number, default: 50 * 1024 * 1024}
+    videoSizeLimit: {type: Number, default: 50 * 1024 * 1024},
+    // 更多配置 @see:https://www.wangeditor.com/v5/toolbar-config.html#toolbarkeys
+    // 工具栏配置 例如：['bold', 'underline', 'italic']
+    // 下方onCreated()方法中，可以获取全部key
+    toolbarKeys: {type: Array, default: () => []}
   },
   data() {
     return {
       editor: null,
       html: this.value,
-      toolbarConfig: {},
+      toolbarConfig: (this.toolbarKeys && this.toolbarKeys.length > 0) ? {toolbarKeys: this.toolbarKeys} : {},
       editorConfig: {
         placeholder: this.placeholder,
         // 菜单配置
@@ -74,6 +79,8 @@ export default {
   methods: {
     onCreated(editor) {
       this.editor = Object.seal(editor) // 一定要用 Object.seal() ，否则会报错
+      // 获取全部 toolbarKeys
+      // console.log(this.editor.getAllMenuKeys())
     }
   }
 }
