@@ -14,7 +14,7 @@ function checkPermission(el, binding) {
   const permissions = store.getters && store.getters.permissions
   // 获取当前标签值
   if (value.length > 0) {
-    const permissionKey = value
+    const permissionKey = Array.isArray(value) ? value : [value]
     // 比较用户是否有权限
     const hasPermission = permissions.some(perm => {
       return permissionKey.includes(perm.permissionName)
