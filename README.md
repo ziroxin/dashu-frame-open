@@ -62,6 +62,7 @@ master分支，是完全开源的源码分支。
 ![项目目录](https://gitee.com/ziro/dashu-frame-docs/raw/master/docs/public/img/mulu.png)
 
 ## 鸣谢
+排名不分先后
 
 - [MyBatis-Plus](https://baomidou.com/)
 - [Hutool](https://www.hutool.cn/)
@@ -72,6 +73,8 @@ master分支，是完全开源的源码分支。
 - [Form Generator](https://mrhj.gitee.io/form-generator/#/)
 - [knife4j](https://doc.xiaominfo.com/)
 - [VitePress](https://vitepress.dev/)
+- [JustAuth](https://justauth.cn/)
+- [IJPay](https://javen205.gitee.io/ijpay/)
 
 
 
