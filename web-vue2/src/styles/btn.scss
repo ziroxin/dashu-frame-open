@@ -3,11 +3,12 @@
 @mixin colorBtn($color) {
   background: $color;
   color: #fff;
-  //border:none;
+  border-color: $color;
   &:hover {
     color: #fff;
     border-color: $color;
     background-color: $color;
+    opacity: .8;
 
     &:before,
     &:after {

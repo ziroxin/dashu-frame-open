@@ -4,8 +4,9 @@
       <el-tab-pane label="临时锁定用户管理" name="second">
         <!-- 用户锁定-管理按钮 -->
         <div style="margin-bottom: 20px;float: right;">
-          <el-button v-waves type="danger" icon="el-icon-unlock" @click="deleteByIds"
-                     v-permission="'zuserlock-zUserLock-unlock'">用户解锁
+          <el-button v-waves v-permission="'zuserlock-zUserLock-unlock'" type="danger" size="small"
+                     @click="deleteByIds"
+          >用户解锁
           </el-button>
         </div>
         <!-- 用户锁定-列表 -->
@@ -19,12 +20,16 @@
         <!-- 用户锁定-管理按钮 -->
         <div style="margin-bottom: 20px;">
           <el-input v-model="searchData.userName" style="width: 150px;margin-right: 10px;"
-                    class="filter-item" placeholder="请输入用户名查询"/>
-          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="loadTableList">查询</el-button>
-          <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh" @click="resetTableList">显示全部</el-button>
+                    class="filter-item" placeholder="请输入用户名查询"
+          />
+          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="loadTableList">查询
+          </el-button>
+          <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh" @click="resetTableList">显示全部
+          </el-button>
           <div style="float: right;">
             <el-button v-waves type="danger" icon="el-icon-unlock" @click="deleteByIds"
-                       v-permission="'zuserlock-zUserLock-unlock'">用户解锁
+                       v-permission="'zuserlock-zUserLock-unlock'"
+            >用户解锁
             </el-button>
           </div>
         </div>
@@ -64,7 +69,7 @@ export default {
       // 查询表单数据
       searchData: {},
       // 选中行
-      tableSelectRows: [],
+      tableSelectRows: []
     }
   },
   created() {
@@ -142,7 +147,7 @@ export default {
           })
         })
       }
-    },
+    }
   }
 }
 </script>

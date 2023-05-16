@@ -13,7 +13,7 @@
                     highlight-current-row :tree-props="{children: 'children'}"
           >
             <el-table-column label="名称">
-              <template v-slot="{row}">
+              <template #default="{row}">
                 <el-tag v-if="row.permissionType === '0'" disable-transitions size="mini">路由</el-tag>
                 <el-tag v-if="row.permissionType === '1'" disable-transitions type="warning" size="mini">按钮</el-tag>
                 <el-tag v-if="row.permissionType === '3'" disable-transitions type="success" size="mini">其他</el-tag>
@@ -21,7 +21,7 @@
               </template>
             </el-table-column>
             <el-table-column label="操作" width="70px" align="center">
-              <template v-slot="{row}">
+              <template #default="{row}">
                 <el-button type="text" size="small" @click.native.prevent="setMyApi(row.permissionId)">
                   设置API
                 </el-button>
@@ -34,10 +34,11 @@
         <!--        API列表-->
         <div class="grid-content bg-purple-light">
           <div style="margin-bottom: 5px;">
-            <el-button type="primary" :disabled="isSaveBtn" @click="savePermissionApi()">保存关联API</el-button>
-            <el-button type="primary" @click="openGroupDialog()">设置分组</el-button>
-            <el-button type="danger" @click="scanApi()">自动扫描API（增量）</el-button>
-            <el-button type="info" @click="clearApi()">清除无效API</el-button>
+            <el-button type="primary" :disabled="isSaveBtn" size="small" @click="savePermissionApi()">保存关联API
+            </el-button>
+            <el-button type="primary" size="small" @click="openGroupDialog()">设置分组</el-button>
+            <el-button type="danger" size="small" @click="scanApi()">自动扫描API（增量）</el-button>
+            <el-button type="info" size="small" @click="clearApi()">清除无效API</el-button>
           </div>
           <div :style="'height:' + ( this.$windowHeight - 170 ) + 'px;overflow-y: auto;'">
             <el-collapse v-model="activeNames" style="padding-top: 5px;">
@@ -87,7 +88,7 @@
           <el-radio v-model="isNewGroup" label="1" @change="isNewGroup='1'">加入已有分组</el-radio>
         </el-form-item>
         <el-form-item v-if="isNewGroup==='0'" label="分组名称：" prop="groupName">
-          <el-input v-model="temp.groupName" placeholder="请输入分组名称" />
+          <el-input v-model="temp.groupName" placeholder="请输入分组名称"/>
         </el-form-item>
         <el-form-item v-else label="选择分组：" prop="apiGroupId">
           <el-select v-model="temp.apiGroupId" placeholder="请选择分组" @change="groupSelectChange">
@@ -97,7 +98,7 @@
           </el-select>
         </el-form-item>
         <el-form-item v-if="isNewGroup==='0'" label="分组顺序：" prop="groupOrder">
-          <el-input-number v-model="temp.groupOrder" />
+          <el-input-number v-model="temp.groupOrder"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -108,7 +109,16 @@
   </div>
 </template>
 <script>
-import {clearApi, deleteApiGroup, getApiList, getApiListByPermissionId, permissionTreeList, saveApiGroup, savePermissionApi, scanApi} from '@/api/api'
+import {
+  clearApi,
+  deleteApiGroup,
+  getApiList,
+  getApiListByPermissionId,
+  permissionTreeList,
+  saveApiGroup,
+  savePermissionApi,
+  scanApi
+} from '@/api/api'
 import request from '@/utils/request'
 
 export default {

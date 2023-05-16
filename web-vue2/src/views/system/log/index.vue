@@ -11,14 +11,14 @@
       <el-input v-model="searchData.ip" style="width: 150px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入IP地址查询"
       />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="loadTableList">查询</el-button>
-      <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh" @click="resetTableList">显示全部</el-button>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="loadTableList"></el-button>
+      <el-button v-waves class="filter-item reset-btn" icon="el-icon-refresh" @click="resetTableList"></el-button>
       <div style="float: right;">
-        <el-button v-waves v-permission="'zlog-zOperateLog-delete'" type="danger" icon="el-icon-delete"
+        <el-button v-waves v-permission="'zlog-zOperateLog-delete'" type="danger"
                    @click="deleteByIds"
         >删除
         </el-button>
-        <el-button v-waves v-permission="'zlog-zOperateLog-exportExcel'" type="success" icon="el-icon-printer"
+        <el-button v-waves v-permission="'zlog-zOperateLog-exportExcel'" type="success"
                    @click="exportExcel"
         >导出Excel
         </el-button>
@@ -26,13 +26,13 @@
     </div>
     <!-- 操作日志表-列表 -->
     <el-table :data="tableData" stripe border @selection-change="handleTableSelectChange">
-      <el-table-column type="selection" width="50" align="center" header-align="center" />
-      <el-table-column label="用户名" prop="userName" align="center" min-width="10%" />
-      <el-table-column label="方法名称" prop="logMethod" align="center" min-width="20%" />
-      <el-table-column label="方法描述" prop="logMsg" align="center" min-width="30%" />
-      <el-table-column label="请求路径" prop="actionUrl" align="center" min-width="10%" />
-      <el-table-column label="IP地址" prop="ip" align="center" min-width="10%" />
-      <el-table-column label="操作时间" prop="createTime" align="center" width="100" />
+      <el-table-column type="selection" width="50" align="center" header-align="center"/>
+      <el-table-column label="用户名" prop="userName" align="center" min-width="10%"/>
+      <el-table-column label="方法名称" prop="logMethod" align="center" min-width="20%"/>
+      <el-table-column label="方法描述" prop="logMsg" align="center" min-width="30%"/>
+      <el-table-column label="请求路径" prop="actionUrl" align="center" min-width="10%"/>
+      <el-table-column label="IP地址" prop="ip" align="center" min-width="10%"/>
+      <el-table-column label="操作时间" prop="createTime" align="center" width="100"/>
       <el-table-column fixed="right" label="操作" align="center" width="80">
         <template v-slot="scope">
           <el-button type="text" size="small" @click="openView(scope.row)">查看详情</el-button>
@@ -52,27 +52,27 @@
         <el-form-item label="操作日志id" prop="logId" style="display: none;"
                       :rules="[{required: true, message: '操作日志id不能为空'}]"
         >
-          <el-input v-model="temp.logId" placeholder="请输入操作日志id" />
+          <el-input v-model="temp.logId" placeholder="请输入操作日志id"/>
         </el-form-item>
         <el-form-item label="操作人用户id" prop="userId"
                       :rules="[]"
         >
-          <el-input v-model="temp.userId" placeholder="请输入用户id" />
+          <el-input v-model="temp.userId" placeholder="请输入用户id"/>
         </el-form-item>
         <el-form-item label="操作人用户名" prop="userName"
                       :rules="[]"
         >
-          <el-input v-model="temp.userName" placeholder="请输入操作人用户名" />
+          <el-input v-model="temp.userName" placeholder="请输入操作人用户名"/>
         </el-form-item>
         <el-form-item label="执行方法名称" prop="logMethod"
                       :rules="[]"
         >
-          <el-input v-model="temp.logMethod" placeholder="请输入执行方法名称" />
+          <el-input v-model="temp.logMethod" placeholder="请输入执行方法名称"/>
         </el-form-item>
         <el-form-item label="执行方法描述" prop="logMsg"
                       :rules="[]"
         >
-          <el-input v-model="temp.logMsg" placeholder="请输入执行方法描述" />
+          <el-input v-model="temp.logMsg" placeholder="请输入执行方法描述"/>
         </el-form-item>
         <el-form-item label="参数" prop="content">
           <el-input v-model="temp.content" :rules="[]" type="textarea" :rows="8"
@@ -82,12 +82,12 @@
         <el-form-item label="请求路径" prop="actionUrl"
                       :rules="[]"
         >
-          <el-input v-model="temp.actionUrl" placeholder="请输入请求路径" />
+          <el-input v-model="temp.actionUrl" placeholder="请输入请求路径"/>
         </el-form-item>
         <el-form-item label="IP地址" prop="ip"
                       :rules="[]"
         >
-          <el-input v-model="temp.ip" placeholder="请输入IP地址" />
+          <el-input v-model="temp.ip" placeholder="请输入IP地址"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

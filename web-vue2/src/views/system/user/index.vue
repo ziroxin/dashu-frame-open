@@ -22,22 +22,27 @@
         <el-input v-model="searchData.name" style="width: 105px;margin-right: 10px;"
                   class="filter-item" placeholder="请输入姓名"
         />
-        <el-button v-waves class="filter-item" icon="el-icon-search" size="small"
-                   type="primary" @click="getUserList"></el-button>
-        <el-button v-waves class="filter-item" icon="el-icon-refresh" size="small"
-                   type="info" @click="resetTableList">重置
+        <el-button v-waves class="filter-item search-btn" icon="el-icon-search" size="small"
+                   @click="getUserList"
+        ></el-button>
+        <el-button v-waves class="filter-item reset-btn" icon="el-icon-refresh" size="small" @click="resetTableList"
+        >
         </el-button>
         <div style="float: right;margin-bottom: 10px;">
           <!--  操作按钮  -->
-          <el-button v-waves v-permission="'user-add'" icon="el-icon-plus" size="small"
-                     @click="userAdd">新增</el-button>
-          <el-button v-waves v-permission="'user-delete'" type="danger" size="small"
-                     icon="el-icon-delete" @click="userDelete(null)">
-            删除
+          <el-button v-waves type="primary" v-permission="'user-add'" size="small"
+                     @click="userAdd"
+          >新增
           </el-button>
           <el-button v-waves v-permission="'reset-password'" type="primary" size="small"
-                     @click="resetPassword(null)">
+                     @click="resetPassword(null)"
+          >
             重置密码
+          </el-button>
+          <el-button v-waves v-permission="'user-delete'" type="danger" size="small"
+                     @click="userDelete(null)"
+          >
+            删除
           </el-button>
         </div>
         <!-- 表格部分 -->
@@ -45,52 +50,58 @@
                   :height="this.$windowHeight-195" style="width: 100%;"
                   border @selection-change="selectionChangeHandlerOrder"
         >
-          <el-table-column type="selection" width="40"/>
-          <el-table-column prop="roleName" label="角色" min-width="10%"/>
-          <el-table-column prop="orgName" label="部门" min-width="10%"/>
-          <el-table-column prop="userName" label="用户名" min-width="8%"/>
-          <el-table-column prop="name" label="姓名" min-width="8%"/>
-          <el-table-column prop="nickName" label="昵称" min-width="8%"/>
-          <el-table-column prop="sex" label="性别" min-width="5%">
+          <el-table-column align="center" type="selection" width="40"/>
+          <el-table-column align="center" prop="roleName" label="角色" min-width="10%"/>
+          <el-table-column align="center" prop="orgName" label="部门" min-width="10%"/>
+          <el-table-column align="center" prop="userName" label="用户名" min-width="8%"/>
+          <el-table-column align="center" prop="name" label="姓名" min-width="8%"/>
+          <el-table-column align="center" prop="nickName" label="昵称" min-width="8%"/>
+          <el-table-column align="center" prop="sex" label="性别" min-width="5%">
             <template slot-scope="scope">
               <span v-if="scope.row.sex === '0'">未知</span>
               <span v-else-if="scope.row.sex === '1'">男</span>
               <span v-else-if="scope.row.sex === '2'">女</span>
             </template>
           </el-table-column>
-          <el-table-column prop="status" label="状态" min-width="5%">
-            <template slot-scope="scope">
+          <el-table-column align="center" prop="status" label="状态" min-width="5%">
+            <template #default="scope">
               <span v-if="scope.row.status === '0'" style="color: red;">禁用</span>
               <span v-else style="color: green;">正常</span>
             </template>
           </el-table-column>
-          <el-table-column prop="avatar" label="头像" width="121px">
+          <el-table-column align="center" prop="avatar" label="头像" width="121px">
             <template slot-scope="scope">
               <img v-if="scope.row.avatar" :src="$baseServer+'/'+scope.row.avatar"
-                   style="max-width: 100px;max-height: 100px;object-fit: cover;">
+                   style="max-width: 100px;max-height: 100px;object-fit: cover;"
+              >
               <span v-if="!scope.row.avatar">未上传</span>
             </template>
           </el-table-column>
-          <el-table-column prop="introduce" label="简介" min-width="10%"/>
+          <el-table-column align="center" prop="introduce" label="简介" min-width="10%"/>
           <el-table-column fixed="right" align="center" label="操作" width="120px">
             <template v-slot="scope">
               <el-button v-permission="'trade-busTrade-update'"
-                         type="text" size="mini" @click="userUpdate(scope.row)">修改
+                         type="text" size="mini" @click="userUpdate(scope.row)"
+              >修改
               </el-button>
               <el-button v-permission="'reset-password'" type="text" size="mini"
-                         @click="resetPassword(scope.row)">重置密码
+                         @click="resetPassword(scope.row)"
+              >重置密码
               </el-button>
               <br/>
               <el-button v-if="scope.row.status === '0'"
                          style="color: #13ce66;" v-permission="'change-status'"
-                         type="text" size="mini" @click="changeStatus(1, scope.row)">启用
+                         type="text" size="mini" @click="changeStatus(1, scope.row)"
+              >启用
               </el-button>
               <el-button v-else
                          style="color: #ff6d6d;" v-permission="'change-status'"
-                         type="text" size="mini" @click="changeStatus(0, scope.row)">禁用
+                         type="text" size="mini" @click="changeStatus(0, scope.row)"
+              >禁用
               </el-button>
               <el-button v-permission="'trade-busTrade-delete'" style="color: #ff6d6d;"
-                         type="text" size="mini" @click="userDelete(scope.row)">删除
+                         type="text" size="mini" @click="userDelete(scope.row)"
+              >删除
               </el-button>
             </template>
           </el-table-column>
@@ -119,7 +130,8 @@
         </el-form-item>
         <el-form-item label="角色：" prop="roleId">
           <el-select v-model="temp.roleId" class="filter-item" :multiple="true" style="width: 400px;"
-                     placeholder="请选择角色">
+                     placeholder="请选择角色"
+          >
             <el-option v-for="item in roleNameOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId"/>
           </el-select>
         </el-form-item>
