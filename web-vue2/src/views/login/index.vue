@@ -34,7 +34,8 @@
                       <span class="svg-container"><svg-icon icon-class="password" /></span>
                       <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType"
                                 placeholder="请输入密码" name="password" tabindex="2" autocomplete="on"
-                                @keyup.native="checkCapslock" @blur="capsTooltip = false" @keyup.enter.native="handleLogin"
+                                @keyup.native="checkCapslock" @blur="capsTooltip = false"
+                                @keyup.enter.native="handleLogin"
                       />
                       <span class="show-pwd" @click="showPwd">
                         <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
@@ -79,8 +80,6 @@
 </template>
 
 <script>
-import '@/assets/css/bootstrap.min.css'
-import '@/assets/css/login.css'
 import SocialSign from './components/SocialSignin'
 import {mapState} from 'vuex'
 import request from '@/utils/request';
@@ -203,6 +202,10 @@ export default {
   }
 }
 </script>
+<style scoped>
+@import '~@/assets/css/bootstrap.min.css';
+@import '~@/assets/css/login.css';
+</style>
 <style lang="scss">
 .login-container {
   .el-input {
@@ -237,6 +240,10 @@ export default {
 </style>
 
 <style lang="scss" scoped>
+a:hover {
+  text-decoration: underline;
+}
+
 .login-container {
   min-height: 100%;
   width: 100%;

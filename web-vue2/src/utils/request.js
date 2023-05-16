@@ -54,9 +54,13 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   // 如果想获取完整http响应信息（如headers,status），可以直接返回response
   response => {
+    // 二进制数据则直接返回
+    if (response.request.responseType === 'blob' || response.request.responseType === 'arraybuffer') {
+      return response.data
+    }
     const res = response.data
-    // 成功
     if (res.code === '200') {
+      // 正常直接返回
       return res
     } else {
       // 异常1：未正常登录！ 40001=用户名或者密码错误;40002=无效的TOKEN;40003=用户未登录;40004=用户已禁用;401=无权限;
