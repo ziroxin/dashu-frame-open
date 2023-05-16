@@ -8,19 +8,21 @@
       <el-input v-model="searchData.newsContent" style="width: 150px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入新闻内容查询"
       />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="loadTableList">查询</el-button>
-      <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh" @click="resetTableList">显示全部</el-button>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="loadTableList">查询
+      </el-button>
+      <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh" @click="resetTableList">显示全部
+      </el-button>
       <div style="float: right;">
         <el-button v-waves v-permission="'news-news-add'" type="primary" icon="el-icon-plus"
                    @click="openAdd"
         >新增
         </el-button>
         <el-button v-waves v-permission="'news-news-update'" type="info" icon="el-icon-edit"
-                   @click="openUpdate"
+                   @click="openUpdate(null)"
         >修改
         </el-button>
         <el-button v-waves v-permission="'news-news-delete'" type="danger" icon="el-icon-delete"
-                   @click="deleteByIds"
+                   @click="deleteByIds(null)"
         >删除
         </el-button>
         <el-button v-waves v-permission="'news-news-exportExcel'" type="success" icon="el-icon-printer"
@@ -31,15 +33,21 @@
     </div>
     <!-- 新闻表-测试-列表 -->
     <el-table :data="tableData" stripe border @selection-change="handleTableSelectChange">
-      <el-table-column type="selection" width="50" align="center" header-align="center" />
-      <el-table-column label="新闻id" prop="newsId" align="center" />
-      <el-table-column label="新闻标题" prop="newsTitle" align="center" />
-      <el-table-column label="顺序" prop="orderIndex" align="center" />
-      <el-table-column label="添加时间" prop="createTime" align="center" />
-      <el-table-column label="修改时间" prop="updateTime" align="center" />
-      <el-table-column fixed="right" label="操作" width="100">
+      <el-table-column type="selection" width="50" align="center" header-align="center"/>
+      <el-table-column label="新闻标题" prop="newsTitle" align="center"/>
+      <el-table-column label="顺序" prop="orderIndex" align="center"/>
+      <el-table-column label="添加时间" prop="createTime" align="center"/>
+      <el-table-column label="修改时间" prop="updateTime" align="center"/>
+      <el-table-column fixed="right" label="操作" width="120" align="center">
         <template v-slot="scope">
-          <el-button type="text" size="small" @click="openView(scope.row)">查看详情</el-button>
+          <el-button type="text" size="mini" @click="openView(scope.row)">详情</el-button>
+
+          <el-button v-permission="'news-news-update'" size="mini"
+                     type="text" @click="openUpdate(scope.row)">修改
+          </el-button>
+          <el-button v-permission="'news-news-delete'" size="mini"
+                     type="text" @click="deleteByIds(scope.row)">删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -49,7 +57,8 @@
                    :total="pager.totalCount" @current-change="handleCurrentChange"
     />
     <!-- 添加修改弹窗 -->
-    <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible" width="900px" :close-on-click-modal="dialogType !== 'view' ? false : true"
+    <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible" width="900px"
+               :close-on-click-modal="dialogType !== 'view' ? false : true"
                @close="resetTemp"
     >
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
@@ -59,12 +68,12 @@
           />
         </el-form-item>
         <el-form-item label-width="0px" prop="newsContent">
-          <my-wang-editor ref="myEditor" v-model="temp.newsContent" placeholder="请输入新闻内容" />
+          <my-wang-editor ref="myEditor" v-model="temp.newsContent" placeholder="请输入新闻内容"/>
         </el-form-item>
         <el-form-item label="顺序" prop="orderIndex"
                       :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]"
         >
-          <el-input-number v-model="temp.orderIndex" :min="0" />
+          <el-input-number v-model="temp.orderIndex" :min="0"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -145,7 +154,11 @@ export default {
       })
     },
     // 打开修改窗口
-    openUpdate() {
+    openUpdate(row) {
+      if (row) {
+        this.tableSelectRows = [row]
+        console.log(this.tableSelectRows)
+      }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据修改！', type: 'warning'})
       } else if (this.tableSelectRows.length > 1) {
@@ -162,7 +175,6 @@ export default {
     },
     // 打开查看窗口
     openView(row) {
-      // 修改弹窗
       this.temp = Object.assign({}, row)
       this.dialogType = 'view'
       this.dialogFormVisible = true
@@ -199,7 +211,10 @@ export default {
       })
     },
     // 删除
-    deleteByIds() {
+    deleteByIds(row) {
+      if (row) {
+        this.tableSelectRows = [row]
+      }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据删除！', type: 'warning'})
       } else {
