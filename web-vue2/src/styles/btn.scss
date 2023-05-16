@@ -2,43 +2,60 @@
 
 @mixin colorBtn($color) {
   background: $color;
-
+  color: #fff;
+  //border:none;
   &:hover {
-    color: $color;
+    color: #fff;
+    border-color: $color;
+    background-color: $color;
 
     &:before,
     &:after {
       background: $color;
     }
   }
+  &:active {
+    color: #fff;
+    border-color: $color;
+    background: $color;
+  }
+  &:focus {
+    color: #fff;
+    border-color: $color;
+    background: $color;
+  }
 }
 
-.blue-btn {
-  @include colorBtn($blue)
+.add-btn {
+  @include colorBtn($add-btn)
 }
 
-.light-blue-btn {
-  @include colorBtn($light-blue)
+.edit-btn {
+  @include colorBtn($edit-btn)
 }
 
-.red-btn {
-  @include colorBtn($red)
+.delete-btn {
+  @include colorBtn($delete-btn)
 }
 
-.pink-btn {
-  @include colorBtn($pink)
+.search-btn {
+  @include colorBtn($search-btn)
 }
 
-.green-btn {
-  @include colorBtn($green)
+.import-btn {
+  @include colorBtn($import-btn)
 }
 
-.tiffany-btn {
-  @include colorBtn($tiffany)
+.export-btn {
+  @include colorBtn($export-btn)
 }
 
-.yellow-btn {
-  @include colorBtn($yellow)
+.reset-btn {
+  @include colorBtn($reset-btn)
+}
+
+.prohibition-btn {
+  @include colorBtn($prohibition-btn)
 }
 
 .pan-btn {
