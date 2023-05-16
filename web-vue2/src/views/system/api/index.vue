@@ -63,8 +63,10 @@
                           <br>请求方式：{{ api2.apiRequestMethod }}
                           <br>描述：{{ api2.apiDescription }}
                         </div>
-                        <el-checkbox :key="api2.apiId" :label="api2.apiId" border style="margin-left: 0px!important;">
-                          {{ api2.apiName }}
+                        <el-checkbox :key="api2.apiId" :label="api2.apiId" border
+                                     style="margin-left: 0px!important;height: 50px;"
+                        >
+                          {{ api2.apiName }}<br>{{ api2.apiRequestUrl }}
                         </el-checkbox>
                       </el-tooltip>
                     </template>
