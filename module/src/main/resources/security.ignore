@@ -4,10 +4,13 @@
 # 登录登出接口
 /login/login
 /login/logout
-/favicon.ico
+# 获取密码规则用于注册
+/zsafety/zSafety/getSafety
 
 # 验证码
 /captcha/get
+
+/favicon.ico
 
 # swagger api 地址（注意：生产环境请删除）
 /v2/api-docs
