@@ -30,7 +30,6 @@ public class ZSafetyController {
 
     @ApiOperation(value = "/zsafety/zSafety/getSafety", notes = "获取密码安全配置", httpMethod = "GET")
     @GetMapping("/getSafety")
-    @PreAuthorize("hasAuthority('zsafety:zSafety:getSafety')")
     public ZSafety getSafety() {
         return zSafetyService.getSafety();
     }

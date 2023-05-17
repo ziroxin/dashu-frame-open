@@ -4,35 +4,37 @@
 		<div style="margin-bottom: 20px;">
 <#list table.fields as field>
 	<#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
-			<el-date-picker v-model="searchData.${field.propertyName}" style="width: 150px;margin-right: 10px;"
+			<el-date-picker v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
 							type="date" class="filter-item" placeholder="请选择${field.comment}查询"/>
 	<#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
-			<el-date-picker v-model="searchData.${field.propertyName}" style="width: 150px;margin-right: 10px;"
+			<el-date-picker v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
 							type="datetime" class="filter-item" placeholder="请选择${field.comment}查询"/>
 	<#else>
-			<el-input v-model="searchData.${field.propertyName}" style="width: 150px;margin-right: 10px;"
+			<el-input v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
 					  		class="filter-item" placeholder="请输入${field.comment}查询"/>
 	</#if>
 </#list>
-			<el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="loadTableList">查询</el-button>
-			<el-button v-waves class="filter-item" type="info" icon="el-icon-refresh" @click="resetTableList">显示全部</el-button>
+			<el-button v-waves class="filter-item" type="primary" size="small"
+                 icon="el-icon-search" @click="loadTableList">查询</el-button>
+			<el-button v-waves class="filter-item" type="info" size="small"
+                 icon="el-icon-refresh" @click="resetTableList">显示全部</el-button>
 			<div style="float: right;">
-				<el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd"
+				<el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
                    v-permission="'${buttonNamePre}add'">新增
 				</el-button>
-				<el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate(null)"
+				<el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate(null)" size="small"
                    v-permission="'${buttonNamePre}update'">修改
 				</el-button>
-				<el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)"
+				<el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                    v-permission="'${buttonNamePre}delete'">删除
 				</el-button>
 				<el-upload v-permission="'${buttonNamePre}importExcel'" style="display: inline-block;margin: 0px 10px;"
 						   :action="this.$baseServer+'${controllerMapping}/import/excel'" :headers="this.$headerToken"
 						   :on-success="importExcelSuccess" accept=".xls,.xlsx"
 						   :show-file-list="false" :auto-upload="true">
-					<el-button v-waves type="warning" icon="el-icon-upload2">导入Excel</el-button>
+					<el-button v-waves type="warning" icon="el-icon-upload2" size="small">导入Excel</el-button>
 				</el-upload>
-				<el-button v-waves type="success" icon="el-icon-printer" @click="exportExcel"
+				<el-button v-waves type="success" icon="el-icon-printer" @click="exportExcel" size="small"
 						   v-permission="'${buttonNamePre}exportExcel'">导出Excel
 				</el-button>
 			</div>
@@ -46,7 +48,7 @@
 			<el-table-column fixed="right" label="操作" width="120">
 				<template v-slot="scope">
 					<el-button type="text" style="color: #13ce66;"
-							   size="small" @click="openView(scope.row)">查看详情</el-button>
+							   size="small" @click="openView(scope.row)">详情</el-button>
 					<el-button v-permission="'${buttonNamePre}update'"
 							   type="text" size="small" @click="openUpdate(scope.row)">修改
 					</el-button>
@@ -217,8 +219,7 @@ export default {
     // 打开修改窗口
     openUpdate(row) {
       if (row) {
-        this.tableSelectRows = []
-        this.tableSelectRows.push(row)
+        this.tableSelectRows = [row]
       }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据修改！', type: 'warning'})
@@ -286,8 +287,7 @@ export default {
     // 删除
     deleteByIds(row) {
       if (row) {
-        this.tableSelectRows = []
-        this.tableSelectRows.push(row)
+        this.tableSelectRows = [row]
       }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据删除！', type: 'warning'})
