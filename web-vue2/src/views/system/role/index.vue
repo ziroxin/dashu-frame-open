@@ -4,17 +4,23 @@
       <el-col :span="7">
         <!-- 角色管理按钮 -->
         <div style="margin-bottom: 15px;">
-          <el-button v-permission="'system-role-add'" type="primary" plain icon="el-icon-plus" size="small" @click="roleAdd" />
-          <el-button v-permission="'system-role-update'" type="success" plain icon="el-icon-edit" size="small" @click="roleUpdate" />
-          <el-button v-permission="'system-role-delete'" type="danger" plain icon="el-icon-delete" size="small" @click="roleDelete" />
-          <el-button v-permission="'system-role-copy'" type="warning" plain icon="el-icon-copy-document" size="small" @click="roleCopy">复制</el-button>
+          <el-button v-permission="'system-role-add'" type="primary" icon="el-icon-plus" size="small" @click="roleAdd"/>
+          <el-button v-permission="'system-role-update'" type="success" icon="el-icon-edit" size="small"
+                     @click="roleUpdate"
+          />
+          <el-button v-permission="'system-role-delete'" type="danger" icon="el-icon-delete" size="small"
+                     @click="roleDelete"
+          />
+          <el-button v-permission="'system-role-copy'" type="warning" icon="el-icon-copy-document" size="small"
+                     @click="roleCopy"
+          ></el-button>
         </div>
         <!-- 角色管理表格 -->
         <el-table ref="roleTable" :data="tableData" stripe border
                   :height="this.$windowHeight-200" style="width: 95%"
                   @selection-change="handleTableSelectChange"
         >
-          <el-table-column type="selection" width="50" align="center" header-align="center" />
+          <el-table-column type="selection" width="50" align="center" header-align="center"/>
           <el-table-column label="角色" align="center">
             <template slot-scope="scope">
               <el-popover trigger="hover" placement="right"
@@ -44,15 +50,15 @@
                    style="width: 500px; margin-left: 50px;"
           >
             <el-form-item label="角色名称" prop="roleName" :rules="{required: true, message: '角色名称不能为空'}">
-              <el-input v-model="temp.roleName" />
+              <el-input v-model="temp.roleName"/>
             </el-form-item>
             <el-form-item label="角色描述" prop="roleDescription">
-              <el-input v-model="temp.roleDescription" type="textarea" />
+              <el-input v-model="temp.roleDescription" type="textarea"/>
             </el-form-item>
             <el-form-item label="角色顺序" prop="roleOrder"
                           :rules="[{required: true, message: '角色顺序不能为空'},{type: 'number', message: '必须为数字'}]"
             >
-              <el-input v-model.number="temp.roleOrder" />
+              <el-input v-model.number="temp.roleOrder"/>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -64,15 +70,18 @@
       <el-col :span="17" style="padding-left: 20px;border-left: 1px solid #dedede;">
         <!--        资源权限表格-->
         <div style="margin-bottom: 5px;">
-          <el-button v-show="isSaveBtn" v-permission="'system-role-save-permission'" type="primary" @click="saveRolePermission()">保存角色权限</el-button>
-          <el-button @click="toggleTableOprate">全部{{ isExpand ? '收起' : '展开' }}</el-button>
+          <el-button v-show="isSaveBtn" size="small" v-permission="'system-role-save-permission'" type="primary"
+                     @click="saveRolePermission()"
+          >保存角色权限
+          </el-button>
+          <el-button type="primary" size="small" @click="toggleTableOprate">全部{{ isExpand ? '收起' : '展开' }}</el-button>
         </div>
         <el-table ref="permissionTable" :height="this.$windowHeight-170" style="width: 100%;"
                   :default-expand-all="isExpand" :data="tableData2" row-key="permissionId"
                   :tree-props="{children: 'children'}" @row-click="table2RowClick"
                   @select="table2RowSelect"
         >
-          <el-table-column type="selection" width="50" align="center" header-align="center" />
+          <el-table-column type="selection" width="50" align="center" header-align="center"/>
           <el-table-column label="路由/外链" min-width="25%">
             <template v-slot="{row}">
               <el-tag v-if="row.permissionType === '0'" disable-transitions size="mini">路由</el-tag>
@@ -101,7 +110,15 @@
 </template>
 
 <script>
-import {addRole, copyRole, deleteRoles, getPermissionList, getRoleList, saveRolePermission, updateRole} from '@/api/role'
+import {
+  addRole,
+  copyRole,
+  deleteRoles,
+  getPermissionList,
+  getRoleList,
+  saveRolePermission,
+  updateRole
+} from '@/api/role'
 
 export default {
   data() {

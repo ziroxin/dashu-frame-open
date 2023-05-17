@@ -8,14 +8,17 @@
       <el-input v-model="searchData.jobClass" style="width: 150px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入类名查询"
       />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="loadTableList">查询</el-button>
-      <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh" @click="resetTableList">显示全部</el-button>
+      <el-button v-waves class="filter-item" size="small" type="primary" icon="el-icon-search" @click="loadTableList"
+      ></el-button>
+      <el-button v-waves class="filter-item reset-btn" size="small" icon="el-icon-refresh" @click="resetTableList"
+      ></el-button>
       <div style="float: right;">
-        <el-button v-waves v-permission="'zquartz-zQuartz-add'" type="primary" icon="el-icon-plus"
+        <el-button v-waves v-permission="'zquartz-zQuartz-add'" type="primary"
+                   size="small"
                    @click="openAdd"
         >新增
         </el-button>
-        <el-button v-waves v-permission="'zquartz-zQuartz-delete'" type="danger" icon="el-icon-delete"
+        <el-button v-waves v-permission="'zquartz-zQuartz-delete'" type="danger" size="small"
                    @click="deleteByIds"
         >删除
         </el-button>
@@ -23,11 +26,11 @@
     </div>
     <!-- 定时任务调度表-列表 -->
     <el-table :data="tableData" stripe border @selection-change="handleTableSelectChange">
-      <el-table-column type="selection" width="50" align="center" header-align="center" />
-      <el-table-column label="任务名称" prop="jobName" align="center" min-width="10%" />
-      <el-table-column label="任务执行类" prop="jobClass" align="center" min-width="20%" />
-      <el-table-column label="任务执行时间" prop="jobTimeCron" align="center" min-width="10%" />
-      <el-table-column label="任务描述" prop="description" align="center" min-width="20%" />
+      <el-table-column type="selection" width="50" align="center" header-align="center"/>
+      <el-table-column label="任务名称" prop="jobName" align="center" min-width="10%"/>
+      <el-table-column label="任务执行类" prop="jobClass" align="center" min-width="20%"/>
+      <el-table-column label="任务执行时间" prop="jobTimeCron" align="center" min-width="10%"/>
+      <el-table-column label="任务描述" prop="description" align="center" min-width="20%"/>
       <el-table-column label="状态" align="center" min-width="10%">
         <template v-slot="scope">
           <span v-if="scope.row.status==='1'" style="color: #2ac06d;">开启</span>
@@ -45,7 +48,7 @@
             </el-button>
           </template>
           <template v-else>
-            <el-button v-waves v-permission="'zquartz-zQuartz-update'" size="mini" icon="el-icon-edit"
+            <el-button v-waves type="success" v-permission="'zquartz-zQuartz-update'" size="mini"
                        @click="openUpdate(row)"
             >修改
             </el-button>
@@ -68,25 +71,25 @@
                style="width: 500px; margin-left: 50px;" :disabled="dialogType==='view'"
       >
         <el-form-item label="定时任务id" prop="quartzId" style="display: none;">
-          <el-input v-model="temp.quartzId" placeholder="请输入定时任务id" />
+          <el-input v-model="temp.quartzId" placeholder="请输入定时任务id"/>
         </el-form-item>
         <el-form-item label="任务名称" prop="jobName"
                       :rules="[]"
         >
-          <el-input v-model="temp.jobName" placeholder="请输入任务名称（不能重复）" />
+          <el-input v-model="temp.jobName" placeholder="请输入任务名称（不能重复）"/>
         </el-form-item>
         <el-form-item label="任务执行类" prop="jobClass"
                       :rules="[]"
         >
-          <el-input v-model="temp.jobClass" placeholder="请输入任务执行类（该类必须实现org.quartz.Job）" />
+          <el-input v-model="temp.jobClass" placeholder="请输入任务执行类（该类必须实现org.quartz.Job）"/>
         </el-form-item>
         <el-form-item label="任务执行时间" prop="jobTimeCron"
                       :rules="[]"
         >
-          <el-input v-model="temp.jobTimeCron" placeholder="请输入任务执行时间（Cron表达式：秒 分 时 日 月 年）" />
+          <el-input v-model="temp.jobTimeCron" placeholder="请输入任务执行时间（Cron表达式：秒 分 时 日 月 年）"/>
         </el-form-item>
         <el-form-item label="任务描述" prop="description">
-          <el-input v-model="temp.description" placeholder="请输入任务描述" />
+          <el-input v-model="temp.description" placeholder="请输入任务描述"/>
         </el-form-item>
         <el-form-item label="状态" prop="status"
                       :rules="[]"

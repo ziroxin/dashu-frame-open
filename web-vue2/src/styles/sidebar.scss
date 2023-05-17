@@ -13,7 +13,7 @@
     background-color: $menuBg;
     height: 100%;
     position: fixed;
-    font-size: 0px;
+    font-size: 0;
     top: 0;
     bottom: 0;
     left: 0;
@@ -68,7 +68,9 @@
       height: 100%;
       width: 100% !important;
     }
-
+    .el-submenu.is-active .el-submenu__title {
+      color: $menuActiveText !important;
+    }
     // menu hover
     .submenu-title-noDropdown,
     .el-submenu__title {
@@ -80,14 +82,19 @@
     .is-active>.el-submenu__title {
       color: $subMenuActiveText;
     }
-
+    .is-active{
+      background-color: $subMenuHover !important;
+    }
     & .nest-menu .el-submenu>.el-submenu__title,
     & .el-submenu .el-menu-item {
+      line-height: 45px;
+      height: 45px;
       min-width: $sideBarWidth !important;
-      background-color: $subMenuBg !important;
-
       &:hover {
         background-color: $subMenuHover !important;
+      }
+      &:active {
+        background-color: $subMenuActive !important;
       }
     }
   }
@@ -200,7 +207,12 @@
 
   .nest-menu .el-submenu>.el-submenu__title,
   .el-menu-item {
+    margin: 10px;
     &:hover {
+      // you can use $subMenuHover
+      background-color: $menuHover !important;
+    }
+    &:active {
       // you can use $subMenuHover
       background-color: $menuHover !important;
     }

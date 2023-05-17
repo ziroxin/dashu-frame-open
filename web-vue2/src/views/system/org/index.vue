@@ -5,19 +5,22 @@
       <el-input v-model="searchData.orgName" style="width: 150px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入用户名/姓名查询"
       />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="loadTableList">查询</el-button>
-      <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh" @click="resetTableList">显示全部</el-button>
+      <el-button v-waves class="filter-item search-btn" size="small" icon="el-icon-search" @click="loadTableList"
+      ></el-button>
+      <el-button v-waves class="filter-item reset-btn" size="small" icon="el-icon-refresh" @click="resetTableList"
+      ></el-button>
       <div style="float: right;">
-        <el-button v-waves v-permission="'zorg-zOrganization-add'" type="primary" icon="el-icon-plus"
+        <el-button v-waves v-permission="'zorg-zOrganization-add'" type="primary"
                    @click="openAdd"
+                   size="small"
         >新增
         </el-button>
-        <el-button v-waves v-permission="'zorg-zOrganization-update'" type="info" icon="el-icon-edit"
-                   @click="openUpdate"
+        <el-button v-waves v-permission="'zorg-zOrganization-update'" type="success"
+                   @click="openUpdate" size="small"
         >修改
         </el-button>
-        <el-button v-waves v-permission="'zorg-zOrganization-delete'" type="danger" icon="el-icon-delete"
-                   @click="deleteByIds"
+        <el-button v-waves v-permission="'zorg-zOrganization-delete'" type="danger"
+                   @click="deleteByIds" size="small"
         >删除
         </el-button>
       </div>
@@ -27,11 +30,11 @@
               row-key="orgId"
               default-expand-all border stripe @selection-change="handleTableSelectChange"
     >
-      <el-table-column type="selection" width="50" align="center" header-align="center" />
-      <el-table-column label="组织机构名称" prop="orgName" min-width="30%" />
-      <el-table-column label="备注" prop="remarks" align="center" min-width="40%" />
-      <el-table-column label="层级" prop="orgLevel" align="center" width="100" />
-      <el-table-column label="顺序" prop="orderIndex" align="center" width="100" />
+      <el-table-column type="selection" width="50" align="center" header-align="center"/>
+      <el-table-column label="组织机构名称" prop="orgName" min-width="30%"/>
+      <el-table-column label="备注" prop="remarks" align="center" min-width="40%"/>
+      <el-table-column label="层级" prop="orgLevel" align="center" width="100"/>
+      <el-table-column label="顺序" prop="orderIndex" align="center" width="100"/>
     </el-table>
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible">
@@ -41,7 +44,7 @@
         <el-form-item label="组织机构名称" prop="orgName"
                       :rules="[]"
         >
-          <el-input v-model="temp.orgName" placeholder="请输入组织机构名称" />
+          <el-input v-model="temp.orgName" placeholder="请输入组织机构名称"/>
         </el-form-item>
         <el-form-item label="父级ID" prop="orgParentId"
                       :rules="[]"
@@ -54,7 +57,7 @@
         <el-form-item label="顺序" prop="orderIndex"
                       :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]"
         >
-          <el-input-number v-model="temp.orderIndex" :min="0" />
+          <el-input-number v-model="temp.orderIndex" :min="0"/>
         </el-form-item>
         <el-form-item label="备注" prop="remarks">
           <el-input v-model="temp.remarks" placeholder="请输入备注" type="textarea"
