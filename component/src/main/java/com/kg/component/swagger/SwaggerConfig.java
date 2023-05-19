@@ -73,26 +73,4 @@ public class SwaggerConfig {
                 .build();
     }
 
-    /**
-     * 如需把API分组，采用以下例子
-     */
-    @Bean
-    public Docket api1() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo())
-                // 分组
-                .groupName("news")
-                .select()
-                // 这里采用包含注解的方式来确定要显示的接口(建议使用这种)
-                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
-                // =======================paths支持多种匹配方式=================================
-                // demo1: 以/news/开头的接口
-                .paths(PathSelectors.ant("/news/**"))
-                // demo2: /news/list接口
-//                .paths(path -> "/news/list".equals(path))
-                // demo2: 所有接口
-//                .paths(PathSelectors.any())
-                .build();
-    }
-
 }

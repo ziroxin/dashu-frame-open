@@ -42,7 +42,7 @@ service.interceptors.request.use(
         return qs.stringify(params, {arrayFormat: 'repeat'})
       }
     }
-     // 是否需要防止数据重复提交
+    // 是否需要防止数据重复提交
     const isRepeatSubmit = (config.headers || {}).repeatSubmit === false
     if (!isRepeatSubmit && (config.method === 'post' || config.method === 'put')) {
       const requestObj = {
