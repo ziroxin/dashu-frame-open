@@ -21,7 +21,7 @@ public class ZOperateLogExcelConstant {
         EXPORT_EXCEL_COLUMN.put("userName", "操作人用户名");
         EXPORT_EXCEL_COLUMN.put("logMethod", "执行方法名称");
         EXPORT_EXCEL_COLUMN.put("logMsg", "执行方法描述");
-        EXPORT_EXCEL_COLUMN.put("content", "操作内容");
+        EXPORT_EXCEL_COLUMN.put("content", "参数");
         EXPORT_EXCEL_COLUMN.put("actionUrl", "请求路径");
         EXPORT_EXCEL_COLUMN.put("ip", "IP地址");
         EXPORT_EXCEL_COLUMN.put("createTime", "操作时间");

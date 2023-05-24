@@ -45,7 +45,7 @@
 <#list table.fields as field>
 			<el-table-column label="${field.comment}" prop="${field.propertyName}" align="center"/>
 </#list>
-			<el-table-column fixed="right" label="操作" width="120">
+			<el-table-column fixed="right" label="操作" width="120" align="center">
 				<template v-slot="scope">
 					<el-button type="text" style="color: #13ce66;"
 							   size="small" @click="openView(scope.row)">详情</el-button>
@@ -65,7 +65,7 @@
                    @size-change="handleSizeChange"
 		/>
 		<!-- 添加修改弹窗 -->
-		<el-dialog :title="titleMap[dialogType]" :close-on-click-modal="false"
+		<el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
 				   :visible.sync="dialogFormVisible" @close="resetTemp" width="600px">
 <#if templateHtml??>
 			${templateHtml}
