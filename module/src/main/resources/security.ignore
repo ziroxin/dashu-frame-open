@@ -25,3 +25,6 @@
 /test/abc3
 /test/abc4
 /test/abc5
+
+# 微信支付通知接口
+/pay/wechat/payNotify

@@ -11,7 +11,7 @@ module.exports = {
    * @type {boolean} true | false
    * @description 是否显示标签页
    */
-  tagsView: true,
+  tagsView: false,
 
   /**
    * 布局：vertical:纵向布局;horizontal:横向布局

@@ -48,6 +48,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
+        <!-- IJPay 微信支付 @see:https://javen205.gitee.io/ijpay/ -->
+        <dependency>
+            <groupId>com.github.javen205</groupId>
+            <artifactId>IJPay-WxPay</artifactId>
+            <version>2.9.7</version>
+        </dependency>
     </dependencies>
 
     <build>

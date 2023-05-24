@@ -28,6 +28,8 @@
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",
+    "qrcode": "^1.5.1",
+    "qrcodejs2": "^0.0.2",
     "qs": "^6.11.0",
     "screenfull": "4.2.0",
     "swagger-ui-dist": "^4.18.0",
