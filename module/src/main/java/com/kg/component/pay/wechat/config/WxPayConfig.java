@@ -47,7 +47,7 @@ public class WxPayConfig {
      */
     private String keyPath;
     /**
-     * 回调域名（有端口或上下文的要加上）
+     * 支付结果通知地址
      */
-    private String domain;
+    private String notifyUrl;
 }

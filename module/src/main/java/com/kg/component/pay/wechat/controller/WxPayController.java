@@ -3,8 +3,8 @@ package com.kg.component.pay.wechat.controller;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.ijpay.core.enums.TradeType;
 import com.ijpay.core.kit.HttpKit;
-import com.kg.component.pay.wechat.dto.TradePayDTO;
-import com.kg.component.pay.wechat.dto.TradeResutDTO;
+import com.kg.component.pay.wechat.dto.WxTradePayDTO;
+import com.kg.component.pay.wechat.dto.WxTradeResutDTO;
 import com.kg.component.pay.wechat.service.WxPayService;
 import com.kg.core.exception.BaseException;
 import io.swagger.annotations.Api;
@@ -44,15 +44,15 @@ public class WxPayController {
             @ApiImplicitParam(name = "tradePayDTO", value = "交易信息", paramType = "query", required = false, dataType = "String")
     })
     @PostMapping("/getPayNative")
-    public TradeResutDTO getPayNative(HttpServletRequest request, @RequestBody TradePayDTO tradePayDTO)
+    public WxTradeResutDTO getPayNative(HttpServletRequest request, @RequestBody WxTradePayDTO wxTradePayDTO)
             throws BaseException {
         try {
-            if (!StringUtils.hasText(tradePayDTO.getProductId()) || tradePayDTO.getTotalFee() == null) {
+            if (!StringUtils.hasText(wxTradePayDTO.getProductId()) || wxTradePayDTO.getTotalFee() == null) {
                 throw new BaseException("您传的参数不正确");
             }
-            tradePayDTO.setSpbillCreateIp(ServletUtil.getClientIP(request));
+            wxTradePayDTO.setSpbillCreateIp(ServletUtil.getClientIP(request));
             // 调取支付
-            return wxPayService.getPayInfo(tradePayDTO, TradeType.NATIVE.getTradeType());
+            return wxPayService.getPayInfo(wxTradePayDTO, TradeType.NATIVE.getTradeType());
         } catch (BaseException e) {
             e.printStackTrace();
             throw new BaseException("调起微信支付二维码失败！原因：" + e.getMessage());
@@ -72,15 +72,15 @@ public class WxPayController {
             @ApiImplicitParam(name = "tradePayDTO", value = "交易信息", paramType = "query", required = false, dataType = "String")
     })
     @PostMapping("/getPayH5")
-    public TradeResutDTO getPayH5(HttpServletRequest request, @RequestBody TradePayDTO tradePayDTO)
+    public WxTradeResutDTO getPayH5(HttpServletRequest request, @RequestBody WxTradePayDTO wxTradePayDTO)
             throws BaseException {
         try {
-            if (!StringUtils.hasText(tradePayDTO.getProductId()) || tradePayDTO.getTotalFee() == null) {
+            if (!StringUtils.hasText(wxTradePayDTO.getProductId()) || wxTradePayDTO.getTotalFee() == null) {
                 throw new BaseException("您传的参数不正确");
             }
-            tradePayDTO.setSpbillCreateIp(ServletUtil.getClientIP(request));
+            wxTradePayDTO.setSpbillCreateIp(ServletUtil.getClientIP(request));
             // 调取支付
-            return wxPayService.getPayInfo(tradePayDTO, TradeType.MWEB.getTradeType());
+            return wxPayService.getPayInfo(wxTradePayDTO, TradeType.MWEB.getTradeType());
         } catch (BaseException e) {
             e.printStackTrace();
             throw new BaseException("调起微信支付失败！原因：" + e.getMessage());
@@ -104,18 +104,18 @@ public class WxPayController {
             @ApiImplicitParam(name = "tradePayDTO", value = "交易信息", paramType = "query", required = false, dataType = "String")
     })
     @PostMapping("/getPayJsapi")
-    public TradeResutDTO getPayJsapi(HttpServletRequest request, @RequestBody TradePayDTO tradePayDTO)
+    public WxTradeResutDTO getPayJsapi(HttpServletRequest request, @RequestBody WxTradePayDTO wxTradePayDTO)
             throws BaseException {
         try {
 
-            if (!StringUtils.hasText(tradePayDTO.getProductId()) || tradePayDTO.getTotalFee() == null
+            if (!StringUtils.hasText(wxTradePayDTO.getProductId()) || wxTradePayDTO.getTotalFee() == null
                     // openId必填
-                    || tradePayDTO.getOpenId() == null) {
+                    || wxTradePayDTO.getOpenId() == null) {
                 throw new BaseException("您传的参数不正确");
             }
-            tradePayDTO.setSpbillCreateIp(ServletUtil.getClientIP(request));
+            wxTradePayDTO.setSpbillCreateIp(ServletUtil.getClientIP(request));
             // 调取支付
-            return wxPayService.getPayInfo(tradePayDTO, TradeType.JSAPI.getTradeType());
+            return wxPayService.getPayInfo(wxTradePayDTO, TradeType.JSAPI.getTradeType());
         } catch (BaseException e) {
             e.printStackTrace();
             throw new BaseException("调起微信支付失败！原因：" + e.getMessage());
@@ -149,11 +149,11 @@ public class WxPayController {
             @ApiImplicitParam(name = "tradeResutDTO", value = "支付订单信息", paramType = "query", required = false, dataType = "String")
     })
     @GetMapping("/getPayResult")
-    public TradeResutDTO getPayResult(TradeResutDTO tradeResutDTO) throws BaseException {
-        if (!StringUtils.hasText(tradeResutDTO.getTradeId())) {
+    public WxTradeResutDTO getPayResult(WxTradeResutDTO wxTradeResutDTO) throws BaseException {
+        if (!StringUtils.hasText(wxTradeResutDTO.getTradeId())) {
             throw new BaseException("订单号不能为空");
         }
-        return wxPayService.getPayResult(tradeResutDTO);
+        return wxPayService.getPayResult(wxTradeResutDTO);
     }
 
 }

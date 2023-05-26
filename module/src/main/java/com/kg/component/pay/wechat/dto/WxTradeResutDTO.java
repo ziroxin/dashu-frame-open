@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @ApiModel(description = "微信支付：交易信息 - 实体DTO")
-public class TradeResutDTO {
+public class WxTradeResutDTO {
     /**
      * 交易ID
      */
@@ -34,7 +34,7 @@ public class TradeResutDTO {
     /**
      * H5方式支付的：跳转支付页
      */
-    @ApiModelProperty(value = "二维码URL", required = false)
+    @ApiModelProperty(value = "H5支付URL", required = false)
     private String h5Url;
 
     /**

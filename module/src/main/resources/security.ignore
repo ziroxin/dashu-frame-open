@@ -28,3 +28,6 @@
 
 # 微信支付通知接口
 /pay/wechat/payNotify
+# 支付宝支付通知接口
+/pay/alipay/payNotify
+/pay/alipay/returnUrl

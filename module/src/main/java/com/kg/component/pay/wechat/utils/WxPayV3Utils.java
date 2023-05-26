@@ -11,7 +11,7 @@ import com.ijpay.wxpay.enums.WxDomainEnum;
 import com.ijpay.wxpay.enums.v3.BasePayApiEnum;
 import com.ijpay.wxpay.model.v3.*;
 import com.kg.component.pay.wechat.config.WxPayConfig;
-import com.kg.component.pay.wechat.dto.TradePayDTO;
+import com.kg.component.pay.wechat.dto.WxTradePayDTO;
 import com.kg.core.exception.BaseException;
 import com.kg.module.trade.entity.BusTrade;
 
@@ -30,11 +30,11 @@ public class WxPayV3Utils {
     /**
      * Native支付
      */
-    public static JSONObject nativePay(WxPayConfig wxPayConfig, TradePayDTO tradePayDTO, BusTrade busTrade)
+    public static JSONObject nativePay(WxPayConfig wxPayConfig, WxTradePayDTO wxTradePayDTO, BusTrade busTrade)
             throws BaseException {
         try {
             UnifiedOrderModel unifiedOrderModel =
-                    WxPayV3Utils.buildPayData(wxPayConfig, tradePayDTO, busTrade.getOutTradeNo());
+                    WxPayV3Utils.buildPayData(wxPayConfig, wxTradePayDTO, busTrade.getOutTradeNo());
             System.out.println(getSerialNumber(wxPayConfig));
             // 请求支付信息
             IJPayHttpResponse response = WxPayApi.v3(
@@ -59,14 +59,14 @@ public class WxPayV3Utils {
     /**
      * H5支付
      */
-    public static JSONObject h5Pay(WxPayConfig wxPayConfig, TradePayDTO tradePayDTO, BusTrade busTrade)
+    public static JSONObject h5Pay(WxPayConfig wxPayConfig, WxTradePayDTO wxTradePayDTO, BusTrade busTrade)
             throws BaseException {
         try {
             UnifiedOrderModel unifiedOrderModel =
-                    WxPayV3Utils.buildPayData(wxPayConfig, tradePayDTO, busTrade.getOutTradeNo());
+                    WxPayV3Utils.buildPayData(wxPayConfig, wxTradePayDTO, busTrade.getOutTradeNo());
             //H5必传：
             unifiedOrderModel.setScene_info(new SceneInfo()
-                    .setPayer_client_ip(tradePayDTO.getSpbillCreateIp())//终端IP
+                    .setPayer_client_ip(wxTradePayDTO.getSpbillCreateIp())//终端IP
                     .setH5_info((new H5Info().setType("Wap")))
             );
             // 请求支付信息
@@ -92,13 +92,13 @@ public class WxPayV3Utils {
     /**
      * JSAPI支付
      */
-    public static String jsApiPay(WxPayConfig wxPayConfig, TradePayDTO tradePayDTO, BusTrade busTrade)
+    public static String jsApiPay(WxPayConfig wxPayConfig, WxTradePayDTO wxTradePayDTO, BusTrade busTrade)
             throws BaseException {
         try {
             UnifiedOrderModel unifiedOrderModel =
-                    WxPayV3Utils.buildPayData(wxPayConfig, tradePayDTO, busTrade.getOutTradeNo());
+                    WxPayV3Utils.buildPayData(wxPayConfig, wxTradePayDTO, busTrade.getOutTradeNo());
             //JSAPI必传：openid
-            unifiedOrderModel.setPayer(new Payer().setOpenid(tradePayDTO.getOpenId()));
+            unifiedOrderModel.setPayer(new Payer().setOpenid(wxTradePayDTO.getOpenId()));
             // 请求支付信息
             IJPayHttpResponse response = WxPayApi.v3(
                     RequestMethodEnum.POST,
@@ -151,16 +151,16 @@ public class WxPayV3Utils {
      * 组装支付数据
      * UnifiedOrderModel
      */
-    public static UnifiedOrderModel buildPayData(WxPayConfig wxPayConfig, TradePayDTO tradePayDTO,
+    public static UnifiedOrderModel buildPayData(WxPayConfig wxPayConfig, WxTradePayDTO wxTradePayDTO,
                                                  String outTradeNo) throws BaseException {
         return UnifiedOrderModel.builder()
                 .appid(wxPayConfig.getAppId())//公众账号ID
                 .mchid(wxPayConfig.getMchId())//商户号
-                .description(tradePayDTO.getProductName())//商品描述(用户支付时显示)
-                .attach(tradePayDTO.getAttach())//附加内容(在查询API和支付通知中原样返回)
+                .description(wxTradePayDTO.getProductName())//商品描述(用户支付时显示)
+                .attach(wxTradePayDTO.getAttach())//附加内容(在查询API和支付通知中原样返回)
                 .out_trade_no(outTradeNo)//商户订单号
-                .amount(new Amount().setTotal(tradePayDTO.getTotalFee()))//金额(单位:分)
-                .notify_url(wxPayConfig.getDomain().concat("/pay/wechat/payNotify"))
+                .amount(new Amount().setTotal(wxTradePayDTO.getTotalFee()))//金额(单位:分)
+                .notify_url(wxPayConfig.getNotifyUrl())
                 .build();
     }
 

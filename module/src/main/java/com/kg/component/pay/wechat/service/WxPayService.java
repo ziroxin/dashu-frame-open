@@ -1,7 +1,7 @@
 package com.kg.component.pay.wechat.service;
 
-import com.kg.component.pay.wechat.dto.TradePayDTO;
-import com.kg.component.pay.wechat.dto.TradeResutDTO;
+import com.kg.component.pay.wechat.dto.WxTradePayDTO;
+import com.kg.component.pay.wechat.dto.WxTradeResutDTO;
 import com.kg.core.exception.BaseException;
 
 /**
@@ -14,10 +14,10 @@ public interface WxPayService {
     /**
      * 调取微信支付
      *
-     * @param tradePayDTO 交易信息
+     * @param wxTradePayDTO 交易信息
      * @param tradeType   支付类型
      */
-    TradeResutDTO getPayInfo(TradePayDTO tradePayDTO, String tradeType) throws BaseException;
+    WxTradeResutDTO getPayInfo(WxTradePayDTO wxTradePayDTO, String tradeType) throws BaseException;
 
     /**
      * 微信支付通知
@@ -29,7 +29,7 @@ public interface WxPayService {
     /**
      * 查询支付结果
      *
-     * @param tradeResutDTO 交易信息
+     * @param wxTradeResutDTO 交易信息
      */
-    TradeResutDTO getPayResult(TradeResutDTO tradeResutDTO);
+    WxTradeResutDTO getPayResult(WxTradeResutDTO wxTradeResutDTO);
 }

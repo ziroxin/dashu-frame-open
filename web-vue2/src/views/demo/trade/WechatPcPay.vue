@@ -1,6 +1,6 @@
 <template>
   <div style="margin: 20px;">
-    <h1>PC扫码支付</h1>
+    <h1>微信PC扫码支付</h1>
     <el-form ref="dataForm" label-position="right" label-width="100px">
       <el-form-item label="支付金额" prop="totalFee">
         <el-input-number v-model="payData.totalFee" placeholder="请输入支付金额"/>

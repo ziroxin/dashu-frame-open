@@ -84,8 +84,13 @@
           <el-radio-group v-model="openPayType" @change="toPay">
             <el-radio-button :label="0">微信PC扫码</el-radio-button>
             <el-radio-button :label="1">微信移动支付(H5/JSAPI)</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="选择支付方式" prop="openPayType">
+          <el-radio-group v-model="openPayType" @change="toPay">
             <el-radio-button :label="2">支付宝PC</el-radio-button>
             <el-radio-button :label="3">支付宝移动端</el-radio-button>
+            <el-radio-button :label="4">支付宝扫码支付</el-radio-button>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -99,6 +104,7 @@
 <script>
 import waves from '@/directive/waves'
 import request from '@/utils/request'
+import {getToken} from "@/utils/auth";
 
 export default {
   directives: {waves},
@@ -139,14 +145,34 @@ export default {
     toPay() {
       window.sessionStorage.setItem('payData', JSON.stringify(this.payData))
       if (this.openPayType === 0) {
+        // 微信PC扫码支付
         this.$router.replace('/demo/trade/WechatPcPay')
       } else if (this.openPayType === 1) {
-        // 判断是否微信客户端
+        // 微信移动端支付
         if (/MicroMessenger/.test(navigator.userAgent)) {
+          // 微信客户端支付
           this.$router.replace('/demo/trade/WechatJsapiPay')
         } else {
+          // 移动端支付（非微信客户端）
           this.$router.replace('/demo/trade/WechatH5Pay')
         }
+      } else if (this.openPayType === 2) {
+        // 支付宝PC网站支付
+        location.href = this.$baseServer + '/pay/alipay/toPcPay' +
+          '?UserJwtToken=' + getToken() +
+          '&productId=' + this.payData.productId +
+          '&productName=' + this.payData.productName +
+          '&totalFee=' + this.payData.totalFee;
+      } else if (this.openPayType === 3) {
+        // 支付宝移动网站支付
+        location.href = this.$baseServer + '/pay/alipay/toWapPay' +
+          '?UserJwtToken=' + getToken() +
+          '&productId=' + this.payData.productId +
+          '&productName=' + this.payData.productName +
+          '&totalFee=' + this.payData.totalFee;
+      }else if(this.openPayType === 4){
+        // 支付宝扫码支付
+        this.$router.replace('/demo/trade/AlipayScanPay')
       }
     },
     // 显示全部

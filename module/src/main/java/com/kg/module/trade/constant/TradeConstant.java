@@ -12,4 +12,9 @@ public class TradeConstant {
 
     // 交易状态 - 成功 - 微信支付成功返回值
     public static final String TRADE_SUCCESS_WECHAT = "SUCCESS";
+
+    // 支付类型 - 0 - 微信支付
+    public static final Integer PAY_TYPE_WECHAT = 0;
+    // 支付类型 - 1 - 支付宝
+    public static final Integer PAY_TYPE_ALIPAY = 1;
 }

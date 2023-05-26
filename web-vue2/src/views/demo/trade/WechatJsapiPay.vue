@@ -1,6 +1,6 @@
 <template>
   <div style="margin: 20px;">
-    <h1>JSAPI支付</h1>
+    <h1>微信JSAPI支付</h1>
     <el-form ref="dataForm" label-position="right" label-width="100px">
       <el-form-item label="支付金额" prop="totalFee">
         <el-input-number v-model="payData.totalFee" placeholder="请输入支付金额"/>
@@ -67,7 +67,6 @@ export default {
     },
     // jsapi微信内支付结果
     onBridgeReady(json) {
-      alert(json)
       WeixinJSBridge.invoke('getBrandWCPayRequest', json, function (res) {
         // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
         if (res.err_msg == 'get_brand_wcpay_request:ok') {

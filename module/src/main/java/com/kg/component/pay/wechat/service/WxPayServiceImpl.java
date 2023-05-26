@@ -10,8 +10,8 @@ import com.ijpay.wxpay.WxPayApi;
 import com.ijpay.wxpay.model.OrderQueryModel;
 import com.ijpay.wxpay.model.UnifiedOrderModel;
 import com.kg.component.pay.wechat.config.WxPayConfig;
-import com.kg.component.pay.wechat.dto.TradePayDTO;
-import com.kg.component.pay.wechat.dto.TradeResutDTO;
+import com.kg.component.pay.wechat.dto.WxTradePayDTO;
+import com.kg.component.pay.wechat.dto.WxTradeResutDTO;
 import com.kg.component.pay.wechat.utils.WxPayV3Utils;
 import com.kg.component.utils.GuidUtils;
 import com.kg.core.exception.BaseException;
@@ -45,26 +45,26 @@ public class WxPayServiceImpl implements WxPayService {
     private BusTradeService tradeService;
 
     @Override
-    public TradeResutDTO getPayInfo(TradePayDTO tradePayDTO, String tradeType) throws BaseException {
+    public WxTradeResutDTO getPayInfo(WxTradePayDTO wxTradePayDTO, String tradeType) throws BaseException {
         // 统一支付：组装订单信息
         BusTrade busTrade = new BusTrade();
         busTrade.setTradeId(GuidUtils.getUuid());
-        busTrade.setProductId(tradePayDTO.getProductId());
-        busTrade.setUserId(StringUtils.hasText(tradePayDTO.getUserId())
-                ? tradePayDTO.getUserId() : CurrentUserUtils.getCurrentUser().getUserId());
-        busTrade.setPayType(0);
+        busTrade.setProductId(wxTradePayDTO.getProductId());
+        busTrade.setUserId(StringUtils.hasText(wxTradePayDTO.getUserId())
+                ? wxTradePayDTO.getUserId() : CurrentUserUtils.getCurrentUser().getUserId());
+        busTrade.setPayType(TradeConstant.PAY_TYPE_WECHAT);
         busTrade.setTradeStatus(TradeConstant.TRADE_FAIL);
-        busTrade.setTotalFee(tradePayDTO.getTotalFee());
+        busTrade.setTotalFee(wxTradePayDTO.getTotalFee());
         busTrade.setOutTradeNo(WxPayKit.generateStr());
-        busTrade.setAttach(tradePayDTO.getAttach());
+        busTrade.setAttach(wxTradePayDTO.getAttach());
         busTrade.setCreateTime(LocalDateTime.now());
 
         if (wxPayConfig.getKeyVersion().equals("v3")) {
             // V3版支付
-            return toV3Pay(tradePayDTO, tradeType, busTrade);
+            return toV3Pay(wxTradePayDTO, tradeType, busTrade);
         } else {
             // V2版支付
-            return toV2Pay(tradePayDTO, tradeType, busTrade);
+            return toV2Pay(wxTradePayDTO, tradeType, busTrade);
         }
     }
 
@@ -141,13 +141,13 @@ public class WxPayServiceImpl implements WxPayService {
     }
 
     @Override
-    public TradeResutDTO getPayResult(TradeResutDTO tradeResutDTO) {
+    public WxTradeResutDTO getPayResult(WxTradeResutDTO wxTradeResutDTO) {
         BusTrade b = tradeService.lambdaQuery()
-                .eq(BusTrade::getTradeId, tradeResutDTO.getTradeId()).one();
+                .eq(BusTrade::getTradeId, wxTradeResutDTO.getTradeId()).one();
         if (b != null && TradeConstant.TRADE_SUCCESS.intValue() == b.getTradeStatus().intValue()) {
             // 已经支付成功
-            tradeResutDTO.setTradeStatus(TradeConstant.TRADE_SUCCESS);
-            return tradeResutDTO;
+            wxTradeResutDTO.setTradeStatus(TradeConstant.TRADE_SUCCESS);
+            return wxTradeResutDTO;
         }
 
         if (wxPayConfig.getKeyVersion().equals("v3")) {
@@ -165,14 +165,14 @@ public class WxPayServiceImpl implements WxPayService {
                     b.setUpdateTime(LocalDateTime.now());
                     tradeService.updateById(b);
                     // 返回支付成功
-                    tradeResutDTO.setTradeStatus(TradeConstant.TRADE_SUCCESS);
-                    return tradeResutDTO;
+                    wxTradeResutDTO.setTradeStatus(TradeConstant.TRADE_SUCCESS);
+                    return wxTradeResutDTO;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            tradeResutDTO.setTradeStatus(TradeConstant.TRADE_FAIL);
-            return tradeResutDTO;
+            wxTradeResutDTO.setTradeStatus(TradeConstant.TRADE_FAIL);
+            return wxTradeResutDTO;
         } else {
             // V2版支付结果查询
             Map<String, String> params = OrderQueryModel.builder()
@@ -201,47 +201,47 @@ public class WxPayServiceImpl implements WxPayService {
                         b.setUpdateTime(LocalDateTime.now());
                         tradeService.updateById(b);
                         // 返回支付成功
-                        tradeResutDTO.setTradeStatus(TradeConstant.TRADE_SUCCESS);
-                        return tradeResutDTO;
+                        wxTradeResutDTO.setTradeStatus(TradeConstant.TRADE_SUCCESS);
+                        return wxTradeResutDTO;
                     }
                 }
             }
-            tradeResutDTO.setTradeStatus(TradeConstant.TRADE_FAIL);
-            return tradeResutDTO;
+            wxTradeResutDTO.setTradeStatus(TradeConstant.TRADE_FAIL);
+            return wxTradeResutDTO;
         }
     }
 
     /**
      * 统一支付v3版本
      */
-    private TradeResutDTO toV3Pay(TradePayDTO tradePayDTO, String tradeType, BusTrade busTrade)
+    private WxTradeResutDTO toV3Pay(WxTradePayDTO wxTradePayDTO, String tradeType, BusTrade busTrade)
             throws BaseException {
-        TradeResutDTO tradeResutDTO = new TradeResutDTO();
-        tradeResutDTO.setTradeId(busTrade.getTradeId());
+        WxTradeResutDTO wxTradeResutDTO = new WxTradeResutDTO();
+        wxTradeResutDTO.setTradeId(busTrade.getTradeId());
 
         if (tradeType.equals(TradeType.NATIVE.getTradeType())) {
-            JSONObject result = WxPayV3Utils.nativePay(wxPayConfig, tradePayDTO, busTrade);
+            JSONObject result = WxPayV3Utils.nativePay(wxPayConfig, wxTradePayDTO, busTrade);
             if (result != null && result.containsKey("code_url")) {
                 tradeService.save(busTrade);
                 // PC支付二维码
-                tradeResutDTO.setQrCodeUrl(result.getStr("code_url"));
-                return tradeResutDTO;
+                wxTradeResutDTO.setQrCodeUrl(result.getStr("code_url"));
+                return wxTradeResutDTO;
             }
         } else if (tradeType.equals(TradeType.MWEB.getTradeType())) {
-            JSONObject result = WxPayV3Utils.h5Pay(wxPayConfig, tradePayDTO, busTrade);
+            JSONObject result = WxPayV3Utils.h5Pay(wxPayConfig, wxTradePayDTO, busTrade);
             if (result != null && result.containsKey("h5_url")) {
                 tradeService.save(busTrade);
                 // H5支付链接
-                tradeResutDTO.setH5Url(result.getStr("h5_url"));
-                return tradeResutDTO;
+                wxTradeResutDTO.setH5Url(result.getStr("h5_url"));
+                return wxTradeResutDTO;
             }
         } else if (tradeType.equals(TradeType.JSAPI.getTradeType())) {
-            String payInfo = WxPayV3Utils.jsApiPay(wxPayConfig, tradePayDTO, busTrade);
+            String payInfo = WxPayV3Utils.jsApiPay(wxPayConfig, wxTradePayDTO, busTrade);
             if (StringUtils.hasText(payInfo)) {
                 tradeService.save(busTrade);
                 // JSAPI支付信息
-                tradeResutDTO.setPayInfo(payInfo);
-                return tradeResutDTO;
+                wxTradeResutDTO.setPayInfo(payInfo);
+                return wxTradeResutDTO;
             }
         }
         throw new BaseException("未知错误");
@@ -250,22 +250,22 @@ public class WxPayServiceImpl implements WxPayService {
     /**
      * 统一支付v2版本
      */
-    private TradeResutDTO toV2Pay(TradePayDTO tradePayDTO, String tradeType, BusTrade busTrade)
+    private WxTradeResutDTO toV2Pay(WxTradePayDTO wxTradePayDTO, String tradeType, BusTrade busTrade)
             throws BaseException {
         // 统一支付
         Map<String, String> params = UnifiedOrderModel.builder()
                 .appid(wxPayConfig.getAppId())//公众账号ID
                 .mch_id(wxPayConfig.getMchId())//商户号
                 .nonce_str(WxPayKit.generateStr())//随机字符串
-                .body(tradePayDTO.getProductName())//商品描述（用户支付时显示）
-                .product_id(tradePayDTO.getProductId())//商品id（trade_type=NATIVE时，此参数必传。此参数为二维码中包含的商品ID，商户自行定义。）
-                .attach(tradePayDTO.getAttach())//附加内容（在查询API和支付通知中原样返回）
+                .body(wxTradePayDTO.getProductName())//商品描述（用户支付时显示）
+                .product_id(wxTradePayDTO.getProductId())//商品id（trade_type=NATIVE时，此参数必传。此参数为二维码中包含的商品ID，商户自行定义。）
+                .attach(wxTradePayDTO.getAttach())//附加内容（在查询API和支付通知中原样返回）
                 .out_trade_no(busTrade.getOutTradeNo())//商户订单号
                 .total_fee(busTrade.getTotalFee() + "")//金额：单位 分
-                .spbill_create_ip(tradePayDTO.getSpbillCreateIp())//终端IP
-                .notify_url(wxPayConfig.getDomain().concat("/pay/wechat/payNotify"))//通知地址（回调）
+                .spbill_create_ip(wxTradePayDTO.getSpbillCreateIp())//终端IP
+                .notify_url(wxPayConfig.getNotifyUrl())//通知地址（回调）
                 .trade_type(tradeType)//交易类型
-                .openid(tradePayDTO.getOpenId())//openid，tradeType=JSAPI方式必传
+                .openid(wxTradePayDTO.getOpenId())//openid，tradeType=JSAPI方式必传
                 .build()
                 .createSign(wxPayConfig.getPartnerKey(), SignType.HMACSHA256);
 
@@ -277,21 +277,21 @@ public class WxPayServiceImpl implements WxPayService {
                 tradeService.save(busTrade);
 
                 //生成预付订单success
-                TradeResutDTO tradeResutDTO = new TradeResutDTO();
-                tradeResutDTO.setTradeId(busTrade.getTradeId());
+                WxTradeResutDTO wxTradeResutDTO = new WxTradeResutDTO();
+                wxTradeResutDTO.setTradeId(busTrade.getTradeId());
                 // 不同类型支付，返回不同数据
                 if (tradeType.equals(TradeType.NATIVE.getTradeType())) {
-                    tradeResutDTO.setQrCodeUrl(result.get("code_url"));
+                    wxTradeResutDTO.setQrCodeUrl(result.get("code_url"));
                 } else if (tradeType.equals(TradeType.MWEB.getTradeType())) {
-                    tradeResutDTO.setH5Url(result.get("mweb_url"));
+                    wxTradeResutDTO.setH5Url(result.get("mweb_url"));
                 } else if (tradeType.equals(TradeType.JSAPI.getTradeType())) {
                     Map<String, String> packageParams =
                             WxPayKit.prepayIdCreateSign(result.get("prepay_id"),
                                     wxPayConfig.getAppId(),
                                     wxPayConfig.getPartnerKey(), SignType.HMACSHA256);
-                    tradeResutDTO.setPayInfo(JSONUtil.toJsonStr(packageParams));
+                    wxTradeResutDTO.setPayInfo(JSONUtil.toJsonStr(packageParams));
                 }
-                return tradeResutDTO;
+                return wxTradeResutDTO;
             }
         }
         throw new BaseException(StringUtils.hasText(result.get("err_code_des")) ? result.get("err_code_des") : "未知错误");
