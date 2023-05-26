@@ -118,9 +118,20 @@ com:
         certPath: pems/apiclient_cert.pem
         #私钥pem地址(v3时需要)
         keyPath: pems/apiclient_key.pem
-        #回调域名（有端口或上下文的要加上）后端API根目录
-        #domain: http://localhost:9527/dashuserver
-        domain: http://localhost:9527/dashuserver
+        #支付结果通知地址（后台接口地址：http://www.xxxx.com/api/）
+        notifyUrl: http://www.xxxx.com/api/pay/wechat/payNotify
+    #支付宝支付配置
+    alipay:
+      #应用id
+      appId: xxxxx
+      #支付宝私钥
+      privateKey: xxxxx
+      #支付宝的公钥（注意：非应用公钥）
+      aliPayPublicKey: xxxxx
+      #支付结果通知地址（后台接口地址：http://www.xxxx.com/api/）
+      notifyUrl: http://www.xxxx.com/api/pay/alipay/payNotify
+      #支付返回地址
+      returnUrl: http://www.xxxx.com/api/pay/alipay/returnUrl
     #百度OCR配置
     baidu:
       client-id: xxxxx
