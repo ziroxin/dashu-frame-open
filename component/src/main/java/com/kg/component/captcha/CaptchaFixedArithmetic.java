@@ -19,6 +19,13 @@ public class CaptchaFixedArithmetic extends ArithmeticCaptcha {
      */
     @Override
     protected char[] alphas() {
+        // 无减法（为了不出现负数，只保留+x）
+        return alphasNoSubtract();
+        // 默认：+-x
+        //return alphasDefault();
+    }
+
+    private char[] alphasDefault() {
         // 生成随机数字和运算符
         int n1 = num(1, 10), n2 = num(1, 10);
         int opt = num(3);
@@ -27,6 +34,24 @@ public class CaptchaFixedArithmetic extends ArithmeticCaptcha {
         int res = new int[]{n1 + n2, n1 - n2, n1 * n2}[opt];
         // 转换为字符运算符
         char optChar = "+-x".charAt(opt);
+
+        this.setArithmeticString(String.format("%s%c%s=?", n1, optChar, n2));
+        this.chars = String.valueOf(res);
+
+        return chars.toCharArray();
+    }
+
+    private char[] alphasNoSubtract() {
+        // 生成随机数字和运算符
+        int n1 = num(1, 10), n2 = num(1, 10);
+        int opt = num(2);
+
+        // 计算结果
+        int res = new int[]{n1 + n2, n1 * n2}[opt];
+        // 转换为字符运算符
+        // 注意：这里可配置+-x三种算数方式
+        //      为了不出现负数，只保留+x
+        char optChar = "+x".charAt(opt);
 
         this.setArithmeticString(String.format("%s%c%s=?", n1, optChar, n2));
         this.chars = String.valueOf(res);
