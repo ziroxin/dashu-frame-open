@@ -5,6 +5,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kg.component.utils.GuidUtils;
+import com.kg.core.annotation.AutoOperateLog;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.core.zorg.dto.ZOrganizationDTO;
@@ -132,6 +133,7 @@ public class ZOrganizationController {
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('zorg:zOrganization:add')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/zorg/zOrganization/add", logMsg = "新增-组织机构")
     public void add(@RequestBody ZOrganizationDTO zOrganizationDTO) throws BaseException {
         try {
             ZOrganization zOrganization = zOrganizationConvert.dtoToEntity(zOrganizationDTO);
@@ -168,6 +170,7 @@ public class ZOrganizationController {
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('zorg:zOrganization:update')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/zorg/zOrganization/update", logMsg = "修改-组织机构")
     public void update(@RequestBody ZOrganizationDTO zOrganizationDTO) throws BaseException {
         try {
             ZOrganization zOrganization = zOrganizationConvert.dtoToEntity(zOrganizationDTO);
@@ -202,6 +205,7 @@ public class ZOrganizationController {
     @PostMapping("/delete")
     @PreAuthorize("hasAuthority('zorg:zOrganization:delete')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/zorg/zOrganization/delete", logMsg = "删除-组织机构")
     public void delete(@RequestBody String[] orgIds) throws BaseException {
         // 是否满足删除条件：1 没有子级 2 没有归属用户
         if (zOrganizationService.lambdaQuery().in(ZOrganization::getOrgParentId, orgIds).count() > 0) {

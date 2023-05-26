@@ -5,6 +5,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kg.component.utils.GuidUtils;
+import com.kg.core.annotation.AutoOperateLog;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.core.zquartz.config.QuartzConfig;
@@ -116,6 +117,7 @@ public class ZQuartzController {
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('zquartz:zQuartz:add')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/zquartz/zQuartz/add", logMsg = "新增-定时任务调度")
     public void add(@RequestBody ZQuartzDTO zQuartzDTO) throws BaseException {
         // 查重
         if (zQuartzService.isJobExit(zQuartzDTO)) {
@@ -139,6 +141,7 @@ public class ZQuartzController {
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('zquartz:zQuartz:update')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/zquartz/zQuartz/update", logMsg = "修改-定时任务调度")
     public void update(@RequestBody ZQuartzDTO zQuartzDTO) throws BaseException {
         // 查重
         if (zQuartzService.isJobExit(zQuartzDTO)) {
@@ -163,6 +166,7 @@ public class ZQuartzController {
     @PostMapping("/delete")
     @PreAuthorize("hasAuthority('zquartz:zQuartz:delete')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/zquartz/zQuartz/delete", logMsg = "删除-定时任务调度")
     public void delete(@RequestBody String[] quartzIds) throws BaseException {
         try {
             zQuartzService.removeBatchByIds(Arrays.asList(quartzIds));

@@ -1,20 +1,25 @@
 package com.kg.core.zlogin.service.impl;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
+import cn.hutool.extra.servlet.ServletUtil;
 import com.google.common.primitives.Ints;
 import com.kg.component.jwt.JwtUtils;
 import com.kg.component.redis.RedisUtils;
+import com.kg.component.utils.GuidUtils;
 import com.kg.component.utils.TimeUtils;
 import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
 import com.kg.core.exception.enums.BaseErrorCode;
 import com.kg.core.security.entity.SecurityUserDetailEntity;
 import com.kg.core.zcaptcha.service.ZCaptchaService;
+import com.kg.core.zlog.entity.ZOperateLog;
+import com.kg.core.zlog.service.ZOperateLogService;
 import com.kg.core.zlogin.dto.LoginFormDTO;
 import com.kg.core.zlogin.dto.LoginSuccessDTO;
 import com.kg.core.zlogin.service.ZLoginService;
 import com.kg.core.zsafety.entity.ZSafety;
 import com.kg.core.zsafety.service.ZSafetyService;
+import com.kg.core.zuser.entity.ZUser;
 import com.kg.core.zuserlock.entity.ZUserLock;
 import com.kg.core.zuserlock.service.ZUserLockService;
 import com.kg.core.zuserpassword.entity.ZUserPassword;
@@ -27,8 +32,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -48,6 +56,8 @@ public class ZLoginServiceImpl implements ZLoginService {
     private ZUserPasswordService passwordService;
     @Resource
     private ZUserLockService lockService;
+    @Resource
+    private ZOperateLogService operateLogService;
 
     @Resource
     private ZCaptchaService captchaService;
@@ -122,7 +132,28 @@ public class ZLoginServiceImpl implements ZLoginService {
         }
         // 重置密码错误次数
         redisUtils.delete(LoginConstant.LOGIN_ERROR_COUNT_REDIS_PRE + loginForm.getUserName());
+        // 写入用户登录日志
+        writeOperateLog(userDetailEntity.getZUser());
         return loginSuccessDTO;
+    }
+
+    /**
+     * 写入用户登录日志
+     *
+     * @param zUser 用户信息
+     */
+    private void writeOperateLog(ZUser zUser) {
+        ZOperateLog loginLog = new ZOperateLog();
+        loginLog.setLogId(GuidUtils.getUuid());
+        loginLog.setLogMethod("/login/login");
+        loginLog.setLogMsg("用户登录成功");
+        loginLog.setActionUrl("/login/login");
+        loginLog.setUserId(zUser.getUserId());
+        loginLog.setUserName(zUser.getUserName());
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        loginLog.setIp(ServletUtil.getClientIP(request));
+        loginLog.setCreateTime(LocalDateTime.now());
+        operateLogService.save(loginLog);
     }
 
     @Override

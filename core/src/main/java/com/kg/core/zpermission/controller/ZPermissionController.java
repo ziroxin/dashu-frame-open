@@ -4,6 +4,7 @@ package com.kg.core.zpermission.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.kg.component.utils.GuidUtils;
+import com.kg.core.annotation.AutoOperateLog;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.core.security.util.CurrentUserUtils;
@@ -47,6 +48,7 @@ public class ZPermissionController {
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('permission:add')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/permission/add", logMsg = "添加资源（菜单，按钮）")
     public boolean add(@RequestBody ZPermission zPermission) throws BaseException {
         // 查询重复标记
         QueryWrapper<ZPermission> wrapper = new QueryWrapper<>();
@@ -70,6 +72,7 @@ public class ZPermissionController {
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('permission:update')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/permission/update", logMsg = "修改资源（菜单，按钮）")
     public boolean update(@RequestBody ZPermission zPermission) throws BaseException {
         // 查询重复标记
         QueryWrapper<ZPermission> wrapper = new QueryWrapper<>();
@@ -91,6 +94,7 @@ public class ZPermissionController {
     @PostMapping("/updateParentId")
     @PreAuthorize("hasAuthority('permission:updateParentId')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/permission/updateParentId", logMsg = "修改上下级关系")
     public boolean updateParentId(@RequestBody ZPermission zPermission) {
         UpdateWrapper<ZPermission> wrapper = new UpdateWrapper<>();
         wrapper.lambda().set(ZPermission::getParentId, zPermission.getParentId())
@@ -107,6 +111,7 @@ public class ZPermissionController {
     @DeleteMapping("/delete")
     @PreAuthorize("hasAuthority('permission:delete')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/permission/delete", logMsg = "删除资源（菜单，按钮等）")
     public boolean delete(@RequestBody String[] permissionIds) {
         if (permissionService.removeBatchByIds(Arrays.asList(permissionIds))) {
             return true;
@@ -120,6 +125,7 @@ public class ZPermissionController {
     @PostMapping("/changeIsEnabled")
     @PreAuthorize("hasAuthority('permission:changeIsEnabled')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/permission/changeIsEnabled", logMsg = "启用/禁用菜单")
     public void changeIsEnabled(@RequestBody ZPermission zPermission) throws BaseException {
         try {
             permissionService.lambdaUpdate().set(ZPermission::isPermissionIsEnabled, zPermission.isPermissionIsEnabled())

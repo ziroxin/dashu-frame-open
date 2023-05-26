@@ -1,6 +1,7 @@
 package com.kg.core.zrole.controller;
 
 
+import com.kg.core.annotation.AutoOperateLog;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.zrole.dto.ZRolePermissionSaveDTO;
 import com.kg.core.zrole.service.IZRolePermissionService;
@@ -30,6 +31,7 @@ public class ZRolePermissionController {
     @PostMapping("saveRolePermission")
     @PreAuthorize("hasAuthority('role:permission:saveRolePermission')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/role/permission/saveRolePermission", logMsg = "保存角色权限关系")
     public void saveRolePermission(@RequestBody ZRolePermissionSaveDTO rolePermissionSaveDTO) {
         rolePermissionService.saveRolePermission(rolePermissionSaveDTO);
     }

@@ -2,6 +2,7 @@ package com.kg.core.zuser.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.kg.core.annotation.AutoOperateLog;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.core.security.util.CurrentUserUtils;
@@ -90,6 +91,7 @@ public class ZUserController {
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('user:add')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/user/add", logMsg = "添加用户")
     public void add(@RequestBody ZUserRoleSaveDTO zUserRoleSaveDTO) throws BaseException {
         try {
             userService.add(zUserRoleSaveDTO);
@@ -103,6 +105,7 @@ public class ZUserController {
     @PostMapping("update")
     @PreAuthorize("hasAuthority('user:update')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/user/update", logMsg = "修改用户信息")
     public void update(@RequestBody ZUserRoleSaveDTO zUserRoleSaveDTO) throws BaseException {
         try {
             userService.update(zUserRoleSaveDTO);
@@ -116,6 +119,7 @@ public class ZUserController {
     @DeleteMapping("delete")
     @PreAuthorize("hasAuthority('user:delete')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/user/delete", logMsg = "删除用户")
     public void delete(@RequestBody String[] userIds) throws BaseException {
         try {
             userService.delete(userIds);
@@ -129,6 +133,7 @@ public class ZUserController {
     @PostMapping("reset/password")
     @PreAuthorize("hasAuthority('user:reset:password')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/user/reset/password", logMsg = "重置密码")
     public void resetPassword(@RequestBody String[] userIds) throws BaseException {
         userService.resetPassword(userIds);
     }
@@ -136,6 +141,7 @@ public class ZUserController {
     @ApiOperation(value = "/user/edit/password", notes = "修改用户密码", httpMethod = "POST")
     @PostMapping("edit/password")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/user/edit/password", logMsg = "修改用户密码")
     public void editPassword(@RequestBody ZUserEditPasswordDTO passwordDTO) throws BaseException {
         if (!StringUtils.hasText(passwordDTO.getUserId())) {
             // 不传userId，则修改当前用户的密码
@@ -148,6 +154,7 @@ public class ZUserController {
     @PostMapping("change/status")
     @PreAuthorize("hasAuthority('user:change:status')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/user/change/status", logMsg = "启用/禁用用户")
     public void changeStatus(@RequestBody ZUserStatusDTO userStatusDTO) throws BaseException {
         boolean update = userService.lambdaUpdate().set(ZUser::getStatus, userStatusDTO.getStatus())
                 .in(ZUser::getUserId, Arrays.asList(userStatusDTO.getUserIds()))
