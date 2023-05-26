@@ -64,6 +64,7 @@
     <el-pagination style="text-align: center;" background layout="total,prev,pager,next,sizes"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
+                   @size-change="handleSizeChange"
     />
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible">
@@ -161,6 +162,11 @@ export default {
     // 监听分页
     handleCurrentChange(page) {
       this.pager.page = page
+      this.loadTableList()
+    },
+    // 分页条数改变
+    handleSizeChange(size) {
+      this.pager.limit = size
       this.loadTableList()
     },
     // 清空表单temp数据

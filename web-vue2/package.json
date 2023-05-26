@@ -32,7 +32,6 @@
     "qrcodejs2": "^0.0.2",
     "qs": "^6.11.0",
     "screenfull": "4.2.0",
-    "swagger-ui-dist": "^4.18.0",
     "vue": "2.6.14",
     "vue-count-to": "1.0.13",
     "vue-router": "3.0.2",
