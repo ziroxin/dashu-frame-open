@@ -22,14 +22,14 @@ public class ZDictDataExcelConstant {
 
     static {
         // 初始化导出字段
-        EXPORT_EXCEL_COLUMN.put("dictId", "字典数据ID");
-        EXPORT_EXCEL_COLUMN.put("typeCode", "所属类型code");
+//        EXPORT_EXCEL_COLUMN.put("dictId", "字典数据ID");
+//        EXPORT_EXCEL_COLUMN.put("typeCode", "所属类型code");
         EXPORT_EXCEL_COLUMN.put("dictLabel", "字典标签");
         EXPORT_EXCEL_COLUMN.put("dictValue", "字典值");
         EXPORT_EXCEL_COLUMN.put("status", "状态0停用1正常");
         EXPORT_EXCEL_COLUMN.put("orderIndex", "顺序");
-        EXPORT_EXCEL_COLUMN.put("createTime", "创建时间");
-        EXPORT_EXCEL_COLUMN.put("updateTime", "修改时间");
+//        EXPORT_EXCEL_COLUMN.put("createTime", "创建时间");
+//        EXPORT_EXCEL_COLUMN.put("updateTime", "修改时间");
         // 初始化导入字段
         IMPORT_EXCEL_COLUMN.put("字典数据ID", "dictId");
         IMPORT_EXCEL_COLUMN.put("所属类型code", "typeCode");

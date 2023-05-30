@@ -62,7 +62,10 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("typeCode")), ZDictData::getTypeCode, paramObj.getStr("typeCode"));
             }
             if (paramObj.containsKey("dictLabel")) {
-                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("dictLabel")), ZDictData::getDictLabel, paramObj.getStr("dictLabel"));
+                wrapper.lambda().and(wr -> {
+                    wr.eq(StringUtils.hasText(paramObj.getStr("dictLabel")), ZDictData::getDictLabel, paramObj.getStr("dictLabel"))
+                            .or().eq(StringUtils.hasText(paramObj.getStr("dictLabel")), ZDictData::getDictValue, paramObj.getStr("dictLabel"));
+                });
             }
             if (paramObj.containsKey("dictValue")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("dictValue")), ZDictData::getDictValue, paramObj.getStr("dictValue"));
@@ -153,7 +156,8 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("typeCode")), ZDictData::getTypeCode, paramObj.getStr("typeCode"));
                 }
                 if (paramObj.containsKey("dictLabel")) {
-                    wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("dictLabel")), ZDictData::getDictLabel, paramObj.getStr("dictLabel"));
+                    wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("dictLabel")), ZDictData::getDictLabel, paramObj.getStr("dictLabel"))
+                            .or().eq(StringUtils.hasText(paramObj.getStr("dictLabel")), ZDictData::getDictValue, paramObj.getStr("dictLabel"));
                 }
                 if (paramObj.containsKey("dictValue")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("dictValue")), ZDictData::getDictValue, paramObj.getStr("dictValue"));
@@ -171,6 +175,7 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("updateTime")), ZDictData::getUpdateTime, paramObj.getStr("updateTime"));
                 }
             }
+            wrapper.lambda().orderByAsc(ZDictData::getOrderIndex);
             List<ZDictData> list = list(wrapper);
             // 转换成导出excel实体
             List<ZDictDataExcelOutDTO> dataList = list.stream()
@@ -181,7 +186,7 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
                 dataList.add(new ZDictDataExcelOutDTO());
             }
             // 第一行标题
-            String title = "字典数据";
+            String title = "字典数据表格";
             // 写入导出excel文件
             ExcelCommonUtils.write(path, title, dataList, ZDictDataExcelConstant.EXPORT_EXCEL_COLUMN);
             // 导出成功，返回导出地址
@@ -200,12 +205,14 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public void importExcel(HttpServletRequest request) {
+        String typeCode = request.getParameter("typeCode");
         // 读取导入数据
         List<ZDictData> importData =
                 ExcelCommonUtils.read(request, 1, 2, ZDictData.class, ZDictDataExcelConstant.IMPORT_EXCEL_COLUMN);
         // 处理数据
         List<ZDictData> saveData = importData.stream().map(o -> {
             o.setDictId(GuidUtils.getUuid());
+            o.setTypeCode(typeCode);
             o.setCreateTime(LocalDateTime.now());
             return o;
         }).collect(Collectors.toList());

@@ -1,106 +1,104 @@
 <template>
-	<div class="app-container">
-		<!-- 字典类型-管理按钮 -->
-		<div style="margin-bottom: 20px;">
-			<el-input v-model="searchData.typeId" size="small" style="width: 150px;margin-right: 10px;"
-					  		class="filter-item" placeholder="请输入字典类型ID查询"/>
-			<el-input v-model="searchData.typeName" size="small" style="width: 150px;margin-right: 10px;"
-					  		class="filter-item" placeholder="请输入字典名称查询"/>
-			<el-input v-model="searchData.typeCode" size="small" style="width: 150px;margin-right: 10px;"
-					  		class="filter-item" placeholder="请输入字典类型code查询"/>
-			<el-input v-model="searchData.status" size="small" style="width: 150px;margin-right: 10px;"
-					  		class="filter-item" placeholder="请输入状态0停用1正常查询"/>
-			<el-date-picker v-model="searchData.createTime" size="small" style="width: 150px;margin-right: 10px;"
-							type="datetime" class="filter-item" placeholder="请选择创建时间查询"/>
-			<el-date-picker v-model="searchData.updateTime" size="small" style="width: 150px;margin-right: 10px;"
-							type="datetime" class="filter-item" placeholder="请选择更新时间查询"/>
-			<el-button v-waves class="filter-item" type="primary" size="small"
-                 icon="el-icon-search" @click="loadTableList">查询</el-button>
-			<el-button v-waves class="filter-item" type="info" size="small"
-                 icon="el-icon-refresh" @click="resetTableList">显示全部</el-button>
-			<div style="float: right;">
-				<el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
-                   v-permission="'dictType-zDictType-add'">新增
-				</el-button>
-				<el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate(null)" size="small"
-                   v-permission="'dictType-zDictType-update'">修改
-				</el-button>
-				<el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
-                   v-permission="'dictType-zDictType-delete'">删除
-				</el-button>
-				<el-upload v-permission="'dictType-zDictType-importExcel'" style="display: inline-block;margin: 0px 10px;"
-						   :action="this.$baseServer+'/dictType/zDictType/import/excel'" :headers="this.$headerToken"
-						   :on-success="importExcelSuccess" accept=".xls,.xlsx"
-						   :show-file-list="false" :auto-upload="true">
-					<el-button v-waves type="warning" icon="el-icon-upload2" size="small">导入Excel</el-button>
-				</el-upload>
-				<el-button v-waves type="success" icon="el-icon-printer" @click="exportExcel" size="small"
-						   v-permission="'dictType-zDictType-exportExcel'">导出Excel
-				</el-button>
-			</div>
-		</div>
-		<!-- 字典类型-列表 -->
-		<el-table :data="tableData" stripe border @selection-change="handleTableSelectChange">
-			<el-table-column type="selection" width="50" align="center" header-align="center"/>
-			<el-table-column label="字典类型ID" prop="typeId" align="center"/>
-			<el-table-column label="字典名称" prop="typeName" align="center"/>
-			<el-table-column label="字典类型code" prop="typeCode" align="center"/>
-			<el-table-column label="状态0停用1正常" prop="status" align="center"/>
-			<el-table-column label="创建时间" prop="createTime" align="center"/>
-			<el-table-column label="更新时间" prop="updateTime" align="center"/>
-			<el-table-column fixed="right" label="操作" width="120" align="center">
-				<template v-slot="scope">
-					<el-button type="text" style="color: #13ce66;"
-							   size="small" @click="openView(scope.row)">详情</el-button>
-					<el-button v-permission="'dictType-zDictType-update'"
-							   type="text" size="small" @click="openUpdate(scope.row)">修改
-					</el-button>
-					<el-button v-permission="'dictType-zDictType-delete'" style="color: #ff6d6d;"
-							   type="text" size="small" @click="deleteByIds(scope.row)">删除
-					</el-button>
-				</template>
-			</el-table-column>
-		</el-table>
-		<!-- 字典类型-分页 -->
-		<el-pagination style="text-align: center;" background layout="total,prev,pager,next,sizes"
-                   :page-size="pager.limit" :current-page="pager.page"
-                   :total="pager.totalCount" @current-change="handleCurrentChange"
-                   @size-change="handleSizeChange"
-		/>
-		<!-- 添加修改弹窗 -->
-		<el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-				   :visible.sync="dialogFormVisible" @close="resetTemp" width="600px">
-			<el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
-				<el-form-item label="字典类型ID" prop="typeId"
-                      :rules="[{required: true, message: '字典类型ID不能为空'}]">
-					<el-input v-model="temp.typeId" placeholder="请输入字典类型ID"/>
-				</el-form-item>
-				<el-form-item label="字典名称" prop="typeName"
-                      :rules="[]">
-					<el-input v-model="temp.typeName" placeholder="请输入字典名称"/>
-				</el-form-item>
-				<el-form-item label="字典类型code" prop="typeCode"
-                      :rules="[]">
-					<el-input v-model="temp.typeCode" placeholder="请输入字典类型code"/>
-				</el-form-item>
-				<el-form-item label="状态0停用1正常" prop="status"
-                      :rules="[]">
-					<el-input v-model="temp.status" placeholder="请输入状态0停用1正常"/>
-				</el-form-item>
-			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-				<el-button v-waves @click="dialogFormVisible=false">取消</el-button>
-			</div>
-		</el-dialog>
-	</div>
+  <div class="app-container">
+    <el-row>
+      <el-col :span="7">
+        <!-- 字典类型 -->
+        <div style="margin-bottom: 10px;">
+          <el-input v-model="searchData.typeName" size="small" style="width: 160px;margin-right: 10px;"
+                    class="filter-item" placeholder="输入名称或code查询"/>
+          <el-button v-waves class="filter-item" type="primary" size="small"
+                     icon="el-icon-search" @click="loadTableList">
+          </el-button>
+          <el-button v-waves class="filter-item" type="info" size="small"
+                     icon="el-icon-refresh" @click="resetTableList">重置
+          </el-button>
+        </div>
+        <div style="margin-bottom: 10px">
+          <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
+                     v-permission="'dictType-zDictType-add'">新增
+          </el-button>
+          <el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate(null)" size="small"
+                     v-permission="'dictType-zDictType-update'">修改
+          </el-button>
+          <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
+                     v-permission="'dictType-zDictType-delete'">删除
+          </el-button>
+        </div>
+        <!-- 字典类型-列表 -->
+        <el-table :data="tableData" stripe border :height="this.$windowHeight-200"
+                  highlight-current-row
+                  @selection-change="handleTableSelectChange">
+          <el-table-column type="selection" width="50" align="center" header-align="center"/>
+          <el-table-column label="字典类型" min-width="50%" prop="typeName">
+            <template v-slot="scope">
+              <div>{{ scope.row.typeName }}</div>
+              <div>{{ scope.row.typeCode }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" min-width="25%" prop="status" align="center">
+            <template v-slot="scope">
+              <el-tag type="success" v-if="scope.row.status === '1'">正常</el-tag>
+              <el-tag type="danger" v-else>停用</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" min-width="25%" align="center">
+            <template v-slot="scope">
+              <el-button type="text" size="small" @click="openDictData(scope.row)" style="line-height: 14px;">
+                字典<br/>数据
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!-- 字典类型-分页 -->
+        <el-pagination style="text-align: center;" background layout="total,prev,pager,next,sizes"
+                       :page-size="pager.limit" :current-page="pager.page"
+                       :total="pager.totalCount" @current-change="handleCurrentChange"
+                       @size-change="handleSizeChange"
+        />
+        <!-- 添加修改弹窗 -->
+        <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
+                   :visible.sync="dialogFormVisible" @close="resetTemp" width="600px">
+          <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px"
+                   :disabled="dialogType==='view'">
+            <el-form-item label="字典名称" prop="typeName"
+                          :rules="[{required: true, message: '字典名称必填'}]">
+              <el-input v-model="temp.typeName" placeholder="请输入字典名称"/>
+            </el-form-item>
+            <el-form-item label="字典code" prop="typeCode"
+                          :rules="[{required: true, message: '字典code必填'}]">
+              <el-input v-model="temp.typeCode" placeholder="请输入字典类型code"/>
+            </el-form-item>
+            <el-form-item label="状态" prop="status"
+                          :rules="[{required: true, message: '字典状态必填'}]">
+              <el-switch v-model="temp.status" active-text="正常" inactive-text="停用"
+                         active-value="1" inactive-value="0">
+              </el-switch>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+            <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
+          </div>
+        </el-dialog>
+      </el-col>
+      <el-col :span="17">
+        <!-- 字典数据 -->
+        <div v-if="!currentDictType.typeId">
+          <el-empty description="请点击左侧字典类型表中的 [ 字典数据 ] 按钮"/>
+        </div>
+        <dict-data v-else :current-dict-type="currentDictType"></dict-data>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
 import waves from '@/directive/waves'
 import request from '@/utils/request'
+import DictData from "@/views/system/dictData/index.vue";
 
 export default {
+  components: {DictData},
   directives: {waves},
   data() {
     return {
@@ -120,6 +118,8 @@ export default {
       dialogFormVisible: false,
       // 表单临时数据
       temp: {},
+      // 当前字典项
+      currentDictType: {}
     }
   },
   created() {
@@ -143,6 +143,10 @@ export default {
         this.tableData = data.records
       })
     },
+    // 打开字典数据
+    openDictData(row) {
+      this.currentDictType = row
+    },
     // 监听选中行
     handleTableSelectChange(rows) {
       this.tableSelectRows = rows
@@ -152,14 +156,14 @@ export default {
       this.pager.page = page
       this.loadTableList()
     },
-	// 分页条数改变
-	handleSizeChange(size) {
+    // 分页条数改变
+    handleSizeChange(size) {
       this.pager.limit = size
       this.loadTableList()
-	},
+    },
     // 清空表单temp数据
     resetTemp() {
-      this.temp = {orderIndex: 0}
+      this.temp = {status: '1'}
     },
     // 打开添加窗口
     openAdd() {

@@ -59,7 +59,10 @@ public class ZDictTypeServiceImpl extends ServiceImpl<ZDictTypeMapper, ZDictType
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("typeId")), ZDictType::getTypeId, paramObj.getStr("typeId"));
             }
             if (paramObj.containsKey("typeName")) {
-                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("typeName")), ZDictType::getTypeName, paramObj.getStr("typeName"));
+                wrapper.lambda()
+                        .like(StringUtils.hasText(paramObj.getStr("typeName")), ZDictType::getTypeName, paramObj.getStr("typeName"))
+                        .or()
+                        .like(StringUtils.hasText(paramObj.getStr("typeName")), ZDictType::getTypeCode, paramObj.getStr("typeName"));
             }
             if (paramObj.containsKey("typeCode")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("typeCode")), ZDictType::getTypeCode, paramObj.getStr("typeCode"));
