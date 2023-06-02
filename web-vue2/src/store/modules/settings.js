@@ -1,11 +1,18 @@
-import variables from '@/styles/element-variables.scss'
 import defaultSettings from '@/settings'
 import Cookies from 'js-cookie';
 
-const {title, showSettings, tagsView, fixedHeader, sidebarLogo, layout} = Cookies.get('settings') ? JSON.parse(Cookies.get('settings')) : defaultSettings
+const {
+  title,
+  showSettings,
+  tagsView,
+  fixedHeader,
+  sidebarLogo,
+  layout,
+  theme
+} = Cookies.get('settings') ? JSON.parse(Cookies.get('settings')) : defaultSettings
 
 const state = {
-  theme: variables.theme,
+  theme: theme,
   title: title,
   showSettings: showSettings,
   tagsView: tagsView,
@@ -18,7 +25,8 @@ const mutations = {
   CHANGE_SETTING: (state, {key, value}) => {
     if (state.hasOwnProperty(key)) {
       state[key] = value
-      Cookies.set('settings', JSON.stringify(state))
+      // settings的cookie永远有效
+      Cookies.set('settings', JSON.stringify(state), {expires: new Date('9999-12-31T23:59:59')})
     }
   }
 }

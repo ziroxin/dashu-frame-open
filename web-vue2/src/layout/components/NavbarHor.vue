@@ -28,7 +28,6 @@
 
 <script>
 import {mapGetters} from 'vuex'
-import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 // import SizeSelect from '@/components/SizeSelect'
@@ -40,7 +39,6 @@ import HeaderUserSetting from "@/layout/components/HeaderUserSetting";
 export default {
   components: {
     HeaderUserSetting,
-    Hamburger,
     ErrorLog,
     Screenfull,
     // SizeSelect,
@@ -115,19 +113,6 @@ export default {
         font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
         vertical-align: middle;
       }
-    }
-  }
-
-  .hamburger-container {
-    line-height: 46px;
-    height: 100%;
-    float: left;
-    cursor: pointer;
-    transition: background .3s;
-    -webkit-tap-highlight-color: transparent;
-
-    &:hover {
-      background: rgba(0, 0, 0, .025)
     }
   }
 

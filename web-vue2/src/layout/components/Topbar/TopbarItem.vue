@@ -1,16 +1,17 @@
 <template>
   <div v-if="!item.hidden" class="hor-menu">
-    <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
+    <template
+      v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
-          <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title" />
+          <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title"/>
         </el-menu-item>
       </app-link>
     </template>
 
     <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
       <template slot="title">
-        <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
+        <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title"/>
       </template>
       <topbar-item
         v-for="child in item.children"
@@ -80,3 +81,42 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+@import "~@/styles/variables.scss";
+
+.el-menu--horizontal {
+  .el-menu {
+    .el-menu-item, .el-submenu__title {
+      height: 50px;
+      line-height: 50px;
+
+      &:hover {
+        background-color: #{$subMenuHover} !important;
+      }
+
+      &:active {
+        background-color: #{$subMenuHover} !important;
+      }
+    }
+
+    .is-active {
+      background-color: #{$subMenuActive} !important;
+    }
+  }
+}
+
+.hor-menu {
+  .el-submenu {
+    ::v-deep .el-submenu__title {
+      &:hover {
+        background-color: #{$subMenuActive} !important;
+      }
+    }
+  }
+
+  .svg-icon {
+    margin: 0 7px 0px 2px !important;
+  }
+}
+
+</style>

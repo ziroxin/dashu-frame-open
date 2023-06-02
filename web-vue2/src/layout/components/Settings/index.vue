@@ -1,34 +1,55 @@
 <template>
   <div class="drawer-container">
     <div>
-      <h3 class="drawer-title">页面样式配置</h3>
-
       <div class="drawer-item">
         <span>主题颜色</span>
-        <theme-picker style="float: right;height: 26px;margin: -3px 8px 0 0;" @change="themeChange" />
+        <div style="height: 30px;">
+          <ul class="themeSelector">
+            <el-tooltip effect="dark" :content="item.title" placement="top"
+                        v-for="(item, index) in themeList" :key="index">
+              <li class="themeS" @click="themeChange(item.color)" :style="'background-color:'+item.color">
+                <i v-if="theme === item.color" class="el-icon-check"/>
+              </li>
+            </el-tooltip>
+          </ul>
+        </div>
+      </div>
+      <!--      <div class="drawer-item">
+              <span>自定义</span>
+              <theme-picker style="float: right;height: 26px;margin: -3px 8px 0 0;" @change="themeChange"/>
+            </div>-->
+
+      <el-divider></el-divider>
+
+      <div class="drawer-item">
+        <span>导航模式</span>
+        <ul>
+          <li :class="layout === 'vertical'?'active':''" @click="layout = 'vertical'">
+            <svg-icon icon-class="left-menu"></svg-icon>
+            <br/><span>侧边菜单布局</span>
+          </li>
+          <li :class="layout === 'horizontal'?'active':''" @click="layout = 'horizontal'">
+            <svg-icon icon-class="top-menu"></svg-icon>
+            <br/><span>顶部菜单布局</span>
+          </li>
+        </ul>
+      </div>
+
+      <el-divider></el-divider>
+
+      <div class="drawer-item">
+        <span>开启多标签</span>
+        <el-switch v-model="tagsView" class="drawer-switch"/>
       </div>
 
       <div class="drawer-item">
-        <span>布局</span>
-        <el-radio-group v-model="layout">
-          <el-radio-button label="vertical">纵向布局</el-radio-button>
-          <el-radio-button label="horizontal">横向布局</el-radio-button>
-        </el-radio-group>
+        <span>固定头部</span>
+        <el-switch v-model="fixedHeader" class="drawer-switch"/>
       </div>
 
       <div class="drawer-item">
-        <span>是否开启标签</span>
-        <el-switch v-model="tagsView" class="drawer-switch" />
-      </div>
-
-      <div class="drawer-item">
-        <span>是否固定头部</span>
-        <el-switch v-model="fixedHeader" class="drawer-switch" />
-      </div>
-
-      <div class="drawer-item">
-        <span>是否显示Logo</span>
-        <el-switch v-model="sidebarLogo" class="drawer-switch" />
+        <span>显示 Logo</span>
+        <el-switch v-model="sidebarLogo" class="drawer-switch"/>
       </div>
 
     </div>
@@ -41,7 +62,17 @@ import ThemePicker from '@/components/ThemePicker'
 export default {
   components: {ThemePicker},
   data() {
-    return {}
+    return {
+      themeList: [
+        {title: '深空', color: '#4080FF'},
+        {title: '枫叶', color: '#F5222D'},
+        {title: '暖阳', color: '#FA541C'},
+        {title: '柠檬', color: '#FAAD14'},
+        {title: '霁青', color: '#13C2C2'},
+        {title: '森绿', color: '#52C41A'},
+        {title: '葡萄', color: '#722ED1'},
+      ],
+    }
   },
   computed: {
     fixedHeader: {
@@ -90,6 +121,9 @@ export default {
           value: val
         })
       }
+    },
+    theme() {
+      return this.$store.state.settings.theme
     }
   },
   methods: {
@@ -98,11 +132,16 @@ export default {
         key: 'theme',
         value: val
       })
+      location.reload()
     }
   }
 }
 </script>
-
+<style>
+.el-tooltip__popper {
+  z-index: 99999 !important;
+}
+</style>
 <style lang="scss" scoped>
 .drawer-container {
   padding: 24px;
@@ -121,6 +160,52 @@ export default {
     color: rgba(0, 0, 0, .65);
     font-size: 14px;
     padding: 12px 0;
+
+    .themeSelector {
+      float: left;
+
+      li.themeS {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        color: #fff;
+        float: left;
+        margin: 5px 2px;
+      }
+    }
+
+    ul {
+      width: 100%;
+      padding: 0px;
+
+      li.active {
+        border-radius: 8px;
+        background-color: rgba(0, 0, 0, .05);
+        color: #00afff;
+      }
+
+      li {
+        display: inline-block;
+        text-align: center;
+        list-style: none;
+        font-size: 10px;
+        width: 44%;
+        cursor: pointer;
+        padding: 5px 0px;
+        margin: 0 3%;
+
+        .svg-icon {
+          width: 80px;
+          height: 80px;
+        }
+
+        &:hover {
+          border-radius: 8px;
+          background-color: rgba(0, 0, 0, .1);
+          color: #00afff;
+        }
+      }
+    }
   }
 
   .drawer-switch {

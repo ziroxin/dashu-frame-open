@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'has-logo':showLogo}">
+  <div :class="{'has-logo':showLogo}" :style="{'--theme-color': theme}">
     <logo v-if="showLogo" :collapse="isCollapse"/>
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
@@ -7,8 +7,8 @@
         :collapse="isCollapse"
         :background-color="variables.menuBg"
         :text-color="variables.menuText"
-        :unique-opened="false"
         :active-text-color="theme"
+        :unique-opened="false"
         :collapse-transition="false"
         mode="vertical"
       >
@@ -23,7 +23,6 @@ import {mapGetters} from 'vuex'
 import Logo from './Logo'
 import SidebarItem from './SidebarItem'
 import variables from '@/styles/variables.scss'
-
 export default {
   components: {SidebarItem, Logo},
   computed: {
@@ -55,3 +54,10 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+::v-deep .is-active {
+  .el-submenu__title {
+    color: var(--theme-color) !important;
+  }
+}
+</style>

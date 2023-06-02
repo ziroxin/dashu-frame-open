@@ -31,6 +31,12 @@ module.exports = {
   sidebarLogo: false,
 
   /**
+   * @type {string} 默认:'#4080FF'
+   * @description 主题颜色
+   */
+  theme: '#4080FF',
+
+  /**
    * @type {string | array} 'production' | ['production', 'development']
    * @description 错误日志组件
    * 默认只在生产环境使用

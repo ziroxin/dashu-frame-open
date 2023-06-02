@@ -156,8 +156,10 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("typeCode")), ZDictData::getTypeCode, paramObj.getStr("typeCode"));
                 }
                 if (paramObj.containsKey("dictLabel")) {
-                    wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("dictLabel")), ZDictData::getDictLabel, paramObj.getStr("dictLabel"))
-                            .or().eq(StringUtils.hasText(paramObj.getStr("dictLabel")), ZDictData::getDictValue, paramObj.getStr("dictLabel"));
+                    wrapper.lambda().and(wr -> {
+                        wr.eq(StringUtils.hasText(paramObj.getStr("dictLabel")), ZDictData::getDictLabel, paramObj.getStr("dictLabel"))
+                                .or().eq(StringUtils.hasText(paramObj.getStr("dictLabel")), ZDictData::getDictValue, paramObj.getStr("dictLabel"));
+                    });
                 }
                 if (paramObj.containsKey("dictValue")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("dictValue")), ZDictData::getDictValue, paramObj.getStr("dictValue"));

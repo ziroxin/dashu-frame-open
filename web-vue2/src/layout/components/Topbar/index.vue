@@ -1,15 +1,16 @@
 <template>
-  <el-menu class="top-bar"
+  <el-menu :style="{'--theme-color': themeColor}"
+           class="top-bar"
            :default-active="activeMenu"
-           :background-color="variables.menuBgHor"
-           :text-color="variables.menuTextHor"
+           :background-color="variables.menuBg"
+           :text-color="variables.menuText"
+           :active-text-color="themeColor"
            :unique-opened="false"
-           :active-text-color="variables.menuActiveTextHor"
            :collapse-transition="false"
            mode="horizontal"
            menu-trigger="hover"
   >
-    <topbar-item v-for="route in permission_routes" :key="route.path" :item="route" :base-path="route.path" />
+    <topbar-item v-for="route in permission_routes" :key="route.path" :item="route" :base-path="route.path"/>
   </el-menu>
 </template>
 
@@ -36,7 +37,10 @@ export default {
     },
     variables() {
       return variables
-    }
+    },
+    themeColor() {
+      return this.$store.state.settings.theme
+    },
   }
 }
 </script>
@@ -48,6 +52,23 @@ export default {
 
   .hor-menu {
     float: left;
+
+    ::v-deep .el-submenu__icon-arrow {
+      position: relative;
+      top: unset;
+      right: unset;
+      margin-top: unset;
+      margin-left: 5px;
+    }
+
+    ::v-deep .is-active > .el-submenu__title > .el-submenu__icon-arrow {
+      color: var(--theme-color) !important;
+    }
+
+    ::v-deep .is-active, ::v-deep .is-opened {
+      margin-bottom: -1px !important;
+      border-bottom: 2px solid var(--theme-color) !important;
+    }
   }
 }
 </style>
