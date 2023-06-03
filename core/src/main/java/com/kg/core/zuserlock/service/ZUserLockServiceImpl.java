@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.redis.RedisUtils;
 import com.kg.component.utils.GuidUtils;
-import com.kg.core.common.constant.LoginConstant;
+import com.kg.core.common.constant.CacheConstant;
 import com.kg.core.zsafety.entity.ZSafety;
 import com.kg.core.zsafety.service.ZSafetyService;
 import com.kg.core.zuserlock.entity.ZUserLock;
@@ -50,8 +50,8 @@ public class ZUserLockServiceImpl extends ServiceImpl<ZUserLockMapper, ZUserLock
             return null;
         }
         // 查询Redis缓存中，是否有锁定信息
-        if (redisUtils.hasKey(LoginConstant.USER_LOCK_REDIS_PRE + userName)) {
-            return JSONUtil.toBean(redisUtils.get(LoginConstant.USER_LOCK_REDIS_PRE + userName).toString(), ZUserLock.class);
+        if (redisUtils.hasKey(CacheConstant.USER_LOCK_REDIS_PRE + userName)) {
+            return JSONUtil.toBean(redisUtils.get(CacheConstant.USER_LOCK_REDIS_PRE + userName).toString(), ZUserLock.class);
         }
         // 查询数据库中是否有锁定信息
         Optional<ZUserLock> lockUser = lambdaQuery().eq(ZUserLock::getUserName, userName).oneOpt();
@@ -77,12 +77,13 @@ public class ZUserLockServiceImpl extends ServiceImpl<ZUserLockMapper, ZUserLock
         }
         // 错误次数
         int count = 1;
-        if (redisUtils.hasKey(LoginConstant.LOGIN_ERROR_COUNT_REDIS_PRE + userName)) {
+        String errorUserKey = CacheConstant.LOGIN_ERROR_COUNT_REDIS_PRE + userName;
+        if (redisUtils.hasKey(errorUserKey)) {
             // 最新错误次数
-            count = Integer.parseInt(redisUtils.get(LoginConstant.LOGIN_ERROR_COUNT_REDIS_PRE + userName).toString()) + 1;
+            count = Integer.parseInt(redisUtils.get(errorUserKey).toString()) + 1;
         }
         // 登录错误次数
-        redisUtils.set(LoginConstant.LOGIN_ERROR_COUNT_REDIS_PRE + userName, count,
+        redisUtils.set(errorUserKey, count,
                 // 只记录到当前的晚上
                 DateUtil.parse(DateUtil.format(new Date(), "yyyy/MM/dd 23:59:59")));
         // 判断是否锁定
@@ -98,14 +99,14 @@ public class ZUserLockServiceImpl extends ServiceImpl<ZUserLockMapper, ZUserLock
                         LocalDateTimeUtil.format(lock.getCreateTime(), "yyyy-MM-dd HH:mm:ss") + "】，锁定时长【" +
                         safety.getLockTime() + "】分钟");
                 // 缓存定时锁定（到期自动解锁）
-                String lockUser = LoginConstant.USER_LOCK_REDIS_PRE + userName;
-                redisUtils.set(lockUser, lock.toString(), safety.getLockTime() * 60l);
+                String lockUser = CacheConstant.USER_LOCK_REDIS_PRE + userName;
+                redisUtils.set(lockUser, lock.toString(), safety.getLockTime() * 60L);
                 // 记录锁定用户列表
-                if (redisUtils.hasKey(LoginConstant.USER_LOCKED_LIST_REDIS_KEY)) {
-                    redisUtils.setNoTimeLimit(LoginConstant.USER_LOCKED_LIST_REDIS_KEY,
-                            redisUtils.get(LoginConstant.USER_LOCKED_LIST_REDIS_KEY).toString() + "," + lockUser);
+                if (redisUtils.hasKey(CacheConstant.USER_LOCKED_LIST_REDIS_KEY)) {
+                    redisUtils.setNoTimeLimit(CacheConstant.USER_LOCKED_LIST_REDIS_KEY,
+                            redisUtils.get(CacheConstant.USER_LOCKED_LIST_REDIS_KEY).toString() + "," + lockUser);
                 } else {
-                    redisUtils.setNoTimeLimit(LoginConstant.USER_LOCKED_LIST_REDIS_KEY, lockUser);
+                    redisUtils.setNoTimeLimit(CacheConstant.USER_LOCKED_LIST_REDIS_KEY, lockUser);
                 }
             } else {
                 lock.setLockReason("该账号登录错误次数过多，已被永久锁定！！！如需解锁，请联系管理员！");
@@ -113,7 +114,7 @@ public class ZUserLockServiceImpl extends ServiceImpl<ZUserLockMapper, ZUserLock
                 save(lock);
             }
             // 锁定后清空错误次数
-            redisUtils.delete(LoginConstant.LOGIN_ERROR_COUNT_REDIS_PRE + userName);
+            redisUtils.delete(errorUserKey);
             return lock.getLockReason();
         } else {
             // 锁定次数倒计时
@@ -131,8 +132,8 @@ public class ZUserLockServiceImpl extends ServiceImpl<ZUserLockMapper, ZUserLock
     public List<ZUserLock> getCacheList() {
         List<ZUserLock> result = new ArrayList<>();
         // 是否有锁定的用户
-        if (redisUtils.hasKey(LoginConstant.USER_LOCKED_LIST_REDIS_KEY)) {
-            String users = redisUtils.get(LoginConstant.USER_LOCKED_LIST_REDIS_KEY).toString();
+        if (redisUtils.hasKey(CacheConstant.USER_LOCKED_LIST_REDIS_KEY)) {
+            String users = redisUtils.get(CacheConstant.USER_LOCKED_LIST_REDIS_KEY).toString();
             if (StringUtils.hasText(users)) {
                 List<String> newUserList = new ArrayList<>();
                 String[] userList = users.split(",");
@@ -146,7 +147,7 @@ public class ZUserLockServiceImpl extends ServiceImpl<ZUserLockMapper, ZUserLock
                     }
                 }
                 // 把新列表存入redis
-                redisUtils.setNoTimeLimit(LoginConstant.USER_LOCKED_LIST_REDIS_KEY, newUserList.stream().collect(Collectors.joining(",")));
+                redisUtils.setNoTimeLimit(CacheConstant.USER_LOCKED_LIST_REDIS_KEY, newUserList.stream().collect(Collectors.joining(",")));
             }
         }
         return result;
@@ -163,15 +164,15 @@ public class ZUserLockServiceImpl extends ServiceImpl<ZUserLockMapper, ZUserLock
             wrapper.lambda().eq(ZUserLock::getUserName, unlockUserName);
             remove(wrapper);
             // 删除缓存锁定信息
-            String unlockUserNameRedis = LoginConstant.USER_LOCK_REDIS_PRE + unlockUserName;
+            String unlockUserNameRedis = CacheConstant.USER_LOCK_REDIS_PRE + unlockUserName;
             redisUtils.delete(unlockUserNameRedis);
             // 从缓存列表中移除
-            if (redisUtils.hasKey(LoginConstant.USER_LOCKED_LIST_REDIS_KEY)) {
-                String users = redisUtils.get(LoginConstant.USER_LOCKED_LIST_REDIS_KEY).toString();
+            if (redisUtils.hasKey(CacheConstant.USER_LOCKED_LIST_REDIS_KEY)) {
+                String users = redisUtils.get(CacheConstant.USER_LOCKED_LIST_REDIS_KEY).toString();
                 String newUsers = Arrays.stream(users.split(","))
                         .filter(str -> redisUtils.hasKey(str) && !str.equals(unlockUserNameRedis))
                         .collect(Collectors.joining(","));
-                redisUtils.set(LoginConstant.USER_LOCKED_LIST_REDIS_KEY, newUsers);
+                redisUtils.set(CacheConstant.USER_LOCKED_LIST_REDIS_KEY, newUsers);
             }
         }
     }

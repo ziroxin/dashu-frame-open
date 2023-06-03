@@ -2,7 +2,7 @@ package com.kg.core.zsafety.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.redis.RedisUtils;
-import com.kg.core.common.constant.LoginConstant;
+import com.kg.core.common.constant.CacheConstant;
 import com.kg.core.zsafety.entity.ZSafety;
 import com.kg.core.zsafety.mapper.ZSafetyMapper;
 import org.springframework.stereotype.Service;
@@ -28,14 +28,14 @@ public class ZSafetyServiceImpl extends ServiceImpl<ZSafetyMapper, ZSafety> impl
      */
     @Override
     public ZSafety getSafety() {
-        if (redisUtils.hasKey(LoginConstant.SAFETY_SET_REDIS_KEY)) {
+        if (redisUtils.hasKey(CacheConstant.SAFETY_SET_REDIS_KEY)) {
             // 如果缓存中有，从缓存读取
-            return (ZSafety) redisUtils.get(LoginConstant.SAFETY_SET_REDIS_KEY);
+            return (ZSafety) redisUtils.get(CacheConstant.SAFETY_SET_REDIS_KEY);
         }
         Optional<ZSafety> first = list().stream().findFirst();
         if (first.isPresent()) {
             // 写入缓存
-            redisUtils.setNoTimeLimit(LoginConstant.SAFETY_SET_REDIS_KEY, first.get());
+            redisUtils.setNoTimeLimit(CacheConstant.SAFETY_SET_REDIS_KEY, first.get());
             return first.get();
         }
         return null;
@@ -46,6 +46,6 @@ public class ZSafetyServiceImpl extends ServiceImpl<ZSafetyMapper, ZSafety> impl
      */
     @Override
     public void clearCache() {
-        redisUtils.delete(LoginConstant.SAFETY_SET_REDIS_KEY);
+        redisUtils.delete(CacheConstant.SAFETY_SET_REDIS_KEY);
     }
 }

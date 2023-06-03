@@ -2,7 +2,7 @@ package com.kg.core.zpermission.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.redis.RedisUtils;
-import com.kg.core.common.constant.LoginConstant;
+import com.kg.core.common.constant.CacheConstant;
 import com.kg.core.zpermission.dto.ZPermissionApiDTO;
 import com.kg.core.zpermission.entity.ZPermissionApi;
 import com.kg.core.zpermission.mapper.ZPermissionApiMapper;
@@ -45,6 +45,6 @@ public class ZPermissionApiServiceImpl extends ServiceImpl<ZPermissionApiMapper,
         }).collect(Collectors.toList());
         saveBatch(collect);
         // 清除角色权限关联关系缓存
-        redisUtils.delete(LoginConstant.ROLE_API_REDIS_KEY);
+        redisUtils.delete(CacheConstant.ROLE_API_REDIS_KEY);
     }
 }

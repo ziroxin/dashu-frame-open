@@ -2,6 +2,7 @@ package com.kg.core.filter;
 
 import com.kg.component.jwt.JwtUtils;
 import com.kg.component.redis.RedisUtils;
+import com.kg.core.common.constant.CacheConstant;
 import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
 import com.kg.core.exception.enums.BaseErrorCode;
@@ -79,7 +80,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
             }
             // ============ 5. 加载当前登录用户信息 ============
             // 从redis中读取用户信息
-            SecurityUserDetailEntity userDetailEntity = (SecurityUserDetailEntity) redisUtils.get(LoginConstant.LOGIN_INFO_REDIS_PRE + userId);
+            SecurityUserDetailEntity userDetailEntity = (SecurityUserDetailEntity) redisUtils.get(CacheConstant.LOGIN_INFO_REDIS_PRE + userId);
             if (ObjectUtils.isEmpty(userDetailEntity)) {
                 throw new BaseException(BaseErrorCode.LOGIN_ERROR_NOT_LOGIN);
             } else {
@@ -122,7 +123,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
         if (!ObjectUtils.isEmpty(userId)) {
             // ============ 5. 加载当前登录用户信息 ============
             // 从redis中读取用户信息
-            SecurityUserDetailEntity userDetailEntity = (SecurityUserDetailEntity) redisUtils.get(LoginConstant.LOGIN_INFO_REDIS_PRE + userId);
+            SecurityUserDetailEntity userDetailEntity = (SecurityUserDetailEntity) redisUtils.get(CacheConstant.LOGIN_INFO_REDIS_PRE + userId);
             if (!ObjectUtils.isEmpty(userDetailEntity)) {
                 try {
                     // 存入SecurityContextHolder

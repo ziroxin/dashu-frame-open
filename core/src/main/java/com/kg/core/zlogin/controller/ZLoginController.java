@@ -3,9 +3,9 @@ package com.kg.core.zlogin.controller;
 import com.kg.component.jwt.JwtUtils;
 import com.kg.component.redis.RedisUtils;
 import com.kg.component.utils.TimeUtils;
-import com.kg.core.annotation.AutoOperateLog;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.base.controller.BaseController;
+import com.kg.core.common.constant.CacheConstant;
 import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
 import com.kg.core.security.util.CurrentUserUtils;
@@ -69,7 +69,7 @@ public class ZLoginController implements BaseController {
         // 缓存用户登录的最新token
         redisUtils.set(LoginConstant.LAST_LOGIN_TOKEN_PRE + user.getUserId(), loginSuccessDTO.getAccessToken(), LoginConstant.LOGIN_JWT_TOKEN_EXPIRY * 60L);
         // 延长redis中，用户有效期
-        redisUtils.setExpire(LoginConstant.LOGIN_INFO_REDIS_PRE + user.getUserId(), LoginConstant.LOGIN_JWT_TOKEN_EXPIRY * 60L);
+        redisUtils.setExpire(CacheConstant.LOGIN_INFO_REDIS_PRE + user.getUserId(), LoginConstant.LOGIN_JWT_TOKEN_EXPIRY * 60L);
         return loginSuccessDTO;
     }
 }

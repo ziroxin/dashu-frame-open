@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.redis.RedisUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.core.common.constant.CacheConstant;
 import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.zapi.dto.ApiUserIdDTO;
 import com.kg.core.zapi.dto.ZApiClassDTO;
@@ -61,11 +62,11 @@ public class ZApiServiceImpl extends ServiceImpl<ZApiMapper, ZApi> implements IZ
         }
         // 用户和api关系
         List<ApiUserIdDTO> list;
-        if (redisUtils.hasKey(LoginConstant.ROLE_API_REDIS_KEY)) {
-            list = (List<ApiUserIdDTO>) redisUtils.get(LoginConstant.ROLE_API_REDIS_KEY);
+        if (redisUtils.hasKey(CacheConstant.ROLE_API_REDIS_KEY)) {
+            list = (List<ApiUserIdDTO>) redisUtils.get(CacheConstant.ROLE_API_REDIS_KEY);
         } else {
             list = zApiMapper.listAllApiForUserId();
-            redisUtils.setNoTimeLimit(LoginConstant.ROLE_API_REDIS_KEY, list);
+            redisUtils.setNoTimeLimit(CacheConstant.ROLE_API_REDIS_KEY, list);
         }
         // 查出用户角色
         QueryWrapper<ZUserRole> wrapper = new QueryWrapper<>();

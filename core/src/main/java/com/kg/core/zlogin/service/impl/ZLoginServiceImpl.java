@@ -7,6 +7,7 @@ import com.kg.component.jwt.JwtUtils;
 import com.kg.component.redis.RedisUtils;
 import com.kg.component.utils.GuidUtils;
 import com.kg.component.utils.TimeUtils;
+import com.kg.core.common.constant.CacheConstant;
 import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
 import com.kg.core.exception.enums.BaseErrorCode;
@@ -114,7 +115,7 @@ public class ZLoginServiceImpl implements ZLoginService {
         redisUtils.set(LoginConstant.LAST_LOGIN_TOKEN_PRE + userId, loginSuccessDTO.getAccessToken(),
                 LoginConstant.LOGIN_JWT_TOKEN_EXPIRY * 60L);
         // 把用户信息存入redis
-        redisUtils.set(LoginConstant.LOGIN_INFO_REDIS_PRE + userId, userDetailEntity,
+        redisUtils.set(CacheConstant.LOGIN_INFO_REDIS_PRE + userId, userDetailEntity,
                 LoginConstant.LOGIN_JWT_TOKEN_EXPIRY * 60L);
         loginSuccessDTO.setSuccessMsg("登录成功！");
         // 检查默认密码
@@ -131,7 +132,7 @@ public class ZLoginServiceImpl implements ZLoginService {
             }
         }
         // 重置密码错误次数
-        redisUtils.delete(LoginConstant.LOGIN_ERROR_COUNT_REDIS_PRE + loginForm.getUserName());
+        redisUtils.delete(CacheConstant.LOGIN_ERROR_COUNT_REDIS_PRE + loginForm.getUserName());
         // 写入用户登录日志
         writeOperateLog(userDetailEntity.getZUser());
         return loginSuccessDTO;
