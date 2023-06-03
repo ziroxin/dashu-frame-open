@@ -9,6 +9,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelCommonUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.core.exception.BaseException;
+import com.kg.module.dictData.entity.ZDictData;
+import com.kg.module.dictData.service.ZDictDataService;
 import com.kg.module.dictType.dto.ZDictTypeDTO;
 import com.kg.module.dictType.dto.convert.ZDictTypeConvert;
 import com.kg.module.dictType.entity.ZDictType;
@@ -22,8 +25,10 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -39,6 +44,8 @@ public class ZDictTypeServiceImpl extends ServiceImpl<ZDictTypeMapper, ZDictType
 
     @Resource
     private ZDictTypeConvert zDictTypeConvert;
+    @Resource
+    private ZDictDataService zDictDataService;
 
     /**
      * 分页列表
@@ -93,7 +100,12 @@ public class ZDictTypeServiceImpl extends ServiceImpl<ZDictTypeMapper, ZDictType
      */
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public void add(ZDictTypeDTO zDictTypeDTO) {
+    public void add(ZDictTypeDTO zDictTypeDTO) throws BaseException {
+        // 查重
+        Optional<ZDictType> optional = lambdaQuery().eq(ZDictType::getTypeCode, zDictTypeDTO.getTypeCode()).oneOpt();
+        if (optional.isPresent()) {
+            throw new BaseException("字典Code 已存在，请修改！");
+        }
         ZDictType zDictType = zDictTypeConvert.dtoToEntity(zDictTypeDTO);
         zDictType.setTypeId(GuidUtils.getUuid());
         zDictType.setCreateTime(LocalDateTime.now());
@@ -107,7 +119,13 @@ public class ZDictTypeServiceImpl extends ServiceImpl<ZDictTypeMapper, ZDictType
      */
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public void update(ZDictTypeDTO zDictTypeDTO) {
+    public void update(ZDictTypeDTO zDictTypeDTO) throws BaseException {
+        // 查重
+        Optional<ZDictType> optional = lambdaQuery().eq(ZDictType::getTypeCode, zDictTypeDTO.getTypeCode())
+                .ne(ZDictType::getTypeId, zDictTypeDTO.getTypeId()).oneOpt();
+        if (optional.isPresent()) {
+            throw new BaseException("字典Code 已存在，请修改！");
+        }
         ZDictType zDictType = zDictTypeConvert.dtoToEntity(zDictTypeDTO);
         zDictType.setUpdateTime(LocalDateTime.now());
         updateById(zDictType);
@@ -120,7 +138,20 @@ public class ZDictTypeServiceImpl extends ServiceImpl<ZDictTypeMapper, ZDictType
      */
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public void delete(List<String> idlist) {
+    public void delete(List<String> idlist) throws BaseException {
+        // 查询是否有数据，有数据不能删除
+        List<String> typeCodeList = new ArrayList<>();
+        List<ZDictType> dictTypeList = lambdaQuery().in(ZDictType::getTypeId, idlist).list();
+        dictTypeList.stream().forEach(m -> {
+            List<ZDictData> dataList = zDictDataService.lambdaQuery().eq(ZDictData::getTypeCode, m.getTypeCode()).list();
+            if (dataList != null && dataList.size() > 0) {
+                typeCodeList.add(m.getTypeCode());
+            }
+        });
+        if (typeCodeList != null && typeCodeList.size() > 0) {
+            throw new BaseException("字典 [ " + typeCodeList.stream().collect(Collectors.joining(",")) + " ] 下有数据，不能删除");
+        }
+        // 无数据，删除
         removeBatchByIds(idlist);
     }
 

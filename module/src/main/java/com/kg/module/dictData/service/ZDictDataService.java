@@ -63,4 +63,14 @@ public interface ZDictDataService extends IService<ZDictData> {
      * @param request 请求文件
      */
     void importExcel(HttpServletRequest request);
+
+    /**
+     * 获取全部字典（缓存redis）
+     */
+    List<ZDictData> listCache(String typeCode);
+
+    /**
+     * 清空数据字典缓存数据
+     */
+    void clearCache(String typeCode);
 }

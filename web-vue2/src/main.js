@@ -43,7 +43,9 @@ import waves from '@/directive/waves/index'
 import clipboard from '@/directive/clipboard'
 // 导入全局变量
 import request from '@/utils/request'
-import {getTokenHeader} from '@/utils/auth';
+import {getTokenHeader} from '@/utils/auth'
+// 初始化数据字典
+import '@/utils/dict-install'
 
 Vue.use(Element, {
   // 设置element-ui默认大小

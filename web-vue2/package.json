@@ -34,6 +34,7 @@
     "screenfull": "4.2.0",
     "vue": "2.6.14",
     "vue-count-to": "1.0.13",
+    "vue-data-dict": "^1.2.0",
     "vue-router": "3.0.2",
     "vuex": "3.1.0"
   },

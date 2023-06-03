@@ -8,7 +8,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelCommonUtils;
+import com.kg.component.redis.RedisUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.core.common.constant.CacheConstant;
 import com.kg.module.dictData.dto.ZDictDataDTO;
 import com.kg.module.dictData.dto.convert.ZDictDataConvert;
 import com.kg.module.dictData.entity.ZDictData;
@@ -22,6 +24,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +42,8 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
 
     @Resource
     private ZDictDataConvert zDictDataConvert;
+    @Resource
+    private RedisUtils redisUtils;
 
     /**
      * 分页列表
@@ -102,6 +107,12 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public void add(ZDictDataDTO zDictDataDTO) {
+        // 查重
+        List<ZDictData> dataList = lambdaQuery().eq(ZDictData::getDictValue, zDictDataDTO.getDictValue())
+                .or().eq(ZDictData::getDictLabel, zDictDataDTO.getDictLabel()).list();
+        if (dataList != null && dataList.size() > 0) {
+            throw new RuntimeException("字典数据已存在，请修改！");
+        }
         ZDictData zDictData = zDictDataConvert.dtoToEntity(zDictDataDTO);
         zDictData.setDictId(GuidUtils.getUuid());
         zDictData.setCreateTime(LocalDateTime.now());
@@ -116,6 +127,15 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public void update(ZDictDataDTO zDictDataDTO) {
+        // 查重
+        List<ZDictData> dataList = lambdaQuery()
+                .ne(ZDictData::getDictId, zDictDataDTO.getDictId()).and(wr -> {
+                    wr.eq(ZDictData::getDictValue, zDictDataDTO.getDictValue())
+                            .or().eq(ZDictData::getDictLabel, zDictDataDTO.getDictLabel());
+                }).list();
+        if (dataList != null && dataList.size() > 0) {
+            throw new RuntimeException("字典数据已存在，请修改！");
+        }
         ZDictData zDictData = zDictDataConvert.dtoToEntity(zDictDataDTO);
         zDictData.setUpdateTime(LocalDateTime.now());
         updateById(zDictData);
@@ -220,6 +240,42 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
         }).collect(Collectors.toList());
         // 保存
         saveBatch(saveData);
+    }
+
+
+    @Override
+    public List<ZDictData> listCache(String typeCode) {
+        String key = CacheConstant.DICT_TYPE_REDIS_PRE + typeCode;
+        if (redisUtils.hasKey(key)) {
+            return JSONUtil.toList(redisUtils.get(key).toString(), ZDictData.class);
+        }
+        // 查询所有字典数据
+        List<ZDictData> dataList = lambdaQuery().eq(ZDictData::getTypeCode, typeCode).list();
+        if (dataList != null && dataList.size() > 0) {
+            // 将缓存存入redis
+            redisUtils.set(key, JSONUtil.toJsonStr(dataList));
+            return dataList;
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * 清空数据字典缓存数据
+     */
+    @Override
+    public void clearCache(String typeCode) {
+        if (StringUtils.hasText(typeCode)) {
+            // 清空一个缓存
+            redisUtils.delete(CacheConstant.DICT_TYPE_REDIS_PRE + typeCode);
+        } else {
+            // 清空全部缓存
+            List<ZDictData> dataList = lambdaQuery().list();
+            if (dataList != null && dataList.size() > 0) {
+                dataList.forEach(o -> {
+                    redisUtils.delete(CacheConstant.DICT_TYPE_REDIS_PRE + o.getTypeCode());
+                });
+            }
+        }
     }
 
 }

@@ -54,8 +54,8 @@ public class ZDictTypeController {
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('dictType:zDictType:list')")
     public Page<ZDictTypeDTO> list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                               @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
-                               @RequestParam(value = "params", required = false) String params) {
+                                   @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
+                                   @RequestParam(value = "params", required = false) String params) {
         return zDictTypeService.pagelist(page, limit, params);
     }
 

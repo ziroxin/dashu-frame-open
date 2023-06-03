@@ -42,6 +42,9 @@
       <el-button v-waves class="filter-item" type="info" size="small"
                  icon="el-icon-refresh" @click="resetTableList">显示全部
       </el-button>
+      <el-button v-waves class="filter-item" type="danger" size="small" style="float: right;"
+                 @click="clearDictCache(currentDictType.typeCode)" icon="el-icon-refresh-right">更新当前字典缓存
+      </el-button>
     </div>
     <!-- 字典数据-列表 -->
     <el-table :data="tableData" stripe border :height="this.$windowHeight-200" v-loading="isLoading"
@@ -119,6 +122,7 @@
 <script>
 import waves from '@/directive/waves'
 import request from '@/utils/request'
+import {clearDictCache} from "@/api/dicts";
 
 export default {
   name: 'DictData',
@@ -156,6 +160,7 @@ export default {
     }
   },
   methods: {
+    clearDictCache,
     // 显示全部
     resetTableList() {
       this.searchData = {}

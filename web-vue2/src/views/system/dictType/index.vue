@@ -14,14 +14,17 @@
           </el-button>
         </div>
         <div style="margin-bottom: 10px">
-          <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
+          <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="mini"
                      v-permission="'dictType-zDictType-add'">新增
           </el-button>
-          <el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate(null)" size="small"
+          <el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate(null)" size="mini"
                      v-permission="'dictType-zDictType-update'">修改
           </el-button>
-          <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
+          <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="mini"
                      v-permission="'dictType-zDictType-delete'">删除
+          </el-button>
+          <el-button v-waves size="mini" icon="el-icon-document"
+                     @click="dialogDictDataVisible=true">示例
           </el-button>
         </div>
         <!-- 字典类型-列表 -->
@@ -32,16 +35,22 @@
           <el-table-column label="字典类型" min-width="50%" prop="typeName">
             <template v-slot="scope">
               <div>{{ scope.row.typeName }}</div>
-              <div>{{ scope.row.typeCode }}</div>
+              <div>
+                {{ scope.row.typeCode }}
+                <el-button type="text" size="small" style="color: #00b42a;"
+                           v-clipboard:copy="scope.row.typeCode">
+                  <i class="el-icon-document-copy"/>复制
+                </el-button>
+              </div>
             </template>
           </el-table-column>
-          <el-table-column label="状态" min-width="25%" prop="status" align="center">
+          <el-table-column label="状态" width="60px" prop="status" align="center">
             <template v-slot="scope">
-              <el-tag type="success" v-if="scope.row.status === '1'">正常</el-tag>
-              <el-tag type="danger" v-else>停用</el-tag>
+              <el-tag type="success" v-if="scope.row.status === '1'" size="mini">正常</el-tag>
+              <el-tag type="danger" v-else size="mini">停用</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" min-width="25%" align="center">
+          <el-table-column label="操作" width="50px" align="center">
             <template v-slot="scope">
               <el-button type="text" size="small" @click="openDictData(scope.row)" style="line-height: 14px;">
                 字典<br/>数据
@@ -85,10 +94,18 @@
         <!-- 字典数据 -->
         <div v-if="!currentDictType.typeId">
           <el-empty description="请点击左侧字典类型表中的 [ 字典数据 ] 按钮"/>
+          <div style="text-align: center;">
+            <el-button v-waves class="filter-item" type="danger" size="small"
+                       @click="clearDictCache(null)" icon="el-icon-refresh-right">更新全部字典缓存
+            </el-button>
+          </div>
         </div>
         <dict-data v-else :current-dict-type="currentDictType"></dict-data>
       </el-col>
     </el-row>
+    <el-dialog title="字典数据Demo" :visible.sync="dialogDictDataVisible" width="400px">
+      <dict-data-demo></dict-data-demo>
+    </el-dialog>
   </div>
 </template>
 
@@ -96,9 +113,11 @@
 import waves from '@/directive/waves'
 import request from '@/utils/request'
 import DictData from "@/views/system/dictData/index.vue";
+import {clearDictCache} from "@/api/dicts";
+import DictDataDemo from "@/views/system/dictData/dictDataDemo.vue";
 
 export default {
-  components: {DictData},
+  components: {DictDataDemo, DictData},
   directives: {waves},
   data() {
     return {
@@ -119,7 +138,9 @@ export default {
       // 表单临时数据
       temp: {},
       // 当前字典项
-      currentDictType: {}
+      currentDictType: {},
+      // 数据字典demo弹窗显示隐藏
+      dialogDictDataVisible: false
     }
   },
   created() {
@@ -127,6 +148,7 @@ export default {
     this.resetTemp()
   },
   methods: {
+    clearDictCache,
     // 显示全部
     resetTableList() {
       this.searchData = {}
@@ -146,6 +168,10 @@ export default {
     // 打开字典数据
     openDictData(row) {
       this.currentDictType = row
+    },
+    openDictDataDemo(row) {
+      this.currentDictType = row
+      this.dialogDictDataVisible = true
     },
     // 监听选中行
     handleTableSelectChange(rows) {

@@ -5,6 +5,7 @@ import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.module.dictData.dto.ZDictDataDTO;
 import com.kg.module.dictData.dto.convert.ZDictDataConvert;
+import com.kg.module.dictData.entity.ZDictData;
 import com.kg.module.dictData.service.ZDictDataService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * <p>
@@ -34,6 +36,18 @@ public class ZDictDataController {
     private ZDictDataService zDictDataService;
     @Resource
     private ZDictDataConvert zDictDataConvert;
+
+    @ApiOperation(value = "/dictData/zDictData/listCache", notes = "获取字典数据（缓存redis）", httpMethod = "GET")
+    @GetMapping("/listCache")
+    public List<ZDictData> listCache(String typeCode) {
+        return zDictDataService.listCache(typeCode);
+    }
+
+    @ApiOperation(value = "/dictData/zDictData/clearCache", notes = "清空数据字典缓存数据", httpMethod = "GET")
+    @GetMapping("/clearCache")
+    public void clearCache(String typeCode) {
+        zDictDataService.clearCache(typeCode);
+    }
 
     @ApiOperation(value = "/dictData/zDictData/getById", notes = "详情-字典数据", httpMethod = "GET")
     @ApiImplicitParams({
@@ -54,8 +68,8 @@ public class ZDictDataController {
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('dictData:zDictData:list')")
     public Page<ZDictDataDTO> list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                               @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
-                               @RequestParam(value = "params", required = false) String params) {
+                                   @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
+                                   @RequestParam(value = "params", required = false) String params) {
         return zDictDataService.pagelist(page, limit, params);
     }
 

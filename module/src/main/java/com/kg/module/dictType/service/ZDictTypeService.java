@@ -2,6 +2,7 @@ package com.kg.module.dictType.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kg.core.exception.BaseException;
 import com.kg.module.dictType.dto.ZDictTypeDTO;
 import com.kg.module.dictType.entity.ZDictType;
 
@@ -33,21 +34,21 @@ public interface ZDictTypeService extends IService<ZDictType> {
      *
      * @param zDictTypeDTO 新增实体
      */
-    void add(ZDictTypeDTO zDictTypeDTO);
+    void add(ZDictTypeDTO zDictTypeDTO) throws BaseException;
 
     /**
      * 修改
      *
      * @param zDictTypeDTO 编辑实体
      */
-    void update(ZDictTypeDTO zDictTypeDTO);
+    void update(ZDictTypeDTO zDictTypeDTO) throws BaseException;
 
     /**
      * 删除
      *
      * @param idlist 删除id列表
      */
-    void delete(List<String> idlist);
+    void delete(List<String> idlist) throws BaseException;
 
     /**
      * 导出Excel
