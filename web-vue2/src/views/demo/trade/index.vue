@@ -17,7 +17,7 @@
       <el-date-picker v-model="searchData.paySuccessTime" size="small" style="width: 150px;margin-right: 10px;"
                       type="datetime" class="filter-item" placeholder="支付成功时间"/>
       <el-button v-waves class="filter-item" type="primary" size="small"
-                 icon="el-icon-search" @click="loadTableList">查询
+                 icon="el-icon-search" @click="searchBtnHandle">查询
       </el-button>
       <el-button v-waves class="filter-item" type="info" size="small"
                  icon="el-icon-refresh" @click="resetTableList">显示全部
@@ -170,13 +170,19 @@ export default {
           '&productId=' + this.payData.productId +
           '&productName=' + this.payData.productName +
           '&totalFee=' + this.payData.totalFee;
-      }else if(this.openPayType === 4){
+      } else if (this.openPayType === 4) {
         // 支付宝扫码支付
         this.$router.replace('/demo/trade/AlipayScanPay')
       }
     },
+    // 查询按钮
+    searchBtnHandle() {
+      this.pager.page = 1
+      this.loadTableList()
+    },
     // 显示全部
     resetTableList() {
+      this.pager.page = 1
       this.searchData = {}
       this.loadTableList()
     },

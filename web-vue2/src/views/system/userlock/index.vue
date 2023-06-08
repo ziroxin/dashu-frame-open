@@ -19,16 +19,18 @@
       <el-tab-pane label="永久锁定用户管理" name="first">
         <!-- 用户锁定-管理按钮 -->
         <div style="margin-bottom: 20px;">
-          <el-input v-model="searchData.userName" style="width: 150px;margin-right: 10px;"
+          <el-input v-model="searchData.userName" style="width: 150px;margin-right: 10px;" size="small"
                     class="filter-item" placeholder="请输入用户名查询"
           />
-          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="loadTableList">查询
+          <el-button v-waves class="filter-item" type="primary" size="small"
+                     icon="el-icon-search" @click="searchBtnHandle">查询
           </el-button>
-          <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh" @click="resetTableList">显示全部
+          <el-button v-waves class="filter-item" type="info" size="small"
+                     icon="el-icon-refresh" @click="resetTableList">显示全部
           </el-button>
           <div style="float: right;">
             <el-button v-waves type="danger" icon="el-icon-unlock" @click="deleteByIds"
-                       v-permission="'zuserlock-zUserLock-unlock'"
+                       v-permission="'zuserlock-zUserLock-unlock'" size="small"
             >用户解锁
             </el-button>
           </div>
@@ -96,8 +98,14 @@ export default {
         this.loadTable2List()
       }
     },
+    // 查询按钮
+    searchBtnHandle() {
+      this.pager.page = 1
+      this.loadTableList()
+    },
     // 显示全部
     resetTableList() {
+      this.pager.page = 1
       this.searchData = {}
       this.loadTableList()
     },

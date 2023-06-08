@@ -1,13 +1,13 @@
 <template>
   <div class="app-container">
     <el-row>
-      <el-col :span="7">
+      <el-col :span="8">
         <!-- 字典类型 -->
         <div style="margin-bottom: 10px;">
           <el-input v-model="searchData.typeName" size="small" style="width: 160px;margin-right: 10px;"
                     class="filter-item" placeholder="输入名称或code查询"/>
           <el-button v-waves class="filter-item" type="primary" size="small"
-                     icon="el-icon-search" @click="loadTableList">
+                     icon="el-icon-search" @click="searchBtnHandle">
           </el-button>
           <el-button v-waves class="filter-item" type="info" size="small"
                      icon="el-icon-refresh" @click="resetTableList">重置
@@ -90,7 +90,7 @@
           </div>
         </el-dialog>
       </el-col>
-      <el-col :span="17">
+      <el-col :span="16">
         <!-- 字典数据 -->
         <div v-if="!currentDictType.typeId">
           <el-empty description="请点击左侧字典类型表中的 [ 字典数据 ] 按钮"/>
@@ -149,8 +149,14 @@ export default {
   },
   methods: {
     clearDictCache,
+    // 查询按钮
+    searchBtnHandle() {
+      this.pager.page = 1
+      this.loadTableList()
+    },
     // 显示全部
     resetTableList() {
+      this.pager.page = 1
       this.searchData = {}
       this.loadTableList()
     },

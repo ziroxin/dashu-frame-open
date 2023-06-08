@@ -8,7 +8,7 @@
       <el-input v-model="searchData.newsContent" style="width: 150px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入新闻内容查询"
       />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="loadTableList">查询
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询
       </el-button>
       <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh" @click="resetTableList">显示全部
       </el-button>
@@ -116,8 +116,14 @@ export default {
     this.resetTemp()
   },
   methods: {
+    // 查询按钮
+    searchBtnHandle() {
+      this.pager.page = 1
+      this.loadTableList()
+    },
     // 显示全部
     resetTableList() {
+      this.pager.page = 1
       this.searchData = {}
       this.loadTableList()
     },

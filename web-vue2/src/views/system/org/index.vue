@@ -5,10 +5,12 @@
       <el-input v-model="searchData.orgName" style="width: 150px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入用户名/姓名查询"
       />
-      <el-button v-waves class="filter-item search-btn" size="small" icon="el-icon-search" @click="loadTableList"
-      ></el-button>
-      <el-button v-waves class="filter-item reset-btn" size="small" icon="el-icon-refresh" @click="resetTableList"
-      ></el-button>
+      <el-button v-waves class="filter-item" size="small" type="primary"
+                 icon="el-icon-search" @click="loadTableList">查询
+      </el-button>
+      <el-button v-waves class="filter-item" size="small" type="info"
+                 icon="el-icon-refresh" @click="resetTableList">重置
+      </el-button>
       <div style="float: right;">
         <el-button v-waves v-permission="'zorg-zOrganization-add'" type="primary"
                    @click="openAdd"

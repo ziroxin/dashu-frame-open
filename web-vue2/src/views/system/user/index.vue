@@ -2,9 +2,8 @@
   <div class="app-container">
     <el-row :gutter="15">
       <el-col :span="4">
-        <el-input v-model="filterText" placeholder="输入关键字进行过滤"
-                  style="margin-bottom: 10px;"
-        />
+        <el-input v-model="filterText" placeholder="输入关键字进行过滤" size="small"
+                  style="margin-bottom: 10px;"/>
         <!-- 组织机构树 -->
         <el-tree ref="tree" class="filter-tree" :data="orgSelectTreeData" :expand-on-click-node="false"
                  :highlight-current="true" :props="{children: 'children',label: 'label'}"
@@ -13,20 +12,19 @@
       </el-col>
       <el-col :span="20" style="">
         <el-switch v-model="searchData.isSelf" active-value="self" inactive-value="notself"
-                   style="margin-right: 10px;"
+                   style="margin-right: 10px;" size="small"
                    active-text="包含下级" inactive-text="只查本级" @change="getUserList"
         />
-        <el-input v-model="searchData.userName" style="width: 115px;margin-right: 10px;"
-                  class="filter-item" placeholder="请输入用户名"
+        <el-input v-model="searchData.userName" style="width: 125px;margin-right: 10px;" size="small"
+                  class="filter-item" placeholder="输入用户名查询"
         />
-        <el-input v-model="searchData.name" style="width: 105px;margin-right: 10px;"
-                  class="filter-item" placeholder="请输入姓名"
+        <el-input v-model="searchData.name" style="width: 115px;margin-right: 10px;" size="small"
+                  class="filter-item" placeholder="输入姓名查询"
         />
-        <el-button v-waves class="filter-item search-btn" icon="el-icon-search" size="small"
-                   @click="getUserList"
-        ></el-button>
-        <el-button v-waves class="filter-item reset-btn" icon="el-icon-refresh" size="small" @click="resetTableList"
-        >
+        <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" size="small"
+                   @click="searchBtnHandle"/>
+        <el-button v-waves class="filter-item" type="info"
+                   icon="el-icon-refresh" size="small" @click="resetTableList">重置
         </el-button>
         <div style="float: right;margin-bottom: 10px;">
           <!--  操作按钮  -->
@@ -248,8 +246,14 @@ export default {
         phone: ''
       }
     },
+    // 查询按钮
+    searchBtnHandle() {
+      this.pager.page = 1
+      this.getUserList()
+    },
     // 显示全部
     resetTableList() {
+      this.pager.page = 1
       this.searchData = {}
       this.getUserList()
     },
