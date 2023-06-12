@@ -49,7 +49,7 @@ public class JwtUtils {
                 .setExpiresAt(Date.from(LocalDateTime.now().plusMinutes(JWT_EXPIRE_TIME).atZone(ZoneId.systemDefault()).toInstant()))
                 .setPayload(TOKEN_VALUE_NAME, value)
                 .sign();
-        redisUtils.set(token, true, JWT_EXPIRE_TIME * 60l);
+        redisUtils.set(token, true, JWT_EXPIRE_TIME * 60L);
         return token;
     }
 

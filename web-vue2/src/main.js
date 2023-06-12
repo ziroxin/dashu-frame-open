@@ -5,22 +5,6 @@ import Cookies from 'js-cookie'
 import 'normalize.css/normalize.css'
 
 import Element from 'element-ui'
-import './styles/element-variables.scss'
-// 设置主题色
-const themeColor = Cookies.get('settings') ? JSON.parse(Cookies.get('settings')).theme : '#4080FF'
-if (themeColor === '#F5222D') {
-  require('@/assets/theme-fengye/index.css')
-} else if (themeColor === '#FA541C') {
-  require('@/assets/theme-nuanyang/index.css')
-} else if (themeColor === '#FAAD14') {
-  require('@/assets/theme-ningmeng/index.css')
-} else if (themeColor === '#13C2C2') {
-  require('@/assets/theme-jiqing/index.css')
-} else if (themeColor === '#52C41A') {
-  require('@/assets/theme-senlv/index.css')
-} else if (themeColor === '#722ED1') {
-  require('@/assets/theme-putao/index.css')
-}
 // 如果使用中文语言包请默认支持，无需额外引入，请删除该依赖
 // import enLang from 'element-ui/lib/locale/lang/en'
 // 全局样式
@@ -46,6 +30,10 @@ import request from '@/utils/request'
 import {getTokenHeader} from '@/utils/auth'
 // 初始化数据字典
 import '@/utils/dict-install'
+import {loadTheme} from "@/utils/loadTheme";
+
+// 加载自定义主题
+loadTheme(Cookies.get('settings') ? JSON.parse(Cookies.get('settings')).theme : '#4080FF')
 
 Vue.use(Element, {
   // 设置element-ui默认大小
