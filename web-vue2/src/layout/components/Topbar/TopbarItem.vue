@@ -115,7 +115,7 @@ export default {
   }
 
   .svg-icon {
-    margin: 0 7px 0px 2px !important;
+    margin: 0 10px 0px 5px !important;
   }
 }
 

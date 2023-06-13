@@ -60,7 +60,7 @@
 
     .sub-el-icon {
       margin-right: 12px !important;
-      margin-left: -2px !important;
+      margin-left: -5px !important;
     }
 
     .el-menu {
@@ -134,7 +134,7 @@
         }
 
         .sub-el-icon {
-          margin-left: 19px !important;
+          margin-left: 15px !important;
         }
 
         .el-submenu__icon-arrow {
@@ -191,7 +191,7 @@
   }
 }
 
-// when menu collapsed
+// 菜单折叠后的样式
 .el-menu--vertical {
   & > .el-menu {
     .svg-icon {
@@ -200,7 +200,7 @@
 
     .sub-el-icon {
       margin-right: 12px !important;
-      margin-left: -2px !important;
+      margin-left: -5px !important;
     }
   }
 
