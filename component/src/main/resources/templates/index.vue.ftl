@@ -98,7 +98,7 @@
 			<#assign rules2=field.metaInfo.nullable?string("{type: 'number', message: '必须为数字'}","{required: true, message: '" + field.comment + "不能为空'},{type: 'number', message: '必须为数字'}")>
 				<el-form-item label="${field.comment}" prop="${field.propertyName}"
                       :rules="[${rules2}]">
-					<el-input v-model.number="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
+					<el-input-number v-model.number="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
 				</el-form-item>
 		<#elseif field.propertyType=='LocalDate' || field.propertyType=='Date'>
 				<el-form-item label="${field.comment}" prop="${field.propertyName}"
