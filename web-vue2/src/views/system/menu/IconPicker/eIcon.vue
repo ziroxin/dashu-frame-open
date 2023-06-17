@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <i v-if="iconName.startsWith('el-icon')" :class="iconName" />
-    <svg-icon v-else :name="iconName" :icon-class="iconName" />
-  </div>
+  <el-tooltip class="item" effect="dark" :content="iconName" placement="top">
+    <i v-if="iconName.startsWith('el-icon')" :class="iconName"/>
+    <svg-icon v-else :name="iconName" :icon-class="iconName"/>
+  </el-tooltip>
 </template>
 
 <script>

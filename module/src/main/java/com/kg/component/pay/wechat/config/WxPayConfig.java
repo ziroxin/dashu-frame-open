@@ -43,6 +43,10 @@ public class WxPayConfig {
      */
     private String certPath;
     /**
+     * 证书p12地址(v2退款时需要)
+     */
+    private String certP12Path;
+    /**
      * 私钥pem地址(v3时需要)
      */
     private String keyPath;

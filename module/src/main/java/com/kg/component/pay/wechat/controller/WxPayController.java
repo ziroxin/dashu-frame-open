@@ -4,6 +4,7 @@ import cn.hutool.extra.servlet.ServletUtil;
 import com.ijpay.core.enums.TradeType;
 import com.ijpay.core.kit.HttpKit;
 import com.kg.component.pay.wechat.dto.WxTradePayDTO;
+import com.kg.component.pay.wechat.dto.WxTradeRefundDTO;
 import com.kg.component.pay.wechat.dto.WxTradeResutDTO;
 import com.kg.component.pay.wechat.service.WxPayService;
 import com.kg.core.exception.BaseException;
@@ -154,6 +155,36 @@ public class WxPayController {
             throw new BaseException("订单号不能为空");
         }
         return wxPayService.getPayResult(wxTradeResutDTO);
+    }
+
+    /**
+     * 微信退款
+     *
+     * <a href="https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_4">V2-退款文档</a>
+     * <a href="https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_9.shtml">V3-退款文档</a>
+     */
+    @PostMapping("/refund")
+    public WxTradeRefundDTO refund(@RequestBody WxTradeRefundDTO wxTradeRefundDTO) throws BaseException {
+        try {
+            if (!StringUtils.hasText(wxTradeRefundDTO.getTradeId())) {
+                throw new BaseException("您传的参数不正确");
+            }
+            // 微信退款
+            return wxPayService.refund(wxTradeRefundDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException("退款失败！原因：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 查询退款结果
+     * <a href="https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_5">V2-查询退款</a>
+     * <a href="https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_10.shtml">V3-查询单笔退款</a>
+     */
+    @GetMapping("/queryRefund")
+    public WxTradeRefundDTO queryRefund(WxTradeRefundDTO wxTradeRefundDTO) throws BaseException {
+        return wxPayService.queryRefund(wxTradeRefundDTO);
     }
 
 }

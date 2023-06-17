@@ -34,7 +34,6 @@
     <!-- 交易 - 支付demo-列表 -->
     <el-table :data="tableData" stripe border @selection-change="handleTableSelectChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
-      <el-table-column label="订单ID" prop="tradeId" align="center" show-overflow-tooltip/>
       <el-table-column label="关联商品ID" prop="productId" align="center"/>
       <el-table-column label="支付方式" prop="payType" align="center">
         <template v-slot="scope">
@@ -50,7 +49,18 @@
       </el-table-column>
       <el-table-column label="支付成功时间" prop="paySuccessTime" align="center"/>
       <el-table-column label="总金额(分)" prop="totalFee" align="center"/>
-      <el-table-column label="商户订单号" prop="outTradeNo" align="center" show-overflow-tooltip/>
+      <el-table-column label="已退款(分)" prop="refundTotalFee" align="center"/>
+      <el-table-column label="操作" width="120" align="center">
+        <template v-slot="scope">
+          <el-button style="color: #409eff;" v-if="scope.row.tradeStatus === 1"
+                     type="text" size="small" @click="refund(scope.row)">
+            退款
+          </el-button>
+          <el-button v-permission="'trade-busTrade-delete'" style="color: #ff6d6d;"
+                     type="text" size="small" @click="deleteByIds(scope.row)">删除
+          </el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="支付反馈结果json" prop="resultJson" align="center">
         <template v-slot="scope">
           <el-popover placement="top-start" title="支付反馈结果JSON"
@@ -62,13 +72,6 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="120" align="center">
-        <template v-slot="scope">
-          <el-button v-permission="'trade-busTrade-delete'" style="color: #ff6d6d;"
-                     type="text" size="small" @click="deleteByIds(scope.row)">删除
-          </el-button>
-        </template>
-      </el-table-column>
     </el-table>
     <!-- 交易 - 支付demo-分页 -->
     <el-pagination style="text-align: center;" background layout="total,prev,pager,next,sizes"
@@ -76,7 +79,7 @@
                    :total="pager.totalCount" @current-change="handleCurrentChange"
                    @size-change="handleSizeChange"
     />
-    <!-- 添加修改弹窗 -->
+    <!-- 支付弹窗 -->
     <el-dialog title="支付窗口" :visible.sync="dialogFormVisible" width="600px"
                @closed="closePayDialog">
       <el-form>
@@ -98,6 +101,11 @@
         <el-button @click="dialogFormVisible=false">关闭</el-button>
       </div>
     </el-dialog>
+    <!-- 退款弹窗 -->
+    <el-dialog title="退款窗口" :visible.sync="dialogRefundFormVisible" width="95%" top="5vh" @closed="loadTableList">
+      <trade-refund :current-trade-info="refundTradeInfo" :refund-refresh-index="refundRefreshIndex"
+                    ref="tradeRefund"></trade-refund>
+    </el-dialog>
   </div>
 </template>
 
@@ -105,8 +113,10 @@
 import waves from '@/directive/waves'
 import request from '@/utils/request'
 import {getToken} from "@/utils/auth";
+import TradeRefund from "@/views/demo/tradeRefund/index.vue";
 
 export default {
+  components: {TradeRefund},
   directives: {waves},
   data() {
     return {
@@ -129,8 +139,13 @@ export default {
         // 商品名称（支付时显示）
         productName: '测试商品',
         // 支付金额（单位：分）
-        totalFee: 1
+        totalFee: 2
       },
+      // 退款弹窗
+      dialogRefundFormVisible: false,
+      refundRefreshIndex: 0,
+      // 退款订单信息
+      refundTradeInfo: {}
     }
   },
   created() {
@@ -231,6 +246,13 @@ export default {
             })
         })
       }
+    },
+    // 退款
+    refund(row) {
+      // 打开退款信息弹窗
+      this.refundTradeInfo = row
+      this.refundRefreshIndex++
+      this.dialogRefundFormVisible = true
     },
     // 关闭
     closePayDialog() {

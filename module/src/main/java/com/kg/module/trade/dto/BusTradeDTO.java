@@ -59,6 +59,9 @@ public class BusTradeDTO implements BaseDTO {
     @ApiModelProperty("支付反馈结果json")
     private String resultJson;
 
+    @ApiModelProperty("已退款总金额，单位：分")
+    private Integer refundTotalFee;
+
     @ApiModelProperty("添加时间")
     @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;

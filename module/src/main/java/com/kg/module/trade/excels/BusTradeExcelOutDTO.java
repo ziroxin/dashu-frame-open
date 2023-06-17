@@ -1,11 +1,11 @@
 package com.kg.module.trade.excels;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kg.core.base.dto.BaseDTO;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 /**
  * 导出Excel实体 - 交易 - 支付demo
@@ -70,6 +70,11 @@ public class BusTradeExcelOutDTO implements BaseDTO {
      * 支付反馈结果json
      */
     private String resultJson;
+
+    /**
+     * 已退款总金额，单位：分
+     */
+    private String refundTotalFee;
 
     /**
      * 添加时间

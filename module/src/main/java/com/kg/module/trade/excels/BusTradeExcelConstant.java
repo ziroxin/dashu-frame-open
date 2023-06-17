@@ -33,6 +33,7 @@ public class BusTradeExcelConstant {
         EXPORT_EXCEL_COLUMN.put("outTradeNo", "商户订单号（微信32支付宝64内）");
         EXPORT_EXCEL_COLUMN.put("attach", "附加内容（在查询API和支付通知中原样返回）");
         EXPORT_EXCEL_COLUMN.put("resultJson", "支付反馈结果json");
+        EXPORT_EXCEL_COLUMN.put("refundTotalFee", "已退款总金额，单位：分");
         EXPORT_EXCEL_COLUMN.put("createTime", "添加时间");
         EXPORT_EXCEL_COLUMN.put("updateTime", "修改时间");
         // 初始化导入字段
@@ -47,6 +48,7 @@ public class BusTradeExcelConstant {
         IMPORT_EXCEL_COLUMN.put("商户订单号（微信32支付宝64内）", "outTradeNo");
         IMPORT_EXCEL_COLUMN.put("附加内容（在查询API和支付通知中原样返回）", "attach");
         IMPORT_EXCEL_COLUMN.put("支付反馈结果json", "resultJson");
+        EXPORT_EXCEL_COLUMN.put("已退款总金额，单位：分", "refundTotalFee");
         IMPORT_EXCEL_COLUMN.put("添加时间", "createTime");
         IMPORT_EXCEL_COLUMN.put("修改时间", "updateTime");
     }

@@ -85,6 +85,9 @@ public class BusTradeServiceImpl extends ServiceImpl<BusTradeMapper, BusTrade> i
             if (paramObj.containsKey("resultJson")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("resultJson")), BusTrade::getResultJson, paramObj.getStr("resultJson"));
             }
+            if (paramObj.containsKey("refundTotalFee")) {
+                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("refundTotalFee")), BusTrade::getRefundTotalFee, paramObj.getStr("refundTotalFee"));
+            }
             if (paramObj.containsKey("createTime")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("createTime")), BusTrade::getCreateTime, paramObj.getStr("createTime"));
             }
@@ -187,6 +190,9 @@ public class BusTradeServiceImpl extends ServiceImpl<BusTradeMapper, BusTrade> i
                 }
                 if (paramObj.containsKey("resultJson")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("resultJson")), BusTrade::getResultJson, paramObj.getStr("resultJson"));
+                }
+                if (paramObj.containsKey("refundTotalFee")) {
+                    wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("refundTotalFee")), BusTrade::getRefundTotalFee, paramObj.getStr("refundTotalFee"));
                 }
                 if (paramObj.containsKey("createTime")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("createTime")), BusTrade::getCreateTime, paramObj.getStr("createTime"));

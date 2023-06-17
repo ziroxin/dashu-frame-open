@@ -112,6 +112,8 @@ com:
         keyVersion: v2
         #商户号v2密钥
         partnerKey: xxxxx
+        #证书p12地址(v2退款时需要)
+        certP12Path: pems/apiclient_cert.p12
         #商户号v3密钥
         partnerKeyV3: xxxxx
         #证书pem地址(v3时需要)

@@ -1,6 +1,7 @@
 package com.kg.component.pay.wechat.service;
 
 import com.kg.component.pay.wechat.dto.WxTradePayDTO;
+import com.kg.component.pay.wechat.dto.WxTradeRefundDTO;
 import com.kg.component.pay.wechat.dto.WxTradeResutDTO;
 import com.kg.core.exception.BaseException;
 
@@ -15,7 +16,7 @@ public interface WxPayService {
      * 调取微信支付
      *
      * @param wxTradePayDTO 交易信息
-     * @param tradeType   支付类型
+     * @param tradeType     支付类型
      */
     WxTradeResutDTO getPayInfo(WxTradePayDTO wxTradePayDTO, String tradeType) throws BaseException;
 
@@ -32,4 +33,18 @@ public interface WxPayService {
      * @param wxTradeResutDTO 交易信息
      */
     WxTradeResutDTO getPayResult(WxTradeResutDTO wxTradeResutDTO);
+
+    /**
+     * 微信退款
+     *
+     * @param wxTradeRefundDTO 退款信息
+     */
+    WxTradeRefundDTO refund(WxTradeRefundDTO wxTradeRefundDTO) throws BaseException;
+
+    /**
+     * 查询退款结果
+     *
+     * @param wxTradeRefundDTO 退款信息
+     */
+    WxTradeRefundDTO queryRefund(WxTradeRefundDTO wxTradeRefundDTO) throws BaseException;
 }
