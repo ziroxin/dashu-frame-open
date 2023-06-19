@@ -2,6 +2,7 @@ package com.kg.component.pay.alipay.controller;
 
 import com.ijpay.alipay.AliPayApi;
 import com.kg.component.pay.alipay.dto.AliTradePayDTO;
+import com.kg.component.pay.alipay.dto.AliTradeRefundDTO;
 import com.kg.component.pay.alipay.dto.AliTradeResutDTO;
 import com.kg.component.pay.alipay.service.AliPayService;
 import com.kg.core.annotation.IsResponseResult;
@@ -151,4 +152,31 @@ public class AliPayController {
         return aliPayService.getPayResult(tradeResutDTO);
     }
 
+    /**
+     * 退款（所有支付类型的退款接口都是一样的）
+     * <a href="https://opendocs.alipay.com/open/02ivbx?pathHash=d98b006d">退款</a>
+     */
+    @PostMapping("refund")
+    @ResponseBody
+    public AliTradeRefundDTO refund(@RequestBody AliTradeRefundDTO tradeRefundDTO) throws BaseException {
+        try {
+            if (!StringUtils.hasText(tradeRefundDTO.getTradeId())) {
+                throw new BaseException("您传的参数不正确");
+            }
+            return aliPayService.refund(tradeRefundDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException("退款失败！原因：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 查询退款结果（所有支付类型的退款查询接口都是一样的）
+     * <a href="https://opendocs.alipay.com/open/02ivbv?pathHash=7cf4fed5">退款查询</a>
+     */
+    @GetMapping("queryRefund")
+    @ResponseBody
+    public AliTradeRefundDTO queryRefund(AliTradeRefundDTO tradeRefundDTO) throws BaseException {
+        return aliPayService.queryRefund(tradeRefundDTO);
+    }
 }

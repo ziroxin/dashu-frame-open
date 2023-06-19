@@ -2,7 +2,7 @@
   <div v-if="currentTradeInfo" v-loading.fullscreen.lock="isLoading">
     <!-- 退款 - 支付demo-管理按钮 -->
     <div class="filter-container" style="margin-bottom: 20px;">
-      微信退款：
+      支付宝退款：
       <el-tag type="success">总金额：{{ currentTradeInfo.totalFee }} 分</el-tag>
       <el-tag type="danger">已退款金额：{{ currentTradeInfo.refundTotalFee || 0 }} 分</el-tag>
       <el-button v-if="currentTradeInfo.totalFee > (currentTradeInfo.refundTotalFee || 0)"
@@ -101,7 +101,7 @@ import waves from '@/directive/waves'
 import request from '@/utils/request'
 
 export default {
-  name: 'TradeRefund',
+  name: 'trade-refund-alipay',
   directives: {waves},
   props: {
     // 当前订单信息
@@ -151,7 +151,7 @@ export default {
       // 查询退款状态
       this.isLoading = true
       const params = {refundId: row.refundId}
-      this.$request({url: '/pay/wechat/queryRefund', method: 'get', params})
+      this.$request({url: '/pay/alipay/queryRefund', method: 'get', params})
         .then((resp) => {
           if (resp.data.refundStatus === 1) {
             this.$message({type: 'success', message: '退款成功'})
@@ -266,14 +266,14 @@ export default {
           this.temp.tradeId = this.currentTradeInfo.tradeId
           var data = {...this.temp}
           // 提交退款
-          request({url: '/pay/wechat/refund', method: 'post', data})
+          request({url: '/pay/alipay/refund', method: 'post', data})
             .then(response => {
               if (response.data.refundStatus === 0) {
                 this.isLoading = true
                 this.intervalIndex = setInterval(() => {
                   // 查询退款状态
                   const params = {refundId: response.data.refundId}
-                  this.$request({url: '/pay/wechat/queryRefund', method: 'get', params})
+                  this.$request({url: '/pay/alipay/queryRefund', method: 'get', params})
                     .then((resp) => {
                       if (resp.data.refundStatus === 1) {
                         this.$message({type: 'success', message: '退款成功'})

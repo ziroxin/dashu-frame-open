@@ -234,6 +234,7 @@ public class WxPayV2ServiceUtils {
                     refund.setRefundSuccessTime(LocalDateTime.parse(result.get("refund_success_time_0"),
                             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                     refund.setRefundResultJson(JSONUtil.toJsonStr(result));
+                    refund.setUpdateTime(LocalDateTime.now());
                     refundService.updateById(refund);
                     // 更新主表退款总金额
                     BusTrade busTrade = busTradeService.getById(refund.getTradeId());

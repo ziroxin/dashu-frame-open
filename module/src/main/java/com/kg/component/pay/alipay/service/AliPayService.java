@@ -1,6 +1,7 @@
 package com.kg.component.pay.alipay.service;
 
 import com.kg.component.pay.alipay.dto.AliTradePayDTO;
+import com.kg.component.pay.alipay.dto.AliTradeRefundDTO;
 import com.kg.component.pay.alipay.dto.AliTradeResutDTO;
 import com.kg.core.exception.BaseException;
 
@@ -36,4 +37,18 @@ public interface AliPayService {
      * @param tradeResutDTO 交易信息
      */
     AliTradeResutDTO getPayResult(AliTradeResutDTO tradeResutDTO);
+
+    /**
+     * 退款
+     *
+     * @param tradeRefundDTO 退款信息
+     */
+    AliTradeRefundDTO refund(AliTradeRefundDTO tradeRefundDTO) throws BaseException;
+
+    /**
+     * 查询退款结果
+     *
+     * @param tradeRefundDTO 退款信息
+     */
+    AliTradeRefundDTO queryRefund(AliTradeRefundDTO tradeRefundDTO) throws BaseException;
 }

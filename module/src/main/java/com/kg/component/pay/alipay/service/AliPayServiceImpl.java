@@ -1,17 +1,19 @@
 package com.kg.component.pay.alipay.service;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.alipay.api.AlipayApiException;
-import com.alipay.api.domain.AlipayTradePagePayModel;
-import com.alipay.api.domain.AlipayTradePrecreateModel;
-import com.alipay.api.domain.AlipayTradeQueryModel;
-import com.alipay.api.domain.AlipayTradeWapPayModel;
+import com.alipay.api.domain.*;
 import com.alipay.api.internal.util.AlipaySignature;
+import com.alipay.api.response.AlipayTradeFastpayRefundQueryResponse;
 import com.alipay.api.response.AlipayTradePrecreateResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
+import com.alipay.api.response.AlipayTradeRefundResponse;
 import com.ijpay.alipay.AliPayApi;
+import com.ijpay.core.kit.WxPayKit;
 import com.kg.component.pay.alipay.config.AliPayConfig;
 import com.kg.component.pay.alipay.dto.AliTradePayDTO;
+import com.kg.component.pay.alipay.dto.AliTradeRefundDTO;
 import com.kg.component.pay.alipay.dto.AliTradeResutDTO;
 import com.kg.component.utils.GuidUtils;
 import com.kg.core.exception.BaseException;
@@ -19,6 +21,8 @@ import com.kg.core.security.util.CurrentUserUtils;
 import com.kg.module.trade.constant.TradeConstant;
 import com.kg.module.trade.entity.BusTrade;
 import com.kg.module.trade.service.BusTradeService;
+import com.kg.module.tradeRefund.entity.BusTradeRefund;
+import com.kg.module.tradeRefund.service.BusTradeRefundService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -26,6 +30,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +46,8 @@ public class AliPayServiceImpl implements AliPayService {
     private AliPayConfig aliPayConfig;
     @Resource
     private BusTradeService tradeService;
+    @Resource
+    private BusTradeRefundService refundService;
 
     @Override
     public void toPcPay(HttpServletResponse response, AliTradePayDTO tradePayDTO) {
@@ -163,6 +171,108 @@ public class AliPayServiceImpl implements AliPayService {
         }
         tradeResutDTO.setTradeStatus(TradeConstant.TRADE_FAIL);
         return tradeResutDTO;
+    }
+
+    @Override
+    public AliTradeRefundDTO refund(AliTradeRefundDTO tradeRefundDTO) throws BaseException {
+        // 是否有退款中的订单
+        Long count = refundService.lambdaQuery()
+                .eq(BusTradeRefund::getTradeId, tradeRefundDTO.getTradeId())
+                .eq(BusTradeRefund::getRefundStatus, 0).count();
+        if (count > 0) {
+            throw new BaseException("有" + count + "笔订单正在退款中，为防止重复退款，请稍后再试！");
+        }
+        // 校验退款金额
+        BusTrade busTrade = tradeService.lambdaQuery().eq(BusTrade::getTradeId, tradeRefundDTO.getTradeId()).one();
+        Integer refundTotalFee = busTrade.getRefundTotalFee() == null ? 0 : busTrade.getRefundTotalFee();
+        if (busTrade.getTotalFee() < (refundTotalFee + tradeRefundDTO.getRefundFee())) {
+            throw new BaseException("退款金额合计，不能大于支付总金额!");
+        }
+        // 生成退款信息
+        BusTradeRefund refund = new BusTradeRefund();
+        refund.setRefundId(GuidUtils.getUuid());
+        refund.setTradeId(tradeRefundDTO.getTradeId());
+        refund.setOutRefundNo(WxPayKit.generateStr());
+        refund.setRefundFee(tradeRefundDTO.getRefundFee());
+        refund.setRefundDesc(tradeRefundDTO.getRefundDesc());
+        refund.setRefundIndex(refundService.lambdaQuery()
+                .eq(BusTradeRefund::getTradeId, tradeRefundDTO.getTradeId())
+                .count().intValue());
+        try {
+            // 退款
+            AlipayTradeRefundModel model = new AlipayTradeRefundModel();
+            model.setOutTradeNo(busTrade.getOutTradeNo());
+            // 退款金额（计算成单位元，保留两位小数）
+            BigDecimal refundFee = new BigDecimal(refund.getRefundFee());
+            BigDecimal refundAmount = refundFee.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP);
+            model.setRefundAmount(refundAmount.toString());
+            model.setRefundReason(refund.getRefundDesc());
+            model.setOutRequestNo(refund.getOutRefundNo());
+            AlipayTradeRefundResponse response = AliPayApi.tradeRefundToResponse(model);
+            if (response.isSuccess()) {
+                // 保存退款信息
+                refund.setRefundStatus(TradeConstant.REFUNDING);
+                refund.setCreateTime(LocalDateTime.now());
+                refundService.save(refund);
+                // 申请退款预订单成功（状态：退款中）
+                tradeRefundDTO.setRefundId(refund.getRefundId());
+                tradeRefundDTO.setTradeId(refund.getTradeId());
+                tradeRefundDTO.setRefundStatus(TradeConstant.REFUNDING);
+                return tradeRefundDTO;
+            } else {
+                // 申请失败
+                throw new BaseException(response.getMsg());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException(e.getMessage());
+        }
+    }
+
+    @Override
+    public AliTradeRefundDTO queryRefund(AliTradeRefundDTO tradeRefundDTO) throws BaseException {
+        // 查询退款记录
+        BusTradeRefund refund = refundService.getById(tradeRefundDTO.getRefundId());
+        // 退款记录不存在
+        if (refund == null) {
+            throw new BaseException("退款信息不存在，请刷新重试！");
+        }
+        // 退款状态已更新，直接返回
+        if (refund.getRefundStatus().intValue() != 0) {
+            return JSONUtil.toBean(JSONUtil.parseObj(refund), AliTradeRefundDTO.class);
+        }
+        try {
+            // 查询退款结果
+            AlipayTradeFastpayRefundQueryModel model = new AlipayTradeFastpayRefundQueryModel();
+            BusTrade busTrade = tradeService.getById(refund.getTradeId());
+            model.setOutTradeNo(busTrade.getOutTradeNo());
+            model.setOutRequestNo(refund.getOutRefundNo());
+            model.setQueryOptions(Arrays.asList("gmt_refund_pay"));// 要求返回请求成功时间
+            AlipayTradeFastpayRefundQueryResponse response = AliPayApi.tradeRefundQueryToResponse(model);
+            if (StringUtils.hasText(response.getRefundStatus()) && response.getRefundStatus().equals("REFUND_SUCCESS")) {
+                // 退款成功
+                refund.setRefundStatus(TradeConstant.REFUND_SUCCESS);
+                // 格式：2014-11-27 15:45:57
+                String format = DateUtil.format(response.getGmtRefundPay(), "yyyy-MM-dd HH:mm:ss");
+                refund.setRefundSuccessTime(LocalDateTime.parse(format,
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                refund.setRefundResultJson(JSONUtil.toJsonStr(response));
+                refund.setUpdateTime(LocalDateTime.now());
+                refundService.updateById(refund);
+                // 更新主表退款总金额
+                Integer refundTotalFee = busTrade.getRefundTotalFee() == null ? 0 : busTrade.getRefundTotalFee();
+                busTrade.setRefundTotalFee(refundTotalFee + refund.getRefundFee());
+                tradeService.updateById(busTrade);
+                // 返回数据
+                tradeRefundDTO.setRefundStatus(TradeConstant.REFUND_SUCCESS);
+                return tradeRefundDTO;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException(e.getMessage());
+        }
+        tradeRefundDTO.setRefundStatus(refund.getRefundStatus());
+        return tradeRefundDTO;
     }
 
     private void saveTradeToPay(HttpServletResponse response, AliTradePayDTO tradePayDTO, String type) {

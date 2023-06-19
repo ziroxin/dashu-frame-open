@@ -103,8 +103,12 @@
     </el-dialog>
     <!-- 退款弹窗 -->
     <el-dialog title="退款窗口" :visible.sync="dialogRefundFormVisible" width="95%" top="5vh" @closed="loadTableList">
-      <trade-refund :current-trade-info="refundTradeInfo" :refund-refresh-index="refundRefreshIndex"
+      <trade-refund v-if="refundTradeInfo.payType===0" title="微信退款" :current-trade-info="refundTradeInfo"
+                    :refund-refresh-index="refundRefreshIndex"
                     ref="tradeRefund"></trade-refund>
+      <trade-refund-alipay v-else title="支付宝退款" :current-trade-info="refundTradeInfo"
+                           :refund-refresh-index="refundRefreshIndex"
+                           ref="tradeRefundAlipay"></trade-refund-alipay>
     </el-dialog>
   </div>
 </template>
@@ -114,9 +118,10 @@ import waves from '@/directive/waves'
 import request from '@/utils/request'
 import {getToken} from "@/utils/auth";
 import TradeRefund from "@/views/demo/tradeRefund/index.vue";
+import TradeRefundAlipay from "@/views/demo/tradeRefund/trade-refund-alipay.vue";
 
 export default {
-  components: {TradeRefund},
+  components: {TradeRefundAlipay, TradeRefund},
   directives: {waves},
   data() {
     return {
