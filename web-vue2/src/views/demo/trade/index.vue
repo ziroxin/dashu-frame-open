@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- 交易 - 支付demo-管理按钮 -->
-    <div style="margin-bottom: 20px;">
+    <div style="margin-bottom: 10px;">
       <el-select v-model="searchData.payType" size="small" style="width: 100px;margin-right: 10px;"
                  class="filter-item" placeholder="支付方式">
         <el-option label="全部" value=""></el-option>

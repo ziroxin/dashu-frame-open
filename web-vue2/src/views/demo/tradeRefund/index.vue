@@ -1,7 +1,7 @@
 <template>
   <div v-if="currentTradeInfo" v-loading.fullscreen.lock="isLoading">
     <!-- 退款 - 支付demo-管理按钮 -->
-    <div class="filter-container" style="margin-bottom: 20px;">
+    <div class="filter-container" style="margin-bottom: 10px;">
       微信退款：
       <el-tag type="success">总金额：{{ currentTradeInfo.totalFee }} 分</el-tag>
       <el-tag type="danger">已退款金额：{{ currentTradeInfo.refundTotalFee || 0 }} 分</el-tag>

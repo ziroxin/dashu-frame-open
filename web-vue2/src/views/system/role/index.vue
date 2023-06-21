@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="7">
         <!-- 角色管理按钮 -->
-        <div style="margin-bottom: 15px;">
+        <div style="margin-bottom: 10px;">
           <el-button v-permission="'system-role-add'" type="primary" icon="el-icon-plus" size="small" @click="roleAdd"/>
           <el-button v-permission="'system-role-update'" type="success" icon="el-icon-edit" size="small"
                      @click="roleUpdate"

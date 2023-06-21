@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="9">
         <!-- 资源表格 -->
-        <div style="margin-bottom: 5px;">
+        <div style="margin-bottom: 10px;">
           <el-button @click="toggleTableOprate">全部{{ isExpand ? '收起' : '展开' }}</el-button>
         </div>
         <div class="grid-content bg-purple">
@@ -33,7 +33,7 @@
       <el-col :span="15" style="padding-left: 10px;border-left: 1px solid #dedede;">
         <!--        API列表-->
         <div class="grid-content bg-purple-light">
-          <div style="margin-bottom: 5px;">
+          <div style="margin-bottom: 10px;">
             <el-button type="primary" :disabled="isSaveBtn" size="small" @click="savePermissionApi()">保存关联API
             </el-button>
             <el-button type="primary" size="small" @click="openGroupDialog()">设置分组</el-button>

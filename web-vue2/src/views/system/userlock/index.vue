@@ -3,7 +3,7 @@
     <el-tabs v-model="activeName" @tab-click="handleTabClick">
       <el-tab-pane label="临时锁定用户管理" name="second">
         <!-- 用户锁定-管理按钮 -->
-        <div style="margin-bottom: 20px;float: right;">
+        <div style="margin-bottom: 10px;float: right;">
           <el-button v-waves v-permission="'zuserlock-zUserLock-unlock'" type="danger" size="small"
                      @click="deleteByIds"
           >用户解锁
@@ -18,7 +18,7 @@
       </el-tab-pane>
       <el-tab-pane label="永久锁定用户管理" name="first">
         <!-- 用户锁定-管理按钮 -->
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 10px;">
           <el-input v-model="searchData.userName" style="width: 150px;margin-right: 10px;" size="small"
                     class="filter-item" placeholder="请输入用户名查询"
           />

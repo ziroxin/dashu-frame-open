@@ -1,7 +1,7 @@
 <template>
 	<div class="app-container">
 		<!-- ${table.comment!}-管理按钮 -->
-		<div style="margin-bottom: 20px;">
+		<div style="margin-bottom: 10px;">
 <#list table.fields as field>
 	<#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
 			<el-date-picker v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"

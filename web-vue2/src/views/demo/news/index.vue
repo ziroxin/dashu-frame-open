@@ -1,32 +1,34 @@
 <template>
   <div class="app-container">
     <!-- 新闻表-测试-管理按钮 -->
-    <div style="margin-bottom: 20px;">
+    <div style="margin-bottom: 10px;">
       <el-input v-model="searchData.newsTitle" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入新闻标题查询"
+                class="filter-item" placeholder="请输入新闻标题查询" size="small"
       />
       <el-input v-model="searchData.newsContent" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入新闻内容查询"
+                class="filter-item" placeholder="请输入新闻内容查询" size="small"
       />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search"
+                 size="small" @click="searchBtnHandle">查询
       </el-button>
-      <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh" @click="resetTableList">显示全部
+      <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh"
+                 size="small" @click="resetTableList">显示全部
       </el-button>
       <div style="float: right;">
         <el-button v-waves v-permission="'news-news-add'" type="primary" icon="el-icon-plus"
-                   @click="openAdd"
+                   @click="openAdd" size="small"
         >新增
         </el-button>
         <el-button v-waves v-permission="'news-news-update'" type="info" icon="el-icon-edit"
-                   @click="openUpdate(null)"
+                   @click="openUpdate(null)" size="small"
         >修改
         </el-button>
         <el-button v-waves v-permission="'news-news-delete'" type="danger" icon="el-icon-delete"
-                   @click="deleteByIds(null)"
+                   @click="deleteByIds(null)" size="small"
         >删除
         </el-button>
         <el-button v-waves v-permission="'news-news-exportExcel'" type="success" icon="el-icon-printer"
-                   @click="exportExcel"
+                   @click="exportExcel" size="small"
         >导出Excel
         </el-button>
       </div>

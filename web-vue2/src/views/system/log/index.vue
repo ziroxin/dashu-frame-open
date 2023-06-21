@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- 操作日志表-管理按钮 -->
-    <div style="margin-bottom: 20px">
+    <div style="margin-bottom: 10px">
       <el-input v-model="searchData.userName" size="small" style="width: 160px; margin-right: 10px"
                 class="filter-item" placeholder="输入用户名模糊查询"/>
       <el-input v-model="searchData.logMethod" size="small" style="width: 160px; margin-right: 10px"

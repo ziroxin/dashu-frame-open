@@ -14,7 +14,7 @@
         @contextmenu.prevent.native="openMenu(tag,$event)"
       >
         {{ tag.title }}
-        <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)" />
+        <span v-if="!isAffix(tag)" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)"/>
       </router-link>
     </scroll-pane>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
@@ -31,7 +31,7 @@ import ScrollPane from './ScrollPane'
 import path from 'path'
 
 export default {
-  components: { ScrollPane },
+  components: {ScrollPane},
   data() {
     return {
       visible: false,
@@ -92,7 +92,7 @@ export default {
             fullPath: tagPath,
             path: tagPath,
             name: route.name,
-            meta: { ...route.meta }
+            meta: {...route.meta}
           })
         }
         if (route.children) {
@@ -114,7 +114,7 @@ export default {
       }
     },
     addTags() {
-      const { name } = this.$route
+      const {name} = this.$route
       if (name) {
         this.$store.dispatch('tagsView/addView', this.$route)
       }
@@ -137,7 +137,7 @@ export default {
     },
     refreshSelectedTag(view) {
       this.$store.dispatch('tagsView/delCachedView', view).then(() => {
-        const { fullPath } = view
+        const {fullPath} = view
         this.$nextTick(() => {
           this.$router.replace({
             path: '/redirect' + fullPath
@@ -146,7 +146,7 @@ export default {
       })
     },
     closeSelectedTag(view) {
-      this.$store.dispatch('tagsView/delView', view).then(({ visitedViews }) => {
+      this.$store.dispatch('tagsView/delView', view).then(({visitedViews}) => {
         if (this.isActive(view)) {
           this.toLastView(visitedViews, view)
         }
@@ -159,7 +159,7 @@ export default {
       })
     },
     closeAllTags(view) {
-      this.$store.dispatch('tagsView/delAllViews').then(({ visitedViews }) => {
+      this.$store.dispatch('tagsView/delAllViews').then(({visitedViews}) => {
         if (this.affixTags.some(tag => tag.path === view.path)) {
           return
         }
@@ -175,7 +175,7 @@ export default {
         // you can adjust it according to your needs.
         if (view.name === 'Dashboard') {
           // to reload home page
-          this.$router.replace({ path: '/redirect' + view.fullPath })
+          this.$router.replace({path: '/redirect' + view.fullPath})
         } else {
           this.$router.push('/')
         }
@@ -210,11 +210,14 @@ export default {
 
 <style lang="scss" scoped>
 .tags-view-container {
-  height: 34px;
+  margin-top: 1px;
+  padding-top: 3px;
+  height: 40px;
   width: 100%;
   background: #fff;
-  border-bottom: 1px solid #d8dce5;
+  //border-bottom: 1px solid #d8dce5;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
+
   .tags-view-wrapper {
     .tags-view-item {
       display: inline-block;
@@ -227,18 +230,23 @@ export default {
       background: #fff;
       padding: 0 8px;
       font-size: 12px;
-      margin-left: 5px;
+      margin-left: 10px;
       margin-top: 4px;
+      border-radius: 5px;
+
       &:first-of-type {
         margin-left: 15px;
       }
+
       &:last-of-type {
         margin-right: 15px;
       }
+
       &.active {
         background-color: #42b983;
         color: #fff;
         border-color: #42b983;
+
         &::before {
           content: '';
           background: #fff;
@@ -252,6 +260,7 @@ export default {
       }
     }
   }
+
   .contextmenu {
     margin: 0;
     background: #fff;
@@ -264,10 +273,12 @@ export default {
     font-weight: 400;
     color: #333;
     box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .3);
+
     li {
       margin: 0;
       padding: 7px 16px;
       cursor: pointer;
+
       &:hover {
         background: #eee;
       }
@@ -288,13 +299,16 @@ export default {
       text-align: center;
       transition: all .3s cubic-bezier(.645, .045, .355, 1);
       transform-origin: 100% 50%;
+      margin-right: -5px;
+
       &:before {
         transform: scale(.6);
         display: inline-block;
         vertical-align: -3px;
       }
+
       &:hover {
-        background-color: #b4bccc;
+        background-color: rgba(0, 0, 0, 0.3);
         color: #fff;
       }
     }

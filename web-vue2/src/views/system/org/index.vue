@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- 组织机构表-管理按钮 -->
-    <div style="margin-bottom: 20px;">
+    <div style="margin-bottom: 10px;">
       <el-input v-model="searchData.orgName" style="width: 150px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入用户名/姓名查询"
       />

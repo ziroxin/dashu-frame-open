@@ -47,7 +47,7 @@
       </el-button>
     </div>
     <!-- 字典数据-列表 -->
-    <el-table :data="tableData" stripe border :height="this.$windowHeight-200" v-loading="isLoading"
+    <el-table :data="tableData" stripe border :height="this.$windowHeight-230" v-loading="isLoading"
               @selection-change="handleTableSelectChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="字典code" prop="typeCode" align="center"/>

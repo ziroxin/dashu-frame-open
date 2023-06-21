@@ -14,21 +14,21 @@
           </el-button>
         </div>
         <div style="margin-bottom: 10px">
-          <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="mini"
+          <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
                      v-permission="'dictType-zDictType-add'">新增
           </el-button>
-          <el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate(null)" size="mini"
+          <el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate(null)" size="small"
                      v-permission="'dictType-zDictType-update'">修改
           </el-button>
-          <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="mini"
+          <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                      v-permission="'dictType-zDictType-delete'">删除
           </el-button>
-          <el-button v-waves size="mini" icon="el-icon-document"
+          <el-button v-waves size="small" icon="el-icon-document"
                      @click="dialogDictDataVisible=true">示例
           </el-button>
         </div>
         <!-- 字典类型-列表 -->
-        <el-table :data="tableData" stripe border :height="this.$windowHeight-200"
+        <el-table :data="tableData" stripe border :height="this.$windowHeight-230"
                   highlight-current-row
                   @selection-change="handleTableSelectChange">
           <el-table-column type="selection" width="50" align="center" header-align="center"/>

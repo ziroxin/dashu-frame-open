@@ -50,7 +50,8 @@
             </el-button>
           </template>
           <template v-else>
-            <el-button v-waves type="success" v-permission="'zquartz-zQuartz-update'" size="mini"
+            <el-button v-waves type="primary" v-permission="'zquartz-zQuartz-update'"
+                       icon="el-icon-edit" size="mini"
                        @click="openUpdate(row)"
             >修改
             </el-button>

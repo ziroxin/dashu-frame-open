@@ -19,7 +19,8 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   config => {
-    // 发送请求前操作
+    // 发送请求前，统一拦截操作
+    // 1、处理TOKEN：（请求头添加token；请求前定时刷新token）
     if (store.getters.token) {
       const hasToken = getToken()
       if (hasToken) {
@@ -36,36 +37,16 @@ service.interceptors.request.use(
         config.headers['UserJwtToken'] = hasToken
       }
     }
+    // 2、处理get请求参数
     if (config.method === 'get') {
       // 若是是get请求，且params是数组类型如arr=[1,2]，则转换成arr=1&arr=2
       config.paramsSerializer = function (params) {
         return qs.stringify(params, {arrayFormat: 'repeat'})
       }
     }
-    // 是否需要防止数据重复提交
-    const isRepeatSubmit = (config.headers || {}).repeatSubmit === false
-    if (!isRepeatSubmit && (config.method === 'post' || config.method === 'put')) {
-      const requestObj = {
-        url: config.url,
-        data: typeof config.data === 'object' ? JSON.stringify(config.data) : config.data,
-        time: new Date().getTime()
-      }
-      const sessionObj = cache.session.getJSON('sessionObj')
-      if (sessionObj === undefined || sessionObj === null || sessionObj === '') {
-        cache.session.setJSON('sessionObj', requestObj)
-      } else {
-        const s_url = sessionObj.url // 请求地址
-        const s_data = sessionObj.data // 请求数据
-        const s_time = sessionObj.time // 请求时间
-        const interval = 1000 // 间隔时间(ms)，小于此时间视为重复提交
-        if (s_data === requestObj.data && requestObj.time - s_time < interval && s_url === requestObj.url) {
-          const message = '数据正在处理，请勿重复提交'
-          console.warn(`[${s_url}]: ` + message)
-          return Promise.reject(new Error(message))
-        } else {
-          cache.session.setJSON('sessionObj', requestObj)
-        }
-      }
+    // 3、防止数据重复提交
+    if (config.method === 'post' || config.method === 'put') {
+      requestCheckRepeatSubmit(config)
     }
     return config
   },
@@ -76,20 +57,50 @@ service.interceptors.request.use(
   }
 )
 
+// 防止数据重复提交处理
+function requestCheckRepeatSubmit(config) {
+  // 如果请求头中，带有repeatSubmit=false，则跳过
+  const isRepeatSubmit = (config.headers || {}).repeatSubmit === false
+  if (!isRepeatSubmit) {
+    // 间隔时间(ms)，小于此时间视为重复提交
+    const repeatSubmitInterval = 1000
+    const requestObj = {
+      url: config.url,
+      data: typeof config.data === 'object' ? JSON.stringify(config.data) : config.data,
+      time: new Date().getTime()
+    }
+    const sessionObj = cache.session.getJSON('sessionObj')
+    if (sessionObj === undefined || sessionObj === null || sessionObj === '') {
+      cache.session.setJSON('sessionObj', requestObj)
+    } else {
+      const s_url = sessionObj.url // 请求地址
+      const s_data = sessionObj.data // 请求数据
+      const s_time = sessionObj.time // 请求时间
+      if (s_data === requestObj.data && s_url === requestObj.url && (requestObj.time - s_time) < repeatSubmitInterval) {
+        const message = '数据正在处理，请勿重复提交'
+        console.warn(`[${s_url}]: ` + message)
+        return Promise.reject(new Error(message))
+      } else {
+        cache.session.setJSON('sessionObj', requestObj)
+      }
+    }
+  }
+}
+
 // 响应拦截器
 service.interceptors.response.use(
-  // 如果想获取完整http响应信息（如headers,status），可以直接返回response
   response => {
-    // 二进制数据则直接返回
+    // 1、如果响应是二进制数据,则直接返回
     if (response.request.responseType === 'blob' || response.request.responseType === 'arraybuffer') {
       return response.data
     }
+    // 2、否则,根据状态码判断
     const res = response.data
     if (res.code === '200') {
-      // 正常直接返回
+      // 正常
       return res
     } else {
-      // 异常1：未正常登录！ 40001=用户名或者密码错误;40002=无效的TOKEN;40003=用户未登录;40004=用户已禁用;401=无权限;
+      // 自定义异常1：未正常登录！40001=用户名或者密码错误;40002=无效的TOKEN;40003=用户未登录;40004=用户已禁用;401=无权限;
       if (res.code === '40001' || res.code === '40002' || res.code === '40003' || res.code === '40004' || res.code === '401') {
         MessageBox.confirm(res.message, '登录错误', {
           confirmButtonText: '刷新',
@@ -102,20 +113,21 @@ service.interceptors.response.use(
           })
         })
       }
-      // 异常2：服务器端异常
+      // 自定义异常2：服务器端异常（一般是bug）
       if (res.code === '500') {
         console.log('服务端出错(' + res.code + ')：' + res.message);
         Message({message: res.message, type: 'error', duration: 3 * 1000})
         return Promise.reject(new Error(res.message || 'Error'))
       }
-      // 异常3：客户端异常
+      // 自定义异常3：客户端异常（一般是bug）
       if (res.code === '400' || res.code === '403' || res.code === '405') {
         console.log('客户端出错(' + res.code + ')：' + res.message);
         Message({message: res.message, type: 'error', duration: 3 * 1000})
       }
     }
   }, error => {
-    console.log('err' + error) // for debug
+    // 请求出错时操作
+    console.log('err' + error)
     Message({
       message: error.message,
       type: 'error',

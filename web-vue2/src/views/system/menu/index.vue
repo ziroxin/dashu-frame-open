@@ -3,7 +3,7 @@
     <el-row :gutter="24">
       <el-col :span="elColSpanValue">
         <!--  操作按钮  -->
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 10px;">
           <el-button v-permission="'system-menu-add'" size="small" type="primary" @click="permissionAdd">新增一级菜单
           </el-button>
           <el-button v-permission="'system-menu-delete'" size="small" type="danger" @click="permissionDelete">批量删除
