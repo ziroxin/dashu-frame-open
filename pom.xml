@@ -26,7 +26,7 @@
 
     <properties>
         <!-- 当前框架jar版本 -->
-        <currentVersion>1.0.21</currentVersion>
+        <currentVersion>1.0.22</currentVersion>
     </properties>
 
     <!-- jar包发布的公共maven库 -->
