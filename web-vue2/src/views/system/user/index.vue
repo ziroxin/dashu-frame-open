@@ -45,7 +45,7 @@
         </div>
         <!-- 表格部分 -->
         <el-table :data="userTable" row-key="userId"
-                  :height="this.$windowHeight-195" style="width: 100%;"
+                  :height="this.$windowHeight-230" style="width: 100%;"
                   border @selection-change="selectionChangeHandlerOrder"
         >
           <el-table-column align="center" type="selection" width="40"/>

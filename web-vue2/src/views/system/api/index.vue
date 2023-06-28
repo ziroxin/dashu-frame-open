@@ -8,7 +8,7 @@
         </div>
         <div class="grid-content bg-purple">
           <el-table ref="permissionTable" v-loading="listLoading" :default-expand-all="isExpand"
-                    :height="this.$windowHeight-170" style="width: 96%;"
+                    :height="this.$windowHeight-200" style="width: 96%;"
                     border :data="tableData" row-key="permissionId"
                     highlight-current-row :tree-props="{children: 'children'}"
           >
@@ -40,7 +40,7 @@
             <el-button type="danger" size="small" @click="scanApi()">自动扫描API（增量）</el-button>
             <el-button type="info" size="small" @click="clearApi()">清除无效API</el-button>
           </div>
-          <div :style="'height:' + ( this.$windowHeight - 170 ) + 'px;overflow-y: auto;'">
+          <div :style="'height:' + ( this.$windowHeight - 200 ) + 'px;overflow-y: auto;'">
             <el-collapse v-model="activeNames" style="padding-top: 5px;">
               <el-collapse-item v-for="group2 in tableData2" :key="group2.apiGroupId"
                                 :name="group2.apiGroupId"

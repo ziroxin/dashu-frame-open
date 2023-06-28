@@ -2,7 +2,7 @@
   <div class="navbar">
     <!-- logo -->
     <div class="hor-logo-div">
-      <router-link key="collapse" class="hor-logo-link" to="/">
+      <router-link v-if="showLogo" key="collapse" class="hor-logo-link" to="/">
         <img v-if="logo" :src="logo" class="hor-logo">
         <h1 class="hor-title">{{ settings.title }} </h1>
       </router-link>
@@ -35,9 +35,11 @@ import Search from '@/components/HeaderSearch'
 import variables from '@/styles/variables.scss';
 import Topbar from './Topbar/index'
 import HeaderUserSetting from "@/layout/components/HeaderUserSetting";
+import Logo from "@/layout/components/Sidebar/Logo.vue";
 
 export default {
   components: {
+    Logo,
     HeaderUserSetting,
     ErrorLog,
     Screenfull,
@@ -57,6 +59,9 @@ export default {
       'device',
       'settings'
     ]),
+    showLogo() {
+      return this.$store.state.settings.sidebarLogo
+    },
     activeMenu() {
       const route = this.$route
       const {meta, path} = route

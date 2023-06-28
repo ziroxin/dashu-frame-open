@@ -5,7 +5,6 @@
       <el-menu
         :default-active="activeMenu"
         :collapse="isCollapse"
-        :background-color="variables.menuBg"
         :text-color="variables.menuText"
         :active-text-color="theme"
         :unique-opened="false"
@@ -23,6 +22,7 @@ import {mapGetters} from 'vuex'
 import Logo from './Logo'
 import SidebarItem from './SidebarItem'
 import variables from '@/styles/variables.scss'
+
 export default {
   components: {SidebarItem, Logo},
   computed: {

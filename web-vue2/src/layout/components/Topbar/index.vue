@@ -53,6 +53,7 @@ export default {
   .hor-menu {
     float: left;
 
+    /*--图标样式--*/
     ::v-deep .el-submenu__icon-arrow {
       position: relative;
       top: unset;

@@ -29,7 +29,7 @@
     </div>
     <!-- 组织机构表-列表 -->
     <el-table :data="tableData" :tree-props="{children: 'children'}"
-              row-key="orgId"
+              row-key="orgId" :height="this.$windowHeight-197"
               default-expand-all border stripe @selection-change="handleTableSelectChange"
     >
       <el-table-column type="selection" width="50" align="center" header-align="center"/>

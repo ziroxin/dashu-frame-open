@@ -5,45 +5,45 @@
       <!--顶部-->
       <div :class="{'fixed-header-hor':fixedHeader}">
         <!--顶部导航栏-->
-        <navbar-hor />
+        <navbar-hor/>
         <!--标签-->
-        <tags-view v-if="needTagsView" />
+        <tags-view v-if="needTagsView"/>
         <!-- 面包屑 -->
-        <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
+        <breadcrumb id="breadcrumb-container" class="breadcrumb-container"/>
       </div>
       <!--主区域-->
-      <app-main />
+      <app-main :layout="layout"/>
     </div>
     <!--右侧面板-->
     <right-panel v-if="showSettings">
-      <settings />
+      <settings/>
     </right-panel>
-    <user-edit-password v-model="editPassword" :info="editPasswordInfo" />
+    <user-edit-password v-model="editPassword" :info="editPasswordInfo"/>
   </div>
 
   <!-- ==================================纵向布局================================== -->
   <div v-else :class="classObj" class="app-wrapper">
     <!--手机端显示蒙版-->
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
+    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
     <!--左侧菜单-->
-    <sidebar class="sidebar-container" />
+    <sidebar class="sidebar-container"/>
     <!--右侧-->
     <div :class="{hasTagsView:needTagsView}" class="main-container">
       <!--顶部-->
       <div :class="{'fixed-header':fixedHeader}">
         <!--顶部导航栏-->
-        <navbar />
+        <navbar/>
         <!--标签-->
-        <tags-view v-if="needTagsView" />
+        <tags-view v-if="needTagsView"/>
       </div>
       <!--主区域-->
-      <app-main />
+      <app-main :layout="layout"/>
       <!--右侧面板-->
       <right-panel v-if="showSettings">
-        <settings />
+        <settings/>
       </right-panel>
     </div>
-    <user-edit-password v-model="editPassword" :info="editPasswordInfo" />
+    <user-edit-password v-model="editPassword" :info="editPasswordInfo"/>
   </div>
 </template>
 
@@ -124,6 +124,7 @@ export default {
   position: relative;
   height: 100%;
   width: 100%;
+  background-color: #f5f5f5;
 
   &.mobile.openSidebar {
     position: fixed;

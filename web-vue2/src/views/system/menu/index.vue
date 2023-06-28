@@ -10,7 +10,7 @@
           </el-button>
         </div>
         <!-- 表格部分 -->
-        <el-table :data="tableData" row-key="permissionId" :height="this.$windowHeight-180"
+        <el-table :data="tableData" row-key="permissionId" :height="this.$windowHeight-200"
                   border :tree-props="{children: 'children'}" :default-expand-all="true"
                   highlight-current-row @selection-change="selectionChangeHandlerOrder"
         >

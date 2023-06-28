@@ -1,8 +1,8 @@
 <template>
-  <section class="app-main">
+  <section :class="layout==='vertical'?'app-main':'app-main-hor'">
     <transition name="fade-transform" mode="out-in">
       <keep-alive :include="cachedViews">
-        <router-view :key="key" />
+        <router-view :key="key"/>
       </keep-alive>
     </transition>
   </section>
@@ -11,6 +11,7 @@
 <script>
 export default {
   name: 'AppMain',
+  props: ['layout'],
   computed: {
     cachedViews() {
       return this.$store.state.tagsView.cachedViews
@@ -24,48 +25,56 @@ export default {
 
 <style lang="scss" scoped>
 .app-main {
-  /* 50= navbar  50  */
-  min-height: calc(100vh - 50px);
+  min-height: calc(100vh - 65px);
   width: 100%;
   position: relative;
-  overflow: hidden;
 }
 
-.fixed-header+.app-main {
+.fixed-header + .app-main {
   padding-top: 50px;
 }
 
+/*--开启多标签--*/
 .hasTagsView {
   .app-main {
-    /* 91 = navbar + tags-view = 50 + 41 */
-    min-height: calc(100vh - 91px);
+    min-height: calc(100vh - 106px);
   }
 
-  .fixed-header+.app-main {
+  .fixed-header + .app-main {
+    /*--固定头部--*/
     padding-top: 91px;
   }
 }
 
-.fixed-header-hor+.app-main {
-  /* 107 = navbar + breadcrumb = 57 + 50 */
-  min-height: calc(100vh - 107px);
-  padding-top: 107px;
+.app-main-hor {
+  min-height: calc(100vh - 115px);
+  width: 100%;
+  position: relative;
+
+  .app-container {
+    margin: 55px 15px 15px 15px !important;
+  }
 }
 
+.fixed-header-hor + .app-main-hor {
+  padding-top: 57px;
+}
+
+/*--开启多标签--*/
 .hasTagsViewHor {
-  .app-main {
-    /* 141 = navbar + tags-view + breadcrumb = 57 + 34 + 50 */
-    min-height: calc(100vh - 141px);
+  .app-main-hor {
+    min-height: calc(100vh - 156px);
   }
 
-  .fixed-header-hor+.app-main {
-    padding-top: 141px;
+  .fixed-header-hor + .app-main-hor {
+    /*--固定头部--*/
+    padding-top: 98px;
   }
 }
 </style>
 
 <style lang="scss">
-// fix css style bug in open el-dialog
+// 修复el-dialog弹窗样式bug
 .el-popup-parent--hidden {
   .fixed-header {
     padding-right: 15px;

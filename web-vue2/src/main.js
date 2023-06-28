@@ -51,10 +51,15 @@ Vue.directive('permission', permission)
 Vue.directive('mydate', mydate)
 Vue.directive('waves', waves)
 Vue.directive('clipboard', clipboard)
+
+// window.innerHeight自适应（1是否显示多标签；2横向布局多出一行面包屑）
+let windowHeight = window.innerHeight
+windowHeight = store.getters.settings.tagsView ? windowHeight : windowHeight + 40
+windowHeight = store.getters.settings.layout === 'horizontal' ? windowHeight - 50 : windowHeight
 // 注册全局变量
 Object.assign(Vue.prototype, {
   $baseServer: process.env.VUE_APP_BASE_API,
-  $windowHeight: window.innerHeight,
+  $windowHeight: windowHeight,
   $request: request,
   $headerToken: getTokenHeader()
 });

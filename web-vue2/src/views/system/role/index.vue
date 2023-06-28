@@ -17,7 +17,7 @@
         </div>
         <!-- 角色管理表格 -->
         <el-table ref="roleTable" :data="tableData" stripe border
-                  :height="this.$windowHeight-200" style="width: 95%"
+                  :height="this.$windowHeight-230" style="width: 95%"
                   @selection-change="handleTableSelectChange"
         >
           <el-table-column type="selection" width="50" align="center" header-align="center"/>
@@ -76,7 +76,7 @@
           </el-button>
           <el-button type="primary" size="small" @click="toggleTableOprate">全部{{ isExpand ? '收起' : '展开' }}</el-button>
         </div>
-        <el-table ref="permissionTable" :height="this.$windowHeight-170" style="width: 100%;"
+        <el-table ref="permissionTable" :height="this.$windowHeight-200" style="width: 100%;"
                   :default-expand-all="isExpand" :data="tableData2" row-key="permissionId"
                   :tree-props="{children: 'children'}" @row-click="table2RowClick"
                   @select="table2RowSelect"

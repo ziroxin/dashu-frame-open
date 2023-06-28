@@ -28,7 +28,7 @@
           </el-button>
         </div>
         <!-- 字典类型-列表 -->
-        <el-table :data="tableData" stripe border :height="this.$windowHeight-230"
+        <el-table :data="tableData" stripe border :height="this.$windowHeight-270"
                   highlight-current-row
                   @selection-change="handleTableSelectChange">
           <el-table-column type="selection" width="50" align="center" header-align="center"/>

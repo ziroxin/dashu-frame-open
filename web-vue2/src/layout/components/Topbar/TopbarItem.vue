@@ -87,8 +87,10 @@ export default {
 .el-menu--horizontal {
   .el-menu {
     .el-menu-item, .el-submenu__title {
-      height: 50px;
-      line-height: 50px;
+      height: 45px;
+      line-height: 45px;
+      margin: 3px 5px;
+      border-radius: 10px;
 
       &:hover {
         background-color: #{$subMenuHover} !important;

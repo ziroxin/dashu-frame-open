@@ -95,6 +95,7 @@ export default {
           key: 'tagsView',
           value: val
         })
+        this.refreshPage()
       }
     },
     layout: {
@@ -106,9 +107,7 @@ export default {
           key: 'layout',
           value: val
         })
-        if (val === 'vertical') {
-          this.$router.go(0)
-        }
+        this.refreshPage()
       }
     },
     sidebarLogo: {
@@ -132,7 +131,14 @@ export default {
         key: 'theme',
         value: val
       })
-      location.reload()
+      this.refreshPage()
+    },
+    refreshPage() {
+      this.$loading({
+        lock: true, spinner: 'el-icon-loading', background: 'rgba(0, 0, 0, 1)', fullscreen: true,
+        text: '正在应用样式，请稍等...'
+      });
+      window.location.reload()
     }
   }
 }
