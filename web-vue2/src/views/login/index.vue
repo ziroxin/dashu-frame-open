@@ -167,6 +167,8 @@ export default {
         if (valid) {
           this.loading = true
           let data = {...this.loginForm}
+          // 加密传输设置为true，并对用户名密码加密（不设置或设置false，默认为不加密传输）
+          data.isEncrypt = true
           data.userName = encryptRSA(this.loginForm.userName)
           data.password = encryptRSA(this.loginForm.password)
           this.$store.dispatch('user/login', data)

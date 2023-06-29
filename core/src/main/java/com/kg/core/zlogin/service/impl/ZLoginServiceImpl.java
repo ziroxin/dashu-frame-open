@@ -77,9 +77,11 @@ public class ZLoginServiceImpl implements ZLoginService {
                 throw new BaseException("验证码错误！请检查");
             }
         }
-        // 参数解密（前端公钥加密，后端私钥解密）
-        loginForm.setUserName(MyRSAUtils.decryptPrivate(loginForm.getUserName()));
-        loginForm.setPassword(MyRSAUtils.decryptPrivate(loginForm.getPassword()));
+        if (loginForm.getIsEncrypt() != null && loginForm.getIsEncrypt()) {
+            // 参数解密（前端公钥加密，后端私钥解密）
+            loginForm.setUserName(MyRSAUtils.decryptPrivate(loginForm.getUserName()));
+            loginForm.setPassword(MyRSAUtils.decryptPrivate(loginForm.getPassword()));
+        }
         // 判断用户是否已锁定
         ZUserLock userLock = lockService.isLocking(loginForm.getUserName());
         if (userLock != null) {

@@ -28,4 +28,8 @@ public class LoginFormDTO {
      * 验证码uuid
      */
     private String codeUuid;
+    /**
+     * 是否加密传输
+     */
+    private Boolean isEncrypt;
 }
