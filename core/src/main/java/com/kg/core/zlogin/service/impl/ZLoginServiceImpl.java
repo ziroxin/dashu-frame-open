@@ -6,6 +6,7 @@ import com.google.common.primitives.Ints;
 import com.kg.component.jwt.JwtUtils;
 import com.kg.component.redis.RedisUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.component.utils.MyRSAUtils;
 import com.kg.component.utils.TimeUtils;
 import com.kg.core.common.constant.CacheConstant;
 import com.kg.core.common.constant.LoginConstant;
@@ -76,6 +77,9 @@ public class ZLoginServiceImpl implements ZLoginService {
                 throw new BaseException("验证码错误！请检查");
             }
         }
+        // 参数解密（前端公钥加密，后端私钥解密）
+        loginForm.setUserName(MyRSAUtils.decryptPrivate(loginForm.getUserName()));
+        loginForm.setPassword(MyRSAUtils.decryptPrivate(loginForm.getPassword()));
         // 判断用户是否已锁定
         ZUserLock userLock = lockService.isLocking(loginForm.getUserName());
         if (userLock != null) {

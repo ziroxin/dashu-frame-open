@@ -7,8 +7,8 @@
             <div class="col-md-5">
               <img :src="loginBg[loginBgIndex]" alt="login" class="login-card-img">
               <div class="toggle-login-bg">
-                <i class="el-icon-arrow-left" @click="toggleLoginBg(2)" />
-                <i class="el-icon-arrow-right" @click="toggleLoginBg(1)" />
+                <i class="el-icon-arrow-left" @click="toggleLoginBg(2)"/>
+                <i class="el-icon-arrow-right" @click="toggleLoginBg(1)"/>
               </div>
             </div>
             <div class="col-md-7">
@@ -24,27 +24,27 @@
                          autocomplete="on" label-position="left"
                 >
                   <el-form-item prop="username">
-                    <span class="svg-container"><svg-icon icon-class="user" /></span>
+                    <span class="svg-container"><svg-icon icon-class="user"/></span>
                     <el-input ref="username" v-model="loginForm.userName" placeholder="请输入用户名"
                               name="userName" type="text" tabindex="1" autocomplete="on"
                     />
                   </el-form-item>
                   <el-tooltip v-model="capsTooltip" content="大写已打开" placement="right" manual>
                     <el-form-item prop="password">
-                      <span class="svg-container"><svg-icon icon-class="password" /></span>
+                      <span class="svg-container"><svg-icon icon-class="password"/></span>
                       <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType"
                                 placeholder="请输入密码" name="password" tabindex="2" autocomplete="on"
                                 @keyup.native="checkCapslock" @blur="capsTooltip = false"
                                 @keyup.enter.native="handleLogin"
                       />
                       <span class="show-pwd" @click="showPwd">
-                        <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+                        <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"/>
                       </span>
                     </el-form-item>
                   </el-tooltip>
 
                   <el-form-item prop="yzm">
-                    <span class="svg-container"><svg-icon icon-class="example" /></span>
+                    <span class="svg-container"><svg-icon icon-class="example"/></span>
                     <el-input ref="yzm" v-model="loginForm.yzm" class="yzmInput" placeholder="请输入验证码"
                               name="yzm" type="text" tabindex="3" autocomplete="off"
                               @keyup.enter.native="handleLogin"
@@ -74,7 +74,7 @@
     <el-dialog title="第三方登录" :visible.sync="showDialog"
                :append-to-body="true" top="30vh"
     >
-      <social-sign />
+      <social-sign/>
     </el-dialog>
   </div>
 </template>
@@ -83,6 +83,7 @@
 import SocialSign from './components/SocialSignin'
 import {mapState} from 'vuex'
 import request from '@/utils/request';
+import {encryptRSA} from "@/utils/jsencrypt-util";
 
 export default {
   name: 'Login',
@@ -165,7 +166,10 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm)
+          let data = {...this.loginForm}
+          data.userName = encryptRSA(this.loginForm.userName)
+          data.password = encryptRSA(this.loginForm.password)
+          this.$store.dispatch('user/login', data)
             .then(() => {
               this.$router.push({path: this.redirect || '/', query: this.otherQuery})
               this.loading = false
