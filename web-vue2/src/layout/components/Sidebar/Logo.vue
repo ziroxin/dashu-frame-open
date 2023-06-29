@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar-logo-container" :class="{'collapse':collapse}">
+  <div class="sidebar-logo-container" :class="{'collapse':collapse}" :style="{'--theme-color': theme}">
     <transition name="sidebarLogoFade">
       <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
         <img v-if="logo" :src="logo" class="sidebar-logo">
@@ -24,8 +24,13 @@ export default {
   },
   data() {
     return {
-      title: '大树开发系统',
-      logo: ''
+      title: '大树快开平台',
+      logo: require('@/assets/images/logo.png')
+    }
+  },
+  computed: {
+    theme() {
+      return this.$store.state.settings.theme
     }
   }
 }
@@ -58,16 +63,16 @@ export default {
       width: 32px;
       height: 32px;
       vertical-align: middle;
-      margin-right: 12px;
+      margin-right: 5px;
     }
 
     & .sidebar-title {
       display: inline-block;
       margin: 0;
-      color: #000;
+      color: var(--theme-color) !important;
       font-weight: 600;
       line-height: 50px;
-      font-size: 14px;
+      font-size: 20px;
       font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
       vertical-align: middle;
     }
