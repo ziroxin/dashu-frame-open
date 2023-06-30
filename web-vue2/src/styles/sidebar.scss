@@ -101,6 +101,12 @@
       & > .el-menu--inline {
         background-color: #fafafa !important;
       }
+
+      & > .el-submenu__title {
+        .el-submenu__icon-arrow {
+          font-weight: bold !important;
+        }
+      }
     }
   }
 

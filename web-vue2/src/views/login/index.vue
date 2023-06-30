@@ -120,7 +120,8 @@ export default {
       loading: false,
       showDialog: false,
       redirect: undefined,
-      otherQuery: {}
+      otherQuery: {},
+      intervalIndex: 0
     }
   },
   watch: {
@@ -143,6 +144,12 @@ export default {
     }
     // 加载验证码handleLogin
     this.loadCaptacha()
+    this.intervalIndex = setInterval(() => {
+      this.toggleLoginBg(1)
+    }, 5000)
+  },
+  destroyed() {
+    clearInterval(this.intervalIndex)
   },
   methods: {
     checkCapslock(e) {

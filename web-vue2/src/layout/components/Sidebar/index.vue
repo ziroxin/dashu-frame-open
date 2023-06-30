@@ -58,6 +58,10 @@ export default {
 ::v-deep .is-active {
   .el-submenu__title {
     color: var(--theme-color) !important;
+
+    i {
+      color: var(--theme-color) !important;
+    }
   }
 }
 </style>

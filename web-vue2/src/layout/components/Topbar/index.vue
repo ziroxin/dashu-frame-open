@@ -60,6 +60,7 @@ export default {
       right: unset;
       margin-top: unset;
       margin-left: 5px;
+      font-weight: bold !important;
     }
 
     ::v-deep .is-active > .el-submenu__title > .el-submenu__icon-arrow {
