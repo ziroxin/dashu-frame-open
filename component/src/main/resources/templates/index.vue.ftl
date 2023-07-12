@@ -269,7 +269,7 @@ export default {
 <#if jsMethods??>
           this.loadChkArr2Str()
 </#if>
-          var data = {...this.temp}
+          let data = {...this.temp}
           if (this.dialogType === 'update') {
             request({
               url: '${controllerMapping}/update', method: 'put', data
