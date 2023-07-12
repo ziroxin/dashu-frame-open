@@ -1,5 +1,7 @@
 <template>
-  <div class="loginBody" :style="'background-image: url(\''+loginBg[loginBgIndex]+'\');'">
+  <div class="loginBody" :style="'background-image: url(\''+loginBg[loginBgIndex]+'\');background-size: cover;'+
+    'transition: background-image 2s linear;'"
+  >
     <main class="d-flex align-items-center min-vh-100 py-3 py-md-0">
       <div class="container">
         <div class="card login-card">
@@ -146,7 +148,7 @@ export default {
     this.loadCaptacha()
     this.intervalIndex = setInterval(() => {
       this.toggleLoginBg(1)
-    }, 5000)
+    }, 8000)
   },
   destroyed() {
     clearInterval(this.intervalIndex)

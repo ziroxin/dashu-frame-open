@@ -34,7 +34,8 @@ import {loadTheme} from "@/utils/loadTheme";
 
 // 加载自定义主题
 loadTheme(Cookies.get('settings') ? JSON.parse(Cookies.get('settings')).theme : '#4080FF')
-
+import PATCH_ELOverLayAutoClose from '@/utils/el-overlay-auto-close'
+Vue.use(PATCH_ELOverLayAutoClose)
 Vue.use(Element, {
   // 设置element-ui默认大小
   size: Cookies.get('size') || 'medium'
