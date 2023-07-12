@@ -107,9 +107,12 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public void add(ZDictDataDTO zDictDataDTO) {
+        String typeCode = zDictDataDTO.getTypeCode();
         // 查重
-        List<ZDictData> dataList = lambdaQuery().eq(ZDictData::getDictValue, zDictDataDTO.getDictValue())
-                .or().eq(ZDictData::getDictLabel, zDictDataDTO.getDictLabel()).list();
+        List<ZDictData> dataList = lambdaQuery().eq(ZDictData::getTypeCode, typeCode)
+                .and(query -> query.eq(ZDictData::getDictValue, zDictDataDTO.getDictValue())
+                        .or().eq(ZDictData::getDictLabel, zDictDataDTO.getDictLabel()))
+                .list();
         if (dataList != null && dataList.size() > 0) {
             throw new RuntimeException("字典数据已存在，请修改！");
         }
