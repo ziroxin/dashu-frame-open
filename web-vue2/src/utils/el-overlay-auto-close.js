@@ -1,6 +1,6 @@
-import {Dialog} from 'element-ui'
+import {Dialog, Drawer} from 'element-ui';
 
-const Dialog_Patched = {
+const DialogPatched = {
   extends: Dialog,
   data() {
     return {
@@ -9,7 +9,7 @@ const Dialog_Patched = {
   },
   mounted() {
     this.$el.onmousedown = (e) => {
-      this.wrapperMouseDowned = e.target.classList.contains('el-dialog__wrapper')
+      this.wrapperMouseDowned = e.target.classList.contains('el-dialog__wrapper');
     }
   },
   methods: {
@@ -19,8 +19,30 @@ const Dialog_Patched = {
     }
   }
 }
+
+const DrawerPatched = {
+  extends: Drawer,
+  data() {
+    return {
+      wrapperMouseDowned: false
+    }
+  },
+  mounted() {
+    this.$el.onmousedown = (e) => {
+      this.wrapperMouseDowned = e.target.classList.contains('el-drawer__container');
+    }
+  },
+  methods: {
+    handleWrapperClick() {
+      if (this.wrapperClosable && this.wrapperMouseDowned) {
+        this.closeDrawer();
+      }
+    }
+  }
+}
 export default {
   install(Vue) {
-    Vue.component(Dialog.name, Dialog_Patched)
+    Vue.component(Dialog.name, DialogPatched);
+    Vue.component(Drawer.name, DrawerPatched);
   }
 }
