@@ -34,15 +34,16 @@ import {loadTheme} from "@/utils/loadTheme";
 
 // 加载自定义主题
 loadTheme(Cookies.get('settings') ? JSON.parse(Cookies.get('settings')).theme : '#4080FF')
-import PATCH_ELOverLayAutoClose from '@/utils/el-overlay-auto-close'
-Vue.use(PATCH_ELOverLayAutoClose)
+// import PATCH_ELOverLayAutoClose from '@/utils/el-overlay-auto-close'
+// Vue.use(PATCH_ELOverLayAutoClose)
 Vue.use(Element, {
   // 设置element-ui默认大小
   size: Cookies.get('size') || 'medium'
   // 英文语言包，如果使用中文，无需设置，请删除
   //, locale: enLang
 })
-
+import PATCH_ElOverlayAutoClose from '@/utils/el-overlay-auto-close';
+Vue.use(PATCH_ElOverlayAutoClose);
 // 注册全局过滤器filters
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
