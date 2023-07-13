@@ -9,7 +9,7 @@ function resolve(dir) {
 const name = defaultSettings.title || '大树快速开发平台'
 
 // 带端口运行命令：npm run dev --port = 9527
-const port = process.env.port || process.env.npm_config_port || 9527 // dev port
+const port = process.env.port || process.env.npm_config_port || 9529 // dev port
 
 // 配置说明：https://cli.vuejs.org/zh/config/index.html
 module.exports = {
@@ -29,7 +29,7 @@ module.exports = {
     },
     proxy: {
       '/dashuserver': {
-        target: 'http://101.43.233.33:8123',
+        target: 'http://localhost:8123',
         changeOrigin: true,
         pathRewrite: {"^/dashuserver": ""}
       }
