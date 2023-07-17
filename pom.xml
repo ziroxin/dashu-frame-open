@@ -30,6 +30,11 @@
     </properties>
 
     <!-- jar包发布的公共maven库 -->
+    <!--
+        注意：想要此处生效，必需要在 maven 的 settings.xml 的 mirror 中，配置这个：
+        <mirrorOf>*,!sonatype-nexus-releases</mirrorOf>
+        说明：*代表所有仓库，!代表排除某个id的仓库（即排除此处配置的仓库id）
+     -->
     <repositories>
         <repository>
             <id>sonatype-nexus-releases</id>

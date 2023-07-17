@@ -31,19 +31,20 @@ import {getTokenHeader} from '@/utils/auth'
 // 初始化数据字典
 import '@/utils/dict-install'
 import {loadTheme} from "@/utils/loadTheme";
+import PATCH_ElOverlayAutoClose from '@/utils/el-overlay-auto-close';
 
 // 加载自定义主题
 loadTheme(Cookies.get('settings') ? JSON.parse(Cookies.get('settings')).theme : '#4080FF')
-// import PATCH_ELOverLayAutoClose from '@/utils/el-overlay-auto-close'
-// Vue.use(PATCH_ELOverLayAutoClose)
+// element-ui配置
 Vue.use(Element, {
-  // 设置element-ui默认大小
+  // 默认大小
   size: Cookies.get('size') || 'medium'
   // 英文语言包，如果使用中文，无需设置，请删除
   //, locale: enLang
 })
-import PATCH_ElOverlayAutoClose from '@/utils/el-overlay-auto-close';
+// 修复：el-dialog（开启点击遮罩关闭时）鼠标点击后，移出弹窗范围内，意外关闭的bug
 Vue.use(PATCH_ElOverlayAutoClose);
+
 // 注册全局过滤器filters
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
