@@ -1,6 +1,8 @@
 package com.kg.component.swagger;
 
 import io.swagger.annotations.ApiOperation;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import springfox.documentation.builders.PathSelectors;
@@ -17,6 +19,7 @@ import javax.annotation.Resource;
  * @date 2023/5/19 09:43
  */
 @Component
+@ConditionalOnProperty(name = "com.kg.swagger.enable", havingValue = "true")
 public class SwaggerDocketExtend {
     @Resource
     private SwaggerConfig swaggerConfig;
