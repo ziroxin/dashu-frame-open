@@ -12,7 +12,7 @@
     <!-- 发布命令：mvn clean deploy -f jar.xml -->
     <groupId>com.gitee.ziro</groupId>
     <artifactId>dashu-frame-component</artifactId>
-    <version>1.0.24</version>
+    <version>1.0.25</version>
     <packaging>jar</packaging>
     <name>dashu-frame-component</name>
     <description>大树快速开发平台::Component::组件库</description>
