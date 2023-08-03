@@ -1,32 +1,6 @@
 <template>
   <div style="padding: 0px 0px 0px 15px;">
     <!-- 字典数据-管理按钮 -->
-    <div style="margin-bottom: 10px;">
-      <el-tag size="small" style="width: 250px;margin-right: 10px;height: 33px;line-height: 33px;">
-        {{ '当前字典：' + currentDictType.typeName }}
-      </el-tag>
-      <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
-                 v-permission="'dictData-zDictData-add'">新增
-      </el-button>
-      <el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate(null)" size="small"
-                 v-permission="'dictData-zDictData-update'">修改
-      </el-button>
-      <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
-                 v-permission="'dictData-zDictData-delete'">删除
-      </el-button>
-      <div style="float: right;">
-        <el-upload v-permission="'dictData-zDictData-importExcel'" style="display: inline-block;margin: 0px 10px;"
-                   :action="this.$baseServer+'/dictData/zDictData/import/excel'"
-                   :headers="this.$headerToken" :data="{typeCode:currentDictType.typeCode}"
-                   :on-success="importExcelSuccess" accept=".xls,.xlsx"
-                   :show-file-list="false" :auto-upload="true">
-          <el-button v-waves type="warning" icon="el-icon-upload2" size="small">导入</el-button>
-        </el-upload>
-        <el-button v-waves type="success" icon="el-icon-printer" @click="exportExcel" size="small"
-                   v-permission="'dictData-zDictData-exportExcel'">导出
-        </el-button>
-      </div>
-    </div>
     <div style="margin-bottom: 10px">
       <el-input v-model="searchData.dictLabel" size="small" style="width: 160px;margin-right: 10px;"
                 class="filter-item" placeholder="输入数据标签/值查询"/>
@@ -45,6 +19,32 @@
       <el-button v-waves class="filter-item" type="danger" size="small" style="float: right;"
                  @click="clearDictCache(currentDictType.typeCode)" icon="el-icon-refresh-right">更新当前字典缓存
       </el-button>
+    </div>
+    <div style="margin-bottom: 10px;">
+      <el-tag size="small" style="width: 250px;margin-right: 10px;height: 33px;line-height: 33px;">
+        {{ '当前字典：' + currentDictType.typeName }}
+      </el-tag>
+      <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
+                 v-permission="'dictData-zDictData-add'">新增
+      </el-button>
+      <el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate(null)" size="small"
+                 v-permission="'dictData-zDictData-update'">修改
+      </el-button>
+      <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
+                 v-permission="'dictData-zDictData-delete'">删除
+      </el-button>
+      <div style="float: right;">
+        <el-upload v-permission="'dictData-zDictData-importExcel'" style="display: inline-block;margin: 0px 10px;"
+                   :action="$baseServer+'/dictData/zDictData/import/excel'"
+                   :headers="this.$headerToken" :data="{typeCode:currentDictType.typeCode}"
+                   :on-success="importExcelSuccess" accept=".xls,.xlsx"
+                   :show-file-list="false" :auto-upload="true">
+          <el-button v-waves type="warning" icon="el-icon-upload2" size="small">导入</el-button>
+        </el-upload>
+        <el-button v-waves type="success" icon="el-icon-printer" @click="exportExcel" size="small"
+                   v-permission="'dictData-zDictData-exportExcel'">导出
+        </el-button>
+      </div>
     </div>
     <!-- 字典数据-列表 -->
     <el-table :data="tableData" stripe border :height="this.$windowHeight-270" v-loading="isLoading"

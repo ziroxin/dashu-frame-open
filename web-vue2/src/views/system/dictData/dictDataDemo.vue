@@ -17,6 +17,10 @@ export default {
     return {
       sex: '2'
     }
+  },
+  mounted() {
+    // 输出字典数据
+    console.log(this.dict.dict.sys_user_sex);
   }
 }
 </script>
