@@ -108,4 +108,33 @@ public class ExcelCommonUtils {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * 读取Excel（List<Map>） - 导入Excel
+     *
+     * @param request        请求信息
+     * @param headerRowIndex 标题所在行（从0开始计数）
+     * @param startRowIndex  数据起始行（包含，从0开始计数）
+     * @param alias          字段-标题 对应关系，例如：{"name":"姓名","age":"年龄","字段名":"标题字段名"}
+     * @return 读取出的实体列表
+     */
+    public static List<Map<String, Object>> read(HttpServletRequest request, int headerRowIndex, int startRowIndex,
+                                                 Map<String, String> alias) {
+        try {
+            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+            MultipartFile multipartFile = multipartRequest.getFile(multipartRequest.getFileMap().entrySet().stream().findFirst().get().getKey());
+            InputStream inputStream = multipartFile.getInputStream();
+            //读取文件为ExcelReader对象
+            ExcelReader reader = ExcelUtil.getReader(inputStream);
+            //设置标题别名
+            if (alias != null) {
+                reader.setHeaderAlias(alias);
+            }
+            List<Map<String, Object>> dataList = reader.read(headerRowIndex, startRowIndex, Integer.MAX_VALUE);
+            //返回集合
+            return dataList;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
