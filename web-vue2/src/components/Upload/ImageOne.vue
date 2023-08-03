@@ -13,7 +13,7 @@
     <el-upload ref="imageOne"
                :data="{'path':path}"
                :name="name"
-               :action="action===''?this.$baseServer+'/upload/images':action"
+               :action="action===''?$baseServer+'/upload/images':action"
                :file-list.sync="imgList"
                :multiple="false"
                :on-preview="imgPreview"

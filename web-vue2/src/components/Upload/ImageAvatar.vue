@@ -9,7 +9,7 @@
                class="avatar-uploader"
                :data="{'path':path}"
                :name="name"
-               :action="action===''?this.$baseServer+'/upload/images':action"
+               :action="action===''?$baseServer+'/upload/images':action"
                :show-file-list="false"
                :multiple="false"
                :before-upload="imgBeforeUpload"

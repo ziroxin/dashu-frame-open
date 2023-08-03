@@ -85,7 +85,7 @@
 import SocialSign from './components/SocialSignin'
 import {mapState} from 'vuex'
 import request from '@/utils/request';
-import {encryptRSA} from "@/utils/jsencrypt-util";
+import {encryptRSA} from '@/utils/jsencrypt-util'
 
 export default {
   name: 'Login',
