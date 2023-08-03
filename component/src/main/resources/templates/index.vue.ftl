@@ -29,7 +29,7 @@
                    v-permission="'${buttonNamePre}delete'">删除
 				</el-button>
 				<el-upload v-permission="'${buttonNamePre}importExcel'" style="display: inline-block;margin: 0px 10px;"
-						   :action="this.$baseServer+'${controllerMapping}/import/excel'" :headers="this.$headerToken"
+						   :action="$baseServer+'${controllerMapping}/import/excel'" :headers="this.$headerToken"
 						   :on-success="importExcelSuccess" accept=".xls,.xlsx"
 						   :show-file-list="false" :auto-upload="true">
 					<el-button v-waves type="warning" icon="el-icon-upload2" size="small">导入Excel</el-button>
@@ -131,6 +131,7 @@
 <script>
 import waves from '@/directive/waves'
 import request from '@/utils/request'
+import downloadUtil from '@/utils/download-util';
 
 export default {
   directives: {waves},
@@ -314,21 +315,8 @@ export default {
     },
     // 导出Excel文件
     exportExcel() {
-      const params = {params: JSON.stringify(this.searchData)};
-      request({
-        url: '${controllerMapping}/export/excel', method: 'get', params
-      }).then(response => {
-        // 创建a标签
-        const link = document.createElement('a');
-        // 组装下载地址
-        link.href = this.$baseServer + response.data;
-        // 修改文件名
-        link.setAttribute('download', '${table.comment!}.xlsx');
-        // 开始下载
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-      })
+      const params = {params: JSON.stringify(this.searchData)}
+      downloadUtil.download('${controllerMapping}/export/excel', params, '${table.comment!}.xlsx')
     },
     // 导入Excel成功，提示
     importExcelSuccess(response) {
