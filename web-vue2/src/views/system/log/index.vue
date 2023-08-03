@@ -84,7 +84,7 @@
 <script>
 import waves from '@/directive/waves';
 import request from '@/utils/request';
-import downLoad from '@/utils/downLoad';
+import downloadUtil from '@/utils/download-util';
 
 export default {
   directives: {waves},
@@ -255,21 +255,7 @@ export default {
     // 导出Excel文件
     exportExcel() {
       const params = {...this.pager, params: JSON.stringify(this.searchData)};
-      downLoad.downLoad('/zlog/zOperateLog/export/excel', JSON.stringify(this.searchData), '操作日志表.xlsx');
-      // request({
-      //   url: '/zlog/zOperateLog/export/excel', method: 'get', params
-      // }).then(response => {
-      //   // 创建a标签
-      //   const link = document.createElement('a');
-      //   // 组装下载地址
-      //   link.href = this.$baseServer + response.data;
-      //   // 修改文件名
-      //   link.setAttribute('download', '操作日志表.xlsx');
-      //   // 开始下载
-      //   link.style.display = 'none';
-      //   document.body.appendChild(link);
-      //   link.click();
-      // })
+      downloadUtil.download('/zlog/zOperateLog/export/excel', params, '操作日志表.xlsx')
     }
   }
 };
