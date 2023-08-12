@@ -27,7 +27,6 @@ import waves from '@/directive/waves/index'
 import clipboard from '@/directive/clipboard'
 // 导入全局变量
 import request from '@/utils/request'
-import {getTokenHeader} from '@/utils/auth'
 // 初始化数据字典
 import '@/utils/dict-install'
 import {loadTheme} from "@/utils/loadTheme";
@@ -63,8 +62,7 @@ windowHeight = store.getters.settings.layout === 'horizontal' ? windowHeight - 5
 Object.assign(Vue.prototype, {
   $baseServer: process.env.VUE_APP_BASE_API,
   $windowHeight: windowHeight,
-  $request: request,
-  $headerToken: getTokenHeader()
+  $request: request
 });
 
 // 开发时不提示生产环境

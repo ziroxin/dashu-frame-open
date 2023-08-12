@@ -29,7 +29,7 @@
                    v-permission="'${buttonNamePre}delete'">删除
 				</el-button>
 				<el-upload v-permission="'${buttonNamePre}importExcel'" style="display: inline-block;margin: 0px 10px;"
-						   :action="$baseServer+'${controllerMapping}/import/excel'" :headers="this.$headerToken"
+						   :action="$baseServer+'${controllerMapping}/import/excel'" :headers="$store.state.user.headerToken"
 						   :on-success="importExcelSuccess" accept=".xls,.xlsx"
 						   :show-file-list="false" :auto-upload="true">
 					<el-button v-waves type="warning" icon="el-icon-upload2" size="small">导入Excel</el-button>

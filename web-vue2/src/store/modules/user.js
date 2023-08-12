@@ -1,10 +1,11 @@
 import {getInfo, login, logout, refreshToken} from '@/api/user'
-import {getToken, removeToken, setToken, setTokenValidTime} from '@/utils/auth'
+import {getToken, getTokenHeader, removeToken, setToken, setTokenValidTime} from '@/utils/auth'
 import {resetRouter} from '@/router'
 import Cookies from 'js-cookie';
 
 const state = {
   token: getToken(),
+  headerToken: getTokenHeader(),
   name: '',
   avatar: '',
   introduction: '',
@@ -15,6 +16,7 @@ const state = {
 const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
+    state.headerToken = getTokenHeader()
   },
   SET_INTRODUCTION: (state, introduction) => {
     state.introduction = introduction
@@ -39,9 +41,9 @@ const actions = {
     return new Promise((resolve, reject) => {
       login(userInfo).then(response => {
         const {data} = response
-        commit('SET_TOKEN', data.accessToken)
         setToken(data.accessToken, new Date(data.accessTokenValidTime))
         setTokenValidTime(new Date(data.accessTokenValidTime))
+        commit('SET_TOKEN', data.accessToken)
         // 是默认密码
         Cookies.set('isDefaultPassword', data.defaultPassword)
         Cookies.set('isInvalidPassword', data.invalidPassword)
@@ -77,10 +79,10 @@ const actions = {
   logout({commit, state, dispatch}) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
+        removeToken()
         commit('SET_TOKEN', '')
         commit('SET_PERROUTERS', [])
         commit('SET_PERMISSIONS', [])
-        removeToken()
         resetRouter()
 
         // 重置标签缓存
@@ -95,10 +97,10 @@ const actions = {
   // 清除Token
   resetToken({commit}) {
     return new Promise(resolve => {
+      removeToken()
       commit('SET_TOKEN', '')
       commit('SET_PERROUTERS', [])
       commit('SET_PERMISSIONS', [])
-      removeToken()
       resolve()
     })
   },
@@ -107,9 +109,9 @@ const actions = {
     return new Promise(resolve => {
       refreshToken().then(response => {
         const {data} = response
-        commit('SET_TOKEN', data.accessToken)
         setToken(data.accessToken, new Date(data.accessTokenValidTime))
         setTokenValidTime(new Date(data.accessTokenValidTime))
+        commit('SET_TOKEN', data.accessToken)
       })
     })
   }
