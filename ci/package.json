@@ -1,0 +1,14 @@
+{
+  "name": "ci",
+  "version": "1.0.0",
+  "description": "- 必须先在服务器端部署好了docker环境\r - 本模块只进行2个操作：  \r   1） 拷贝最新打包的文件（Java端不拷贝配置文件）  \r   2） 重启docker",
+  "main": "ci-java.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-ssh": "^13.1.0"
+  }
+}
