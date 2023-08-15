@@ -67,29 +67,33 @@
           </div>
         </el-dialog>
       </el-col>
-      <el-col :span="17" style="padding-left: 20px;border-left: 1px solid #dedede;">
+      <el-col :span="17" style="padding-left: 20px;border-left: 1px solid #dedede;" v-loading="isLoading">
         <!--        资源权限表格-->
         <div style="margin-bottom: 5px;">
-          <el-button v-show="isSaveBtn" size="small" v-permission="'system-role-save-permission'" type="primary"
+          <el-button v-show="isSaveBtn" size="small" icon="el-icon-check"
+                     v-permission="'system-role-save-permission'" type="primary"
                      @click="saveRolePermission()"
           >保存角色权限
           </el-button>
-          <el-button type="primary" size="small" @click="toggleTableOprate">全部{{ isExpand ? '收起' : '展开' }}</el-button>
+          <el-button size="small" @click="toggleTableOprate"
+                     :icon="isExpand?'el-icon-arrow-up':'el-icon-arrow-down'">
+            全部{{ isExpand ? '收起' : '展开' }}
+          </el-button>
         </div>
         <el-table ref="permissionTable" :height="this.$windowHeight-200" style="width: 100%;"
                   :default-expand-all="isExpand" :data="tableData2" row-key="permissionId"
                   :tree-props="{children: 'children'}" @row-click="table2RowClick"
-                  @select="table2RowSelect"
+                  @select="table2RowSelect" resizable border
         >
           <el-table-column type="selection" width="50" align="center" header-align="center"/>
-          <el-table-column label="路由/外链" min-width="25%">
+          <el-table-column label="路由/外链" min-width="30%">
             <template v-slot="{row}">
               <el-tag v-if="row.permissionType === '0'" disable-transitions size="mini">路由</el-tag>
               <el-tag v-if="row.permissionType === '2'" disable-transitions type="success" size="mini">外链</el-tag>
               <a style="cursor: pointer;margin-left: 5px;">{{ row.permissionTitle }}</a>
             </template>
           </el-table-column>
-          <el-table-column label="按钮/其他" min-width="75%">
+          <el-table-column label="按钮/其他" min-width="60%">
             <template v-slot="{row}">
               <div @click.stop="">
                 <el-checkbox-group v-model="selectPermissionApiList">
@@ -142,7 +146,8 @@ export default {
       selectPermissionApiList: [],
       // 菜单-权限idList
       selectPermissionApiList2: [],
-      isSaveBtn: false
+      isSaveBtn: false,
+      isLoading: false
     }
   },
   created() {
@@ -256,6 +261,7 @@ export default {
     },
     //加载资源列表树
     loadPermissionTreeList() {
+      this.isLoading = true
       let params = this.roleId === '' ? {} : {'roleId': this.roleId}
       this.$nextTick(() => {
         getPermissionList(params).then(response => {
@@ -266,6 +272,7 @@ export default {
             this.selectPermissionApiList2 = []
             this.toggleRowSelectionAll(this.tableData2)
           })
+          this.isLoading = false
         })
       })
     },
@@ -292,6 +299,7 @@ export default {
       this.$refs.roleTable.toggleRowSelection(row, true)
       this.roleId = row.roleId
       this.isSaveBtn = true
+      this.isExpand = true
       this.loadPermissionTreeList()
     },
     // 设置权限-按钮点击时-权限行选中
@@ -447,11 +455,13 @@ export default {
     },
     //保存角色权限
     saveRolePermission() {
+      this.isLoading = true
       let pids = []
       pids.push(...this.selectPermissionApiList)
       pids.push(...this.selectPermissionApiList2)
       saveRolePermission({'roleId': this.roleId, 'permissionIds': pids}).then(response => {
         this.$notify({title: '保存成功', message: '保存权限成功！', type: 'success'})
+        this.isLoading = false
       })
     }
   }

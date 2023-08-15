@@ -40,7 +40,7 @@
 			</div>
 		</div>
 		<!-- ${table.comment!}-列表 -->
-		<el-table :data="tableData" stripe border @selection-change="handleTableSelectChange">
+		<el-table :data="tableData" stripe border @selection-change="handleTableSelectChange" v-loading="isLoading">
 			<el-table-column type="selection" width="50" align="center" header-align="center"/>
 <#list table.fields as field>
 			<el-table-column label="${field.comment}" prop="${field.propertyName}" align="center"/>
@@ -153,6 +153,7 @@ export default {
       dialogFormVisible: false,
       // 表单临时数据
       temp: {},
+      isLoading: false,
 <#if jsData??>
       ${jsData}
 </#if>
@@ -179,6 +180,7 @@ export default {
     },
     // 加载表格
     loadTableList() {
+      this.isLoading = true
       const params = {...this.pager, params: JSON.stringify(this.searchData)};
       request({
         url: '${controllerMapping}/list', method: 'get', params
@@ -186,6 +188,7 @@ export default {
         const {data} = response
         this.pager.totalCount = data.total
         this.tableData = data.records
+        this.isLoading = false
       })
     },
     // 监听选中行

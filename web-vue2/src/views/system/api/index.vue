@@ -30,11 +30,12 @@
           </el-table>
         </div>
       </el-col>
-      <el-col :span="15" style="padding-left: 10px;border-left: 1px solid #dedede;">
+      <el-col :span="15" style="padding-left: 10px;border-left: 1px solid #dedede;" v-loading="listLoading2">
         <!--        API列表-->
         <div class="grid-content bg-purple-light">
           <div style="margin-bottom: 10px;">
-            <el-button type="primary" :disabled="isSaveBtn" size="small" @click="savePermissionApi()">保存关联API
+            <el-button type="primary" :disabled="isSaveBtn" icon="el-icon-check"
+                       size="small" @click="savePermissionApi()">保存关联API
             </el-button>
             <el-button type="primary" size="small" @click="openGroupDialog()">设置分组</el-button>
             <el-button type="danger" size="small" @click="scanApi()">自动扫描API（增量）</el-button>
@@ -185,6 +186,7 @@ export default {
     },
     // 扫描后台api列表
     async scanApi() {
+      this.listLoading2 = true
       const {code} = await scanApi()
       if (code === '200') {
         this.$notify({
@@ -193,6 +195,7 @@ export default {
           type: 'success'
         });
       }
+      this.listLoading2 = true
       // 刷新api列表
       this.getApiList()
     },
@@ -201,6 +204,7 @@ export default {
       this.$confirm('确定要清除无效的Api吗?', '提醒', {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
+        this.listLoading2 = true
         clearApi().then(response => {
           const {code} = response
           if (code === '200') {
@@ -209,18 +213,21 @@ export default {
           } else {
             this.$message({type: 'error', message: '操作失败！'})
           }
+          this.listLoading2 = false
         })
       })
     },
     // 设置api
     setMyApi(permissionId) {
+      this.listLoading2 = true
       getApiListByPermissionId({'permissionId': permissionId})
-        .then((response) => {
-          const {data} = response
-          this.selectPermissionApiList = data ? [...new Set(data)] : []
-          this.currentPermissionId = permissionId
-          this.isSaveBtn = false
-        })
+          .then((response) => {
+            const {data} = response
+            this.selectPermissionApiList = data ? [...new Set(data)] : []
+            this.currentPermissionId = permissionId
+            this.isSaveBtn = false
+            this.listLoading2 = false
+          })
     },
     // 保存关联API
     savePermissionApi() {
@@ -228,17 +235,15 @@ export default {
         this.$message({type: 'error', message: '请至少选择一个API才能保存'})
         return
       }
+      this.listLoading2 = true
       savePermissionApi({'permissionId': this.currentPermissionId, 'apiIds': this.selectPermissionApiList})
-        .then((response) => {
-          const {code} = response
-          if (code === '200') {
-            this.$notify({
-              title: '保存成功',
-              message: '保存关联API成功！',
-              type: 'success'
-            })
-          }
-        })
+          .then((response) => {
+            const {code} = response
+            if (code === '200') {
+              this.$notify({title: '保存成功', message: '保存关联API成功！', type: 'success'})
+              this.listLoading2 = false
+            }
+          })
     },
     // 保存分组
     openGroupDialog() {
@@ -248,9 +253,9 @@ export default {
       }
       // 加载分组下拉框
       request({url: '/api/group/list', method: 'get'})
-        .then((response) => {
-          this.groupList = response.data
-        })
+          .then((response) => {
+            this.groupList = response.data
+          })
       // 打开窗口
       this.groupDialogShow = true
     },
@@ -287,17 +292,17 @@ export default {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
         deleteApiGroup({'apiGroupId': apiGroupId})
-          .then((response) => {
-            const {code} = response
-            if (code === '200') {
-              this.$notify({
-                title: '删除成功',
-                message: '删除API分组成功！',
-                type: 'success'
-              });
-              this.getApiList()
-            }
-          })
+            .then((response) => {
+              const {code} = response
+              if (code === '200') {
+                this.$notify({
+                  title: '删除成功',
+                  message: '删除API分组成功！',
+                  type: 'success'
+                });
+                this.getApiList()
+              }
+            })
       })
     }
   }
