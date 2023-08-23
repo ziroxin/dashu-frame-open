@@ -22,6 +22,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,7 +75,15 @@ public class BusTradeServiceImpl extends ServiceImpl<BusTradeMapper, BusTrade> i
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("tradeStatus")), BusTrade::getTradeStatus, paramObj.getStr("tradeStatus"));
             }
             if (paramObj.containsKey("paySuccessTime")) {
-                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("paySuccessTime")), BusTrade::getPaySuccessTime, paramObj.getStr("paySuccessTime"));
+                if (StringUtils.hasText(paramObj.getStr("paySuccessTime"))) {
+                    System.out.println(paramObj.getStr("paySuccessTime"));
+                    String paySuccessTime =
+                            LocalDateTime.parse(paramObj.getStr("paySuccessTime"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
+                                    .plusHours(8)// +8小时
+                                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                    System.out.println(paySuccessTime);
+                    wrapper.lambda().likeRight(BusTrade::getPaySuccessTime, paySuccessTime);
+                }
             }
             if (paramObj.containsKey("totalFee")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("totalFee")), BusTrade::getTotalFee, paramObj.getStr("totalFee"));
@@ -95,13 +104,11 @@ public class BusTradeServiceImpl extends ServiceImpl<BusTradeMapper, BusTrade> i
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("updateTime")), BusTrade::getUpdateTime, paramObj.getStr("updateTime"));
             }
         }
-        wrapper.lambda().orderByDesc(BusTrade::getPaySuccessTime)
-                .orderByDesc(BusTrade::getCreateTime);
+        wrapper.lambda().orderByDesc(BusTrade::getPaySuccessTime).orderByDesc(BusTrade::getCreateTime);
         //返回数据
         Page<BusTrade> pageEntity = page(pager, wrapper);
         Page<BusTradeDTO> result = new Page<>();
-        result.setRecords(
-                pageEntity.getRecords().stream().map(m -> busTradeConvert.entityToDto(m)).collect(Collectors.toList()));
+        result.setRecords(pageEntity.getRecords().stream().map(m -> busTradeConvert.entityToDto(m)).collect(Collectors.toList()));
         result.setTotal(pageEntity.getTotal());
         return result;
     }
@@ -154,8 +161,7 @@ public class BusTradeServiceImpl extends ServiceImpl<BusTradeMapper, BusTrade> i
     public String exportExcel(String params) {
         try {
             // 拼接导出Excel的文件，保存的临时路径
-            String path = FilePathConfig.SAVE_PATH + "/exportTemp/excel/"
-                    + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
+            String path = FilePathConfig.SAVE_PATH + "/exportTemp/excel/" + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
 
             // 查询待导出的数据
             QueryWrapper<BusTrade> wrapper = new QueryWrapper<>();
@@ -203,9 +209,7 @@ public class BusTradeServiceImpl extends ServiceImpl<BusTradeMapper, BusTrade> i
             }
             List<BusTrade> list = list(wrapper);
             // 转换成导出excel实体
-            List<BusTradeExcelOutDTO> dataList = list.stream()
-                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d), BusTradeExcelOutDTO.class))
-                    .collect(Collectors.toList());
+            List<BusTradeExcelOutDTO> dataList = list.stream().map(d -> JSONUtil.toBean(JSONUtil.parseObj(d), BusTradeExcelOutDTO.class)).collect(Collectors.toList());
             if (dataList == null || dataList.size() <= 0) {
                 // 未查到数据时，模拟一行空数据
                 dataList.add(new BusTradeExcelOutDTO());
@@ -231,8 +235,7 @@ public class BusTradeServiceImpl extends ServiceImpl<BusTradeMapper, BusTrade> i
     @Transactional(rollbackFor = RuntimeException.class)
     public void importExcel(HttpServletRequest request) {
         // 读取导入数据
-        List<BusTrade> importData =
-                ExcelCommonUtils.read(request, 1, 2, BusTrade.class, BusTradeExcelConstant.IMPORT_EXCEL_COLUMN);
+        List<BusTrade> importData = ExcelCommonUtils.read(request, 1, 2, BusTrade.class, BusTradeExcelConstant.IMPORT_EXCEL_COLUMN);
         // 处理数据
         List<BusTrade> saveData = importData.stream().map(o -> {
             o.setTradeId(GuidUtils.getUuid());

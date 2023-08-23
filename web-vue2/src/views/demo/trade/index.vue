@@ -2,7 +2,7 @@
   <div class="app-container">
     <!-- 交易 - 支付demo-管理按钮 -->
     <div style="margin-bottom: 10px;">
-      <el-select v-model="searchData.payType" size="small" style="width: 100px;margin-right: 10px;"
+      <el-select v-model="searchData.payType" size="small" style="width: 120px;margin-right: 10px;"
                  class="filter-item" placeholder="支付方式">
         <el-option label="全部" value=""></el-option>
         <el-option label="微信支付" value="0"></el-option>
@@ -15,7 +15,7 @@
         <el-option label="已支付" value="1"></el-option>
       </el-select>
       <el-date-picker v-model="searchData.paySuccessTime" size="small" style="width: 150px;margin-right: 10px;"
-                      type="datetime" class="filter-item" placeholder="支付成功时间"/>
+                      type="date" class="filter-item" placeholder="支付成功日期"/>
       <el-button v-waves class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
       </el-button>
