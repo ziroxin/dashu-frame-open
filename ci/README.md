@@ -15,10 +15,11 @@ npm init
 npm install node-ssh
 
 ### 3. 修改配置文件
-- 修改ci-vue.js相关配置
-- 修改ci-java.js相关配置
+- 修改 ci-vue.js 相关配置
+- 修改 ci-java.js 相关配置
 
 ### 4.运行
-node ci-vue.js 
-node ci-java.js 
-- 运行命令时，需要输入操作系统密码，来执行重启docker命令
+- 先打包好前端项目，运行命令，部署前端：  
+node ci-vue.js  
+- 打包后台，运行命令，部署后台：
+node ci-java.js

@@ -12,47 +12,54 @@ const remoteDirectory = '/xxx/xxx/xxx';// 改成自己的服务器端目录，�
 
 // 使用 node-ssh 库进行目录拷贝
 async function copyDirectory() {
-    try {
-        const ssh = new NodeSSH();
-        await ssh.connect({
-            host: remoteHost,
-            username: remoteUser,
-            password: remotePassword
-        });
+  const ssh = new NodeSSH();
+  try {
+    await ssh.connect({
+      host: remoteHost, username: remoteUser, password: remotePassword
+    });
 
-        // 拷贝lib目录
-        await ssh.putDirectory(localDirectory + '\\lib', remoteDirectory + '/lib', {
-            recursive: true,
-            concurrency: 10
-        });
-        // 拷贝jar文件
-        await ssh.putFile(localDirectory + '\\app.jar', remoteDirectory + '/app.jar');
+    // 拷贝lib目录
+    await ssh.putDirectory(localDirectory + '\\lib', remoteDirectory + '/lib', {
+      recursive: true, concurrency: 10
+    });
 
-        console.log('目录拷贝成功！');
-        ssh.dispose();
-    } catch (err) {
-        console.error('目录拷贝失败:', err);
-    }
+    // 拷贝jar文件
+    await ssh.putFile(localDirectory + '\\app.jar', remoteDirectory + '/app.jar');
+
+    console.log('目录拷贝成功！');
+  } catch (err) {
+    console.error('目录拷贝失败:', err);
+  } finally {
+    ssh.dispose();
+  }
 }
 
 // 执行远程命令
-function executeRemoteCommand() {
-    const command = `docker restart springboot`;
-
-    exec(`ssh ${remoteUser}@${remoteHost} ${command}`, (error, stdout, stderr) => {
-        if (error) {
-            console.error('远程命令执行失败:', error);
-        } else {
-            console.log('远程命令执行成功！');
-        }
+async function executeRemoteCommand() {
+  const ssh = new NodeSSH();
+  try {
+    await ssh.connect({
+      host: remoteHost, username: remoteUser, password: remotePassword
     });
+
+    const command = `docker restart springboot`;
+    const result = await ssh.execCommand(command);
+
+    console.log('远程命令执行成功！');
+  } catch (err) {
+    console.error('远程命令执行失败:', err);
+  } finally {
+    ssh.dispose();
+  }
 }
 
 // 执行拷贝和重启命令
 copyDirectory()
-    .then(() => {
-        executeRemoteCommand();
-    })
-    .catch((err) => {
-        console.error('脚本执行出错:', err);
+  .then(() => {
+    executeRemoteCommand().then(() => {
+      console.log('All completed.');
     });
+  })
+  .catch((err) => {
+    console.error('脚本执行出错:', err);
+  });
