@@ -2,7 +2,7 @@ package com.kg.core.security.config;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.CharsetUtil;
-import com.kg.core.filter.JwtTokenAuthenticationFilter;
+import com.kg.core.security.filter.JwtTokenAuthenticationFilter;
 import com.kg.core.security.handler.SimpleAccessDeniedHandler;
 import com.kg.core.security.handler.SimpleAuthenticationEntryPoint;
 import com.kg.core.security.util.MyPasswordEncoder;

@@ -1,4 +1,4 @@
-package com.kg.core.filter;
+package com.kg.core.security.filter;
 
 import com.kg.component.jwt.JwtUtils;
 import com.kg.component.redis.RedisUtils;
@@ -44,24 +44,21 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
         } else {
             // 非忽略列表，正常逻辑判断
             // ============ 2. 获取token ============
-            String jwtToken = request.getHeader(LoginConstant.LOGIN_JWT_TOKEN_KEY);// header中的token
+            String jwtToken = getTokenString(request);
             if (!StringUtils.hasText(jwtToken)) {
-                jwtToken = request.getParameter(LoginConstant.LOGIN_JWT_TOKEN_KEY);// 参数中的token
-                if (!StringUtils.hasText(jwtToken)) {
-                    // 无token放行（后边security会判断权限）
-                    filterChain.doFilter(request, response);
-                    return;
-                }
+                // 无token放行（后边security会判断权限）
+                filterChain.doFilter(request, response);
+                return;
             }
-            // ============ 3. 解析token ============
+            // ============ 3. 解析token（有token，说明已经登录） ============
             Object userId;
             try {
                 userId = JwtUtils.parseToken(jwtToken);
+                if (ObjectUtils.isEmpty(userId)) {
+                    throw new BaseException(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new BaseException(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID);
-            }
-            if (ObjectUtils.isEmpty(userId)) {
                 throw new BaseException(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID);
             }
             // ============ 4. 判断是否单例登录 ============
@@ -85,41 +82,36 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                 throw new BaseException(BaseErrorCode.LOGIN_ERROR_NOT_LOGIN);
             } else {
                 try {
-                    // 存入SecurityContextHolder
-                    UsernamePasswordAuthenticationToken authenticationToken =
-                            new UsernamePasswordAuthenticationToken(userDetailEntity, null, userDetailEntity.getAuthorities());
+                    // 存入Security上下文（SecurityContextHolder）
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetailEntity, null, userDetailEntity.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new BaseException(BaseErrorCode.LOGIN_ERROR_NOT_LOGIN);
                 }
             }
-
             // ============ 6. 继续请求动作 ============
             filterChain.doFilter(request, response);
         }
     }
 
+
     @SneakyThrows
     private void doIgnoreFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
         // ============ 2. 获取token ============
-        String jwtToken = request.getHeader(LoginConstant.LOGIN_JWT_TOKEN_KEY);// header中的token
+        String jwtToken = getTokenString(request);
         if (!StringUtils.hasText(jwtToken)) {
-            jwtToken = request.getParameter(LoginConstant.LOGIN_JWT_TOKEN_KEY);// 参数中的token
-            if (!StringUtils.hasText(jwtToken)) {
-                // 无token放行
-                filterChain.doFilter(request, response);
-                return;
-            }
+            // 无token放行
+            filterChain.doFilter(request, response);
+            return;
         }
-        // ============ 3. 解析token ============
+        // ============ 3. 解析token（有token，说明已经登录） ============
         Object userId = null;
         try {
             userId = JwtUtils.parseToken(jwtToken);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         if (!ObjectUtils.isEmpty(userId)) {
             // ============ 5. 加载当前登录用户信息 ============
             // 从redis中读取用户信息
@@ -127,8 +119,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
             if (!ObjectUtils.isEmpty(userDetailEntity)) {
                 try {
                     // 存入SecurityContextHolder
-                    UsernamePasswordAuthenticationToken authenticationToken =
-                            new UsernamePasswordAuthenticationToken(userDetailEntity, null, userDetailEntity.getAuthorities());
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetailEntity, null, userDetailEntity.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -137,5 +128,21 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
         }
         // ============ 6. 继续请求动作 ============
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * 获取请求中的 jwtToken 信息
+     *
+     * @param request 请求信息
+     * @return jwtToken
+     */
+    private String getTokenString(HttpServletRequest request) {
+        // header中的token
+        String jwtToken = request.getHeader(LoginConstant.LOGIN_JWT_TOKEN_KEY);
+        if (StringUtils.hasText(jwtToken)) {
+            return jwtToken;
+        }
+        // 如果header中没有，则获取url参数中的token
+        return request.getParameter(LoginConstant.LOGIN_JWT_TOKEN_KEY);
     }
 }

@@ -27,7 +27,12 @@ public class SecurityUserDetailEntity implements UserDetails {
     // 用户信息
     private ZUser zUser;
 
-    // 用户权限列表
+    /**
+     * 用户权限标记列表，权限标记包括：
+     * 1. @PreAuthorize("hasAuthority('权限标记')") - Security 根据该标记，自动判断接口权限
+     * 2. 路由权限标记 - vue前端菜单显示隐藏
+     * 3. v-permission中的权限标记 - vue页面按钮/元素显示隐藏
+     */
     private List<String> apiPermissions;
 
     // Security授权列表

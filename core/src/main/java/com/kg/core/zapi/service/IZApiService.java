@@ -17,10 +17,10 @@ import java.util.List;
 public interface IZApiService extends IService<ZApi> {
 
     /**
-     * 根据userId查询用户的api权限
+     * 根据userId查询用户权限标记List
      *
      * @param userId 用户id
-     * @return 用户api权限列表
+     * @return 用户权限标记List
      */
     List<String> listApiByUserId(String userId);
 

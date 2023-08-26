@@ -57,10 +57,10 @@ public class ZApiServiceImpl extends ServiceImpl<ZApiMapper, ZApi> implements IZ
     @Override
     public List<String> listApiByUserId(String userId) {
         if ((LoginConstant.DEVELOPER_USER_IDS + ",").contains(userId + ",")) {
-            // 判断是否开发管理员，拥有全部api权限
+            // 判断是否开发管理员，拥有全部api权限（直接返回全部权限标记）
             return scanApiList().stream().map(zApi -> zApi.getApiPermission()).collect(Collectors.toList());
         }
-        // 用户和api关系
+        // 角色id和权限标记的关系
         List<ApiUserIdDTO> list;
         if (redisUtils.hasKey(CacheConstant.ROLE_API_REDIS_KEY)) {
             list = (List<ApiUserIdDTO>) redisUtils.get(CacheConstant.ROLE_API_REDIS_KEY);
@@ -73,7 +73,7 @@ public class ZApiServiceImpl extends ServiceImpl<ZApiMapper, ZApi> implements IZ
         wrapper.lambda().eq(ZUserRole::getUserId, userId);
         List<ZUserRole> userRoleList = userRoleService.list(wrapper);
         List<String> roles = userRoleList.stream().map(zUserRole -> zUserRole.getRoleId()).collect(Collectors.toList());
-        // 过滤角色权限
+        // 根据其角色，过滤该用户的权限标记
         return list.stream().filter(obj -> roles.contains(obj.getRoleId()))
                 .map(obj -> obj.getApiPermission()).collect(Collectors.toList());
     }

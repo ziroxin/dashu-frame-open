@@ -26,7 +26,7 @@ public class MyBatisPlusConfig {
         // 实例化分页插件
         PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor(DbType.MYSQL);
         // 设置最大单页限制数量，默认 100 条，-1 不受限制
-        paginationInnerInterceptor.setMaxLimit(100l);
+        paginationInnerInterceptor.setMaxLimit(100L);
         // 注册分页插件
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(paginationInnerInterceptor);

@@ -44,9 +44,14 @@ public class SecurityUserDetailServiceImpl implements UserDetailsService {
         if (!StringUtils.hasText(zUser.get().getStatus()) || !"1".equals(zUser.get().getStatus())) {
             throw new BaseException(BaseErrorCode.LOGIN_ERROR_USER_DISABLED);
         }
-        // 查询用户权限列表
+        /**
+         * 查询当前用户的权限标记List，权限标记包括：
+         * 1. @PreAuthorize("hasAuthority('权限标记')") - Security 根据该标记，自动判断接口权限
+         * 2. 前端路由权限标记 - 前端菜单显示隐藏
+         * 3. 按钮 v-permission 中的权限标记 - 页面按钮/元素显示隐藏
+         */
         List<String> lists = apiService.listApiByUserId(zUser.get().getUserId());
-        // 查到用户，并返回
+        // 查到用户，组合Security所需的用户信息（包含权限列表）
         return new SecurityUserDetailEntity(zUser.get(), lists);
     }
 }
