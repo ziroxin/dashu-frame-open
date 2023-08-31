@@ -1,7 +1,7 @@
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">大树快速开发平台</h1>
 <h4 align="center" style="margin: 30px 0 30px; font-weight: bold;">完全开源，前后端分离，轻量易用，性能出色，助力小微企业</h4>
 <p align="center">
-<a href="https://gitee.com/ziro/dashu-frame-open/stargazers"><img src="https://gitee.com/failedgoddess/test-hub/badge/star.svg?theme=gvp"></a>
+<a href="https://gitee.com/ziro/dashu-frame-open/stargazers"><img src="https://gitee.com/ziro/dashu-frame-open/badge/star.svg?theme=gvp"></a>
 <a href="https://gitee.com/ziro/dashu-frame-open/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-green"></a>
 <a href="https://gitee.com/ziro/dashu-frame-open"><img src="https://img.shields.io/badge/version-v1.0.25-blue"></a>
 </p>
