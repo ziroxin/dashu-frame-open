@@ -6,13 +6,9 @@
 <a href="https://gitee.com/ziro/dashu-frame-open"><img src="https://img.shields.io/badge/version-v1.0.25-blue"></a>
 </p>
 <br/>
+<br/>
 
-## 大树快速开发平台
-
-SpringBoot + Vue2  
-
-完全开源，前后端分离，轻量易用，性能出色，助力小微企业。（文档更新中）  
-
+仓库地址：[[gitee]](https://gitee.com/ziro/dashu-frame-open)
 文档地址：[[大树快速开发平台 - 中文文档]](http://docs.java119.cn/)  
 演示站：[[大树快速开发平台 - 演示站]](http://yanshi.java119.cn/)
 
