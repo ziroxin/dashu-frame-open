@@ -5,7 +5,6 @@
 <a href="https://gitee.com/ziro/dashu-frame-open/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-green"></a>
 <a href="https://gitee.com/ziro/dashu-frame-open"><img src="https://img.shields.io/badge/version-v1.0.25-blue"></a>
 </p>
-
 <br/>
 
 ## 大树快速开发平台
