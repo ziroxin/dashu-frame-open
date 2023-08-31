@@ -3,13 +3,13 @@
     <logo v-if="showLogo" :collapse="isCollapse"/>
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
-        :default-active="activeMenu"
-        :collapse="isCollapse"
-        :text-color="variables.menuText"
-        :active-text-color="theme"
-        :unique-opened="false"
-        :collapse-transition="false"
-        mode="vertical"
+          :default-active="activeMenu"
+          :collapse="isCollapse"
+          :text-color="variables.menuText"
+          :active-text-color="theme"
+          :unique-opened="false"
+          :collapse-transition="false"
+          mode="vertical"
       >
         <sidebar-item v-for="route in permission_routes" :key="route.path" :item="route" :base-path="route.path"/>
       </el-menu>
@@ -33,7 +33,6 @@ export default {
     activeMenu() {
       const route = this.$route
       const {meta, path} = route
-      // if set path, the sidebar will highlight the path you set
       if (meta.activeMenu) {
         return meta.activeMenu
       }

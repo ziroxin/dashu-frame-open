@@ -1,5 +1,5 @@
 <template>
-  <section class="todoapp">
+  <section class="todoapp" style="border-radius: 5px;">
     <!-- header -->
     <header class="header">
       <input class="new-todo" autocomplete="off" placeholder="请输入待办事项" @keyup.enter="addTodo">

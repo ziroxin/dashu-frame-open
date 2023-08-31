@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="list" style="width: 100%;padding-top: 15px;">
+  <el-table :data="list" style="width: 100%;padding-top: 15px;border-radius: 5px;">
     <el-table-column label="订单编号" min-width="200">
       <template slot-scope="scope">
         {{ scope.row.order_no | orderNoFilter }}
