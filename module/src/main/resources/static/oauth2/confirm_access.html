@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户授权确认 - 统一身份认证 - Oauth2.0</title>
+    <link rel="stylesheet" href="../oauth2/css/login.css">
+    <script src="../oauth2/js/jquery.min.js"></script>
+    <script src="../oauth2/js/jquery.cookie-1.4.1.min.js"></script>
+    <script src="../oauth2/js/util.js"></script>
+</head>
+<body>
+<div class="login-panel" id="loginPanel">
+    <div class="login-title">
+        <h1>统一认证中心 · 用户授权确认</h1>
+    </div>
+    <div class="login-form">
+        <form id="confirmationForm" name="confirmationForm" action="/oauth/authorize" method="post">
+            <div class="login-form-row">
+                <input name="user_oauth_approval" value="true" type="hidden"/>
+                <input name="UserJwtToken" id="UserJwtToken" value="" type="hidden"/>
+                应用 【
+                <th:block th:text="${client_id}"></th:block>
+                】 申请获取您的基本信息，是否同意？
+                <input name="scope.read" value="true" type="hidden"/>
+            </div>
+            <div class="login-form-row">
+                <input class="authorize" name="authorize" value="同意" type="submit">
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+  $(function () {
+    let data = getCookieForConfirmAccess();
+    $("#UserJwtToken").val(data.token);
+  })
+</script>
+</body>
+</html>

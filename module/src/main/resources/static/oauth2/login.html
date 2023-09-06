@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>统一身份认证登录 - Oauth2.0</title>
+    <link rel="stylesheet" href="../oauth2/css/login.css">
+    <script src="../oauth2/js/jquery.min.js"></script>
+    <script src="../oauth2/js/jsencrypt.min.js"></script>
+    <script src="../oauth2/js/jquery.cookie-1.4.1.min.js"></script>
+    <script src="../oauth2/js/layer/layer.js"></script>
+    <script src="../oauth2/js/util.js"></script>
+</head>
+<body>
+<div class="login-panel" id="loginPanel">
+    <div class="login-title">
+        <h1>大树快速开发平台 · 统一认证中心</h1>
+    </div>
+    <div class="login-form">
+        <form id="loginForm">
+            <div class="login-form-row">
+                <input type="text" id="userName" name="userName" value="admin"
+                       autocomplete="off" placeholder="请输入用户名"/>
+            </div>
+            <div class="login-form-row">
+                <input type="password" id="password" name="password" value="qwer@123"
+                       autocomplete="off" placeholder="请输入密码"/>
+            </div>
+            <div class="login-form-row">
+                <input type="text" id="yzm" name="yzm" autocomplete="off" placeholder="请输入验证码"/>
+                <img class="yzmimg" onclick="refreshYzm()"
+                     src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKMAAAAxCAIAAAA5oI6fAAAD/ElEQVR42u3ZX0hTURwHcCHEosKCHkJ6kJ4KeokFpfSHEqKIwJDsDxiiNTTyDxqGEkIEFu5BUyGW/4kp8w4zhoYorj8P/mlu/lu2ck0t53Rzs+nUbbrb73RBZUpknq3d+ftyH849KJ57PpzfPecaxGK2RoJwClAag9IYlMagNAalMSiNQWkMSmNQGqUxKI2hHfnI9LH6T7sqVEcYDaOzoHTAMofX9CnGbNBun5iFti+xUdp3gdXMMXMB7EPSAZQOwOypVHv0bC9ToTSuaZTG9zRK82XvDUUbVrP/7r0dS+4gsXLtxdNJb9HpBGIxv8ZsnPqZ/ESyLyoj+Hhy6Jm0W7kV2hEjfeneqbmAkTbZ7VHV1fySBuawC1lBAuHqa/ep1N4v3ylLv9JbwfVK81AAVNF7jY3AzC9pWM1AeyL+qUZngNtB/fjJxHzoOX1HRFm6SmsG6dvvhvnOLB0Y4Jj5Jb3//H1w1f0wrV7l0BMScZeytPD9MEg/10x65Tny8lihkO3pWenp7yc9paV0/47eao0sL7/GMLyTXhuDaRqkD1x8QFn6aosOpJ/1T0ABDynrDq1UJ38YsSwsUhq1gU1KYrOzWafz9/bPQdoZGezsLMWpWXK7b8hkEWVlOouFurRSIPjDRZ150mI7evMxSBdIWilLRzZ8XrsdOywdmHEu0Rl7QwNZxAxD2jIZaXd00J2dos5O0JX09UGb19JQw8MvZwNzwqNq+nvvneUqoM1Tjy+5yS2s5oS3pJ4//DhGZ/guF5uTQ1Z2VxdhLimhOzs94+NAmySXc7f8rd7weube2ZkFjI++nIzOOED6YG0/tYfQaokxXGlprNVKcXbsTuclieRsVRWcr/guDesYmGEr7q0vJ+v/vlgZXNpNtcIWEem6Orqzk6tQgGvz0MoRcfPSdqddrBTHMrECsSC6Ntpn1RvO0CA9arT4ThrKOEjvKKf3DxmzmU1JIdKpqaRNL8vHqnWvf2NOfJ2Y/iZdM6mB9tDUkM+kuW8mG/6tv//RvVVqcDXYncs9g9Z56Dkn11J7iIIC8p5uaiLYIpE/S8NqBmaPzqyWrOLOYv+s+RuQhjMVuMYr9HYX2Wyb513cuavm6xSdsbS3r+y9KypIu63Ne0++yeoNRRtW85rDuh7KOO+ljXPOsJe9Hqes663f6AzEZiOnZzhDLyyQWzhGZ2aSSm4y+ac0vJttDptHp2PRAf1eN/N29eaw4WQVWqne9qIbTtKiXiO14cOke3wjU6lIT34+run/II3ZEu9pjMfeO64+jtt7Q9GG1QzMMdIY6EfpAMSGlQ263Hm6sL3Qb5lRegsFpVEag9IYlMagNAalMSiNQWkMSmNQGqUxWyO/ANTvWXjBabbKAAAAAElFTkSuQmCC"
+                     alt="验证码图片"/>
+            </div>
+            <div class="login-form-row">
+                <input type="hidden" id="codeUuid" name="codeUuid" value="true"/>
+                <button id="login">登 录</button>
+                <div class="error-info"></div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+  $(function () {
+    // 获取cookie中的token
+    checkCookieToken();
+    // 验证码
+    refreshYzm();
+    // 绑定登录按钮
+    $("#login").click(function () {
+      $(".error-info").html('')
+      if ($("#userName").val() === '') {
+        $(".error-info").html('用户名不能为空')
+        return false;
+      }
+      if ($("#password").val() === '') {
+        $(".error-info").html('密码不能为空')
+        return false;
+      }
+      if ($("#yzm").val() === '') {
+        $(".error-info").html('验证码不能为空')
+        return false;
+      }
+      let loginData = {
+        // 加密传输设置为true，并对用户名密码加密（不设置或设置false，默认为不加密传输）
+        isEncrypt: true,
+        userName: encryptRSA($("#userName").val()),
+        password: encryptRSA($("#password").val()),
+        codeUuid: $("#codeUuid").val(),
+        yzm: $("#yzm").val()
+      }
+      layer.load(1, {shade: [0.25, '#000']});
+      $.ajax({
+        url: '../login/login',
+        type: 'post',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(loginData),
+        success: function (response) {
+          if (response.code === '200') {
+            const {data} = response
+            setCookieToken(data)
+            window.location.href = window.location.href + '&UserJwtToken=' + data.accessToken;
+          } else {
+            layer.closeAll();
+            layer.msg(response.message, {icon: 2, shade: 0.25, shadeClose: true, closeBtn: 2});
+            refreshYzm();
+          }
+        }
+      })
+      return false;
+    })
+  })
+
+  function refreshYzm() {
+    $.get('../captcha/get', function (response) {
+      const {data} = response
+      $('.yzmimg').attr('src', data.codeBaseImage);
+      $('#codeUuid').val(data.codeUuid);
+    })
+  }
+
+  $("#userName").blur(() => {
+    if ($("#userName").val() === '') {
+      $(".error-info").html('用户名不能为空')
+    }
+  })
+
+  $("#password").blur(() => {
+    if ($("#password").val() === '') {
+      $(".error-info").html('密码不能为空')
+    }
+  })
+
+  $("#yzm").blur(() => {
+    if ($("#yzm").val() === '') {
+      $(".error-info").html('验证码不能为空')
+    }
+  })
+</script>
+</body>
+</html>

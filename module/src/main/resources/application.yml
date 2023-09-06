@@ -31,8 +31,16 @@ spring:
     port: 6379
     password:
     database: 0
-  # 解决swagger2冲突，导致启动报错问题(@See：https://blog.csdn.net/mapboo/article/details/121568519)
-  mvc.pathmatch.matching-strategy: ant_path_matcher
+  mvc:
+    # 解决swagger2冲突，导致启动报错问题(@See：https://blog.csdn.net/mapboo/article/details/121568519)
+    pathmatch.matching-strategy: ant_path_matcher
+  #thymeleaf配置
+  thymeleaf:
+    enabled: true
+    prefix: classpath:/static/
+    suffix: .html
+    encoding: UTF-8
+    cache: false
 
 #mybatis-plus配置
 mybatis-plus:
