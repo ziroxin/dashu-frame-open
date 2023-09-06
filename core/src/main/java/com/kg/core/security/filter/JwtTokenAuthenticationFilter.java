@@ -62,7 +62,6 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                 throw new BaseException(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID);
             }
             // ============ 4. 判断是否单例登录 ============
-            System.out.println("IS_USER_LOGIN_ONLY_ONE:::" + LoginConstant.IS_USER_LOGIN_ONLY_ONE);
             if (LoginConstant.IS_USER_LOGIN_ONLY_ONE) {
                 // 登录
                 if (!redisUtils.hasKey(LoginConstant.LAST_LOGIN_TOKEN_PRE + userId)) {
@@ -83,7 +82,8 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
             } else {
                 try {
                     // 存入Security上下文（SecurityContextHolder）
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetailEntity, null, userDetailEntity.getAuthorities());
+                    UsernamePasswordAuthenticationToken authenticationToken =
+                            new UsernamePasswordAuthenticationToken(userDetailEntity, null, userDetailEntity.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -119,7 +119,8 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
             if (!ObjectUtils.isEmpty(userDetailEntity)) {
                 try {
                     // 存入SecurityContextHolder
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetailEntity, null, userDetailEntity.getAuthorities());
+                    UsernamePasswordAuthenticationToken authenticationToken =
+                            new UsernamePasswordAuthenticationToken(userDetailEntity, null, userDetailEntity.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * @date 2022/4/27 23:08
  */
 @Configuration
-// 允许security注解权限标记
+// 允许 Security 注解权限标记 @PreAuthorize("hasAnyRole('xxx')")
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -66,6 +66,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    /**
+     * Security 配置
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // 读取忽略列表
@@ -80,10 +83,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 // 关闭session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                // 配置忽略认证的请求（如登录页）
+                // 配置授权请求：
                 .authorizeRequests()
+                // 1. 忽略列表中的请求，直接放行（如登录页等）
                 .antMatchers(ignoreUrls).permitAll()
-                // 其他请求，均需认证
+                // 2. 其他请求，均需认证
                 .anyRequest().authenticated();
 
         // 配置JwtToken过滤器，早于用户名密码验证过滤器
@@ -108,12 +112,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * 跨域资源配置
      */
     private CorsConfigurationSource corsConfigurationSource() {
-        CorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.addAllowedOrigin("*");// 同源配置，*表示任何请求都视为同源，若需指定ip和端口可以改为如“localhost：8080”，多个以“，”分隔；
         corsConfiguration.addAllowedHeader("*");// header，允许哪些header，本案中使用的是token，此处可将*替换为token；
-        corsConfiguration.addAllowedMethod("*");// 允许的请求方法，PSOT、GET等
-        ((UrlBasedCorsConfigurationSource) source).registerCorsConfiguration("/**", corsConfiguration);// 配置允许跨域访问的url
+        corsConfiguration.addAllowedMethod("*");// 允许的请求方法，POST、GET等
+        // 配置允许跨域访问的 url
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
     }
 }
