@@ -69,6 +69,8 @@ com.kg:
     jwt-token-expiry: 120
   #oauth2配置
   oauth2:
+    #服务端，是否启动(true/false)
+    server.enable: true
     #客户端信息配置
     client:
       oauthServerUri: http://localhost:8123/

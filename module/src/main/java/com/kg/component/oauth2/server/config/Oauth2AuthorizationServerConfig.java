@@ -1,6 +1,7 @@
 package com.kg.component.oauth2.server.config;
 
 import com.kg.core.security.service.SecurityUserDetailServiceImpl;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +23,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 @EnableAuthorizationServer
+@ConditionalOnProperty(name = "com.kg.oauth2.server.enable", havingValue = "true")
 public class Oauth2AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Resource

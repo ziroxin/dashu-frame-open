@@ -1,5 +1,6 @@
 package com.kg.component.oauth2.server.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -13,6 +14,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
  */
 @Configuration
 @EnableResourceServer
+@ConditionalOnProperty(name = "com.kg.oauth2.server.enable", havingValue = "true")
 public class Oauth2ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     /**
