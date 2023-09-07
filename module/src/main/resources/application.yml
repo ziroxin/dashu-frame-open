@@ -67,6 +67,16 @@ com.kg:
     is-yzm: true
     #jwtToken过期时限，单位：分钟
     jwt-token-expiry: 120
+  #oauth2配置
+  oauth2:
+    #客户端信息配置
+    client:
+      oauthServerUri: http://localhost:8123/
+      clientId: dev
+      clientSecret: qwer@123
+      redirectUri: http://localhost:8123/oauth2/client/login/code
+      errorRouter: http://localhost:9529/#/oauth2/error
+      successRouter: http://localhost:9529/#/oauth2/success
   #开发管理员配置 (所有开发管理员的ids，多个用逗号隔开)
   developer-user-ids: 1
   #跨域配置，是否允许跨域：默认关闭（true开启；false关闭）

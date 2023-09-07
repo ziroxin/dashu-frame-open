@@ -1,16 +1,18 @@
 <template>
   <div class="social-signup-container">
+    <el-button style="margin-right: 50px;" type="primary" @click="oauth2HandleClick">
+      Oauth2统一认证登录
+    </el-button>
     <div class="sign-btn" @click="wechatHandleClick('wechat')">
-      <span class="wx-svg-container"><svg-icon icon-class="wechat" class="icon" /></span>
+      <span class="wx-svg-container"><svg-icon icon-class="wechat" class="icon"/></span>
       WeChat
     </div>
     <div class="sign-btn" @click="tencentHandleClick('tencent')">
-      <span class="qq-svg-container"><svg-icon icon-class="qq" class="icon" /></span>
+      <span class="qq-svg-container"><svg-icon icon-class="qq" class="icon"/></span>
       QQ
     </div>
   </div>
 </template>
-
 <script>
 
 export default {
@@ -21,11 +23,17 @@ export default {
     },
     tencentHandleClick() {
       alert('ok')
+    },
+    oauth2HandleClick() {
+      location.href = 'http://localhost:8123/oauth/authorize' +
+          '?response_type=code' +
+          '&client_id=dev' +
+          '&redirect_uri=http%3A%2F%2Flocalhost%3A8123%2Foauth2%2Fclient%2Flogin%2Fcode' +
+          '&state=my_state'
     }
   }
 }
 </script>
-
 <style lang="scss" scoped>
 .social-signup-container {
   margin: 20px 0;
@@ -37,8 +45,8 @@ export default {
 
   .icon {
     color: #fff;
-    font-size: 24px;
-    margin-top: 8px;
+    font-size: 20px;
+    margin-top: 6px;
   }
 
   .wx-svg-container,

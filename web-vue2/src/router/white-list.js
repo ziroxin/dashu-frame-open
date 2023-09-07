@@ -2,7 +2,7 @@
  * 单页白名单列表
  * 注意：使用 /.* 可以模糊匹配目录
  */
-const whiteList = ['/login', '/auth-redirect']
+const whiteList = ['/login', '/auth-redirect', '/oauth2/error', '/oauth2/success']
 
 // 路由是否在白名单中
 export function isWhiteList(path) {

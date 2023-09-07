@@ -4,6 +4,9 @@
 # 登录登出接口
 /login/login
 /login/logout
+# Oauth2 Client(授权码模式，带code回调接口)
+/oauth2/client/login/code
+/oauth2/client/login/check
 # 获取密码规则用于注册
 /zsafety/zSafety/getSafety
 # 验证码
