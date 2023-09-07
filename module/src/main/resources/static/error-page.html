@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>自定义错误页</title>
+    <style>
+        html {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-content: center;
+        }
+
+        h1 {
+            margin-top: -80px;
+            width: 100%;
+            height: 80px;
+            border-bottom: 1px dashed #BFBFBF;
+            text-align: center;
+        }
+
+        .error-info, h2 {
+            width: 100%;
+            text-align: center;
+        }
+
+        .error-info {
+            width: 50%;
+            line-height: 40px;
+            border-radius: 10px;
+            background: #b92d54;
+            font-size: 18px;
+            color: #ffffff;
+            margin-top: 22px;
+        }
+    </style>
+</head>
+<body>
+<h1>哎呀，出错了~</h1>
+<h2>
+    错误码：
+    <th:block th:text="${errorCode}"></th:block>
+</h2>
+<div class="error-info" th:if="${errorCode == 400}">请求中有语法问题，或不能满足请求。</div>
+<div class="error-info" th:if="${errorCode == 401 || errorCode == 403}">您没有权限访问。</div>
+<div class="error-info" th:if="${errorCode == 404}">您访问的接口/页面不存在。</div>
+<div class="error-info" th:if="${errorCode == 500}">服务器内部错误。</div>
+<div class="error-info" th:if="${errorCode == 502}">网关请求失败。</div>
+</body>
+</html>
