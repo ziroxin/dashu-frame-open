@@ -61,34 +61,14 @@ public class ZLoginServiceImpl implements ZLoginService {
     @Resource
     private ZOperateLogService operateLogService;
 
-    @Resource
-    private ZCaptchaService captchaService;
-    @Value("${com.kg.login.is-yzm}")
-    private boolean IS_YZM;
-
     @Override
     public LoginSuccessDTO login(LoginFormDTO loginForm) throws BaseException {
-        // 验证码
-        if (IS_YZM) {
-            if (!StringUtils.hasText(loginForm.getYzm())) {
-                throw new BaseException("请输入验证码！");
-            }
-            if (!captchaService.checkCaptcha(loginForm.getCodeUuid(), loginForm.getYzm())) {
-                throw new BaseException("验证码错误！请检查");
-            }
-        }
-        if (loginForm.getIsEncrypt() != null && loginForm.getIsEncrypt()) {
-            // 参数解密（前端公钥加密，后端私钥解密）
-            loginForm.setUserName(MyRSAUtils.decryptPrivate(loginForm.getUserName()));
-            loginForm.setPassword(MyRSAUtils.decryptPrivate(loginForm.getPassword()));
-        }
         // 判断用户是否已锁定
         ZUserLock userLock = lockService.isLocking(loginForm.getUserName());
         if (userLock != null) {
             // 锁定抛出锁定原因
             throw new BaseException(userLock.getLockReason());
         }
-
         // AuthenticationManager 进行用户认证
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginForm.getUserName(), loginForm.getPassword());
@@ -166,22 +146,7 @@ public class ZLoginServiceImpl implements ZLoginService {
     @Override
     public void logout(String token) {
         try {
-            /*
-            // @ziro 20230320 不清空redis存储的用户信息，多用户同时登录时，清空会造成bug：一个用户退出，其他用户都退出了
-            // 从SecurityContextHolder中获取用户信息
-            SecurityUserDetailEntity userDetailEntity =
-                    (SecurityUserDetailEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            String userId = userDetailEntity.getZUser().getUserId();
-            // 清空redis中的token
-            if (redisUtils.hasKey(LoginConstant.LAST_LOGIN_TOKEN_PRE + userId)) {
-                redisUtils.delete(LoginConstant.LAST_LOGIN_TOKEN_PRE + userId);
-            }
-            // 清空redis中的登录信息
-            if (redisUtils.hasKey(LoginConstant.LOGIN_INFO_REDIS_PRE + userId)) {
-                redisUtils.delete(LoginConstant.LOGIN_INFO_REDIS_PRE + userId);
-            }
-            */
-            // 设置token失效
+            // 设置jwtToken失效
             JwtUtils.removeToken(token);
             // 清空上下文
             SecurityContextHolder.clearContext();

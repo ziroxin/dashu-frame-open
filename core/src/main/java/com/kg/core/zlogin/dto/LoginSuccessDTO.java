@@ -3,6 +3,7 @@ package com.kg.core.zlogin.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -11,7 +12,9 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class LoginSuccessDTO {
+public class LoginSuccessDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
     // 登录成功信息
     private String successMsg;
     // 登录获得的Token
