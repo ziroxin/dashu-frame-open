@@ -17,7 +17,7 @@ import router from './router'
 import './icons'
 import './permission'
 import './utils/error-log'
-
+import { objCopy } from '@/utils/tools'
 // 导入全局过滤器filters
 import * as filters from './filters'
 // 导入全局指令directive
@@ -29,7 +29,7 @@ import clipboard from '@/directive/clipboard'
 import request from '@/utils/request'
 // 初始化数据字典
 import '@/utils/dict-install'
-import {loadTheme} from "@/utils/loadTheme";
+import { loadTheme } from "@/utils/loadTheme";
 import PATCH_ElOverlayAutoClose from '@/utils/el-overlay-auto-close';
 
 // 加载自定义主题
@@ -60,6 +60,7 @@ windowHeight = store.getters.settings.tagsView ? windowHeight : windowHeight + 4
 windowHeight = store.getters.settings.layout === 'horizontal' ? windowHeight - 50 : windowHeight
 // 注册全局变量
 Object.assign(Vue.prototype, {
+  $objCopy: objCopy,
   $baseServer: process.env.VUE_APP_BASE_API,
   $windowHeight: windowHeight,
   $request: request
