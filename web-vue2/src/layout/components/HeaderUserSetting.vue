@@ -7,12 +7,6 @@
         <i class="el-icon-caret-bottom"/>
       </div>
       <el-dropdown-menu slot="dropdown">
-        <a target="_blank" href="https://panjiachen.gitee.io/vue-element-admin-site/zh/">
-          <el-dropdown-item>
-            <i class="el-icon-document"/>
-            框架官方文档
-          </el-dropdown-item>
-        </a>
         <a @click="editPassword=true">
           <el-dropdown-item>
             <i class="el-icon-key"/>

@@ -1,7 +1,8 @@
 <template>
   <div class="icons-container">
     <aside>
-      <a href="https://panjiachen.github.io/vue-element-admin-site/guide/advanced/icon.html" target="_blank">Add and use
+      <a href="https://panjiachen.gitee.io/vue-element-admin-site/zh/guide/advanced/icon.html" target="_blank">
+        添加新图标或使用图标说明文档
       </a>
     </aside>
     <el-tabs type="border-card">
