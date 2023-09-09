@@ -1,9 +1,3 @@
-
-/**
- * 通用js方法封装处理
- * Copyright (c) 2019 ruoyi
- */
-
 // 日期格式化
 export function parseTime(time, pattern) {
   if (arguments.length === 0 || !time) {
@@ -229,4 +223,10 @@ export function tansParams(params) {
 // 验证是否为blob格式
 export function blobValidate(data) {
   return data.type !== 'application/json'
+}
+// 对象的快速复制  不存在的key不复制
+export function objCopy(obj, obj1) {
+  Object.keys(obj1).forEach(key => {
+    obj1[key] = obj[key]
+  })
 }
