@@ -40,7 +40,7 @@
 			</div>
 		</div>
 		<!-- ${table.comment!}-列表 -->
-		<el-table :data="tableData" stripe border @selection-change="handleTableSelectChange" v-loading="isLoading">
+		<el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange" v-loading="isLoading">
 			<el-table-column type="selection" width="50" align="center" header-align="center"/>
 <#list table.fields as field>
 			<el-table-column label="${field.comment}" prop="${field.propertyName}" align="center"/>
@@ -229,7 +229,8 @@ export default {
     // 打开修改窗口
     openUpdate(row) {
       if (row) {
-        this.tableSelectRows = [row]
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据修改！', type: 'warning'})
@@ -297,7 +298,8 @@ export default {
     // 删除
     deleteByIds(row) {
       if (row) {
-        this.tableSelectRows = [row]
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据删除！', type: 'warning'})
