@@ -193,9 +193,6 @@ export default {
       this.dialogType = 'view'
       this.dialogFormVisible = true
       this.$nextTick(() => {
-        for (const $elElement of this.$refs['dataForm'].$el) {
-          $elElement.placeholder = '';
-        }
         this.$refs['dataForm'].clearValidate()
       })
     },

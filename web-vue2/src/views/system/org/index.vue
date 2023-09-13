@@ -171,14 +171,10 @@ export default {
     },
     // 打开查看窗口
     openView(row) {
-      // 修改弹窗
       this.temp = Object.assign({}, row)
       this.dialogType = 'view'
       this.dialogFormVisible = true
       this.$nextTick(() => {
-        for (const $elElement of this.$refs['dataForm'].$el) {
-          $elElement.placeholder = '';
-        }
         this.$refs['dataForm'].clearValidate()
       })
     },
