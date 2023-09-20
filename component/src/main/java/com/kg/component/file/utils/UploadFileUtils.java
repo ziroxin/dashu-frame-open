@@ -1,7 +1,9 @@
-package com.kg.component.file;
+package com.kg.component.file.utils;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
+import com.kg.component.file.FilePathConfig;
+import com.kg.component.file.dto.FileDTO;
 import com.kg.component.utils.GuidUtils;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
@@ -53,7 +55,7 @@ public class UploadFileUtils {
                 // 获取文件扩展名
                 String extend = FileUtil.extName(oldFileName).toLowerCase();
                 // 根据头判断格式是否正确
-                String extendStr = FileType.getFileType(multipartFile.getBytes());
+                String extendStr = FileTypeUtils.getFileType(multipartFile.getBytes());
                 if (StringUtils.hasText(extendStr) && extendStr.indexOf(extend) < 0) {
                     throw new IOException("您上传的文件格式与扩展名不符！请检查");
                 }

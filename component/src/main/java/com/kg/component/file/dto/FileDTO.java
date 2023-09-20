@@ -1,8 +1,10 @@
-package com.kg.component.file;
+package com.kg.component.file.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.io.Serializable;
 
 /**
  * 文件上传 - 数据实体类
@@ -13,7 +15,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class FileDTO {
+public class FileDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
     /**
      * 文件地址（文件访问地址）
      */

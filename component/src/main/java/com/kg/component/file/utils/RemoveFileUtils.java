@@ -1,6 +1,7 @@
-package com.kg.component.file;
+package com.kg.component.file.utils;
 
 import cn.hutool.core.io.FileUtil;
+import com.kg.component.file.FilePathConfig;
 
 /**
  * 删除文件 - 工具类

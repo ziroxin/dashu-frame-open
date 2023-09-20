@@ -1,4 +1,4 @@
-package com.kg.component.file;
+package com.kg.component.file.utils;
 
 
 import cn.hutool.core.io.FileUtil;
@@ -17,7 +17,7 @@ import java.util.Map;
  * @author ziro
  * @date 2022-04-07 18:14:17
  */
-public class FileType {
+public class FileTypeUtils {
     // 常见文件头map
     public final static Map<String, String> FILE_TYPE_MAP = new HashMap<>();
 
@@ -193,7 +193,7 @@ public class FileType {
             String type1 = null;
             try {
                 FileInputStream fis = new FileInputStream(ls[i]);
-                type1 = FileType.getFileType(fis);
+                type1 = FileTypeUtils.getFileType(fis);
             } catch (IOException e) {
                 continue;
 //                e.printStackTrace();
@@ -212,7 +212,7 @@ public class FileType {
             System.out.print("               ");
             byte[] bytes = new byte[10];
             IoUtil.toStream(ls[i]).read(bytes, 0, bytes.length);
-            System.out.print(FileType.getFileHeader(bytes));
+            System.out.print(FileTypeUtils.getFileHeader(bytes));
             System.out.println("");
         }
 

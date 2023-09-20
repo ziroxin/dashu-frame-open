@@ -1,8 +1,10 @@
-package com.kg.component.file;
+package com.kg.component.file.utils;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.img.Img;
 import cn.hutool.core.io.FileUtil;
+import com.kg.component.file.FilePathConfig;
+import com.kg.component.file.dto.FileDTO;
 import com.kg.component.utils.GuidUtils;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.FileCopyUtils;
@@ -80,7 +82,7 @@ public class UploadImageUtils {
                 file.setFileOldName(oldFileName);
 
                 // 判断文件扩展名
-                String extend = FileType.getFileType(multipartFile.getBytes());
+                String extend = FileTypeUtils.getFileType(multipartFile.getBytes());
                 if (!StringUtils.hasText(extend) || FilePathConfig.UPLOAD_FILE_ALLOW_EXTEND.toLowerCase().indexOf(extend) < 0) {
                     throw new IOException("您上传的文件格式不正确！请检查");
                 }
