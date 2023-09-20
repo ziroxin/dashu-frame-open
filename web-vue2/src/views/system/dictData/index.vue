@@ -36,7 +36,7 @@
       <div style="float: right;">
         <el-upload v-permission="'dictData-zDictData-importExcel'" style="display: inline-block;margin: 0px 10px;"
                    :action="$baseServer+'/dictData/zDictData/import/excel'"
-                   :headers="$store.state.user.headerToken" :data="{typeCode:currentDictType.typeCode}"
+                   :headers="$store.getters.headerToken" :data="{typeCode:currentDictType.typeCode}"
                    :on-success="importExcelSuccess" accept=".xls,.xlsx"
                    :show-file-list="false" :auto-upload="true">
           <el-button v-waves type="warning" icon="el-icon-upload2" size="small">导入</el-button>

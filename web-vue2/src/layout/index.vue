@@ -79,7 +79,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.device)
     this.editPassword = false
     if (Cookies.get('isDefaultPassword') === 'true') {
       this.editPassword = true
