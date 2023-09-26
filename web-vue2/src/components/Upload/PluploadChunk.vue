@@ -29,13 +29,14 @@
 </template>
 <script>
 import plupload from 'plupload'
+import {generateUUID} from '@/utils/tools'
 
 export default {
   name: 'PluploadChunk',
   props: {
     // 上传地址
     uploadServerUrl: {type: String, required: true, default: '/upload/chunks'},
-    // 分片大小，（10mb）
+    // 分片大小
     chunkSize: {type: String, default: '1mb'},
     // 允许上传的文件类型
     mimeTypes: {type: Array, default: () => [{title: 'Zip files', extensions: 'zip'}]},
@@ -55,15 +56,15 @@ export default {
       // 已上传完成内容
       uploadData: null,
       // 上传组件
-      uploader: null
+      uploader: null,
     }
   },
-
   mounted() {
     this.init()
   },
   methods: {
     uploadChunk() {
+      this.uploader.setOption("multipart_params", {uploadId: generateUUID()})
       this.uploader.start();
     },
     formatSize(size) {

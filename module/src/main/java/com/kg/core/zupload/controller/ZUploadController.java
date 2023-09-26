@@ -4,7 +4,6 @@ import cn.hutool.json.JSONUtil;
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.file.dto.FileChunkDTO;
 import com.kg.component.file.dto.FileDTO;
-import com.kg.component.file.utils.FileMD5Utils;
 import com.kg.component.file.utils.UploadFileChunksUtils;
 import com.kg.component.file.utils.UploadFileUtils;
 import com.kg.component.file.utils.UploadImageUtils;
@@ -23,7 +22,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -87,10 +85,11 @@ public class ZUploadController implements BaseController {
             // 获取分片信息
             String chunkNumber = request.getParameter("chunk");
             String tempFileName = request.getParameter("name");
+            String uploadId = request.getParameter("uploadId");// 本次上传的唯一id
             String totalChunks = request.getParameter("chunks");
             String dirName = StringUtils.hasText(path) ? path : "chunks";
             // 分片上传
-            FileChunkDTO result = UploadFileChunksUtils.upload(request, dirName, chunkNumber, tempFileName, totalChunks);
+            FileChunkDTO result = UploadFileChunksUtils.upload(request, dirName, chunkNumber, tempFileName, uploadId, totalChunks);
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,46 +106,61 @@ public class ZUploadController implements BaseController {
     @PostMapping("chunks/resume")
     public FileChunkDTO chunksResume(HttpServletRequest request, String path, String chunkMD5) throws BaseException {
         try {
-            if (StringUtils.hasText(chunkMD5)) {
-                // 先检测md5
-                String md5 = chunkMD5.toUpperCase();
-                if (redisUtils.hasKey(md5)) {
-                    FileChunkDTO result = JSONUtil.toBean(JSONUtil.parseObj(redisUtils.get(md5)), FileChunkDTO.class);
-                    String tempFileName = request.getParameter("name");
-                    String chunkNumber = request.getParameter("chunk");
-                    if (StringUtils.hasText(tempFileName) && StringUtils.hasText(chunkNumber)) {
-                        if (tempFileName.equals(result.getFileOldName()) && result.getChunkNumber().equals(chunkNumber)) {
-                            // 文件名和分片号相同，则直接返回
-                            System.out.println("文件名和分片号相同");
-                            return result;
-                        } else {
-                            System.out.println("文件名和分片号不同");
-                            // 文件名或分片号不同，则拷贝文件返回
-                            String tempOldFilePath = FilePathConfig.switchSavePath(result.getFileUrl());
-                            UploadFileChunksUtils.copyChunkFile(tempOldFilePath, tempFileName, chunkNumber);
-                            result.setChunkNumber(chunkNumber);
-                            result.setFileOldName(tempFileName);
-                            result.setMerged(false);
-                            return result;
-                        }
-                    }
-                } else {
-                    return null;
-                }
-            }
-            System.out.println("新上传");
             // 获取分片信息
             String chunkNumber = request.getParameter("chunk");
             String tempFileName = request.getParameter("name");
+            String uploadId = request.getParameter("uploadId");// 本次上传的唯一id
             String totalChunks = request.getParameter("chunks");
-            // 非md5，则上传分片文件
             String dirName = StringUtils.hasText(path) ? path : "chunks";
-            FileChunkDTO result = UploadFileChunksUtils.upload(request, dirName, chunkNumber, tempFileName, totalChunks);
-            if (!result.isMerged()) {
-                // redis保存分片文件的临时文件（保存1天）
-                redisUtils.set(result.getFileMd5(), result, 24 * 60 * 60L);
+            if (StringUtils.hasText(chunkMD5)) {
+                // 有md5参数，则检测是否已上传
+                String md5 = chunkMD5.toUpperCase();
+                if (redisUtils.hasKey(md5)) {
+                    FileChunkDTO result = JSONUtil.toBean(JSONUtil.parseObj(redisUtils.get(md5)), FileChunkDTO.class);
+                    // 拷贝redis中已缓存的分片
+                    String tempOldFilePath = FilePathConfig.switchSavePath(result.getFileUrl());
+                    UploadFileChunksUtils.copyChunkFile(tempOldFilePath, tempFileName, uploadId, chunkNumber);
+                    // 判断是否需要合并
+                    if (UploadFileChunksUtils.isAllChunksUploaded(tempFileName, uploadId, totalChunks)) {
+                        // 全部上传完成，合并，并清理redis
+                        if (redisUtils.hasKey(uploadId)) {
+                            for (String md5Key : redisUtils.get(uploadId).toString().split(",")) {
+                                redisUtils.delete(md5Key);
+                            }
+                            redisUtils.delete(uploadId);
+                        }
+                        return UploadFileChunksUtils.mergeChunks(dirName, tempFileName, uploadId, totalChunks);
+                    } else {
+                        // 未上传完成所有上传，返回分片上传结果
+                        result.setChunkNumber(chunkNumber);
+                        result.setFileOldName(tempFileName);
+                        result.setMerged(false);
+                        return result;
+                    }
+                } else {
+                    // redis中无该md5，返回null，前端需上传新文件
+                    return null;
+                }
+            } else {
+                // 无md5，则上传分片文件
+                System.out.println("新上传");
+                FileChunkDTO result = UploadFileChunksUtils.upload(request, dirName, chunkNumber, tempFileName, uploadId, totalChunks);
+                if (result.isMerged()) {
+                    // 已合并完成，清理redis缓存
+                    if (redisUtils.hasKey(uploadId)) {
+                        for (String md5Key : redisUtils.get(uploadId).toString().split(",")) {
+                            redisUtils.delete(md5Key);
+                        }
+                        redisUtils.delete(uploadId);
+                    }
+                } else {
+                    // 未合并，缓存分片文件信息（保存1天）
+                    redisUtils.set(result.getFileMd5(), result, 24 * 60 * 60L);
+                    String md5s = redisUtils.hasKey(uploadId) ? redisUtils.get(uploadId).toString() + "," : "";
+                    redisUtils.set(uploadId, md5s + result.getFileMd5(), 24 * 60 * 60L);
+                }
+                return result;
             }
-            return result;
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException(StringUtils.hasText(e.getMessage()) ? e.getMessage() : "分片上传文件失败！请重试");

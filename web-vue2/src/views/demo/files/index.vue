@@ -29,10 +29,13 @@
 
     <el-divider content-position="center" v-if="uploadType==='chunkResume'">文件断点续传</el-divider>
     <div class="content" v-if="uploadType==='chunkResume'">
-      文件端点续传，是基于分片上传，分片中已上传的的部分，不再重新上传。
-      <!--      <plupload-chunk upload-server-url="/upload/chunks/resume"
-                            max-file-size="300mb" chunk-size="10mb" :is-chunk-resume="true"
-                            key="chunkResume"></plupload-chunk>-->
+      <div style="font-size: 12px;color: #dd1f29;border-bottom: 1px dashed #eeeeee;margin-bottom: 15px;">
+        说明：断点续传，是把文件分片，每次上传前，检测分片是否已上传。若已上传，则跳过；未上传的则继续上传。
+      </div>
+      <file-chunk-resume upload-server-url="/upload/chunks/resume"
+                         mime-types=".zip,.rar"
+                         :max-file-size="300*1024*1024" :chunk-size="10*1024*1024"
+                         key="chunkResume"></file-chunk-resume>
     </div>
 
     <el-divider content-position="center" v-if="uploadType==='second'">文件秒传</el-divider>
@@ -47,9 +50,10 @@
 // import SparkMD5 from 'spark-md5'
 
 import PluploadChunk from "@/components/Upload/PluploadChunk.vue";
+import FileChunkResume from "@/components/Upload/FileChunkResume.vue";
 
 export default {
-  components: {PluploadChunk},
+  components: {FileChunkResume, PluploadChunk},
   data() {
     return {
       uploadType: 'normal'
