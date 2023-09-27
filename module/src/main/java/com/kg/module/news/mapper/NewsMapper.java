@@ -2,7 +2,8 @@ package com.kg.module.news.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.kg.module.news.entity.News;
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * <p>
@@ -12,7 +13,11 @@ import org.springframework.stereotype.Repository;
  * @author ziro
  * @since 2023-02-17
  */
-@Repository
+@Mapper
 public interface NewsMapper extends BaseMapper<News> {
 
+    @Select("SELECT * FROM demo_news WHERE news_id = #{newsId}")
+    News getByIdTestSQL(String newsId);
+
+    News getByIdTestXml(String newsId);
 }
