@@ -36,6 +36,8 @@ export default {
   props: {
     // 上传地址
     uploadServerUrl: {type: String, required: true, default: '/upload/chunks'},
+    // 上传文件保存的文件夹（可为空）
+    uploadDir: {type: String, default: ''},
     // 分片大小
     chunkSize: {type: String, default: '1mb'},
     // 允许上传的文件类型
@@ -79,7 +81,7 @@ export default {
       this.uploader = new plupload.Uploader({
         runtimes: 'html5,flash,silverlight',
         browse_button: document.getElementById("selectFileBtn"),
-        url: this.$baseServer + this.uploadServerUrl, // 替换为你的上传处理URL
+        url: this.$baseServer + this.uploadServerUrl + "?path=" + this.uploadDir, // 替换为你的上传处理URL
         filters: {
           mime_types: this.mimeTypes,
           max_file_size: this.maxFileSize, // 最大只能上传100mb的文件

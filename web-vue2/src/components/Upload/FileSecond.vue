@@ -8,6 +8,7 @@
         <div>服务器文件名:{{ uploadData.fileName }}</div>
         <div>文件扩展名:{{ uploadData.fileExtend }}</div>
         <div>文件大小:{{ formatSize(uploadData.fileSize) }}</div>
+        <div v-if="isCopy" style="color: #dd1f29;">文件拷贝地址（业务表文件地址）:{{ uploadData.copyPath }}</div>
       </div>
     </div>
     <div v-show="!uploadData" class="upload">
@@ -31,13 +32,17 @@ import IconShow from "@/components/IconShow/index.vue";
 import {generateUUID} from '@/utils/tools'
 
 export default {
-  name: 'FileChunkResume',
+  name: 'FileSecond',
   components: {IconShow},
   props: {
-    // 上传地址
-    uploadServerUrl: {type: String, required: true, default: '/upload/chunks/resume'},
-    // 上传文件保存文件夹（可为空）
+    // 分片上传地址
+    secondServerUrl: {type: String, required: true, default: '/upload/second/chunks'},
+    // 文件秒传检测地址
+    secondMd5Url: {type: String, required: true, default: '/upload/second/md5'},
+    // 上传文件保存的文件夹（可为空）
     uploadDir: {type: String, default: ''},
+    // 是否拷贝秒传文件
+    isCopy: {type: Boolean, default: true},
     // 分片大小(1mb)
     chunkSize: {type: Number, default: 1024 * 1024},
     // 允许上传的文件类型
@@ -67,9 +72,23 @@ export default {
         this.currentFile = event.target.files[0]
       }
     },
-    submitUpload() {
-      // 对文件分片，并上传
-      this.chunkFile(this.currentFile, generateUUID())
+    async submitUpload() {
+      // 上传前，校验文件秒传表
+      await this.getChunkFileMd5(this.currentFile, async secondMd5 => {
+        const params = {secondMd5: secondMd5, isCopy: this.isCopy, path: this.uploadDir}
+        this.$request({url: this.secondMd5Url, method: 'get', params})
+            .then((response) => {
+              if (response.code === '200' && response.data) {
+                // 文件已存在，秒传完成
+                this.uploadData = response.data
+                this.percentage = 100
+              } else {
+                // 文件不存在，开始上传（使用分片上传+断点续传）
+                console.log('准备分片上传')
+                this.chunkFile(this.currentFile, generateUUID())
+              }
+            })
+      })
     },
     async chunkFile(newFile, uploadId) {
       // 把文件分片
@@ -90,7 +109,7 @@ export default {
               path: this.uploadDir
             }
             await this.$request({
-              url: this.uploadServerUrl, method: 'post', params, headers: {skipRepeatSubmitCheck: true}
+              url: this.secondServerUrl, method: 'post', params, headers: {skipRepeatSubmitCheck: true}
             }).then(async (response) => {
               if (response.code === '200') {
                 if (response.data !== null) {
@@ -107,7 +126,7 @@ export default {
                     path: this.uploadDir
                   }
                   await this.$request({
-                    url: this.uploadServerUrl, method: 'post', data,
+                    url: this.secondServerUrl, method: 'post', data,
                     headers: {skipRepeatSubmitCheck: true, 'Content-Type': 'multipart/form-data'}
                   }).then(async (response) => {
                     if (response.code === '200') {

@@ -10,53 +10,91 @@
       </el-radio-group>
     </div>
 
+    <!-- 文件普通上传 -->
     <el-divider content-position="center" v-if="uploadType==='normal'">文件普通上传</el-divider>
     <div class="content" v-if="uploadType==='normal'">
-      <el-upload
-          :action="$baseServer+'/upload/files'" :headers="$store.getters.headerToken"
-          :on-success="uploadFileSuccess" accept=".zip,.rar"
-          :show-file-list="false" :auto-upload="true">
-        <el-button type="primary" icon="el-icon-upload2" size="small">点击选择文件上传</el-button>
-      </el-upload>
+      <div class="uploadPanel">
+        <el-upload
+            :action="$baseServer+'/upload/files'" :headers="$store.getters.headerToken"
+            :on-success="uploadFileSuccess" accept=".zip,.rar"
+            :show-file-list="false" :auto-upload="true">
+          <el-button type="primary" icon="el-icon-upload2" size="small">点击选择文件上传</el-button>
+        </el-upload>
+      </div>
     </div>
 
+    <!-- 文件分片上传 -->
     <el-divider content-position="center" v-if="uploadType==='chunk'">文件分片上传</el-divider>
     <div class="content" v-if="uploadType==='chunk'">
-      <plupload-chunk upload-server-url="/upload/chunks" max-file-size="300mb" chunk-size="10mb"
-                      :mime-types="[{title: 'Zip files', extensions: 'zip'}]"
-                      key="chunk"></plupload-chunk>
+      <div class="uploadPanel">
+        <plupload-chunk upload-server-url="/upload/chunks" upload-dir="testChunks"
+                        max-file-size="300mb" chunk-size="10mb"
+                        :mime-types="[{title: 'Zip files', extensions: 'zip'}]"
+                        key="chunk"></plupload-chunk>
+      </div>
     </div>
 
+    <!-- 文件断点续传 -->
     <el-divider content-position="center" v-if="uploadType==='chunkResume'">文件断点续传</el-divider>
     <div class="content" v-if="uploadType==='chunkResume'">
       <div style="font-size: 12px;color: #dd1f29;border-bottom: 1px dashed #eeeeee;margin-bottom: 15px;">
         说明：断点续传，是把文件分片，每次上传前，检测分片是否已上传。若已上传，则跳过；未上传的则继续上传。
       </div>
-      <file-chunk-resume upload-server-url="/upload/chunks/resume"
-                         mime-types=".zip,.rar"
-                         :max-file-size="300*1024*1024" :chunk-size="10*1024*1024"
-                         key="chunkResume"></file-chunk-resume>
+      <div class="uploadPanel">
+        <file-chunk-resume upload-server-url="/upload/chunks/resume" upload-dir="testChunksResume"
+                           mime-types=".zip,.rar"
+                           :max-file-size="300*1024*1024" :chunk-size="10*1024*1024"
+                           key="chunkResume"></file-chunk-resume>
+      </div>
     </div>
 
+    <!-- 文件秒传 -->
     <el-divider content-position="center" v-if="uploadType==='second'">文件秒传</el-divider>
     <div class="content" v-if="uploadType==='second'">
-      使用文件秒传，系统会自动存入文件总表，业务表的文件，从该表中文件直接复制。需要管理文件总表，点击
-      <el-button type="text" @click="$router.push('/files')">[文件秒传管理]</el-button>
-      进入
+      <div style="font-size: 12px;border-bottom: 1px dashed #eeeeee;margin-bottom: 15px;">
+        <div>
+          使用本功能上传的文件，全部存入 “ 文件秒传表 ”。
+          点击进入：
+          <el-button type="text" @click="$router.push('/files')">[文件秒传管理]</el-button>
+        </div>
+        <div style="color: #dd1f29;">
+          说明：上传前，先根据文件 md5 判断，表中是否存在：
+          <el-tag type="success" size="mini" style="margin-right: 10px;">若已存在，则跳过，直接返回结果；</el-tag>
+          <el-tag type="danger" size="mini">若不存在，则上传，并存入 “ 文件秒传表 ”，返回结果。</el-tag>
+        </div>
+      </div>
+      <div>
+        <div class="secondInfo">
+          <el-switch v-model="isCopy" active-color="#13ce66" inactive-color="#ff4949"
+                     active-text="拷贝文件，业务表用单独（和文件秒传表解耦）"
+                     inactive-text="不拷贝文件（使用文件秒传表中的fileUrl，可能会被删除）"></el-switch>
+        </div>
+        <div class="uploadPanel">
+          <file-second second-server-url="/upload/second/chunks"
+                       second-md5-url="/upload/second/md5"
+                       upload-dir="testSecond"
+                       mime-types=".zip,.rar"
+                       :max-file-size="300*1024*1024" :chunk-size="10*1024*1024"
+                       :is-copy="isCopy"></file-second>
+        </div>
+      </div>
     </div>
+
   </div>
 </template>
 <script>
-// import SparkMD5 from 'spark-md5'
-
 import PluploadChunk from "@/components/Upload/PluploadChunk.vue";
 import FileChunkResume from "@/components/Upload/FileChunkResume.vue";
+import FileSecond from "@/components/Upload/FileSecond.vue";
 
 export default {
-  components: {FileChunkResume, PluploadChunk},
+  components: {FileSecond, FileChunkResume, PluploadChunk},
   data() {
     return {
-      uploadType: 'normal'
+      // 上传类型：normal=普通上传;chunk=分片上传;chunkResume=断点续传;second=秒传
+      uploadType: 'normal',
+      // 是否拷贝：文件秒传
+      isCopy: true,
     }
   },
   methods: {
@@ -68,53 +106,6 @@ export default {
         this.$message({type: 'error', message: response.message})
       }
     },
-    // 分片上传
-
-
-    /*handleFileChange(event) {
-      const file = event.target.files[0];
-      if (file) {
-        this.calculateFileMD5(file, md5 => {
-          console.log('文件MD5值:', md5);
-        });
-      }
-    },
-
-    calculateFileMD5(file, callback) {
-      const chunkSize = 2 * 1024 * 1024; // 每次读取的文件块大小
-
-      const fileReader = new FileReader();
-      const spark = new SparkMD5.ArrayBuffer();
-
-      let currentChunk = 0;
-
-      fileReader.onload = function (e) {
-        spark.append(e.target.result); // 将文件块内容添加到MD5计算中
-
-        currentChunk++;
-
-        if (currentChunk < chunks) {
-          loadNextChunk();
-        } else {
-          callback(spark.end()); // 计算完成，调用回调函数返回MD5值
-        }
-      };
-
-      fileReader.onerror = function () {
-        console.error('文件读取出错');
-        callback(null);
-      };
-
-      function loadNextChunk() {
-        const start = currentChunk * chunkSize;
-        const end = Math.min(start + chunkSize, file.size);
-        const chunk = file.slice(start, end);
-        fileReader.readAsArrayBuffer(chunk); // 读取文件块内容
-      }
-
-      const chunks = Math.ceil(file.size / chunkSize);
-      loadNextChunk();
-    },*/
   }
 }
 </script>
@@ -127,5 +118,21 @@ export default {
 .content {
   margin: 30px 20px 50px 20px;
   line-height: 40px;
+}
+
+.secondInfo {
+  margin-top: 20px;
+  border-radius: 10px;
+  background: #efefef;
+  padding: 10px 30px;
+  text-align: center;
+}
+
+.uploadPanel {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px dashed #ccc;
+  border-radius: 10px;
+  text-align: center;
 }
 </style>
