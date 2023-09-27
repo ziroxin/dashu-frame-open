@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
+import com.kg.component.file.utils.RemoveFileUtils;
 import com.kg.component.office.ExcelCommonUtils;
 import com.kg.component.utils.GuidUtils;
 import com.kg.module.files.dto.ZFilesDTO;
@@ -59,19 +60,19 @@ public class ZFilesServiceImpl extends ServiceImpl<ZFilesMapper, ZFiles> impleme
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("fileId")), ZFiles::getFileId, paramObj.getStr("fileId"));
             }
             if (paramObj.containsKey("fileMd5")) {
-                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("fileMd5")), ZFiles::getFileMd5, paramObj.getStr("fileMd5"));
+                wrapper.lambda().like(StringUtils.hasText(paramObj.getStr("fileMd5")), ZFiles::getFileMd5, paramObj.getStr("fileMd5"));
             }
             if (paramObj.containsKey("fileUrl")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("fileUrl")), ZFiles::getFileUrl, paramObj.getStr("fileUrl"));
             }
             if (paramObj.containsKey("fileOldName")) {
-                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("fileOldName")), ZFiles::getFileOldName, paramObj.getStr("fileOldName"));
+                wrapper.lambda().like(StringUtils.hasText(paramObj.getStr("fileOldName")), ZFiles::getFileOldName, paramObj.getStr("fileOldName"));
             }
             if (paramObj.containsKey("fileName")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("fileName")), ZFiles::getFileName, paramObj.getStr("fileName"));
             }
             if (paramObj.containsKey("fileExtend")) {
-                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("fileExtend")), ZFiles::getFileExtend, paramObj.getStr("fileExtend"));
+                wrapper.lambda().like(StringUtils.hasText(paramObj.getStr("fileExtend")), ZFiles::getFileExtend, paramObj.getStr("fileExtend"));
             }
             if (paramObj.containsKey("fileSize")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("fileSize")), ZFiles::getFileSize, paramObj.getStr("fileSize"));
@@ -123,6 +124,12 @@ public class ZFilesServiceImpl extends ServiceImpl<ZFilesMapper, ZFiles> impleme
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public void delete(List<String> idlist) {
+        // 删除文件
+        List<ZFiles> filesList = listByIds(idlist);
+        for (ZFiles file : filesList) {
+            RemoveFileUtils.remove(file.getFileUrl());
+        }
+        // 删除
         removeBatchByIds(idlist);
     }
 

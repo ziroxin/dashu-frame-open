@@ -172,7 +172,8 @@ public class ZUploadSecondController implements BaseController {
                     + "/" + dirName
                     + "/" + DateUtil.format(new Date(), "yyyyMMdd")
                     + "/" + result.getFileName();
-            File saveFile = new File(copyPath.replaceAll("//", "/"));
+            copyPath = copyPath.replaceAll("//", "/");
+            File saveFile = new File(copyPath);
             FileUtil.mkParentDirs(saveFile);
             FileCopyUtils.copy(new File(FilePathConfig.switchSavePath(result.getFileUrl())), saveFile);
             result.setCopyPath(FilePathConfig.switchUrl(copyPath));

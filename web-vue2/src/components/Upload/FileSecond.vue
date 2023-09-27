@@ -106,6 +106,7 @@ export default {
               chunks: chunks,
               name: newFile.name,
               uploadId: uploadId,
+              isCopy: this.isCopy,
               path: this.uploadDir
             }
             await this.$request({
@@ -123,6 +124,7 @@ export default {
                     name: newFile.name,
                     file: chunkFile,
                     uploadId: uploadId,
+                    isCopy: this.isCopy,
                     path: this.uploadDir
                   }
                   await this.$request({
