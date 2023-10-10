@@ -1,15 +1,19 @@
 <template>
   <div class="app-container documentation-container">
-    <a class="document-btn" target="_blank" href="https://gitee.com/ziro/dashu-frame-open">
-      Gitee仓库
-    </a>
-    <a class="document-btn" target="_blank" href="http://docs.java119.cn/">
-      中文文档
-    </a>
-    <a class="document-btn" target="_blank" href="http://yanshi.java119.cn/">
-      演示网站
-    </a>
+    <div class="mydocument">
+      <h2 style="width: 100%;">本框架相关</h2>
+      <a target="_blank" href="https://gitee.com/ziro/dashu-frame-open">
+        Gitee仓库
+      </a>
+      <a target="_blank" href="http://docs.java119.cn/">
+        中文文档
+      </a>
+      <a target="_blank" href="http://yanshi.java119.cn/">
+        演示网站
+      </a>
+    </div>
     <el-divider></el-divider>
+    <h2 style="width: 100%;margin-left: 20px;">使用技术栈相关文档</h2>
     <a class="document-btn" target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
       vue-element-admin仓库Github
     </a>
@@ -73,6 +77,25 @@ export default {
     line-height: 60px;
     font-size: 20px;
     text-align: center;
+    border-radius: 5px;
+  }
+
+  .mydocument {
+    margin-left: 20px;
+    line-height: 40px;
+
+    a {
+      margin: 30px 30px 30px 0px;
+      color: black;
+      padding: 15px 30px;
+      border: 1px solid black;
+      border-radius: 5px;
+
+      &:hover {
+        color: #FFFFFF;
+        background-color: black;
+      }
+    }
   }
 }
 </style>
