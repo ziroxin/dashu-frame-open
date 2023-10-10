@@ -1,23 +1,29 @@
 <template>
-  <div class="loginBody" :style="'background-image: url(\''+loginBg[loginBgIndex]+'\');background-size: cover;'+
-    'transition: background-image 2s linear;'"
-  >
+  <div class="loginBody" :style="'background-image: url(\''+loginBg[loginBgIndex]+'\');'">
     <main class="d-flex align-items-center min-vh-100 py-3 py-md-0">
       <div class="container">
         <div class="card login-card">
           <div class="row no-gutters">
             <div class="col-md-5">
-              <img :src="loginBg[loginBgIndex]" alt="login" class="login-card-img">
+              <img :src="loginBg[loginBgIndex]" @error="handleImageError"
+                   alt="login" class="login-card-img">
               <div class="toggle-login-bg">
-                <i class="el-icon-arrow-left" @click="toggleLoginBg(2)"/>
-                <i class="el-icon-arrow-right" @click="toggleLoginBg(1)"/>
+                <el-tooltip class="item" effect="dark" content="换一批" placement="top">
+                  <i class="el-icon-refresh" @click="loadRemoteWallpaper(true)"/>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="上一张" placement="top">
+                  <i class="el-icon-arrow-left" @click="toggleLoginBg(2)"/>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="下一张" placement="top">
+                  <i class="el-icon-arrow-right" @click="toggleLoginBg(1)"/>
+                </el-tooltip>
               </div>
             </div>
             <div class="col-md-7">
               <div class="card-body login-container">
-                <div class="brand-wrapper">
-                  <!--logo-->
-                  <img :src="loginBg[loginBgIndex]" alt="logo" class="logo">
+                <!--logo-->
+                <div class="brand-wrapper" v-if="logo">
+                  <img :src="logo" alt="logo" class="logo">
                 </div>
                 <!--标题-->
                 <p class="login-card-description">{{ title }}</p>
@@ -61,12 +67,8 @@
                 </el-form>
 
                 <a href="#!" class="forgot-password-link">忘记密码?</a>
-                <a href="#!" class="forgot-password-link thirdparty-button" @click="showDialog=true">第三方登录</a>
+                <a href="#!" class="forgot-password-link thirdparty-button" @click="showDialog=true">其他登录</a>
                 <p class="login-card-footer-text">还没有账号? <a href="#!" class="text-reset">立即注册</a></p>
-                <nav class="login-card-footer-nav">
-                  <a href="#!">Terms of use.</a>
-                  <a href="#!">Privacy policy</a>
-                </nav>
               </div>
             </div>
           </div>
@@ -86,6 +88,8 @@ import SocialSign from './components/SocialSignin'
 import {mapState} from 'vuex'
 import request from '@/utils/request';
 import {encryptRSA} from '@/utils/jsencrypt-util'
+import {imageAdeskVertical} from "@/utils/image-data-util";
+import Cookies from 'js-cookie';
 
 export default {
   name: 'Login',
@@ -104,6 +108,7 @@ export default {
         require('@/assets/images/loginbg1.jpg'),
         require('@/assets/images/loginbg2.jpg')
       ],
+      logo: require('@/assets/images/logo.png'),
       loginBgIndex: 0,
       loginForm: {
         userName: 'admin',
@@ -123,7 +128,8 @@ export default {
       showDialog: false,
       redirect: undefined,
       otherQuery: {},
-      intervalIndex: 0
+      intervalIndex: 0,
+      autoRefresh: false,
     }
   },
   watch: {
@@ -146,9 +152,10 @@ export default {
     }
     // 加载验证码handleLogin
     this.loadCaptacha()
-    this.intervalIndex = setInterval(() => {
-      this.toggleLoginBg(1)
-    }, 8000)
+    // 开启定时刷新
+    this.autoRefreshLoginBg()
+    // 动态壁纸 - 远程图库
+    this.loadRemoteWallpaper()
   },
   destroyed() {
     clearInterval(this.intervalIndex)
@@ -160,10 +167,22 @@ export default {
     },
     toggleLoginBg(idx) {
       if (idx === 1) {
+        // 下一张
         this.loginBgIndex = this.loginBgIndex >= (this.loginBg.length - 1) ? 0 : this.loginBgIndex + 1
       } else {
+        // 上一张
         this.loginBgIndex = this.loginBgIndex === 0 ? this.loginBg.length - 1 : this.loginBgIndex - 1
       }
+      if (this.autoRefresh) {
+        this.autoRefreshLoginBg()
+      }
+    },
+    autoRefreshLoginBg() {
+      clearInterval(this.intervalIndex)
+      this.intervalIndex = setInterval(() => {
+        this.toggleLoginBg(1)
+      }, 10000)
+      this.autoRefresh = true
     },
     showPwd() {
       this.passwordType = this.passwordType === 'password' ? '' : 'password'
@@ -181,15 +200,15 @@ export default {
           data.userName = encryptRSA(this.loginForm.userName)
           data.password = encryptRSA(this.loginForm.password)
           this.$store.dispatch('user/login', data)
-            .then(() => {
-              this.$router.push({path: this.redirect || '/', query: this.otherQuery})
-              this.loading = false
-            })
-            .catch(() => {
-              console.log('login error!')
-              this.loadCaptacha()
-              this.loading = false
-            })
+              .then(() => {
+                this.$router.push({path: this.redirect || '/', query: this.otherQuery})
+                this.loading = false
+              })
+              .catch(() => {
+                console.log('login error!')
+                this.loadCaptacha()
+                this.loading = false
+              })
         } else {
           console.log('error submit!!')
           return false
@@ -213,7 +232,39 @@ export default {
         this.loginForm.codeUuid = data.codeUuid;
         this.loginForm.codeBaseImage = data.codeBaseImage;
       })
-    }
+    },
+    // 动态壁纸
+    loadRemoteWallpaper(forceFlush) {
+      try {
+        let skip = 0
+        if (forceFlush) {
+          // 强制刷新（换一批）
+          Cookies.remove('loginBgData')
+          skip = parseInt(Cookies.get('loginBgDataSkip')) + 1 || 0
+        }
+        let loginBgData = Cookies.get('loginBgData')
+        if (loginBgData) {
+          this.loginBg = JSON.parse(loginBgData)
+        } else {
+          // 动态加载背景图
+          imageAdeskVertical(null, 'hot', 20, skip * 20).then(imgs => {
+            if (imgs && imgs.length > 0) {
+              this.loginBg = []
+              for (let i = 0; i < imgs.length; i++) {
+                this.loginBg.push(imgs[i].img)
+              }
+              Cookies.set('loginBgData', JSON.stringify(this.loginBg))
+              Cookies.set('loginBgDataSkip', skip)
+            }
+          })
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    handleImageError(event) {
+      event.target.src = require('@/assets/images/loginbg.jpg')
+    },
   }
 }
 </script>
