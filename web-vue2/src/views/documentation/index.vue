@@ -81,6 +81,7 @@ export default {
   }
 
   .mydocument {
+    margin-bottom: 20px;
     margin-left: 20px;
     line-height: 40px;
 

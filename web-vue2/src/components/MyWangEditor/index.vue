@@ -57,7 +57,11 @@ export default {
           // 视频上传配置
           uploadVideo: videosDefaultOptions(this.videoServer, this.videoSizeLimit, this.$message),
           // 视频地址
-          insertVideo: {parseVideoSrc: customParseVideoSrc}
+          insertVideo: {parseVideoSrc: customParseVideoSrc},
+          // 代码块语言
+          codeSelectLang: {
+            codeLangs: [{text: 'JAVA', value: 'java'}, {text: 'HTML', value: 'html'}, {text: 'JS', value: 'javascript'}, {text: 'CSS', value: 'css'}]
+          }
         }
       },
       mode: 'default' // or 'simple'

@@ -36,6 +36,9 @@
                   >添加下级
                   </el-button>
                 </div>
+                <div v-if="!buttonTableVisible" style="float: right;">
+                  <el-tag type="info" size="mini">{{ row.permissionOrder }}</el-tag>
+                </div>
               </li>
             </template>
           </el-table-column>
