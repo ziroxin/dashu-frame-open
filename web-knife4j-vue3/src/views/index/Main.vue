@@ -1,10 +1,20 @@
 <template>
   <a-layout-content class="knife4j-body-content">
     <a-row class="markdown-body editormd-preview-container" v-if="this.settings.enableHomeCustom">
-      <Markdown :source="settings.homeCustomLocation" />
+      <Markdown :source="settings.homeCustomLocation"/>
     </a-row>
     <a-row v-else>
       <a-col :span="24">
+        <div class="title">
+          <h2 style="color: #dd1f29;">
+            Swagger API 基础路径：{{ apiBasePath }}
+            <button class="switchButton"
+                    onclick="localStorage.removeItem('storeApiBasePath');location.reload();">
+              切换基础路径
+            </button>
+          </h2>
+
+        </div>
         <div class="title">
           <h2>{{ swaggerCurrentInstance.title }}</h2>
         </div>
@@ -13,65 +23,65 @@
             <a-col :span="5">
               <h3 v-html="$t('homePage.description')"></h3>
             </a-col>
-            <a-col :span="19"><span v-html="swaggerCurrentInstance.description" /></a-col>
+            <a-col :span="19"><span v-html="swaggerCurrentInstance.description"/></a-col>
           </a-row>
-          <a-divider class="divider" />
+          <a-divider class="divider"/>
           <a-row class="content-line">
             <a-col :span="5">
               <h3 v-html="$t('homePage.author')"></h3>
             </a-col>
-            <a-col :span="19"><span v-html="swaggerCurrentInstance.contact" /></a-col>
+            <a-col :span="19"><span v-html="swaggerCurrentInstance.contact"/></a-col>
           </a-row>
-          <a-divider class="divider" />
+          <a-divider class="divider"/>
           <a-row class="content-line">
             <a-col :span="5">
               <h3 v-html="$t('homePage.version')"></h3>
             </a-col>
-            <a-col :span="19"><span v-html="swaggerCurrentInstance.version" /></a-col>
+            <a-col :span="19"><span v-html="swaggerCurrentInstance.version"/></a-col>
           </a-row>
-          <a-divider class="divider" />
+          <a-divider class="divider"/>
           <a-row class="content-line">
             <a-col :span="5">
               <h3 v-html="$t('homePage.host')"></h3>
             </a-col>
-            <a-col :span="19"><span v-html="swaggerCurrentInstance.host" /></a-col>
+            <a-col :span="19"><span v-html="swaggerCurrentInstance.host"/></a-col>
           </a-row>
-          <a-divider class="divider" />
+          <a-divider class="divider"/>
           <a-row class="content-line">
             <a-col :span="5">
               <h3 v-html="$t('homePage.basePath')"></h3>
             </a-col>
-            <a-col :span="19"><span v-html="swaggerCurrentInstance.basePath" /></a-col>
+            <a-col :span="19"><span v-html="swaggerCurrentInstance.basePath"/></a-col>
           </a-row>
-          <a-divider class="divider" />
+          <a-divider class="divider"/>
           <a-row class="content-line">
             <a-col :span="5">
               <h3 v-html="$t('homePage.serviceUrl')"></h3>
             </a-col>
-            <a-col :span="19"><span v-html="swaggerCurrentInstance.termsOfService" /></a-col>
+            <a-col :span="19"><span v-html="swaggerCurrentInstance.termsOfService"/></a-col>
           </a-row>
-          <a-divider class="divider" />
+          <a-divider class="divider"/>
           <a-row class="content-line">
             <a-col :span="5">
               <h3 v-html="$t('homePage.groupName')"></h3>
             </a-col>
-            <a-col :span="19"><span v-html="swaggerCurrentInstance.name" /></a-col>
+            <a-col :span="19"><span v-html="swaggerCurrentInstance.name"/></a-col>
           </a-row>
-          <a-divider class="divider" />
+          <a-divider class="divider"/>
           <a-row class="content-line">
             <a-col :span="5">
               <h3 v-html="$t('homePage.groupUrl')"></h3>
             </a-col>
-            <a-col :span="19"><span v-html="swaggerCurrentInstance.url" /></a-col>
+            <a-col :span="19"><span v-html="swaggerCurrentInstance.url"/></a-col>
           </a-row>
-          <a-divider class="divider" />
+          <a-divider class="divider"/>
           <a-row class="content-line">
             <a-col :span="5">
               <h3 v-html="$t('homePage.groupLocation')"></h3>
             </a-col>
-            <a-col :span="19"><span v-html="swaggerCurrentInstance.location" /></a-col>
+            <a-col :span="19"><span v-html="swaggerCurrentInstance.location"/></a-col>
           </a-row>
-          <a-divider class="divider" />
+          <a-divider class="divider"/>
           <a-row class="content-line">
             <a-col :span="5">
               <h3 v-html="$t('homePage.apiCountNumber')"></h3>
@@ -84,7 +94,7 @@
                 <a-col :span="2">
                   <a-tag color="#108ee9">{{ param.count }}</a-tag>
                 </a-col>
-                <a-divider class="divider-count" />
+                <a-divider class="divider-count"/>
               </a-row>
             </a-col>
           </a-row>
@@ -95,8 +105,8 @@
   </a-layout-content>
 </template>
 <script>
-import { computed, defineAsyncComponent } from 'vue'
-import { useGlobalsStore } from '@/store/modules/global.js'
+import {computed, defineAsyncComponent} from 'vue'
+import {useGlobalsStore} from '@/store/modules/global.js'
 
 export default {
   props: {
@@ -118,9 +128,12 @@ export default {
     })
     console.log('子组件渲染')
 
+    const apiBasePath = localStorage.getItem('storeApiBasePath');
+
     return {
       swaggerCurrentInstance,
       settings,
+      apiBasePath,
       title: 'knife4j'
     }
   }
@@ -154,5 +167,21 @@ export default {
 
 .divider-count {
   margin: 8px 0;
+}
+
+.switchButton {
+  margin-left: 10px;
+  width: 150px;
+  height: 40px;
+  border: 1px solid #cccccc;
+  background: #ffffff;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+
+  &:hover {
+    background: #3381ab;
+    color: #ffffff;
+  }
 }
 </style>

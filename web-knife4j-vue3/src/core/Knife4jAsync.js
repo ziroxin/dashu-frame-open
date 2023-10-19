@@ -32,10 +32,10 @@
  * 基于Vue + Ant Design Vue重构Ui组件
  *
  */
-import { message } from 'ant-design-vue';
+import {message} from 'ant-design-vue';
 import md5 from 'js-md5';
 import KUtils from './utils';
-import { marked } from 'marked';
+import {marked} from 'marked';
 import async from 'async';
 import Knife4jOAS3ResponseExampleReader from './oas3/OAS3ResponseExampleReader';
 import Constants from '@/store/constants';
@@ -48,7 +48,7 @@ import isNull from 'lodash/isNull';
 import isUndefined from 'lodash/isUndefined';
 // import xml2js from 'xml2js';
 import DebugAxios from 'axios';
-import { useGlobalsStore } from '@/store/modules/global.js'
+import {useGlobalsStore} from '@/store/modules/global.js'
 
 marked.setOptions({
   gfm: true,
@@ -68,6 +68,7 @@ function SwaggerBootstrapUi(options) {
   //  1、springfox提供的分组地址/swagger-resources
   //  2、springdoc-open提供的分组地址：v3/api-docs/swagger-config
   //  swagger请求api地址
+  this.apiBasePath = options.apiBasePath || '';
   if (this.springdoc) {
     //  copy from https://gitee.com/xiaoym/knife4j/pulls/61/files
     const path = window.location.pathname;
@@ -78,7 +79,7 @@ function SwaggerBootstrapUi(options) {
     //  console.log(this.url)
     //  this.url = options.url || 'v3/api-docs/swagger-config'
   } else {
-    this.url = options.url || 'swagger-resources';
+    this.url = this.apiBasePath + (options.url || 'swagger-resources');
   }
   this.i18n = options.i18n || 'zh-CN';
   //  是否Knife4jAggregationDesktop
@@ -110,7 +111,7 @@ function SwaggerBootstrapUi(options) {
   //  文档id
   this.docId = 'content';
   this.title = 'knife4j';
-  this.titleOfUrl = 'https://  gitee.com/xiaoym/knife4j';
+  this.titleOfUrl = 'https://gitee.com/xiaoym/knife4j';
   this.load = 1;
   //  tabid
   this.tabId = 'tabUl';
@@ -170,8 +171,8 @@ function SwaggerBootstrapUi(options) {
     language: options.i18n || 'zh-CN' // 默认语言版本
   };
   // SwaggerBootstrapUi增强注解地址
-  this.extUrl = '/v2/api-docs';
-  this.ext3Url = '/v3/api-docs';
+  this.extUrl = this.apiBasePath + '/v2/api-docs';
+  this.ext3Url = this.apiBasePath + '/v3/api-docs';
   // 验证增强有效地址
   this.validateExtUrl = '';
   // 缓存api对象,以区分是否是新的api,存储SwaggerBootstapUiCacheApi对象
@@ -707,6 +708,7 @@ SwaggerBootstrapUi.prototype.selectInstanceByGroupName = function (name) {
  * @param instance 分组接口请求实例
  */
 SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
+  console.log(333, instance, this.apiBasePath)
   var that = this;
   try {
     // 赋值
@@ -725,7 +727,7 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
       // 如果是springdoc-openapi,无需判断,因为springdoc-openapi会把basePath带上
       if (!that.springdoc) {
         var idx = api.indexOf('/');
-        if (idx == 0) {
+        if (idx === 0) {
           api = api.substr(1);
         }
       }
@@ -733,9 +735,9 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
       // api = 'run.json';
       // 此处加上transformResponse参数,防止Long类型在前端丢失精度
       // https://github.com/xiaoymin/swagger-bootstrap-ui/issues/269
-      var reqHeaders = { 'language': that.settings.language };
+      var reqHeaders = {'language': that.settings.language};
       var requestConfig = {
-        url: api,
+        url: this.apiBasePath + api,
         dataType: 'json',
         timeout: 20000,
         type: 'get',
@@ -746,16 +748,16 @@ SwaggerBootstrapUi.prototype.analysisApi = function (instance) {
       };
       // 针对Knife4jAggregationDesktop软件的请求头
       if (that.desktop) {
-        reqHeaders = Object.assign({}, reqHeaders, { 'knife4j-gateway-code': that.desktopCode });
+        reqHeaders = Object.assign({}, reqHeaders, {'knife4j-gateway-code': that.desktopCode});
       }
       if (KUtils.checkUndefined(this.currentInstance.header)) {
         // Knife4j自研Aggreration微服务聚合组件请求头
-        reqHeaders = Object.assign({}, reqHeaders, { 'knfie4j-gateway-request': that.currentInstance.header });
+        reqHeaders = Object.assign({}, reqHeaders, {'knfie4j-gateway-request': that.currentInstance.header});
       }
       if (KUtils.checkUndefined(this.currentInstance.basicAuth)) {
-        reqHeaders = Object.assign({}, reqHeaders, { 'knife4j-gateway-basic-request': that.currentInstance.basicAuth });
+        reqHeaders = Object.assign({}, reqHeaders, {'knife4j-gateway-basic-request': that.currentInstance.basicAuth});
       }
-      requestConfig = Object.assign({}, requestConfig, { headers: reqHeaders });
+      requestConfig = Object.assign({}, requestConfig, {headers: reqHeaders});
       that.ajax(requestConfig, data => {
         that.analysisApiSuccess(data);
       }, err => {
@@ -1004,7 +1006,7 @@ SwaggerBootstrapUi.prototype.openSettings = function (data) {
       var mergeSetting = Object.assign({}, that.settings, setting);
       if (that.i18nFlag) {
         // 外部i18n传参
-        mergeSetting = Object.assign({}, mergeSetting, { 'language': that.i18n });
+        mergeSetting = Object.assign({}, mergeSetting, {'language': that.i18n});
       }
       that.settings = mergeSetting;
       that.localStore.setItem(Constants.globalSettingsKey, mergeSetting);
@@ -1069,7 +1071,7 @@ SwaggerBootstrapUi.prototype.openV3Settings = function (data) {
         var mergeSetting = Object.assign({}, that.settings, setting);
         if (that.i18nFlag) {
           // 外部i18n传参
-          mergeSetting = Object.assign({}, mergeSetting, { 'language': that.i18n });
+          mergeSetting = Object.assign({}, mergeSetting, {'language': that.i18n});
         }
         that.settings = mergeSetting;
         that.localStore.setItem(Constants.globalSettingsKey, mergeSetting);
@@ -1691,7 +1693,8 @@ SwaggerBootstrapUi.prototype.analysisDefinitionAsyncOAS3 = function (menu, swud,
             for (var property in properties) {
               var propobj = properties[property];
               // 判断是否包含readOnly属性
-              if (!propobj.hasOwnProperty('readOnly') || !propobj['readOnly']) { }
+              if (!propobj.hasOwnProperty('readOnly') || !propobj['readOnly']) {
+              }
               var spropObj = new SwaggerBootstrapUiProperty();
               // jsr303
               that.validateJSR303(spropObj, propobj);
@@ -2162,8 +2165,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
                         deepSwaggerModelsTreeTableRefParameter(refp, definitions, deepDef, originalTreeTableModel, that, oas2);
                       }
                     }
-                  }
-                  else if (def.hasOwnProperty('enum')) {
+                  } else if (def.hasOwnProperty('enum')) {
                     var refp = new SwaggerBootstrapUiParameter();
                     refp.pid = originalTreeTableModel.id;
                     refp.readOnly = def.readOnly;
@@ -2196,7 +2198,7 @@ SwaggerBootstrapUi.prototype.analysisDefinitionRefTableModel = function (instanc
  * @param {definitions定义} definitions
  */
 SwaggerBootstrapUi.prototype.getOriginalDefinitionByName = function (name, definitions) {
-  var def = { name: name };
+  var def = {name: name};
   for (var key in definitions) {
     if (key == name) {
       def['properties'] = definitions[key];
@@ -2295,6 +2297,7 @@ SwaggerBootstrapUi.prototype.getSwaggerModelRefType = function (propobj, oas2) {
   return refType;
 
 }
+
 /**
  *
  * @param {*} parentRefp
@@ -2858,6 +2861,7 @@ SwaggerBootstrapUi.prototype.readSecurityContextSchemesCommon = function (securi
     that.clearSecuritys();
   }
 }
+
 /**
  * OAuth2认证的支持
  * @param {*} grantType  oauth2的授权类型
@@ -2881,6 +2885,7 @@ function SwaggerBootstrapUiOAuth2(grantType, tokenUrl, authUrl, instanceId) {
   this.tokenType = null;
   this.state = 'OAuth' + instanceId;
 }
+
 /**
  * 授权过后从本地LocalStorage同步
  */
@@ -3223,28 +3228,28 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
         component: 'GlobalParameters',
         path: 'GlobalParameters-' + groupName
       },
-      {
-        groupName: groupName,
-        groupId: groupId,
-        key: 'OfficelineDocument' + md5(groupName),
-        /*  name: '离线文档',
-          tabName: '离线文档(' + groupName + ')', */
-        name: this.getI18n().menu.officeline,
-        i18n: 'officeline',
-        tabName: this.getI18n().menu.officeline + '(' + groupName + ')',
-        component: 'OfficelineDocument',
-        path: 'OfficelineDocument-' + groupName
-      },
-      {
-        groupName: groupName,
-        groupId: groupId,
-        key: 'Settings' + md5(groupName),
-        /* name: '个性化设置', */
-        name: this.getI18n().menu.selfSettings,
-        i18n: 'selfSettings',
-        component: 'Settings',
-        path: 'Settings'
-      }
+        {
+          groupName: groupName,
+          groupId: groupId,
+          key: 'OfficelineDocument' + md5(groupName),
+          /*  name: '离线文档',
+            tabName: '离线文档(' + groupName + ')', */
+          name: this.getI18n().menu.officeline,
+          i18n: 'officeline',
+          tabName: this.getI18n().menu.officeline + '(' + groupName + ')',
+          component: 'OfficelineDocument',
+          path: 'OfficelineDocument-' + groupName
+        },
+        {
+          groupName: groupName,
+          groupId: groupId,
+          key: 'Settings' + md5(groupName),
+          /* name: '个性化设置', */
+          name: this.getI18n().menu.selfSettings,
+          i18n: 'selfSettings',
+          component: 'Settings',
+          path: 'Settings'
+        }
       ]
     });
 
@@ -3399,7 +3404,6 @@ SwaggerBootstrapUi.prototype.createDetailMenu = function (addFlag) {
   // that.selectDefaultMenu(mdata);
   that.log('菜单初始化完成...')
 }
-
 
 
 /***
@@ -4086,7 +4090,7 @@ SwaggerBootstrapUi.prototype.initApiInfoAsyncOAS3 = function (swpinfo) {
                   if (type == 'object') {
                     // 如果是object类型，补一个空的请求对象
                     // https://gitee.com/xiaoym/knife4j/issues/I2WCAS
-                    originalOpenApiParameter = Object.assign({}, originalOpenApiParameter, { 'default': '{}' });
+                    originalOpenApiParameter = Object.assign({}, originalOpenApiParameter, {'default': '{}'});
                   }
                   that.assembleParameterOAS3(originalOpenApiParameter, swpinfo, []);
 
@@ -4785,7 +4789,7 @@ SwaggerBootstrapUi.prototype.createApiInfoInstance = function (path, mtype, apiI
     apiInfo.operationId = apiInfo.operationId || swpinfo.id;
     swpinfo.operationId = apiInfo.operationId;
     // 如果summary是地址，替换成description@ziro add 20230311
-    if(apiInfo.summary.indexOf(swpinfo.showUrl) !== -1) {
+    if (apiInfo.summary.indexOf(swpinfo.showUrl) !== -1) {
       swpinfo.summary = KUtils.toString(apiInfo.description, '')
     } else {
       swpinfo.summary = KUtils.toString(apiInfo.summary, '').replace(/\//g, '-');
@@ -5001,6 +5005,7 @@ function readOpenAPIModel(model, modelArrays, definitions, oas2) {
     }
   }
 }
+
 /**
  * OAS3
  * @param {*} apiInfo
@@ -6024,7 +6029,6 @@ SwaggerBootstrapUi.prototype.findRefDefinition = function (definitionName, defin
                   }
 
 
-
                 } else {
                   if (type == 'array') {
                     propValue = new Array();
@@ -6747,6 +6751,7 @@ var SwaggerBootstrapUiApiInfo = function () {
   this.openApiRaw = '';
   // 原始对象
   this.originalApiInfo = null;
+  this.apiBasePath = ''
   this.url = null;
   this.originalUrl = null;
   this.configurationDebugSupport = true;
@@ -7032,6 +7037,7 @@ function SwaggerBootstrapUiInstance(name, location, version) {
   this.desktop = false;
   this.desktopCode = null;
 }
+
 SwaggerBootstrapUiInstance.prototype.clearOAuth2 = function () {
   if (!KUtils.checkUndefined(this.oauths)) {
     // 移除
@@ -7041,6 +7047,7 @@ SwaggerBootstrapUiInstance.prototype.clearOAuth2 = function () {
     }
   }
 }
+
 /**
  * 其他文件分组
  * @param {*} name

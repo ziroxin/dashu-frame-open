@@ -1,5 +1,5 @@
 <template>
-  <div class="BasicLayout">
+  <div class="BasicLayout" v-if="apiBasePath">
     <a-layout class="ant-layout-has-sider">
       <a-layout-sider :trigger="null" collapsible :collapsed="state.collapsed" breakpoint="lg"
                       @collapse="handleMenuCollapse"
@@ -46,6 +46,20 @@
       </a-layout>
     </a-layout>
   </div>
+  <div class="InputBaseUrl" v-else>
+    <div class="title">
+      请输入Swagger API 基础路径：
+    </div>
+    <div class="input">
+      <input type="text" :value="apiBasePathDefault" id="apiBasePathInput"/>
+      <button @click="setApiBasePath">进入Swagger项目</button>
+    </div>
+    <div class="info">
+      本地项目接口，使用默认路径：/
+      <br/>
+      外部接口，使用接口绝对路径，接口端需要开启允许跨域，如：http://localhost:8123/
+    </div>
+  </div>
 </template>
 <script setup>
 //import logo from "@/assets/logo.png";
@@ -60,7 +74,7 @@ import ThreeMenu from "@/components/SiderMenu/ThreeMenu.vue";
 //右键菜单
 import ContextMenu from "@/components/common/ContextMenu.vue";
 import constant from "@/store/constants";
-import {computed, markRaw, onUpdated, reactive, shallowRef, watch} from 'vue'
+import {computed, onUpdated, reactive, watch} from 'vue'
 import {useGlobalsStore} from '@/store/modules/global.js'
 import {useHeadersStore} from '@/store/modules/header.js'
 import {useRoute, useRouter} from 'vue-router'
@@ -153,6 +167,7 @@ function initSwagger(options) {
   //console.log("初始化Swagger")
   //console.log(options)
   state.i18n = options.i18nInstance;
+  options.apiBasePath = apiBasePath;
   const swagger = new SwaggerBootstrapUi(options)
   try {
     swagger.main();
@@ -262,8 +277,8 @@ function initKnife4jSpringUi() {
   //读取settings
   localStore.getItem(constant.globalSettingsKey).then(settingCache => {
     const settings = getCacheSettings(settingCache)
-    //console.log("layout---")
-    //console.log(settings)
+    console.log("layout---")
+    console.log(settings)
     //重新赋值是否开启增强
     if (!settings.enableSwaggerBootstrapUi) {
       settings.enableSwaggerBootstrapUi = getPlusStatus();
@@ -412,9 +427,19 @@ function initI18n() {
   state.menuItemList = state.i18n.menu.menuItemList;
 }
 
-initKnife4jSpringUi()
-// initSpringDocOpenApi()
-initI18n()
+// 处理api地址@ziro 2023/10/19
+let apiBasePath = localStorage.getItem('storeApiBasePath') || ''
+const apiBasePathDefault = '/'
+if (apiBasePath) {
+  initKnife4jSpringUi()
+  // initSpringDocOpenApi()
+  initI18n()
+}
+
+function setApiBasePath() {
+  localStorage.setItem('storeApiBasePath', document.getElementById('apiBasePathInput').value);
+  window.location.reload();
+}
 
 function updateMenuI18n() {
   //根据i18n的切换,更新菜单的显示
@@ -978,6 +1003,48 @@ function collapsedChange(val, oldVal) {
 }
 
 </script>
+<style scoped>
+.InputBaseUrl {
+  margin: 50px auto;
+  padding: 50px;
+  width: 80%;
+  background: #efefef;
+  border-radius: 5px;
+  border: 1px dashed #999;
+}
 
-<style lang="less" scoped>
+.title {
+  font-size: 20px;
+  line-height: 100px;
+}
+
+.input input {
+  width: 500px;
+  height: 50px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  font-size: 20px;
+}
+
+.input button {
+  margin-left: 10px;
+  width: 200px;
+  height: 50px;
+  border: 1px solid #cccccc;
+  background: #ffffff;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 20px;
+
+  &:hover {
+    background: #2f2f2f;
+    color: #ffffff;
+  }
+}
+
+.info {
+  margin-top: 20px;
+  line-height: 40px;
+  color: #dd1f29;
+}
 </style>
