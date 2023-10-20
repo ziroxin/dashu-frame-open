@@ -55,9 +55,9 @@
       <button @click="setApiBasePath">进入Swagger项目</button>
     </div>
     <div class="info">
-      本地项目接口，使用默认路径：/
+      本地Swagger接口，使用默认路径：/
       <br/>
-      外部接口，使用接口绝对路径，接口端需要开启允许跨域，如：http://localhost:8123/
+      外部Swagger接口，使用接口绝对路径，接口端需要开启允许跨域，如：http://localhost:8123/
     </div>
   </div>
 </template>
