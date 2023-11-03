@@ -237,9 +237,9 @@ export function objCopy(obj, obj1) {
 
 // 生成uuid
 export function generateUUID() {
-  return (randomNumber() + randomNumber() + "-" + randomNumber() + "-" + randomNumber() + "-" + randomNumber() + "-" + randomNumber() + randomNumber() + randomNumber());
-}
-
-function randomNumber() {
-  return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = Math.random() * 16 | 0,
+      v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
 }
