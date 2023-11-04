@@ -20,6 +20,9 @@ npm install node-ssh
 
 ### 4.运行
 - 先打包好前端项目，运行命令，部署前端：  
+cd web-vue2
+npm run build:prod
+cd ../ci
 node ci-vue.js  
 - 打包后台，运行命令，部署后台：
 node ci-java.js
