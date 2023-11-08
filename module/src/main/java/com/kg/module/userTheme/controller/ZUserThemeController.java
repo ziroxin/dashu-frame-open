@@ -4,6 +4,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kg.component.utils.GuidUtils;
+import com.kg.core.annotation.AutoOperateLog;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.core.security.util.CurrentUserUtils;
@@ -123,6 +124,7 @@ public class ZUserThemeController {
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('userTheme:zUserTheme:add')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/userTheme/zUserTheme/add", logMsg = "新增-用户主题配置")
     public void add(@RequestBody ZUserThemeDTO zUserThemeDTO) throws BaseException {
         try {
             zUserThemeService.add(zUserThemeDTO);
@@ -137,6 +139,7 @@ public class ZUserThemeController {
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('userTheme:zUserTheme:update')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/userTheme/zUserTheme/update", logMsg = "修改-用户主题配置")
     public void update(@RequestBody ZUserThemeDTO zUserThemeDTO) throws BaseException {
         try {
             zUserThemeService.update(zUserThemeDTO);
@@ -153,6 +156,7 @@ public class ZUserThemeController {
     @DeleteMapping("/delete")
     @PreAuthorize("hasAuthority('userTheme:zUserTheme:delete')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/userTheme/zUserTheme/delete", logMsg = "删除-用户主题配置")
     public void delete(@RequestBody String[] themeIds) throws BaseException {
         try {
             zUserThemeService.delete(Arrays.asList(themeIds));
@@ -183,6 +187,7 @@ public class ZUserThemeController {
     @PostMapping("/import/excel")
     @PreAuthorize("hasAuthority('userTheme:zUserTheme:import:excel')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/userTheme/zUserTheme/import/excel", logMsg = "导入excel-用户主题配置")
     public void importExcel(HttpServletRequest request) throws BaseException {
         try {
             zUserThemeService.importExcel(request);

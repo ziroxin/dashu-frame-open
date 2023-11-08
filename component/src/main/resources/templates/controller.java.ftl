@@ -1,6 +1,7 @@
 package ${package.Controller};
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.kg.core.annotation.AutoOperateLog;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import ${package.DTO}.${dtoName};
@@ -81,6 +82,7 @@ public class ${table.controllerName} {
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('${controllerAuthorizePre}add')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "${controllerMapping}/add", logMsg = "新增-${table.comment!}")
     public void add(@RequestBody ${dtoName} ${dtoName?uncap_first}) throws BaseException {
         try {
             ${table.serviceName?uncap_first}.add(${dtoName?uncap_first});
@@ -95,6 +97,7 @@ public class ${table.controllerName} {
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('${controllerAuthorizePre}update')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "${controllerMapping}/update", logMsg = "修改-${table.comment!}")
     public void update(@RequestBody ${dtoName} ${dtoName?uncap_first}) throws BaseException {
         try {
             ${table.serviceName?uncap_first}.update(${dtoName?uncap_first});
@@ -111,6 +114,7 @@ public class ${table.controllerName} {
     @DeleteMapping("/delete")
     @PreAuthorize("hasAuthority('${controllerAuthorizePre}delete')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "${controllerMapping}/delete", logMsg = "删除-${table.comment!}")
     public void delete(@RequestBody String[] ${entityKeyName}s) throws BaseException {
         try {
             ${table.serviceName?uncap_first}.delete(Arrays.asList(${entityKeyName}s));
@@ -141,6 +145,7 @@ public class ${table.controllerName} {
     @PostMapping("/import/excel")
     @PreAuthorize("hasAuthority('${controllerAuthorizePre}import:excel')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "${controllerMapping}/import/excel", logMsg = "导入excel-${table.comment!}")
     public void importExcel(HttpServletRequest request) throws BaseException {
         try {
             ${table.serviceName?uncap_first}.importExcel(request);
