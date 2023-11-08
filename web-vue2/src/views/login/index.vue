@@ -201,8 +201,19 @@ export default {
           data.password = encryptRSA(this.loginForm.password)
           this.$store.dispatch('user/login', data)
               .then(() => {
-                this.$router.push({path: this.redirect || '/', query: this.otherQuery})
-                this.loading = false
+                // 登录成功，加载用户主题配置
+                this.$request({
+                  url: '/userTheme/zUserTheme/getByUser', method: 'get'
+                }).then((response) => {
+                  const {data} = response
+                  if (data) {
+                    Cookies.set('settings', data, {expires: new Date('9999-12-31T23:59:59')})
+                    location.reload()
+                  }
+                  // 跳转
+                  this.$router.push({path: this.redirect || '/', query: this.otherQuery})
+                  this.loading = false
+                })
               })
               .catch(() => {
                 console.log('login error!')

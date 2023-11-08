@@ -1,5 +1,6 @@
 import defaultSettings from '@/settings'
 import Cookies from 'js-cookie';
+import request from '@/utils/request'
 
 const {
   title,
@@ -27,6 +28,13 @@ const mutations = {
       state[key] = value
       // settings的cookie永远有效
       Cookies.set('settings', JSON.stringify(state), {expires: new Date('9999-12-31T23:59:59')})
+      // 保存用户参数到数据库
+      const data = {themeJson: JSON.stringify(state)}
+      request({
+        url: '/userTheme/zUserTheme/updateByUser', method: 'post', data
+      }).then((response) => {
+        console.log('保存用户配置成功！')
+      })
     }
   }
 }
