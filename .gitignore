@@ -51,3 +51,5 @@ buildNumber.properties
 # 自定义排除目录
 sql/
 .sass-cache**
+**/pnpm-lock.yaml
+**/node_modules/
