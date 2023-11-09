@@ -113,10 +113,7 @@ public class ZPermissionController {
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/permission/delete", logMsg = "删除资源（菜单，按钮等）")
     public boolean delete(@RequestBody String[] permissionIds) {
-        if (permissionService.removeBatchByIds(Arrays.asList(permissionIds))) {
-            return true;
-        }
-        return false;
+        return permissionService.delete(Arrays.asList(permissionIds));
     }
 
     @ApiOperation(value = "permission/changeIsEnabled", notes = "启用/禁用菜单", httpMethod = "POST")
