@@ -136,6 +136,12 @@ public class ZOrganizationController {
     @AutoOperateLog(logMethod = "/zorg/zOrganization/add", logMsg = "新增-组织机构")
     public void add(@RequestBody ZOrganizationDTO zOrganizationDTO) throws BaseException {
         try {
+            // 查重
+            if (zOrganizationService.lambdaQuery()
+                    .eq(ZOrganization::getOrgName, zOrganizationDTO.getOrgName()).exists()) {
+                throw new BaseException("新增失败！组织机构名称重复，请重试");
+            }
+            // 保存
             ZOrganization zOrganization = zOrganizationConvert.dtoToEntity(zOrganizationDTO);
             zOrganization.setOrgId(GuidUtils.getUuid32());
             if (StringUtils.hasText(zOrganization.getOrgParentId()) && !"-1".equals(zOrganization.getOrgParentId())) {
@@ -173,6 +179,12 @@ public class ZOrganizationController {
     @AutoOperateLog(logMethod = "/zorg/zOrganization/update", logMsg = "修改-组织机构")
     public void update(@RequestBody ZOrganizationDTO zOrganizationDTO) throws BaseException {
         try {
+            // 查重
+            if (zOrganizationService.lambdaQuery().eq(ZOrganization::getOrgName, zOrganizationDTO.getOrgName())
+                    .ne(ZOrganization::getOrgId, zOrganizationDTO.getOrgId()).exists()) {
+                throw new BaseException("修改失败！组织机构名称重复，请重试");
+            }
+            // 保存
             ZOrganization zOrganization = zOrganizationConvert.dtoToEntity(zOrganizationDTO);
             if (StringUtils.hasText(zOrganization.getOrgParentId()) && !"-1".equals(zOrganization.getOrgParentId())) {
                 // 有父级，取父级路径
@@ -192,6 +204,9 @@ public class ZOrganizationController {
             zOrganization.setOrgLevel(pathLevel);
             zOrganization.setUpdateTime(LocalDateTime.now());
             zOrganizationService.updateById(zOrganization);
+        } catch (BaseException e) {
+            e.printStackTrace();
+            throw new BaseException(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException("修改失败！请重试");

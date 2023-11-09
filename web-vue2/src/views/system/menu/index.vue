@@ -4,13 +4,15 @@
       <el-col :span="elColSpanValue">
         <!--  操作按钮  -->
         <div style="margin-bottom: 10px;">
-          <el-button v-permission="'system-menu-add'" size="small" type="primary" @click="permissionAdd">新增一级菜单
+          <el-button v-permission="'system-menu-add'" size="small" type="primary"
+                     @click="permissionAdd" icon="el-icon-plus">新增一级菜单
           </el-button>
-          <el-button v-permission="'system-menu-delete'" size="small" type="danger" @click="permissionDelete">批量删除
+          <el-button v-permission="'system-menu-delete'" size="small" type="danger"
+                     @click="permissionDelete" icon="el-icon-delete">批量删除
           </el-button>
         </div>
         <!-- 表格部分 -->
-        <el-table :data="tableData" row-key="permissionId" :height="this.$windowHeight-200"
+        <el-table ref="dataTable" :data="tableData" row-key="permissionId" :height="this.$windowHeight-200"
                   border :tree-props="{children: 'children'}" :default-expand-all="true"
                   highlight-current-row @selection-change="selectionChangeHandlerOrder"
         >
@@ -23,7 +25,7 @@
                 <el-tag v-if="row.permissionType === '2'" disable-transitions type="success" size="mini">外链</el-tag>
                 <el-tag v-if="!row.permissionIsShow" disable-transitions type="danger" size="mini">隐藏</el-tag>
                 <el-tag v-if="!row.permissionIsEnabled" disable-transitions type="danger" size="mini">禁用</el-tag>
-                <div v-if="!buttonTableVisible" style="display: inline-block;margin-left: 20px;">
+                <div v-if="!buttonTableVisible" style="display: inline-block;margin-left: 10px;">
                   <el-button v-permission="'system-menu-update-parent'" type="text" plain
                              icon="el-icon-sort" size="mini" @click="permissionUpdateParent(row)"
                   />
@@ -337,8 +339,8 @@ export default {
     // 点击修改按钮后
     permissionUpdate(row) {
       if (row) {
-        this.changeData = []
-        this.changeData.push(row)
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.changeData.length <= 0) {
         this.$message({
@@ -366,8 +368,8 @@ export default {
     // 修改上下级关系
     permissionUpdateParent(row) {
       if (row) {
-        this.changeData = []
-        this.changeData.push(row)
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.changeData.length <= 0) {
         this.$message({

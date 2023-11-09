@@ -32,7 +32,7 @@
       </div>
     </div>
     <!-- 交易 - 支付demo-列表 -->
-    <el-table :data="tableData" stripe border @selection-change="handleTableSelectChange">
+    <el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="关联商品ID" prop="productId" align="center"/>
       <el-table-column label="支付方式" prop="payType" align="center">
@@ -234,7 +234,8 @@ export default {
     // 删除
     deleteByIds(row) {
       if (row) {
-        this.tableSelectRows = [row]
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据删除！', type: 'warning'})

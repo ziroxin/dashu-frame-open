@@ -2,8 +2,8 @@
   <div class="app-container">
     <!-- 组织机构表-管理按钮 -->
     <div style="margin-bottom: 10px;">
-      <el-input v-model="searchData.orgName" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入用户名/姓名查询"
+      <el-input v-model="searchData.orgName" style="width: 220px;margin-right: 10px;"
+                class="filter-item" placeholder="请输入组织机构名称查询" clearable
       />
       <el-button v-waves class="filter-item" size="small" type="primary"
                  icon="el-icon-search" @click="loadTableList">查询
@@ -13,27 +13,35 @@
       </el-button>
       <div style="float: right;">
         <el-button v-waves v-permission="'zorg-zOrganization-add'" type="primary"
-                   @click="openAdd"
-                   size="small"
-        >新增
+                   @click="openAdd(null)" size="small" icon="el-icon-plus">新增
         </el-button>
         <el-button v-waves v-permission="'zorg-zOrganization-update'" type="success"
-                   @click="openUpdate" size="small"
-        >修改
+                   @click="openUpdate(null)" size="small" icon="el-icon-edit">修改
         </el-button>
         <el-button v-waves v-permission="'zorg-zOrganization-delete'" type="danger"
-                   @click="deleteByIds" size="small"
-        >删除
+                   @click="deleteByIds" size="small" icon="el-icon-delete">删除
         </el-button>
       </div>
     </div>
     <!-- 组织机构表-列表 -->
-    <el-table :data="tableData" :tree-props="{children: 'children'}"
+    <el-table ref="dataTable" :data="tableData" :tree-props="{children: 'children'}"
               row-key="orgId" :height="this.$windowHeight-197"
               default-expand-all border stripe @selection-change="handleTableSelectChange"
     >
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
-      <el-table-column label="组织机构名称" prop="orgName" min-width="30%"/>
+      <el-table-column label="组织机构名称" prop="orgName" min-width="30%">
+        <template v-slot="scope">
+          <span>{{ scope.row.orgName }}</span>
+          <div style="float: right;">
+            <el-button v-permission="'zorg-zOrganization-update'" type="text" icon="el-icon-edit"
+                       size="mini" @click="openUpdate(scope.row)">修改
+            </el-button>
+            <el-button v-permission="'zorg-zOrganization-add'" type="text"
+                       size="mini" @click="openAdd(scope.row)">添加下级
+            </el-button>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="备注" prop="remarks" align="center" min-width="40%"/>
       <el-table-column label="层级" prop="orgLevel" align="center" width="100"/>
       <el-table-column label="顺序" prop="orderIndex" align="center" width="100"/>
@@ -140,7 +148,11 @@ export default {
       this.temp = {orderIndex: 0}
     },
     // 打开添加窗口
-    openAdd() {
+    openAdd(row) {
+      if (row) {
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
+      }
       this.resetTemp()
       if (this.tableSelectRows.length === 1) {
         this.temp.orgParentId = this.tableSelectRows[0].orgId
@@ -153,7 +165,11 @@ export default {
       })
     },
     // 打开修改窗口
-    openUpdate() {
+    openUpdate(row) {
+      if (row) {
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
+      }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据修改！', type: 'warning'})
       } else if (this.tableSelectRows.length > 1) {

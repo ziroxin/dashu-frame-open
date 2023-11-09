@@ -47,7 +47,7 @@
       </div>
     </div>
     <!-- 字典数据-列表 -->
-    <el-table :data="tableData" stripe border :height="this.$windowHeight-270" v-loading="isLoading"
+    <el-table ref="dataTable" :data="tableData" stripe border :height="this.$windowHeight-270" v-loading="isLoading"
               @selection-change="handleTableSelectChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="字典code" prop="typeCode" align="center"/>
@@ -216,7 +216,8 @@ export default {
     // 打开修改窗口
     openUpdate(row) {
       if (row) {
-        this.tableSelectRows = [row]
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据修改！', type: 'warning'})
@@ -271,7 +272,8 @@ export default {
     // 删除
     deleteByIds(row) {
       if (row) {
-        this.tableSelectRows = [row]
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据删除！', type: 'warning'})

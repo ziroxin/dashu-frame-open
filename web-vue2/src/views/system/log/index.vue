@@ -15,10 +15,10 @@
                  icon="el-icon-refresh" @click="resetTableList">重置
       </el-button>
       <div style="float: right">
-        <el-button v-waves v-permission="'zlog-zOperateLog-delete'"
+        <el-button v-waves v-permission="'zlog-zOperateLog-delete'" icon="el-icon-delete"
                    size="small" type="danger" @click="deleteByIds">删除
         </el-button>
-        <el-button v-waves v-permission="'zlog-zOperateLog-exportExcel'"
+        <el-button v-waves v-permission="'zlog-zOperateLog-exportExcel'" icon="el-icon-printer"
                    size="small" type="success" @click="exportExcel">导出Excel
         </el-button>
       </div>

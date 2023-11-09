@@ -29,22 +29,17 @@
         <div style="float: right;margin-bottom: 10px;">
           <!--  操作按钮  -->
           <el-button v-waves type="primary" v-permission="'user-add'" size="small"
-                     @click="userAdd"
-          >新增
+                     @click="userAdd" icon="el-icon-plus">新增
           </el-button>
-          <el-button v-waves v-permission="'reset-password'" type="primary" size="small"
-                     @click="resetPassword(null)"
-          >
-            重置密码
+          <el-button v-waves v-permission="'reset-password'" type="warning" size="small"
+                     @click="resetPassword(null)" icon="el-icon-key">重置密码
           </el-button>
           <el-button v-waves v-permission="'user-delete'" type="danger" size="small"
-                     @click="userDelete(null)"
-          >
-            删除
+                     @click="userDelete(null)" icon="el-icon-delete">删除
           </el-button>
         </div>
         <!-- 表格部分 -->
-        <el-table :data="userTable" row-key="userId"
+        <el-table :data="userTable" row-key="userId" ref="dataTable"
                   :height="this.$windowHeight-230" style="width: 100%;"
                   border @selection-change="selectionChangeHandlerOrder"
         >
@@ -287,8 +282,8 @@ export default {
     },
     userUpdate(row) {
       if (row) {
-        this.changeData = []
-        this.changeData.push(row)
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.changeData.length <= 0) {
         this.$message({type: 'warning', message: '请选择一条数据进行修改！'})
@@ -336,8 +331,8 @@ export default {
     },
     userDelete(row) {
       if (row) {
-        this.changeData = []
-        this.changeData.push(row)
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.changeData.length <= 0) {
         this.$message({message: '请选择一条数据删除！', type: 'warning'})
@@ -358,8 +353,8 @@ export default {
     // 重置密码
     resetPassword(row) {
       if (row) {
-        this.changeData = []
-        this.changeData.push(row)
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.changeData.length <= 0) {
         this.$message({message: '至少选择一个用户重置密码！', type: 'error'})
@@ -380,8 +375,8 @@ export default {
     // 启用/禁用用户
     changeStatus(status, row) {
       if (row) {
-        this.changeData = []
-        this.changeData.push(row)
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       let msg = status === 0 ? '禁用' : '启用'
       if (this.changeData.length <= 0) {
@@ -391,10 +386,10 @@ export default {
         this.userIds.push(...this.changeData.map(r => r.userId))
         let data = {userIds: this.userIds, status: status}
         request({url: '/user/change/status', method: 'post', data})
-          .then(response => {
-            this.$message({type: 'success', message: '用户' + msg + '成功！'})
-            this.getUserList()
-          })
+            .then(response => {
+              this.$message({type: 'success', message: '用户' + msg + '成功！'})
+              this.getUserList()
+            })
       }
     }
   }
