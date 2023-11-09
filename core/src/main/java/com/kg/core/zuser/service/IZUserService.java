@@ -20,9 +20,9 @@ public interface IZUserService extends IService<ZUser> {
 
     Page<ZUserDTO> getUserList(Integer page, Integer limit, String params);
 
-    void add(ZUserRoleSaveDTO zUserRoleSaveDTO);
+    void add(ZUserRoleSaveDTO zUserRoleSaveDTO) throws BaseException;
 
-    void update(ZUserRoleSaveDTO zUserRoleSaveDTO);
+    void update(ZUserRoleSaveDTO zUserRoleSaveDTO) throws BaseException;
 
     /**
      * 查询用户详情
