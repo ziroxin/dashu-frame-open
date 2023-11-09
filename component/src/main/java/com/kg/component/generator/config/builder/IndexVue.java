@@ -69,14 +69,17 @@ public class IndexVue implements ITemplate {
     @Override
     @NotNull
     public Map<String, Object> renderData(@NotNull ConfigBuilder config, @NotNull TableInfo tableInfo) {
-        Map<String, Object> data = new HashMap<>(2);
-        String mapping = (StringUtils.isNotBlank(config.getPackageConfig().getModuleName()) ? config.getPackageConfig().getModuleName() + "/" : "")
-                + tableInfo.getEntityPath();
-        data.put("controllerMapping", mapping);
-        String buttonNamePre = (StringUtils.isNotBlank(config.getPackageConfig().getModuleName()) ? config.getPackageConfig().getModuleName() + "-" : "")
-                + tableInfo.getEntityPath() + "-";
-
-        data.put("buttonNamePre", buttonNamePre);
+        Map<String, Object> data = new HashMap<>(7);
+        String packageStr = config.getPackageConfig().getModuleName();
+        if (StringUtils.isNotBlank(packageStr)) {
+            data.put("controllerMapping", packageStr.replaceAll("\\.", "/") + "/" +
+                    tableInfo.getEntityPath());
+            data.put("buttonNamePre", packageStr.replaceAll("\\.", "-") + "-" +
+                    tableInfo.getEntityPath() + "-");
+        } else {
+            data.put("controllerMapping", tableInfo.getEntityPath());
+            data.put("buttonNamePre", tableInfo.getEntityPath() + "-");
+        }
         data.put("templateHtml", getTemplateHtml());
         data.put("jsData", getJsData());
         data.put("jsCreated", getJsCreated());
