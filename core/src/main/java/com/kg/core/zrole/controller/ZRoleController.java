@@ -54,6 +54,10 @@ public class ZRoleController {
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/role/add", logMsg = "添加角色")
     public void add(@RequestBody ZRole zRole) throws BaseException {
+        // 查重
+        if (roleService.lambdaQuery().eq(ZRole::getRoleName, zRole.getRoleName()).exists()) {
+            throw new BaseException("角色名称重复！请修改");
+        }
         zRole.setCreateTime(LocalDateTime.now());
         if (!roleService.save(zRole)) {
             throw new BaseException("添加角色失败");
@@ -66,6 +70,11 @@ public class ZRoleController {
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/role/update", logMsg = "修改角色")
     public void update(@RequestBody ZRole zRole) throws BaseException {
+        // 查重
+        if (roleService.lambdaQuery().eq(ZRole::getRoleName, zRole.getRoleName())
+                .ne(ZRole::getRoleId, zRole.getRoleId()).exists()) {
+            throw new BaseException("角色名称重复！请修改");
+        }
         zRole.setUpdateTime(LocalDateTime.now());
         if (!roleService.updateById(zRole)) {
             throw new BaseException("修改角色失败");
