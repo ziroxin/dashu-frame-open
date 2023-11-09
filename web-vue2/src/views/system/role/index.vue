@@ -70,7 +70,7 @@
       <el-col :span="17" style="padding-left: 20px;border-left: 1px solid #dedede;" v-loading="isLoading">
         <!--        资源权限表格-->
         <div style="margin-bottom: 5px;">
-          <el-button v-show="isSaveBtn" size="small" icon="el-icon-check"
+          <el-button :disabled="!isSaveBtn" size="small" icon="el-icon-check"
                      v-permission="'system-role-save-permission'" type="primary"
                      @click="saveRolePermission()"
           >保存角色权限
