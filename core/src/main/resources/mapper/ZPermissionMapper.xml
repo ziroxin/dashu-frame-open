@@ -16,5 +16,6 @@
         from z_permission
         WHERE parent_id = #{permissionId}
           AND permission_type = '1'
+        ORDER BY permission_order
     </select>
 </mapper>

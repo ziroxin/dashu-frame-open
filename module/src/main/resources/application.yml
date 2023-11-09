@@ -67,22 +67,12 @@ com.kg:
     is-yzm: true
     #jwtToken过期时限，单位：分钟
     jwt-token-expiry: 120
-  #oauth2配置
-  oauth2:
-    #服务端，是否启动(true/false)
-    server.enable: true
-    #客户端信息配置
-    client:
-      oauthServerUri: http://localhost:8123/
-      clientId: dev
-      clientSecret: qwer@123
-      redirectUri: http://localhost:8123/oauth2/client/login/code
-      errorRouter: http://localhost:9529/#/oauth2/error
-      successRouter: http://localhost:9529/#/oauth2/success
   #开发管理员配置 (所有开发管理员的ids，多个用逗号隔开)
   developer-user-ids: 1
   #跨域配置，是否允许跨域：默认关闭（true开启；false关闭）
-  cors-enable: false
+  cors-enable: true
+  #默认操作日志，保存天数，默认：180天（定时任务自动删除旧日志）
+  auto-operate-log: 180
   #验证码配置
   captcha:
     #类型枚举 ARITHMETIC-算数；CHINESE-中文；CHINESE_GIF-中文闪图；GIF-闪图；SPEC-常规
@@ -110,6 +100,19 @@ com.kg:
       name: "ziro"
       www: "https://www.java119.cn"
       email: "877185959@qq.com"
+  #oauth2配置
+  oauth2:
+    #服务端，是否启动(true/false)
+    server.enable: true
+    #客户端信息配置
+    client:
+      clientId: dev
+      clientSecret: qwer@123
+      redirectUri: http://localhost:8123/oauth2/client/login/code
+      #本地相关路径配置
+      oauthServerUri: http://localhost:8123/
+      errorRouter: http://localhost:9527/#/oauth2/error
+      successRouter: http://localhost:9527/#/oauth2/success
   #微信配置
   weixin:
     appid: xxxxx
