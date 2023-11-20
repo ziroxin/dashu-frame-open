@@ -65,12 +65,14 @@
                @close="resetTemp"
     >
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
-        <el-form-item label-width="0px" prop="newsTitle">
-          <el-input v-model="temp.newsTitle" :rules="[]" maxlength="30" :show-word-limit="true"
+        <el-form-item label-width="0px" prop="newsTitle"
+                      :rules="[{required: true, message: '新闻标题不能为空'}]">
+          <el-input v-model="temp.newsTitle" maxlength="30" :show-word-limit="true"
                     placeholder="请输入新闻标题"
           />
         </el-form-item>
-        <el-form-item label-width="0px" prop="newsContent">
+        <el-form-item label-width="0px" prop="newsContent"
+                      :rules="[{required: true, message: '新闻内容不能为空'}]">
           <my-wang-editor ref="myEditor" v-model="temp.newsContent" placeholder="请输入新闻内容"/>
         </el-form-item>
         <el-form-item label="顺序" prop="orderIndex"
