@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import { loadScriptQueue } from '@/utils/loadScript'
-import Tinymce from '@/components/tinymce/index.vue'
+import MyWangEditor from '@/components/MyWangEditor/index.vue'
 import ElKey from '@/components/elkey'
 import request from '@/utils/request'
 
-Vue.component('tinymce', Tinymce)
+Vue.component('my-wang-editor', MyWangEditor)
 Vue.component('el-key', ElKey)
 Object.assign(Vue.prototype, {
   $baseServer: process.env.VUE_APP_BASE_API,

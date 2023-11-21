@@ -784,7 +784,7 @@ const dateTimeFormat = {
 }
 
 // 使changeRenderKey在目标组件改变时可用
-const needRerenderList = ['tinymce']
+const needRerenderList = ['my-wang-editor']
 
 export default {
   components: {

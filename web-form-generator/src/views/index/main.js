@@ -3,11 +3,11 @@ import App from './App.vue'
 import router from '@/router'
 import '@/styles/index.scss'
 import '@/icons'
-import Tinymce from '@/components/tinymce/index.vue'
+import MyWangEditor from '@/components/MyWangEditor/index.vue'
 import ElKey from '@/components/elkey/index.vue'
 import request from '@/utils/request'
 
-Vue.component('tinymce', Tinymce)
+Vue.component('my-wang-editor', MyWangEditor)
 Vue.component('el-key', ElKey)
 
 Object.assign(Vue.prototype, {

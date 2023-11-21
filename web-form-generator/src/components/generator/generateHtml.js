@@ -292,7 +292,7 @@ const tags = {
     if (child) child = `${child}` // 换行
     return `<${tag} ${ref} ${fileList} ${action} ${autoUpload} ${multiple} ${beforeUpload} ${onSuccess} ${onRemove} ${onExceed} ${listType} ${accept} ${name} ${disabled}>${child}</${tag}>`
   },
-  tinymce: el => {
+  'my-wang-editor': el => {
     const {tag, vModel, placeholder} = attrBuilder(el)
     const height = el.height ? `:height="${el.height}"` : ''
     const branding = el.branding ? `:branding="${el.branding}"` : ''

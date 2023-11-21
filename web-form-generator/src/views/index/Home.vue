@@ -5,14 +5,8 @@
         <div class="logo">
           <img :src="logo" alt="logo">
           <a style="font-size: 16px;color:#00afff;text-decoration: none;"
-             href="https://mrhj.gitee.io/form-generator/#/" target="_blank">
-            代码生成器
-          </a>
-          <a class="github" href="https://github.com/JakHuang/form-generator" target="_blank">
-            <img src="https://github.githubassets.com/pinned-octocat.svg" alt>
-          </a>
-          <a class="github" href="https://gitee.com/mrhj/form-generator" target="_blank">
-            <img src="https://gitee.com/static/images/logo-black.svg" alt>
+             href="https://gitee.com/ziro/dashu-frame-open" target="_blank">
+            大树快速开发平台-代码生成表单
           </a>
         </div>
       </div>

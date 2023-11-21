@@ -175,7 +175,7 @@ export const inputComponents = [
   },
   {
     __config__: {
-      label: '编辑器',
+      label: '富文本框',
       isTableField: true,
       fieldType: 'longtext',
       fieldLength: '0',
@@ -184,14 +184,14 @@ export const inputComponents = [
       showLabel: true,
       changeTag: true,
       labelWidth: null,
-      tag: 'tinymce',
+      tag: 'my-wang-editor',
       tagIcon: 'rich-text',
       defaultValue: null,
       span: 24,
       layout: 'colFormItem',
       required: false,
       regList: [],
-      document: 'http://tinymce.ax-z.cn'
+      document: 'https://www.wangeditor.com/'
     },
     placeholder: '请输入',
     height: 300, // 编辑器高度
