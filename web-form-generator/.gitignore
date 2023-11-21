@@ -3,6 +3,9 @@ node_modules
 /dist
 /src/components/parser/lib
 /src/components/render/lib
+/package-lock.json
+/yarn.lock
+/pnpm-lock.yaml
 
 # local env files
 .env.local
@@ -23,6 +26,3 @@ yarn-error.log*
 *.sw?
 
 .prettierrc
-/package-lock.json
-/yarn.lock
-/pnpm-lock.yaml
