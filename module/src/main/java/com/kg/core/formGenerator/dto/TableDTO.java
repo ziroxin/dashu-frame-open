@@ -45,7 +45,7 @@ public class TableDTO {
     private List<TableFieldDTO> fields;
 
     /**
-     * 代码生成模板
+     * 代码生成html模板
      */
     private String template;
     /**

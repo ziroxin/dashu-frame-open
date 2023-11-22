@@ -41,12 +41,6 @@
               <span class="bar-btn" @click="runCode">
                 <i class="el-icon-refresh"/>刷新
               </span>
-              <!--              <span class="bar-btn" @click="exportFile">
-                              <i class="el-icon-download"/>导出vue文件
-                            </span>
-                            <span ref="copyBtn" class="bar-btn copy-btn">
-                              <i class="el-icon-document-copy"/>复制代码
-                            </span>-->
               <span class="bar-btn" @click="generate">
                 <i class="el-icon-s-promotion"/>生成代码
               </span>

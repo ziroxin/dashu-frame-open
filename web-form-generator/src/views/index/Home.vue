@@ -3,10 +3,9 @@
     <div class="left-board">
       <div class="logo-wrapper">
         <div class="logo">
-          <img :src="logo" alt="logo">
           <a style="font-size: 16px;color:#00afff;text-decoration: none;"
              href="https://gitee.com/ziro/dashu-frame-open" target="_blank">
-            大树快速开发平台-代码生成表单
+            代码生成
           </a>
         </div>
       </div>
@@ -18,19 +17,19 @@
               {{ item.title }}
             </div>
             <draggable
-              class="components-draggable"
-              :list="item.list"
-              :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
-              :clone="cloneComponent"
-              draggable=".components-item"
-              :sort="false"
-              @end="onEnd"
+                class="components-draggable"
+                :list="item.list"
+                :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
+                :clone="cloneComponent"
+                draggable=".components-item"
+                :sort="false"
+                @end="onEnd"
             >
               <div
-                v-for="(element, index) in item.list"
-                :key="index"
-                class="components-item"
-                @click="addComponent(element)"
+                  v-for="(element, index) in item.list"
+                  :key="index"
+                  class="components-item"
+                  @click="addComponent(element)"
               >
                 <div class="components-body">
                   <svg-icon :icon-class="element.__config__.tagIcon"/>
@@ -46,20 +45,17 @@
     <div class="center-board">
       <div class="action-bar">
         <el-button icon="el-icon-video-play" type="text" @click="run">
-          预览及生成
+          预览生成
         </el-button>
         <el-button icon="el-icon-view" type="text" @click="showJson">
-          查看json
+          JSON
         </el-button>
-        <el-button icon="el-icon-folder-opened" type="text" @click="showJson">
-          已保存的表单
+        <el-button icon="el-icon-check" type="text" @click="run">
+          保存
         </el-button>
-        <!--        <el-button icon="el-icon-download" type="text" @click="download">
-                  导出vue文件
-                </el-button>
-                <el-button class="copy-btn-main" icon="el-icon-document-copy" type="text" @click="copy">
-                  复制代码
-                </el-button>-->
+        <el-button icon="el-icon-notebook-2" type="text" @click="showJson">
+          历史记录
+        </el-button>
         <el-button class="delete-btn" icon="el-icon-delete" type="text" @click="empty">
           清空
         </el-button>
@@ -67,23 +63,23 @@
       <el-scrollbar class="center-scrollbar">
         <el-row class="center-board-row" :gutter="formConf.gutter">
           <el-form
-            :size="formConf.size"
-            :label-position="formConf.labelPosition"
-            :disabled="formConf.disabled"
-            :label-width="formConf.labelWidth + 'px'"
+              :size="formConf.size"
+              :label-position="formConf.labelPosition"
+              :disabled="formConf.disabled"
+              :label-width="formConf.labelWidth + 'px'"
           >
             <draggable class="drawing-board" :list="drawingList" :animation="340" group="componentsGroup">
               <draggable-item
-                v-for="(item, index) in drawingList"
-                :key="item.renderKey"
-                :drawing-list="drawingList"
-                :current-item="item"
-                :index="index"
-                :active-id="activeId"
-                :form-conf="formConf"
-                @activeItem="activeFormItem"
-                @copyItem="drawingItemCopy"
-                @deleteItem="drawingItemDelete"
+                  v-for="(item, index) in drawingList"
+                  :key="item.renderKey"
+                  :drawing-list="drawingList"
+                  :current-item="item"
+                  :index="index"
+                  :active-id="activeId"
+                  :form-conf="formConf"
+                  @activeItem="activeFormItem"
+                  @copyItem="drawingItemCopy"
+                  @deleteItem="drawingItemDelete"
               />
             </draggable>
             <div v-show="!drawingList.length" class="empty-info">
@@ -95,30 +91,33 @@
     </div>
 
     <right-panel
-      :active-data="activeData"
-      :form-conf="formConf"
-      :show-field="!!drawingList.length"
-      @tag-change="tagChange"
-      @fetch-data="fetchData"
+        :active-data="activeData"
+        :form-conf="formConf"
+        :show-field="!!drawingList.length"
+        @tag-change="tagChange"
+        @fetch-data="fetchData"
     />
 
+    <!-- 生成代码弹窗 -->
     <form-drawer
-      :visible.sync="drawerVisible"
-      :form-data="formData"
-      size="100%"
-      :generate-conf="generateConf"
+        :visible.sync="drawerVisible"
+        :form-data="formData"
+        size="100%"
+        :generate-conf="generateConf"
     />
+    <!-- JSON弹窗 -->
     <json-drawer
-      size="60%"
-      :visible.sync="jsonDrawerVisible"
-      :json-str="JSON.stringify(formData)"
-      @refresh="refreshJson"
+        size="60%"
+        :visible.sync="jsonDrawerVisible"
+        :json-str="JSON.stringify(formData)"
+        @refresh="refreshJson"
     />
+    <!-- 选择生成文件类型弹窗，this.generate()跳生成页面 -->
     <code-type-dialog
-      :visible.sync="dialogVisible"
-      title="选择生成类型"
-      :show-file-name="showFileName"
-      @confirm="generate"
+        :visible.sync="dialogVisible"
+        title="选择生成类型"
+        :show-file-name="showFileName"
+        @confirm="generate"
     />
     <input id="copyNode" type="hidden">
   </div>
@@ -139,7 +138,6 @@ import {cssStyle, makeUpHtml, vueScript, vueTemplate} from '@/components/generat
 import {makeUpJs} from '@/components/generator/js'
 import {makeUpCss} from '@/components/generator/css'
 import drawingDefalut from '@/components/generator/drawingDefalut'
-import logo from '@/assets/logo.png'
 import CodeTypeDialog from './CodeTypeDialog'
 import DraggableItem from './DraggableItem'
 import {getDrawingList, getFormConf, getIdGlobal, saveDrawingList, saveIdGlobal} from '@/utils/db'
@@ -165,7 +163,6 @@ export default {
   },
   data() {
     return {
-      logo,
       idGlobal,
       formConf,
       inputComponents,
@@ -205,7 +202,7 @@ export default {
     // eslint-disable-next-line func-names
     'activeData.__config__.label': function (val, oldVal) {
       if (this.activeData.placeholder === undefined || this.activeData.placeholder.indexOf('请') < 0
-        || !this.activeData.__config__.tag || oldActiveId !== this.activeId) {
+          || !this.activeData.__config__.tag || oldActiveId !== this.activeId) {
         return
       }
       this.activeData.placeholder = this.activeData.placeholder.substr(0, 3) + val
@@ -355,14 +352,11 @@ export default {
       }
     },
     generate(data) {
-      const func = this[`exec${titleCase(this.operationType)}`]
       this.generateConf = data
-      func && func(data)
-    },
-    execRun(data) {
       this.AssembleFormData()
       // 特殊判断：上传附件时-子表名未填写，提示必须填写
-      let errUp = this.formData.fields.filter(f => f.__config__.tag === 'el-upload' && !f.__config__.isTableField && !f.__config__.childTableName)
+      let errUp = this.formData.fields
+          .filter(f => f.__config__.tag === 'el-upload' && !f.__config__.isTableField && !f.__config__.childTableName)
       if (errUp.length > 0) {
         let errMsg = '';
         errUp.forEach(f => errMsg += `组件【${f.__config__.label}】的‘子表名’未填写正确，请检查<br/>`)
@@ -371,20 +365,12 @@ export default {
         this.drawerVisible = true
       }
     },
-    execDownload(data) {
-      const codeStr = this.generateCode()
-      const blob = new Blob([codeStr], {type: 'text/plain;charset=utf-8'})
-      saveAs(blob, data.fileName)
-    },
-    execCopy(data) {
-      document.getElementById('copyNode').click()
-    },
     empty() {
       this.$confirm('确定要清空所有组件吗？', '提示', {type: 'warning'}).then(
-        () => {
-          this.drawingList = []
-          this.idGlobal = 100
-        }
+          () => {
+            this.drawingList = []
+            this.idGlobal = 100
+          }
       )
     },
     drawingItemCopy(item, list) {
@@ -414,20 +400,9 @@ export default {
       this.AssembleFormData()
       this.jsonDrawerVisible = true
     },
-    download() {
-      this.dialogVisible = true
-      this.showFileName = true
-      this.operationType = 'download'
-    },
     run() {
       this.dialogVisible = true
       this.showFileName = false
-      this.operationType = 'run'
-    },
-    copy() {
-      this.dialogVisible = true
-      this.showFileName = false
-      this.operationType = 'copy'
     },
     tagChange(newTag) {
       newTag = this.cloneComponent(newTag)
@@ -470,4 +445,15 @@ export default {
 
 <style lang='scss'>
 @import '@/styles/home';
+
+.action-bar {
+  .el-button {
+    padding-bottom: 3px;
+
+    &:hover {
+      border-radius: 2px;
+      border-bottom: 3px solid;
+    }
+  }
+}
 </style>
