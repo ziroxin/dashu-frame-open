@@ -2,6 +2,7 @@ export default [
   {
     // 组件的自定义配置
     __config__: {
+      formId: 11,
       label: '主键',
       isTableField: true,
       fieldType: 'varchar',
@@ -21,6 +22,7 @@ export default [
   },
   {
     __config__: {
+      formId: 12,
       label: '手机号',
       isTableField: true,
       fieldType: 'varchar',
@@ -61,6 +63,7 @@ export default [
   },
   {
     __config__: {
+      formId: 13,
       label: '顺序',
       isTableField: true,
       fieldType: 'int',
