@@ -33,7 +33,7 @@ public interface ZFormGeneratorService extends IService<ZFormGenerator> {
      *
      * @param zFormGeneratorDTO 新增实体
      */
-    void add(ZFormGeneratorDTO zFormGeneratorDTO);
+    String add(ZFormGeneratorDTO zFormGeneratorDTO);
 
     /**
      * 修改

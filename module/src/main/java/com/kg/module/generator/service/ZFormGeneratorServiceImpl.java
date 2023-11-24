@@ -113,12 +113,13 @@ public class ZFormGeneratorServiceImpl extends ServiceImpl<ZFormGeneratorMapper,
      */
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public void add(ZFormGeneratorDTO zFormGeneratorDTO) {
+    public String add(ZFormGeneratorDTO zFormGeneratorDTO) {
         ZFormGenerator zFormGenerator = zFormGeneratorConvert.dtoToEntity(zFormGeneratorDTO);
         zFormGenerator.setFormId(GuidUtils.getUuid());
         zFormGenerator.setCreateTime(LocalDateTime.now());
         zFormGenerator.setStatus("0");
         save(zFormGenerator);
+        return zFormGenerator.getFormId();
     }
 
     /**

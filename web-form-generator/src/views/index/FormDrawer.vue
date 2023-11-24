@@ -261,6 +261,7 @@ export default {
     },
     // 生成表，并生成代码
     generate() {
+      // todo:生成代码前，检测是否生成过
       let generateData = {
         template: encodeURIComponent(generateHtml(this.formData, this.generateConf)),
         css: encodeURIComponent(generateCss(this.formData)),

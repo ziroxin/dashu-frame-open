@@ -6,9 +6,8 @@ let confGlobal
 let someSpanIsNot24
 
 export function dialogWrapper(str) {
-  //return `<el-dialog title="Dialog Titile">
   return `<el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible"
-    v-bind="$attrs" v-on="$listeners" @open="onOpen" @close="onClose">
+    v-bind="$attrs" v-on="$listeners" @open="onOpen" @close="onClose" :close-on-click-modal="false">
     ${str}
     <div slot="footer" class="dialog-footer">
       <el-button v-waves type="primary" v-if="dialogType!='view'" @click="saveData">保存</el-button>

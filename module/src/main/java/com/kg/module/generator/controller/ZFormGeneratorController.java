@@ -55,8 +55,8 @@ public class ZFormGeneratorController {
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('generator:zFormGenerator:list')")
     public Page<ZFormGeneratorDTO> list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                               @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
-                               @RequestParam(value = "params", required = false) String params) {
+                                        @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
+                                        @RequestParam(value = "params", required = false) String params) {
         return zFormGeneratorService.pagelist(page, limit, params);
     }
 
@@ -66,9 +66,9 @@ public class ZFormGeneratorController {
     @PreAuthorize("hasAuthority('generator:zFormGenerator:add')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/generator/zFormGenerator/add", logMsg = "新增-代码生成器表单")
-    public void add(@RequestBody ZFormGeneratorDTO zFormGeneratorDTO) throws BaseException {
+    public String add(@RequestBody ZFormGeneratorDTO zFormGeneratorDTO) throws BaseException {
         try {
-            zFormGeneratorService.add(zFormGeneratorDTO);
+            return zFormGeneratorService.add(zFormGeneratorDTO);
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException(e.getMessage() != null ? e.getMessage() : "新增失败！请重试");

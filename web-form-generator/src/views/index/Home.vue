@@ -277,7 +277,11 @@ export default {
       this.$message.error('代码复制失败')
     })
     // 加载历史记录
-    this.loadHistoryList()
+    if (this.$route.query.fid) {
+      this.loadHistoryList(this.$route.query.fid)
+    } else {
+      this.loadHistoryList()
+    }
     this.isLoading = false
   },
   methods: {
@@ -286,39 +290,49 @@ export default {
       this.AssembleFormData()
       this.$refs['myFormTable'].validate((valid) => {
         if (valid) {
-          const data = {
-            ...this.myFormTableData,
-            ...this.formData,
-            formJson: JSON.stringify(this.formData)
-          }
-          if (data.formId) {
+          if (this.myFormTableData.formId) {
             // 更新
-            this.$request({url: '/generator/zFormGenerator/update', method: 'put', data})
-                .then((response) => {
-                  this.$message({type: 'success', message: '更新成功！'})
-                  this.loadHistoryList()
-                  this.dialogSaveFormVisible = false
-                })
+            this.update()
           } else {
             // 新增
-            this.$request({url: '/generator/zFormGenerator/add', method: 'post', data})
-                .then((response) => {
-                  this.$message({type: 'success', message: '新增成功！'})
-                  this.loadHistoryList()
-                  this.dialogSaveFormVisible = false
-                })
+            this.add()
           }
         }
       })
     },
+    add() {
+      const data = {...this.myFormTableData, ...this.formData, formJson: JSON.stringify(this.formData)}
+      this.$request({url: '/generator/zFormGenerator/add', method: 'post', data})
+          .then((response) => {
+            this.$message({type: 'success', message: '表单保存成功！'})
+            this.loadHistoryList(response.data)
+            this.dialogSaveFormVisible = false
+          })
+    },
+    update() {
+      const data = {...this.myFormTableData, ...this.formData, formJson: JSON.stringify(this.formData)}
+      this.$request({url: '/generator/zFormGenerator/update', method: 'put', data})
+          .then((response) => {
+            this.$message({type: 'success', message: '表单保存成功！'})
+            this.loadHistoryList()
+            this.dialogSaveFormVisible = false
+          })
+    },
     // 加载历史记录
-    loadHistoryList() {
+    loadHistoryList(formId) {
       const params = {...this.pager}
       this.$request({url: '/generator/zFormGenerator/list', method: 'get', params})
           .then((response) => {
             const {data} = response
             this.pager.totalCount = data.total
             this.historyList = data.records
+            // 加载默认记录
+            if (formId) {
+              const list = this.historyList.filter(item => item.formId === formId);
+              if (list.length > 0) {
+                this.loadFormTable(list[0])
+              }
+            }
           })
     },
     // 修改表单
@@ -326,18 +340,22 @@ export default {
       this.$confirm('提醒：修改操作，会覆盖当前页面上的表单，建议先保存，确定要修改吗?', '修改确认', {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
-        this.myFormTableData = {...row}
-        const jsonData = JSON.parse(row.formJson)
-        this.drawingList = deepClone(jsonData.fields)
-        delete jsonData.fields
-        this.formConf = jsonData
-        // 保存缓存
-        saveDrawingList(this.drawingList)
-        saveFormConf(this.formConf)
-        saveMyFormTableData(this.myFormTableData)
+        this.loadFormTable(row)
         this.$message({type: 'success', message: '表单加载成功，请修改！'})
         this.dialogHistoryVisible = false
       })
+    },
+    // 从接口数据，加载表单
+    loadFormTable(row) {
+      this.myFormTableData = {...row}
+      const jsonData = JSON.parse(row.formJson)
+      this.drawingList = deepClone(jsonData.fields)
+      delete jsonData.fields
+      this.formConf = jsonData
+      // 保存缓存
+      saveDrawingList(this.drawingList)
+      saveFormConf(this.formConf)
+      saveMyFormTableData(this.myFormTableData)
     },
     // 监听分页
     handleCurrentChange(page) {
@@ -351,11 +369,16 @@ export default {
     },
     // 打开弹窗：选择生成类型
     openSelectType() {
+      if (!this.myFormTableData.formId) {
+        this.$message({message: '请先保存表单！', type: 'warning'})
+        return;
+      }
       this.dialogVisible = true
       this.showFileName = false
     },
     // 打开弹窗：代码生成和预览
     openGenerate(data) {
+      this.update() // 更新表单
       this.generateConf = data
       this.AssembleFormData()
       // 特殊判断：上传附件时-子表名未填写，提示必须填写
@@ -434,6 +457,8 @@ export default {
         clearFormConf()
         this.$message({type: 'success', message: '重置成功，正在重新加载！您可以添加新表单了'})
         setTimeout(() => {
+          // 去掉url中的 ?fid=xxx
+          location.href = location.href.split('?')[0]
           location.reload()
         }, 500)
       })
