@@ -41,7 +41,7 @@
               <span class="bar-btn" @click="runCode">
                 <i class="el-icon-refresh"/>刷新
               </span>
-              <span class="bar-btn" @click="generate">
+              <span class="bar-btn" @click="generateBefore">
                 <i class="el-icon-s-promotion"/>生成代码
               </span>
               <span class="bar-btn delete-btn" @click="$emit('update:visible', false)">
@@ -49,12 +49,12 @@
               </span>
             </div>
             <iframe
-              v-show="isIframeLoaded"
-              ref="previewPage"
-              class="result-wrapper"
-              frameborder="0"
-              src="preview.html"
-              @load="iframeLoad"
+                v-show="isIframeLoaded"
+                ref="previewPage"
+                class="result-wrapper"
+                frameborder="0"
+                src="preview.html"
+                @load="iframeLoad"
             />
             <div v-show="!isIframeLoaded" v-loading="true" class="result-wrapper"/>
           </el-col>
@@ -62,9 +62,9 @@
       </div>
     </el-drawer>
     <resource-dialog
-      :visible.sync="resourceVisible"
-      :origin-resource="resources"
-      @save="setResource"
+        :visible.sync="resourceVisible"
+        :origin-resource="resources"
+        @save="setResource"
     />
   </div>
 </template>
@@ -260,8 +260,50 @@ export default {
       })
     },
     // 生成表，并生成代码
-    generate() {
-      // todo:生成代码前，检测是否生成过
+    generateBefore() {
+      request({url: '/generator/zFormGenerator/getById', method: 'get', params: {formId: this.formData.formId}})
+          .then(response => {
+            if (response.data.status === '1') {
+              // 已生成过，用户确认是否继续生成
+              this.$confirm('检测到代码已生成，是否重新生成？(代码生成后自动以ZIP格式下载)', '代码生成确认', {
+                confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+              }).then(() => {
+                this.generateCheckTable()
+              })
+            } else {
+              // 未生成过，直接生成
+              this.generateCheckTable()
+            }
+          })
+    },
+    generateCheckTable() {
+      const tableName = this.formData.tableName
+      request({url: '/generator/code/hasTables', method: 'get', params: {tableName: tableName}})
+          .then(response => {
+            if (response.data) {
+              // 表存在，提示用户，是否覆盖原表，让用户选择
+              this.$msgbox({
+                message: '检测到数据库表【' + tableName + '】已存在，是否覆盖原表？<br>覆盖：会删除原表，生成新表，再生成代码；<br>不覆盖：直接生成代码',
+                title: '代码生成确认', dangerouslyUseHTMLString: true, distinguishCancelAndClose: true,
+                showCancelButton: true, confirmButtonText: '覆盖', cancelButtonText: '不覆盖', type: 'warning'
+              }).then(() => {
+                this.$confirm('确定要生成表【' + tableName + '】吗？本操作将删除数据库中同名的表，无法恢复！！！', '再次确认', {
+                  confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+                }).then(() => {
+                  this.generate(true)// 覆盖生成
+                })
+              }).catch((action) => {
+                if (action === 'cancel') {
+                  this.generate()// 不覆盖生成
+                }
+              })
+            } else {
+              // 表不存在，直接生成
+              this.generate()
+            }
+          })
+    },
+    generate(isCoverTable) {
       let generateData = {
         template: encodeURIComponent(generateHtml(this.formData, this.generateConf)),
         css: encodeURIComponent(generateCss(this.formData)),
@@ -300,24 +342,21 @@ export default {
         }
       })
       // 调用接口，开始生成代码
-      this.$confirm('确定要生成表【' + table.tableName + '】吗？本操作将删除数据库中同名的表，无法恢复！！！', '生成代码提醒', {
-        confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
-      }).then(() => {
-        let data = {...table, ...generateData, fields: fields}
-        request({url: '/generator/code/byform', method: 'post', data})
+      let data = {...table, ...generateData, fields: fields, isCoverTable: isCoverTable || false}
+      request({url: '/generator/code/byform', method: 'post', data})
           .then(resp => {
             this.$message({type: 'success', message: '代码生成成功！'})
+            saveAs(this.$baseServer + resp.data, data.formName);
             console.log("代码地址：\n", resp.data)
+            // 刷新父组件中，表单数据
+            this.$emit('refresh', data.formId)
           })
-      })
     },
     showResource() {
       this.resourceVisible = true
     },
     setResource(arr) {
-      const scripts = [];
-      const
-        links = []
+      const scripts = [], links = []
       if (Array.isArray(arr)) {
         arr.forEach(item => {
           if (item.endsWith('.css')) {

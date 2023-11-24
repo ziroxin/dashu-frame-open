@@ -64,4 +64,12 @@ public class TableDTO {
      * 代码生成css
      */
     private String css;
+    /**
+     * 是否覆盖数据库表
+     */
+    private Boolean isCoverTable;
+    /**
+     * 表单管理表id
+     */
+    private String formId;
 }

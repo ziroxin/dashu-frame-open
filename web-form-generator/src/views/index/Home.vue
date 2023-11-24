@@ -77,7 +77,7 @@
                       :show-file-name="showFileName" @confirm="openGenerate"/>
     <!-- 生成代码页 -->
     <form-drawer :visible.sync="drawerVisible" :form-data="formData"
-                 size="100%" :generate-conf="generateConf"/>
+                 size="100%" :generate-conf="generateConf" @refresh="refreshFormTableData($event)"/>
     <!-- 复制代码input -->
     <input id="copyNode" type="hidden">
 
@@ -282,7 +282,6 @@ export default {
     } else {
       this.loadHistoryList()
     }
-    this.isLoading = false
   },
   methods: {
     // 保存当前表单
@@ -305,7 +304,8 @@ export default {
       this.$request({url: '/generator/zFormGenerator/add', method: 'post', data})
           .then((response) => {
             this.$message({type: 'success', message: '表单保存成功！'})
-            this.loadHistoryList(response.data)
+            const formId = response.data;
+            this.loadHistoryList(formId)
             this.dialogSaveFormVisible = false
           })
     },
@@ -333,6 +333,7 @@ export default {
                 this.loadFormTable(list[0])
               }
             }
+            this.isLoading = false
           })
     },
     // 修改表单
@@ -378,9 +379,9 @@ export default {
     },
     // 打开弹窗：代码生成和预览
     openGenerate(data) {
-      this.update() // 更新表单
       this.generateConf = data
       this.AssembleFormData()
+      this.update() // 更新表单
       // 特殊判断：上传附件时-子表名未填写，提示必须填写
       let errUp = this.formData.fields
           .filter(f => f.__config__.tag === 'el-upload' && !f.__config__.isTableField && !f.__config__.childTableName)
@@ -389,8 +390,14 @@ export default {
         errUp.forEach(f => errMsg += `组件【${f.__config__.label}】的‘子表名’未填写正确，请检查<br/>`)
         this.$message({dangerouslyUseHTMLString: true, showClose: true, type: 'error', message: errMsg})
       } else {
+        this.formData = {...this.formData, ...this.myFormTableData}
         this.drawerVisible = true
       }
+    },
+    // 刷新
+    refreshFormTableData(formId) {
+      console.log(444, formId)
+      this.loadHistoryList(formId)
     },
     // 左侧组件，拖拽结束事件
     onEnd(obj) {
@@ -436,7 +443,6 @@ export default {
     },
     // 中间部分，当前激活标签
     activeFormItem(currentItem) {
-      console.log(currentItem.__config__.formId)
       this.activeData = currentItem
       this.activeId = currentItem.__config__.formId
     },
@@ -473,7 +479,6 @@ export default {
           this.setRespData(component, resp)
         })
       } else {
-        console.log('static', component)
         this.setRespData(component)
       }
     },

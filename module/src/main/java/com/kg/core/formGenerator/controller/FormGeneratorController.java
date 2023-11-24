@@ -16,10 +16,14 @@ import com.kg.core.base.model.BaseEntity;
 import com.kg.core.exception.BaseException;
 import com.kg.core.formGenerator.dto.TableDTO;
 import com.kg.core.formGenerator.dto.TableFieldDTO;
+import com.kg.module.generator.entity.ZFormGenerator;
+import com.kg.module.generator.service.ZFormGeneratorService;
+import org.apache.commons.lang3.SystemUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -47,11 +52,22 @@ public class FormGeneratorController {
     private String dbUserName;
     @Value("${spring.datasource.password}")
     private String dbPassword;
+    @Resource
+    private ZFormGeneratorService formGeneratorService;
+
+    @GetMapping("generator/code/hasTables")
+    public boolean hasTables(String tableName) {
+        String sql = "SHOW TABLES LIKE ?";
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, tableName);
+        return list != null && list.size() > 0;
+    }
 
     @PostMapping("generator/code/byform")
     public String generate(@RequestBody TableDTO tableDTO) throws BaseException {
-        // 1.生成表
-        createTable(tableDTO);
+        if (tableDTO.getIsCoverTable()) {
+            // 1.生成表
+            createTable(tableDTO);
+        }
         // 2.生成代码
         return generateCode(tableDTO);
     }
@@ -103,12 +119,18 @@ public class FormGeneratorController {
         // 打成压缩包
         String zipPath = basePath + ".zip";
         ZipUtil.zip(basePath, zipPath);
-        // 打开输出文件夹
         try {
-            RuntimeUtils.openDir(FilePathConfig.SAVE_PATH + "/generate/code/temp");
+            // 检测操作系统，window系统，则打开输出文件夹
+            if (SystemUtils.IS_OS_WINDOWS) {
+                RuntimeUtils.openDir(FilePathConfig.SAVE_PATH + "/generate/code/temp");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        // 更新表单管理表生成状态
+        formGeneratorService.lambdaUpdate().eq(ZFormGenerator::getFormId, tableDTO.getFormId())
+                .set(ZFormGenerator::getStatus, "1")
+                .set(ZFormGenerator::getUpdateTime, LocalDateTime.now()).update();
         // 返回下载地址
         return FilePathConfig.switchUrl(zipPath);
     }
