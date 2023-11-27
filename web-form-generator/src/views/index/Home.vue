@@ -38,17 +38,26 @@
       <!-- 中间顶部按钮 -->
       <div class="action-bar">
         <el-button icon="el-icon-video-play" type="text" @click="openSelectType">预览生成</el-button>
-        <el-button icon="el-icon-view" type="text" @click="openJsonViewer">JSON</el-button>
+        <el-button icon="el-icon-view" type="text" @click="openJsonViewer">查看Json</el-button>
         <el-divider direction="vertical"></el-divider>
-        <el-button icon="el-icon-check" type="text" @click="dialogSaveFormVisible=true">保存</el-button>
-        <el-button icon="el-icon-notebook-2" type="text" @click="dialogHistoryVisible=true">历史记录</el-button>
+        <el-button icon="el-icon-coin" type="text" @click="tableToForm">导入表格</el-button>
+        <el-divider direction="vertical"></el-divider>
+        <el-button icon="el-icon-notebook-2" type="text" @click="dialogHistoryVisible=true">表单列表</el-button>
         <el-divider direction="vertical"></el-divider>
         <el-button class="delete-btn" icon="el-icon-delete" type="text" @click="empty">清空</el-button>
       </div>
       <!-- 当前表单显示 -->
-      <div class="form-title">
-        <span v-if="myFormTableData.formId">当前修改表单 - {{ myFormTableData.formName }}</span>
-        <span v-else>新表单 {{ myFormTableData.formName ? ' - ' + myFormTableData.formName : '' }}</span>
+      <div class="form-title" v-if="myFormTableData.formId">
+        <span class="title">当前修改表单 - {{ myFormTableData.formName }}</span>
+        <el-button icon="el-icon-check" type="primary" class="btn" size="mini"
+                   @click="dialogSaveFormVisible=true">更新表单
+        </el-button>
+      </div>
+      <div class="form-title" v-else>
+        <span class="title">新表单 {{ myFormTableData.formName ? ' - ' + myFormTableData.formName : '' }}</span>
+        <el-button icon="el-icon-check" type="primary" class="btn" size="mini"
+                   @click="dialogSaveFormVisible=true">保存新表单
+        </el-button>
       </div>
       <!-- 中间表单显示 -->
       <el-scrollbar class="center-scrollbar">
@@ -151,10 +160,18 @@ import drawingDefalut from '@/components/generator/drawingDefalut'
 import CodeTypeDialog from './CodeTypeDialog'
 import DraggableItem from './DraggableItem'
 import {
-  getDrawingList, saveDrawingList, clearDrawingList,
-  getFormConf, saveFormConf, clearFormConf,
-  getIdGlobal, saveIdGlobal, clearIdGlobal,
-  getMyFormTableData, saveMyFormTableData, clearMyFormTableData
+  clearDrawingList,
+  clearFormConf,
+  clearIdGlobal,
+  clearMyFormTableData,
+  getDrawingList,
+  getFormConf,
+  getIdGlobal,
+  getMyFormTableData,
+  saveDrawingList,
+  saveFormConf,
+  saveIdGlobal,
+  saveMyFormTableData
 } from '@/utils/db'
 import loadBeautifier from '@/utils/loadBeautifier'
 
@@ -498,7 +515,9 @@ export default {
       */
       this.setObjectValueReduce(component, dataConsumer, respData)
       const i = this.drawingList.findIndex(item => item.__config__.renderKey === renderKey)
-      if (i > -1) this.$set(this.drawingList, i, component)
+      if (i > -1) {
+        this.$set(this.drawingList, i, component)
+      }
     },
     // 深层次属性赋值
     setObjectValueReduce(obj, strKeys, data) {
@@ -520,22 +539,36 @@ export default {
         if (t) t.value = val
       }
     },
-    // 右侧面板，切换tab
+    // 右侧面板，修改组件类型时，回调方法
     tagChange(newTag) {
       newTag = this.cloneComponent(newTag)
-      const config = newTag.__config__
       newTag.__vModel__ = this.activeData.__vModel__
+      // 配置 __config__
+      const activeConfig = this.activeData.__config__
+      // 把用户自定配置拷贝过来（如字段信息等）
+      const config = newTag.__config__
       config.formId = this.activeId
-      config.span = this.activeData.__config__.span
-      this.activeData.__config__.tag = config.tag
-      this.activeData.__config__.tagIcon = config.tagIcon
-      this.activeData.__config__.document = config.document
-      if (typeof this.activeData.__config__.defaultValue === typeof config.defaultValue) {
-        config.defaultValue = this.activeData.__config__.defaultValue
-      }
+      // 字段信息
+      config.label = activeConfig.label
+      config.isTableField = activeConfig.isTableField
+      config.fieldType = activeConfig.fieldType
+      config.fieldLength = activeConfig.fieldLength
+      config.pointLength = activeConfig.pointLength
+      config.isKey = activeConfig.isKey
+      config.required = activeConfig.required
+      // 外观信息
+      config.labelWidth = activeConfig.labelWidth
+      config.showLabel = activeConfig.showLabel
+      config.span = activeConfig.span
+      // 覆盖新组建配置
+      newTag.__config__ = config
+
+      // 拷贝公用属性
       Object.keys(newTag).forEach(key => {
-        if (this.activeData[key] !== undefined) {
-          newTag[key] = this.activeData[key]
+        if (key === 'placeholder' || key === 'style' || key === 'clearable' || key === 'disabled') {
+          if (this.activeData[key] !== undefined) {
+            newTag[key] = this.activeData[key]
+          }
         }
       })
       this.activeData = newTag
@@ -546,9 +579,12 @@ export default {
       const index = list.findIndex(item => item.__config__.formId === this.activeId)
       if (index > -1) {
         list.splice(index, 1, newTag)
+        this.fetchData(newTag)
       } else {
         list.forEach(item => {
-          if (Array.isArray(item.__config__.children)) this.updateDrawingList(newTag, item.__config__.children)
+          if (Array.isArray(item.__config__.children)) {
+            this.updateDrawingList(newTag, item.__config__.children)
+          }
         })
       }
     },
@@ -589,6 +625,11 @@ export default {
       delete data.fields
       this.formConf = data
     },
+    // 导入表格，转成现有的表单
+    tableToForm() {
+      // todo: 导入表格
+
+    }
   }
 }
 </script>
@@ -609,14 +650,20 @@ export default {
 
 .form-title {
   text-align: center;
-  margin: 2px 12px 8px 12px;
+  margin: 2px 12px 2px 12px;
   border-bottom: 1px dashed #cccccc;
   line-height: 40px;
+  padding-bottom: 6px;
 
-  span {
+  .title {
     font-size: 16px;
     font-weight: bold;
     color: #D7000F;
+  }
+
+  .btn {
+    margin-top: 8px;
+    float: right;
   }
 }
 </style>

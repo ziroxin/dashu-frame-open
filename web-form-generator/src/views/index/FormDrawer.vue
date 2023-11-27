@@ -290,16 +290,16 @@ export default {
                 this.$confirm('确定要生成表【' + tableName + '】吗？本操作将删除数据库中同名的表，无法恢复！！！', '再次确认', {
                   confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
                 }).then(() => {
-                  this.generate(true)// 覆盖生成
+                  this.generate(true)// 覆盖生成（生成表）
                 })
               }).catch((action) => {
                 if (action === 'cancel') {
-                  this.generate()// 不覆盖生成
+                  this.generate(false)// 不覆盖生成（不生成表）
                 }
               })
             } else {
-              // 表不存在，直接生成
-              this.generate()
+              // 表不存在，直接生成（生成表）
+              this.generate(true)
             }
           })
     },

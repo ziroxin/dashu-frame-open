@@ -362,7 +362,7 @@ export const selectComponents = [
       tag: 'el-checkbox-group',
       tagIcon: 'checkbox',
       layout: 'colFormItem',
-      defaultValue: null,
+      defaultValue: [],
       dataType: 'dynamic',
       span: 24,
       optionType: 'default',
@@ -622,7 +622,6 @@ export const selectComponents = [
     size: 'medium'
   },
   {
-    // todo 上传文件，单表和多表区分
     __config__: {
       label: '上传',
       isTableField: false,
