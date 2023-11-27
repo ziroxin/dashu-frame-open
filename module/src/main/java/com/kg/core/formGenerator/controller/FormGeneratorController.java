@@ -11,6 +11,7 @@ import com.kg.component.generator.config.OutputFile;
 import com.kg.component.generator.engine.FreemarkerTemplateEngine;
 import com.kg.component.generator.fill.Column;
 import com.kg.component.generator.util.RuntimeUtils;
+import com.kg.component.utils.TimeUtils;
 import com.kg.core.base.dto.BaseDTO;
 import com.kg.core.base.model.BaseEntity;
 import com.kg.core.exception.BaseException;
@@ -234,6 +235,12 @@ public class FormGeneratorController {
 
     // 生成表
     private void createTable(TableDTO tableDTO) throws BaseException {
+        // 检查表是否存在，若存在，则备份该表
+        if (hasTables(tableDTO.getTableName())) {
+            String backupTableName = tableDTO.getTableName() + "_bak_" + TimeUtils.now().toFormat("yyyyMMddHHmmss");
+            jdbcTemplate.execute("CREATE TABLE " + backupTableName + " AS SELECT * FROM " + tableDTO.getTableName());
+        }
+        // 删除表
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + tableDTO.getTableName() + ";");
         List<TableFieldDTO> fields = tableDTO.getFields();
         if (fields == null || fields.size() <= 0) {
