@@ -62,7 +62,7 @@
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible" width="900px"
                :close-on-click-modal="dialogType !== 'view' ? false : true"
-               @close="resetTemp"
+               @close="resetTemp" :key="'myDialog'+dialogIndex"
     >
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
         <el-form-item label-width="0px" prop="newsTitle"
@@ -112,7 +112,8 @@ export default {
       // 弹窗显示隐藏
       dialogFormVisible: false,
       // 表单临时数据
-      temp: {}
+      temp: {},
+      dialogIndex: 0
     }
   },
   created() {
@@ -159,6 +160,7 @@ export default {
     // 清空表单temp数据
     resetTemp() {
       this.temp = {orderIndex: 0}
+      this.dialogIndex++
     },
     // 打开添加窗口
     openAdd() {
