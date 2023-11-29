@@ -48,15 +48,15 @@
       </div>
       <!-- 当前表单显示 -->
       <div class="form-title" v-if="myFormTableData.formId">
-        <span class="title">当前修改表单 - {{ myFormTableData.formName }}</span>
+        <span class="title">修改表单：{{ myFormTableData.formName }}</span>
         <el-button icon="el-icon-check" type="primary" class="btn" size="mini"
-                   @click="dialogSaveFormVisible=true">更新表单
+                   @click="dialogSaveFormVisible=true">保存
         </el-button>
       </div>
       <div class="form-title" v-else>
-        <span class="title">新表单 {{ myFormTableData.formName ? ' - ' + myFormTableData.formName : '' }}</span>
-        <el-button icon="el-icon-check" type="primary" class="btn" size="mini"
-                   @click="dialogSaveFormVisible=true">保存新表单
+        <span class="title">新增表单 {{ myFormTableData.formName ? '：' + myFormTableData.formName : '' }}</span>
+        <el-button icon="el-icon-plus" type="primary" class="btn" size="mini"
+                   @click="dialogSaveFormVisible=true">保存
         </el-button>
       </div>
       <!-- 中间表单显示 -->
@@ -140,6 +140,23 @@
         <el-button type="primary" @click="saveFormTable">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 选择要导入的表弹窗 -->
+    <el-dialog title="选择要导入的表" :visible.sync="dialogImportTableVisible"
+               width="95%" top="5vh">
+      <el-table :data="myImportTableList" :height="tableHeight+'px'" border>
+        <el-table-column label="表名称" prop="tableName"/>
+        <el-table-column label="表描述" prop="tableComment"/>
+        <el-table-column fixed="right" label="操作" width="200" align="center">
+          <template v-slot="scope">
+            <el-button type="text" size="small" @click="tableImportToForm(scope.row)">
+              导入表生成表单
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -227,6 +244,9 @@ export default {
       tableHeight: window.innerHeight - 242,
       historyList: [],
       pager: {page: 1, limit: 10, totalCount: 0},
+      // 选择要导入的表
+      dialogImportTableVisible: false,
+      myImportTableList: [],
     }
   },
   computed: {},
@@ -627,8 +647,87 @@ export default {
     },
     // 导入表格，转成现有的表单
     tableToForm() {
-      // todo: 导入表格
-
+      // 1 查询表列表，弹窗选择导入
+      this.$request({
+        url: '/generator/code/tableList', method: 'get'
+      }).then((response) => {
+        const {data} = response
+        this.myImportTableList = data
+        this.dialogImportTableVisible = true
+      })
+    },
+    tableImportToForm(row) {
+      // 导入已有表格，生成对应的表单
+      this.$confirm('确定要导入表[' + row.tableName + ']吗?', '导入确认', {
+        confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+      }).then(() => {
+        // 2 查询表内所有字段
+        const params = {tableName: row.tableName}
+        console.log(params)
+        this.$request({
+          url: '/generator/code/tableInfo', method: 'get', params
+        }).then((response) => {
+          // 生成字段json
+          let fields = []
+          response.data.forEach(item => {
+            let itemConfig;
+            if (item.key) {
+              // 主键
+              itemConfig = inputComponents.find(comp => comp.__config__.tag === 'el-key');
+            } else if (['int', 'tinyint', 'smallint', 'bigint'].includes(item.type)) {
+              // 数字
+              itemConfig = inputComponents.find(comp => comp.__config__.tag === 'el-input-number');
+            } else if (['datetime', 'date'].includes(item.type)) {
+              // 日期
+              itemConfig = selectComponents.find(comp => comp.__config__.tag === 'el-date-picker');
+            } else if (['text', 'longtext', 'tinytext', 'mediumtext', 'blob', 'longblob'].includes(item.type)) {
+              // 富文本
+              itemConfig = inputComponents.find(comp => comp.__config__.tag === 'my-wang-editor');
+            } else if (['varchar', 'char'].includes(item.type) && item.length >= 255) {
+              // 多行文本
+              itemConfig = inputComponents.find(comp =>
+                  comp.__config__.tag === 'el-input' && comp.__config__.tagIcon === 'textarea');
+            } else {
+              // 单行文本（默认）
+              itemConfig = inputComponents.find(comp =>
+                  comp.__config__.tag === 'el-input' && comp.__config__.tagIcon === 'input');
+            }
+            if (itemConfig) {
+              let comp = deepClone(itemConfig);
+              comp.__vModel__ = item.name
+              comp.__config__.label = item.title
+              comp.__config__.fieldType = item.type
+              comp.__config__.fieldLength = item.length
+              comp.__config__.pointLength = item.point
+              comp.__config__.required = item.required
+              comp.__config__.isKey = item.key
+              comp.__config__.formId = ++this.idGlobal
+              comp.__config__.renderKey = `${comp.__config__.formId}${+new Date()}` // 改变renderKey后可以实现强制更新组件
+              fields.push(comp)
+            }
+          })
+          this.drawingList = deepClone(fields)
+          saveDrawingList(this.drawingList)
+          // 生成表json
+          const packageStr = row.tableName.replace(/_/g, '').replace(/-/g, '')
+          this.formConf = {
+            tableName: row.tableName,
+            tableDecription: row.tableComment || row.tableName,
+            basePackage: 'com.kg.module',
+            tablePackage: packageStr,
+            viewPath: '/' + packageStr,
+            author: 'ziro', formRef: 'dataForm', formModel: 'temp', size: 'medium', labelPosition: 'right',
+            labelWidth: 100, formRules: 'rules', gutter: 15, span: 24, formBtns: true
+          }
+          saveFormConf(this.formConf)
+          // 生成表单json
+          this.myFormTableData = {formName: row.tableComment || row.tableName, orderIndex: 0}
+          saveMyFormTableData(this.myFormTableData)
+          // 加载完成，关闭弹窗
+          this.$message.success('导入表格成功，表单已生成')
+          this.dialogImportTableVisible = false
+        })
+      })
     }
   }
 }
@@ -662,8 +761,8 @@ export default {
   }
 
   .btn {
-    margin-top: 8px;
-    float: right;
+    margin-left: 10px;
+    padding: 7px 7px 7px 6px;
   }
 }
 </style>

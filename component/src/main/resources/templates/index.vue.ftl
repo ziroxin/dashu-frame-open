@@ -66,7 +66,7 @@
 		/>
 		<!-- 添加修改弹窗 -->
 		<el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-				   :visible.sync="dialogFormVisible" @close="resetTemp" width="600px">
+				   :visible.sync="dialogFormVisible" @close="resetTemp" width="600px" :key="'myDialog'+dialogIndex">
 <#if templateHtml??>
 			${templateHtml}
 <#else>
@@ -132,8 +132,14 @@
 import waves from '@/directive/waves'
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util';
+<#if templateHtml?contains("my-wang-editor")>
+import MyWangEditor from '@/components/MyWangEditor/index.vue';
+</#if>
 
 export default {
+  <#if templateHtml?contains("my-wang-editor")>
+  components: {MyWangEditor},
+  </#if>
   directives: {waves},
   data() {
     return {
@@ -154,6 +160,7 @@ export default {
       // 表单临时数据
       temp: {},
       isLoading: false,
+      dialogIndex: 0,
 <#if jsData??>
       ${jsData}
 </#if>
@@ -208,6 +215,7 @@ export default {
     // 清空表单temp数据
     resetTemp() {
       this.temp = {orderIndex: 0}
+      this.dialogIndex++
 <#if childTableList??>
 	<#list childTableList as child>
       this.load${child}FileList()

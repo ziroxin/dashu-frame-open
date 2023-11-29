@@ -530,9 +530,6 @@
                           v-if="activeData.__config__.showLabel !== undefined && activeData.__config__.labelWidth !== undefined">
               <el-switch v-model="activeData.__config__.showLabel"/>
             </el-form-item>
-            <el-form-item v-if="activeData.branding !== undefined" label="品牌烙印">
-              <el-switch v-model="activeData.branding" @input="changeRenderKey"/>
-            </el-form-item>
             <el-form-item v-if="activeData['allow-half'] !== undefined" label="允许半选">
               <el-switch v-model="activeData['allow-half']"/>
             </el-form-item>

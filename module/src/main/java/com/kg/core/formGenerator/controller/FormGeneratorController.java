@@ -3,6 +3,7 @@ package com.kg.core.formGenerator.controller;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.kg.component.file.FilePathConfig;
@@ -17,6 +18,7 @@ import com.kg.core.base.model.BaseEntity;
 import com.kg.core.exception.BaseException;
 import com.kg.core.formGenerator.dto.TableDTO;
 import com.kg.core.formGenerator.dto.TableFieldDTO;
+import com.kg.core.formGenerator.dto.TableInfoDTO;
 import com.kg.module.generator.entity.ZFormGenerator;
 import com.kg.module.generator.service.ZFormGeneratorService;
 import org.apache.commons.lang3.SystemUtils;
@@ -56,6 +58,75 @@ public class FormGeneratorController {
     @Resource
     private ZFormGeneratorService formGeneratorService;
 
+    /**
+     * 获取数据库名称
+     */
+    private String getMyDbName() {
+        return dbUrl.split("\\?")[0].split("/")[3];// 截取获得数据库名称
+    }
+
+    /**
+     * 查询表列表
+     */
+    @GetMapping("generator/code/tableList")
+    public List<TableInfoDTO> list() {
+        // 查询所有表名列表
+        String getAllTableNamesSql = "SELECT table_name tableName,table_comment tableComment " +
+                "FROM information_schema.tables " +
+                "WHERE table_schema = '" + getMyDbName() + "' ORDER BY table_name ASC";
+        List<Map<String, Object>> tableList = jdbcTemplate.queryForList(getAllTableNamesSql);
+        // 转成表信息实体
+        return tableList.stream()
+                .map(table -> JSONUtil.toBean(JSONUtil.toJsonStr(table), TableInfoDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 查询表注释信息和字段列表
+     */
+    @GetMapping("generator/code/tableInfo")
+    public List<TableFieldDTO> tableInfo(String tableName) {
+        // 查询字段列表
+        String getTableColumnsSql = "SELECT " +
+                " column_name `name`,data_type type,character_maximum_length len1,numeric_precision len2, " +
+                " numeric_scale point,is_nullable required,column_key `key`,column_comment title " +
+                "FROM information_schema.columns " +
+                "WHERE table_schema = '" + getMyDbName() + "' AND table_name = '" + tableName + "'";
+        List<Map<String, Object>> columnList = jdbcTemplate.queryForList(getTableColumnsSql);
+        return columnList.stream()
+                .map(column -> {
+                    TableFieldDTO bean = JSONUtil.toBean(JSONUtil.toJsonStr(column), TableFieldDTO.class);
+                    bean.setLength(0);
+                    if (column.get("type") != null && StringUtils.hasText(column.get("type").toString())) {
+                        String[] noLengthType = {"text", "tinytext", "mediumtext", "longtext",
+                                "blob", "tinyblob", "mediumblob", "longblob",
+                                "date", "datetime", "timestamp", "time", "year"};
+                        if (!Arrays.asList(noLengthType).contains(column.get("type").toString())) {
+                            if (column.get("len1") != null && StringUtils.hasText(column.get("len1").toString())) {
+                                bean.setLength(Integer.parseInt(column.get("len1").toString()));
+                            } else if (column.get("len2") != null && StringUtils.hasText(column.get("len2").toString())) {
+                                bean.setLength(Integer.parseInt(column.get("len2").toString()));
+                            }
+                        }
+                    }
+                    if (column.get("required") != null && StringUtils.hasText(column.get("required").toString())) {
+                        bean.setRequired("NO".equals(column.get("required").toString()));
+                    } else {
+                        bean.setRequired(false);
+                    }
+                    if (column.get("key") != null && StringUtils.hasText(column.get("key").toString())) {
+                        bean.setKey("PRI".equals(column.get("key").toString()));
+                    } else {
+                        bean.setKey(false);
+                    }
+                    return bean;
+                })
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 检查表是否存在
+     */
     @GetMapping("generator/code/hasTables")
     public boolean hasTables(String tableName) {
         String sql = "SHOW TABLES LIKE ?";
@@ -63,6 +134,9 @@ public class FormGeneratorController {
         return list != null && list.size() > 0;
     }
 
+    /**
+     * 生成代码
+     */
     @PostMapping("generator/code/byform")
     public String generate(@RequestBody TableDTO tableDTO) throws BaseException {
         if (tableDTO.getIsCoverTable()) {

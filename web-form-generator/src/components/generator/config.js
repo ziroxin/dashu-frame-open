@@ -157,7 +157,7 @@ export const inputComponents = [
       labelWidth: null,
       tag: 'el-input-number',
       tagIcon: 'number',
-      defaultValue: undefined,
+      defaultValue: 0,
       span: 24,
       layout: 'colFormItem',
       required: false,
@@ -194,8 +194,7 @@ export const inputComponents = [
       document: 'https://www.wangeditor.com/'
     },
     placeholder: '请输入',
-    height: 300, // 编辑器高度
-    branding: false // 隐藏右下角品牌烙印
+    height: 200, // 编辑器高度
   }
 ]
 

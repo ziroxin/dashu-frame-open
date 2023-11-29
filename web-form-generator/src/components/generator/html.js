@@ -292,8 +292,7 @@ const tags = {
   'my-wang-editor': el => {
     const {tag, vModel, placeholder} = attrBuilder(el)
     const height = el.height ? `:height="${el.height}"` : ''
-    const branding = el.branding ? `:branding="${el.branding}"` : ''
-    return `<${tag} ${vModel} ${placeholder} ${height} ${branding}></${tag}>`
+    return `<${tag} ${vModel} ${placeholder} ${height}></${tag}>`
   }
 }
 
