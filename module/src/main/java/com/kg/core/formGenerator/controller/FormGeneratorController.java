@@ -331,6 +331,13 @@ public class FormGeneratorController {
             // 附件子表
             if (StringUtils.hasText(field.getChildFileTable())) {
                 // 判断附件是否有此表
+                if (hasTables(field.getChildFileTable())) {
+                    String backupTableName = field.getChildFileTable() + "_bak_" + TimeUtils.now().toFormat("yyyyMMddHHmmss");
+                    jdbcTemplate.execute("CREATE TABLE " + backupTableName + " AS SELECT * FROM " + field.getChildFileTable());
+                }
+                // 删除表
+                jdbcTemplate.execute("DROP TABLE IF EXISTS " + field.getChildFileTable() + ";");
+                // 创建表
                 jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `" + field.getChildFileTable() + "` (" +
                         "  `file_id` varchar(36) NOT NULL COMMENT '附件id'," +
                         "  `" + tableDTO.getTableName() + "_id` varchar(36) NULL COMMENT '主表id'," +
