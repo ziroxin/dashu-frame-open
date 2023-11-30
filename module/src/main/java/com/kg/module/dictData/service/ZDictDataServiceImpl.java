@@ -107,9 +107,8 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public void add(ZDictDataDTO zDictDataDTO) {
-        String typeCode = zDictDataDTO.getTypeCode();
         // 查重
-        List<ZDictData> dataList = lambdaQuery().eq(ZDictData::getTypeCode, typeCode)
+        List<ZDictData> dataList = lambdaQuery().eq(ZDictData::getTypeCode, zDictDataDTO.getTypeCode())
                 .and(query -> query.eq(ZDictData::getDictValue, zDictDataDTO.getDictValue())
                         .or().eq(ZDictData::getDictLabel, zDictDataDTO.getDictLabel()))
                 .list();
@@ -131,7 +130,7 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
     @Transactional(rollbackFor = RuntimeException.class)
     public void update(ZDictDataDTO zDictDataDTO) {
         // 查重
-        List<ZDictData> dataList = lambdaQuery()
+        List<ZDictData> dataList = lambdaQuery().eq(ZDictData::getTypeCode, zDictDataDTO.getTypeCode())
                 .ne(ZDictData::getDictId, zDictDataDTO.getDictId()).and(wr -> {
                     wr.eq(ZDictData::getDictValue, zDictDataDTO.getDictValue())
                             .or().eq(ZDictData::getDictLabel, zDictDataDTO.getDictLabel());
