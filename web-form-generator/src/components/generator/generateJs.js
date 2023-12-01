@@ -69,7 +69,7 @@ function buildAttributes(scheme, dataList, ruleList, optionsList, methodList, pr
   // 特殊处理options属性
   if (scheme.options || (slot && slot.options && slot.options.length)) {
     buildOptions(scheme, optionsList)
-    if (config.dataType === 'dynamic') {
+    if (config.dataType === 'dynamic' || config.dataType === 'dict') {
       const model = `${camelCaseUnderline(scheme.__vModel__)}Options`
       const options = titleCase(model)
       const methodName = `get${options}`
@@ -181,7 +181,7 @@ function buildOptions(scheme, optionsList) {
   // el-cascader直接有options属性，其他组件都是定义在slot中，所以有两处判断
   let {options} = scheme
   if (!options) options = scheme.__slot__.options
-  if (scheme.__config__.dataType === 'dynamic') {
+  if (scheme.__config__.dataType === 'dynamic' || scheme.__config__.dataType === 'dict') {
     options = []
   }
   // options根据字段类型，转换value的类型
@@ -330,10 +330,10 @@ function buildOptionMethod(methodName, model, methodList, scheme) {
   const str = `${methodName}() {
     // 注意：this.$request是通过Vue.prototype.$request挂载产生的
     this.$request({
-      method: '${config.method}',
-      url: '${config.url}'
+      method: '${config.dataType === "dict" ? "get" : config.method}',
+      url: '${config.dataType === "dict" ? (config.dictUrl + "?typeCode=" + config.dictCode) : config.url}'
     }).then(resp => {
-      this.${model} = resp.${config.dataPath}
+      this.${model} = resp.${config.dataType === "dict" ? config.dictDataPath : config.dataPath}
     })
   },`
   methodList.push(str)

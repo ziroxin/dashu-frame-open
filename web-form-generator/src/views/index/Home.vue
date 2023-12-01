@@ -508,24 +508,35 @@ export default {
     },
     // 从组件中获取数据（属性等）
     fetchData(component) {
-      const {dataType, method, url} = component.__config__
+      const {dataType, method, url, dictUrl, dictCode} = component.__config__
       if (dataType === 'dynamic' && method && url) {
         this.setLoading(component, true)
         this.$request({url: url, method: method}).then(resp => {
           this.setLoading(component, false)
           this.setRespData(component, resp)
         })
+      } else if (dataType === 'dict') {
+        this.setLoading(component, true)
+        this.$request({url: dictUrl, method: 'get', params: {typeCode: dictCode}})
+            .then(resp => {
+              this.setLoading(component, false)
+              this.setRespData(component, resp, dataType)
+            })
       } else {
         this.setRespData(component)
       }
     },
     // 设置组件请求数据（配置下拉、单选、多选等选项接口）
-    setRespData(component, resp) {
-      const {dataPath, renderKey, dataConsumer} = component.__config__
+    setRespData(component, resp, dataType) {
+      const {dataPath, renderKey, dataConsumer, dictDataPath} = component.__config__
       if (!dataPath || !dataConsumer) return
       let respData = []
       if (resp) {
-        respData = dataPath.split('.').reduce((pre, item) => pre[item], resp)
+        if (dataType && dataType === 'dict') {
+          respData = dictDataPath.split('.').reduce((pre, item) => pre[item], resp)
+        } else {
+          respData = dataPath.split('.').reduce((pre, item) => pre[item], resp)
+        }
       }
       /*
       将请求回来的数据，赋值到指定属性。

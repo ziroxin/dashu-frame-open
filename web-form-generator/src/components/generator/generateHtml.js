@@ -336,7 +336,7 @@ function buildElInputChild(scheme) {
 function buildElSelectChild(scheme) {
   const children = []
   let label = 'label', value = 'value'
-  if (scheme.__config__.dataType === 'dynamic') {
+  if (scheme.__config__.dataType === 'dynamic' || scheme.__config__.dataType === 'dict') {
     label = scheme.props.props.label || 'label'
     value = scheme.props.props.value || 'value'
   }
@@ -351,7 +351,7 @@ function buildElSelectChild(scheme) {
 function buildElRadioGroupChild(scheme) {
   const children = []
   let label = 'label', value = 'value'
-  if (scheme.__config__.dataType === 'dynamic') {
+  if (scheme.__config__.dataType === 'dynamic' || scheme.__config__.dataType === 'dict') {
     label = scheme.props.props.label || 'label'
     value = scheme.props.props.value || 'value'
   }
@@ -369,7 +369,7 @@ function buildElRadioGroupChild(scheme) {
 function buildElCheckboxGroupChild(scheme) {
   const children = []
   let label = 'label', value = 'value'
-  if (scheme.__config__.dataType === 'dynamic') {
+  if (scheme.__config__.dataType === 'dynamic' || scheme.__config__.dataType === 'dict') {
     label = scheme.props.props.label || 'label'
     value = scheme.props.props.value || 'value'
   }
