@@ -93,7 +93,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
 <#if childTableList??>
         // 查询所有附件列表
     <#list childTableList as child>
-        List<${child?cap_first}> all${child?cap_first}List = ${child}Service.lambdaQuery().in(${child?cap_first}::getParentTableId,
+        List<${child?cap_first}> all${child?cap_first}List = ${child}Service.lambdaQuery().in(${child?cap_first}::get${entity}Id,
                 pageEntity.getRecords().stream().map(${entity}::get${entityKeyName?cap_first}).collect(Collectors.toList())).list();
     </#list>
 </#if>
@@ -105,7 +105,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
                     // 过滤附件列表，放入实体中
     <#list childTableList as child>
                     ${dtoName?uncap_first}.set${child?lower_case?cap_first}List(all${child?cap_first}List.stream()
-                            .filter(f -> f.getParentTableId().equals(m.get${entityKeyName?cap_first}())).collect(Collectors.toList()));
+                            .filter(f -> f.get${entity}Id().equals(m.get${entityKeyName?cap_first}())).collect(Collectors.toList()));
     </#list>
 </#if>
                     return ${dtoName?uncap_first};
@@ -139,7 +139,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         if (${dtoName?uncap_first}.get${child?lower_case?cap_first}List() != null && ${dtoName?uncap_first}.get${child?lower_case?cap_first}List().size() > 0) {
             List<${child?cap_first}> save${child?cap_first}List = ${dtoName?uncap_first}.get${child?lower_case?cap_first}List()
                     .stream().map(m -> {
-                        m.setParentTableId(${entity?uncap_first}.get${entityKeyName?cap_first}());
+                        m.set${entity}Id(${entity?uncap_first}.get${entityKeyName?cap_first}());
                         m.setCreateTime(LocalDateTime.now());
                         return m;
                     }).collect(Collectors.toList());
@@ -167,14 +167,14 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
 <#if childTableList??>
         // 先删除附件
     <#list childTableList as child>
-        ${child}Service.lambdaUpdate().eq(${child?cap_first}::getParentTableId, ${entity?uncap_first}.get${entityKeyName?cap_first}()).remove();
+        ${child}Service.lambdaUpdate().eq(${child?cap_first}::get${entity}Id, ${entity?uncap_first}.get${entityKeyName?cap_first}()).remove();
     </#list>
         // 再保存附件
     <#list childTableList as child>
         if (${dtoName?uncap_first}.get${child?lower_case?cap_first}List() != null && ${dtoName?uncap_first}.get${child?lower_case?cap_first}List().size() > 0) {
             List<${child?cap_first}> save${child?cap_first}List = ${dtoName?uncap_first}.get${child?lower_case?cap_first}List()
                     .stream().map(m -> {
-                        m.setParentTableId(${entity?uncap_first}.get${entityKeyName?cap_first}());
+                        m.set${entity}Id(${entity?uncap_first}.get${entityKeyName?cap_first}());
                         m.setCreateTime(LocalDateTime.now());
                         return m;
                     }).collect(Collectors.toList());
@@ -196,7 +196,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
 <#if childTableList??>
         // 删除附件
     <#list childTableList as child>
-        ${child}Service.lambdaUpdate().in(${child?cap_first}::getParentTableId, idlist).remove();
+        ${child}Service.lambdaUpdate().in(${child?cap_first}::get${entity}Id, idlist).remove();
     </#list>
 </#if>
     }
