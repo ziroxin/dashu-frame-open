@@ -5,8 +5,8 @@
         # 开头表示注释；**结尾可以模糊匹配；
       </span>
       提示：使用快捷键 Ctrl+S 保存; Ctrl+Z 撤销; Ctrl+Y 重做;
-      <el-button type="danger" @click="restartJava" icon="el-icon-refresh"
-                 size="small" style="float: right;">重启本项目
+      <el-button type="danger" @click="reloadXss" icon="el-icon-refresh"
+                 size="small" style="float: right;">重新加载Xss忽略列表
       </el-button>
     </div>
     <el-input type="textarea" class="content" autosize spellcheck="false"
@@ -29,25 +29,12 @@ export default {
     document.removeEventListener('keydown', this.handleKeyDown);
   },
   methods: {
-    // 重启项目
-    restartJava() {
-      this.$confirm('需要几分钟才能重启成功，重启期间无法正确获取数据，确定要重启吗?', '重启确认', {
-        confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
-      }).then(() => {
-        this.$confirm('再次确认，确定要重启吗?', '重启确认', {
-          confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
-        }).then(() => {
-          // 三次确认，重启项目
-          this.$request({
-            url: '/xss/ignore/restart', method: 'get'
-          }).then((response) => {
-            this.$message({
-              type: 'success',
-              message: '重启成功！需要几分钟才能重启成功，重启期间无法正确获取数据，请耐心等待！'
-            })
+    // 重新加载Xss忽略列表
+    reloadXss() {
+      this.$request({url: '/xss/ignore/reload', method: 'get'})
+          .then((response) => {
+            this.$message({type: 'success', message: 'Xss忽略列表重新加载成功！'})
           })
-        })
-      })
     },
     // 监听 ctrl+s 快捷键，保存
     handleKeyDown(event) {
