@@ -51,8 +51,10 @@
       请输入Swagger API 基础路径：
     </div>
     <div class="input">
-      <input type="text" :value="apiBasePathDefault" id="apiBasePathInput"/>
+      <input type="text" :value="apiBasePathDefault" id="apiBasePathInput"
+             @input="showUrlSwaggerResources"/>
       <button @click="setApiBasePath">进入Swagger项目</button>
+      <div id="swagger_url_show"></div>
     </div>
     <div class="info">
       本地Swagger接口，使用默认路径：/
@@ -74,7 +76,7 @@ import ThreeMenu from "@/components/SiderMenu/ThreeMenu.vue";
 //右键菜单
 import ContextMenu from "@/components/common/ContextMenu.vue";
 import constant from "@/store/constants";
-import {computed, onUpdated, reactive, watch} from 'vue'
+import {computed, onMounted, onUpdated, reactive, watch} from 'vue'
 import {useGlobalsStore} from '@/store/modules/global.js'
 import {useHeadersStore} from '@/store/modules/header.js'
 import {useRoute, useRouter} from 'vue-router'
@@ -88,6 +90,7 @@ import Settings from '@/views/settings/Settings.vue'
 import SwaggerModels from '@/views/settings/SwaggerModels.vue'
 import OfficelineDocument from '@/views/settings/OfficelineDocument.vue'
 import ApiInfo from '@/views/api/index.vue'
+import axios from 'axios'
 
 const constMenuWidth = 320;
 
@@ -418,7 +421,29 @@ function initKnife4jFront() {
 }
 
 onUpdated(() => {
-
+})
+onMounted(() => {
+  if (!apiBasePath) {
+    showUrlSwaggerResources()
+  } else {
+    // 测试接口
+    axios({url: getSwaggerUrl(apiBasePath), type: "get"}).then((response) => {
+      if (response.data && response.data.length > 0) {
+        if (response.data[0].location.indexOf('v2/api-docs') > -1) {
+          console.log('测试接口成功！')
+        } else {
+          localStorage.removeItem('storeApiBasePath');
+          location.reload();
+        }
+      } else {
+        localStorage.removeItem('storeApiBasePath');
+        location.reload();
+      }
+    }).catch((error) => {
+      localStorage.removeItem('storeApiBasePath');
+      location.reload();
+    })
+  }
 })
 
 function initI18n() {
@@ -437,8 +462,40 @@ if (apiBasePath) {
 }
 
 function setApiBasePath() {
-  localStorage.setItem('storeApiBasePath', document.getElementById('apiBasePathInput').value);
-  window.location.reload();
+  // 测试接口
+  axios({url: getSwaggerUrl(), type: "get"})
+      .then((response) => {
+        if (response.data && response.data.length > 0) {
+          if (response.data[0].location.indexOf('v2/api-docs') > -1) {
+            console.log('测试成功，进入目录')
+            localStorage.setItem('storeApiBasePath', document.getElementById('apiBasePathInput').value);
+            window.location.reload();
+            return
+          }
+        }
+        alert('Swagger接口测试失败，请修改地址！返回数据：' + JSON.stringify(response.data))
+        console.log(response.data)
+      })
+      .catch((error) => {
+        alert('Swagger接口测试失败，请修改地址！错误信息：' + JSON.stringify(error))
+        console.log(error)
+      })
+}
+
+// 显示swagger接口地址
+function showUrlSwaggerResources() {
+  document.getElementById('swagger_url_show').innerHTML =
+      "当前Swagger接口地址：" + getSwaggerUrl()
+}
+
+function getSwaggerUrl(vval) {
+  let val = vval || document.getElementById('apiBasePathInput').value;
+  if (val.startsWith('http')) {
+    val = val + 'swagger-resources';
+  } else {
+    val = import.meta.env.VITE_APP_BASE_API + val + 'swagger-resources';
+  }
+  return val;
 }
 
 function updateMenuI18n() {
