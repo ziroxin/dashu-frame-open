@@ -18,7 +18,7 @@ function resolve(dir) {
 const port = process.env.port || process.env.npm_config_port || 7777 // dev port
 
 module.exports = {
-  publicPath: '/',
+  publicPath: './',
   pages: {
     index: {
       entry: 'src/views/index/main.js',

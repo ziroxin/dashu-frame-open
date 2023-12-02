@@ -38,9 +38,9 @@
       <!-- 中间顶部按钮 -->
       <div class="action-bar">
         <el-button icon="el-icon-video-play" type="text" @click="openSelectType">预览生成</el-button>
-        <el-button icon="el-icon-view" type="text" @click="openJsonViewer">查看Json</el-button>
+        <el-button icon="el-icon-view" type="text" @click="openJsonViewer">JSON</el-button>
         <el-divider direction="vertical"></el-divider>
-        <el-button icon="el-icon-coin" type="text" @click="tableToForm">导入表格</el-button>
+        <el-button icon="el-icon-coin" type="text" @click="tableToForm">导入表</el-button>
         <el-divider direction="vertical"></el-divider>
         <el-button icon="el-icon-notebook-2" type="text" @click="dialogHistoryVisible=true">表单列表</el-button>
         <el-divider direction="vertical"></el-divider>
@@ -279,6 +279,11 @@ export default {
     }
   },
   mounted() {
+    if (this.$route.query.openType === 'new') {
+      console.log('新增表单时，做清空处理')
+      this.emptyReload()
+      return
+    }
     if (Array.isArray(drawingListInDB) && drawingListInDB.length > 0) {
       // 中间表单部分：加载缓存数据
       this.drawingList = drawingListInDB
@@ -493,18 +498,21 @@ export default {
     // 清空中间所有组件
     empty() {
       this.$confirm('确定要清空所有组件吗，重建新表单吗？', '提示', {type: 'warning'}).then(() => {
-        this.isLoading = true
-        clearDrawingList()
-        clearMyFormTableData()
-        clearIdGlobal()
-        clearFormConf()
-        this.$message({type: 'success', message: '重置成功，正在重新加载！您可以添加新表单了'})
-        setTimeout(() => {
-          // 去掉url中的 ?fid=xxx
-          location.href = location.href.split('?')[0]
-          location.reload()
-        }, 500)
+        this.emptyReload()
       })
+    },
+    emptyReload() {
+      this.isLoading = true
+      clearDrawingList()
+      clearMyFormTableData()
+      clearIdGlobal()
+      clearFormConf()
+      this.$message({type: 'success', message: '重置成功，正在重新加载！您可以添加新表单了'})
+      setTimeout(() => {
+        // 去掉url中的 ?fid=xxx
+        location.href = location.href.split('?')[0]
+        location.reload()
+      }, 500)
     },
     // 从组件中获取数据（属性等）
     fetchData(component) {
