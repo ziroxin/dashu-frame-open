@@ -10,6 +10,14 @@ export default {
     return {
       htmlPageURL: 'form-generator/index.html'
     }
+  },
+  created() {
+    if (this.$route.query.openType === 'new') {
+      this.htmlPageURL = 'form-generator/index.html#/?openType=new'
+    }
+    if (this.$route.query.fid) {
+      this.htmlPageURL = 'form-generator/index.html#/?fid=' + this.$route.query.fid
+    }
   }
 }
 </script>

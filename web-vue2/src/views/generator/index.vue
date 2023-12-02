@@ -46,13 +46,13 @@
         </template>
       </el-table-column>
       <el-table-column label="显示顺序" prop="orderIndex" align="center"/>
-      <el-table-column fixed="right" label="操作" width="120" align="center">
+      <el-table-column fixed="right" label="操作" width="100" align="center">
         <template v-slot="scope">
+          <el-button v-permission="'generator-zFormGenerator-update'"
+                     type="text" size="small" @click="openUpdate(scope.row)">修改表单
+          </el-button>
           <el-button type="text" style="color: #13ce66;"
                      size="small" @click="openView(scope.row)">详情
-          </el-button>
-          <el-button v-permission="'generator-zFormGenerator-update'"
-                     type="text" size="small" @click="openUpdate(scope.row)">修改
           </el-button>
           <el-button v-permission="'generator-zFormGenerator-delete'" style="color: #ff6d6d;"
                      type="text" size="small" @click="deleteByIds(scope.row)">删除
@@ -201,32 +201,11 @@ export default {
     },
     // 打开添加窗口
     openAdd() {
-      this.resetTemp()
-      this.dialogFormVisible = true
-      this.dialogType = 'add'
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+      this.$router.push({path: '/generator/form?openType=new'})
     },
     // 打开修改窗口
     openUpdate(row) {
-      if (row) {
-        this.$refs.dataTable.clearSelection()
-        this.$refs.dataTable.toggleRowSelection(row, true)
-      }
-      if (this.tableSelectRows.length <= 0) {
-        this.$message({message: '请选择一条数据修改！', type: 'warning'})
-      } else if (this.tableSelectRows.length > 1) {
-        this.$message({message: '修改时，只允许选择一条数据！', type: 'warning'})
-      } else {
-        // 修改弹窗
-        this.temp = Object.assign({}, this.tableSelectRows[0])
-        this.dialogType = 'update'
-        this.dialogFormVisible = true
-        this.$nextTick(() => {
-          this.$refs['dataForm'].clearValidate()
-        })
-      }
+      this.$router.push({path: '/generator/form?fid=' + row.formId})
     },
     // 打开查看窗口
     openView(row) {
