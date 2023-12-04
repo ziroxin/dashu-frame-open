@@ -189,7 +189,9 @@ public class ZPermissionServiceImpl extends ServiceImpl<ZPermissionMapper, ZPerm
         // 删除菜单/按钮和api的关联关系
         List<ZPermission> list = lambdaQuery().in(ZPermission::getParentId, idList).list();
         List<String> childIdList = list.stream().map(ZPermission::getPermissionId).collect(Collectors.toList());
-        permissionApiService.lambdaUpdate().in(ZPermissionApi::getPermissionId, childIdList).remove();
+        if (childIdList != null && childIdList.size() > 0) {
+            permissionApiService.lambdaUpdate().in(ZPermissionApi::getPermissionId, childIdList).remove();
+        }
         permissionApiService.lambdaUpdate().in(ZPermissionApi::getPermissionId, idList).remove();
         // 删除子元素
         lambdaUpdate().in(ZPermission::getParentId, idList).remove();
