@@ -45,6 +45,10 @@ export const constantRoutes = [
     path: '/oauth2/success',
     component: () => import('@/views/oauth2/success'),
     hidden: true
+  }, {
+    path: '/knife4jVue3/dashuSwagger/home',
+    component: () => import('@/views/swagger/home'),
+    hidden: true
   }
 ]
 
