@@ -424,6 +424,13 @@ onUpdated(() => {
 })
 onMounted(() => {
   if (!apiBasePath) {
+    try {
+      let pathUrl = location.hash.split('?burl=')[1];
+      if (pathUrl) {
+        document.getElementById('apiBasePathInput').value = pathUrl
+      }
+    } catch (e) {
+    }
     showUrlSwaggerResources()
   } else {
     // 测试接口
