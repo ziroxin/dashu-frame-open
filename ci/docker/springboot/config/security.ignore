@@ -1,0 +1,39 @@
+# 1.支持用#注释，
+# 2.支持用**模糊匹配
+
+# 登录登出接口
+/login/login
+/login/logout
+# Oauth2 Client(授权码模式，带code回调接口)
+/oauth2/client/login/code
+/oauth2/client/login/check
+# 获取密码规则用于注册
+/zsafety/zSafety/getSafety
+# 验证码
+/captcha/get
+
+# swagger api 地址（注意：生产环境请删除）
+/v2/api-docs
+/swagger-resources
+/swagger-resources/**
+
+# 静态资源映射路径（上传文件）
+/upload/**
+/favicon.ico
+
+# Oauth2 统一认证登录页
+/oauth2/login.html
+/oauth2/js/**
+/oauth2/css/**
+
+# 测试接口权限
+/test/abc
+/test/abc3
+/test/abc4
+/test/abc5
+
+# 微信支付通知接口
+/pay/wechat/payNotify
+# 支付宝支付通知接口
+/pay/alipay/payNotify
+/pay/alipay/returnUrl

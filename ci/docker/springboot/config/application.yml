@@ -1,0 +1,163 @@
+#端口
+server:
+  port: 8123
+  servlet:
+    #上下文
+    context-path: /dashuserver/
+    #编码格式
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
+  #编码格式
+  tomcat.uri-encoding: UTF-8
+
+spring:
+  #上传文件修改限制大小
+  servlet.multipart:
+    max-request-size: 100MB
+    max-file-size: 10MB
+  #数据库配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    database.type: mysql
+    url: jdbc:mysql://mariadb:13306/dashu_frame_open?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: dashu@2023++
+  #Redis配置
+  redis:
+    host: redis
+    port: 6379
+    password: dashu@2023++
+    database: 0
+  mvc:
+    # 解决swagger2冲突，导致启动报错问题(@See：https://blog.csdn.net/mapboo/article/details/121568519)
+    pathmatch.matching-strategy: ant_path_matcher
+  #thymeleaf配置
+  thymeleaf:
+    enabled: true
+    prefix: classpath:/static/
+    suffix: .html
+    encoding: UTF-8
+    cache: false
+
+#mybatis-plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.kg.**.entity
+
+#自定义配置
+com.kg:
+  #文件上传配置
+  file:
+    #允许上传的文件格式（防止攻击类脚本文件上传，以|结尾）
+    allow-extend: jpg|jpeg|png|gif|bpm|mp3|mp4|doc|docx|xls|xlsx|pdf|zip|rar|txt|
+    #允许上传的图片格式（图片需要压缩，格式必须正确，以|结尾）
+    image-extend: jpg|jpeg|png|gif|bpm|
+    #默认上传路径（文件保存的物理绝对路径;不要使用\；若使用docker部署，要配置容器内部路径，一般是/usr/local/springboot/）
+    save-path: /usr/local/springboot/config/myupload/files
+    #隐藏上传路径（用于访问的路径，通过spring代理;不要使用\;要在security.ignore放开）
+    url-pre: /upload
+  #登录常量配置
+  login:
+    #是否单例登录
+    is-only-one: false
+    #登录是否需要验证验证码
+    is-yzm: true
+    #jwtToken过期时限，单位：分钟
+    jwt-token-expiry: 120
+  #开发管理员配置 (所有开发管理员的ids，多个用逗号隔开)
+  developer-user-ids: 1
+  #跨域配置，是否允许跨域：默认关闭（true开启；false关闭）
+  cors-enable: false
+  #默认操作日志，保存天数，默认：180天（定时任务自动删除旧日志）
+  auto-operate-log: 180
+  #验证码配置
+  captcha:
+    #类型枚举 ARITHMETIC-算数；CHINESE-中文；CHINESE_GIF-中文闪图；GIF-闪图；SPEC-常规
+    type: ARITHMETIC
+    #有效期 分钟
+    expiration: 10
+    #内容长度
+    length: 4
+    #图片宽高
+    width: 163
+    height: 49
+    #字体样式
+    font-family: Default
+    font-size: 20
+    #0正常、1加粗、2斜体
+    font-style: 0
+  #swagger相关配置
+  swagger:
+    enable: false
+    title: "大树快速开发平台API"
+    description: "基于swagger的Api接口信息"
+    terms-of-service-url: "https://www.java119.cn"
+    version: "1.0.0"
+    concat:
+      name: "ziro"
+      www: "https://www.java119.cn"
+      email: "877185959@qq.com"
+  #oauth2配置
+  oauth2:
+    #服务端，是否启动(true/false)
+    server.enable: true
+    #客户端信息配置（作为Oauth2的客户端，集成第三方Oauth2统一认证登录时使用）
+    client:
+      clientId: dev
+      clientSecret: qwer@123
+      redirectUri: http://localhost:8123/oauth2/client/login/code
+      #本地相关路径配置
+      oauthServerUri: http://localhost:8123/
+      errorRouter: http://localhost:9527/#/oauth2/error
+      successRouter: http://localhost:9527/#/oauth2/success
+  #微信配置
+  weixin:
+    appid: xxxxx
+    secret: xxxxx
+    #微信支付（商户号）配置（WxPayConfig.java）
+    pay:
+      #微信绑定的公众号appId
+      #商户号只能绑定：已通过微信认证的服务号、政府或媒体类订阅号、小程序、企业微信、移动应用、网站应用
+      appId: xxxxx
+      #商户号mchId
+      mchId: xxxxx
+      #当前密钥版本(v2/v3)
+      keyVersion: v2
+      #商户号v2密钥
+      partnerKey: xxxxx
+      #证书p12地址(v2退款时需要)
+      certP12Path: pems/apiclient_cert.p12
+      #商户号v3密钥
+      partnerKeyV3: xxxxx
+      #证书pem地址(v3时需要)
+      certPath: pems/apiclient_cert.pem
+      #私钥pem地址(v3时需要)
+      keyPath: pems/apiclient_key.pem
+      #支付结果通知地址（后台接口地址：http://www.xxxx.com/api/）
+      notifyUrl: http://www.xxxx.com/api/pay/wechat/payNotify
+  #支付宝支付配置
+  alipay:
+    #应用id
+    appId: xxxxx
+    #支付宝私钥
+    privateKey: xxxxx
+    #支付宝的公钥（注意：非应用公钥）
+    aliPayPublicKey: xxxxx
+    #支付结果通知地址（后台接口地址：http://www.xxxx.com/api/）
+    notifyUrl: http://www.xxxx.com/api/pay/alipay/payNotify
+    #支付返回地址
+    returnUrl: http://www.xxxx.com/api/pay/alipay/returnUrl
+  #百度OCR配置
+  baidu:
+    client-id: xxxxx
+    client-secret: xxxxx
+    grant-type: xxxxx
+
+#输出日志配置（日志级别：trace/debug/info/warn/error）
+logging.level:
+  root: warn
+  com:
+    kg: warn
