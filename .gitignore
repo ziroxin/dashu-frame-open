@@ -53,3 +53,4 @@ sql/
 .sass-cache**
 **/pnpm-lock.yaml
 **/node_modules/
+/ci/package-lock.json
