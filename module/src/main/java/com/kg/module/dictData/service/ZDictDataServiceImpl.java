@@ -252,7 +252,8 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
             return JSONUtil.toList(redisUtils.get(key).toString(), ZDictData.class);
         }
         // 查询所有字典数据
-        List<ZDictData> dataList = lambdaQuery().eq(ZDictData::getTypeCode, typeCode).list();
+        List<ZDictData> dataList = lambdaQuery().eq(ZDictData::getTypeCode, typeCode)
+                .orderByAsc(ZDictData::getOrderIndex).list();
         if (dataList != null && dataList.size() > 0) {
             // 将缓存存入redis
             redisUtils.set(key, JSONUtil.toJsonStr(dataList));
