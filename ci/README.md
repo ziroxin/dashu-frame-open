@@ -87,4 +87,5 @@ node ci-vue.js
 
 - 后端更新：
 - 先打包后台项目（maven），再更新springboot后端：
+mvn clean package -pl module
 node ci-java.js
