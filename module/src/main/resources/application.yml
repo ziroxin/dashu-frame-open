@@ -55,7 +55,7 @@ com.kg:
     allow-extend: jpg|jpeg|png|gif|bpm|mp3|mp4|doc|docx|xls|xlsx|pdf|zip|rar|txt|
     #允许上传的图片格式（图片需要压缩，格式必须正确，以|结尾）
     image-extend: jpg|jpeg|png|gif|bpm|
-    #默认上传路径（文件保存的物理绝对路径;不要使用\）
+    #默认上传路径（文件保存的物理绝对路径;不要使用\；若使用docker部署，要配置容器内部路径，一般是/usr/local/springboot/））
     save-path: e:/IdeaProjects/fwwbsyb/dashu-frame-open/component/target/myupload/files
     #隐藏上传路径（用于访问的路径，通过spring代理;不要使用\;要在security.ignore放开）
     url-pre: /upload
@@ -70,7 +70,7 @@ com.kg:
   #开发管理员配置 (所有开发管理员的ids，多个用逗号隔开)
   developer-user-ids: 1
   #跨域配置，是否允许跨域：默认关闭（true开启；false关闭）
-  cors-enable: true
+  cors-enable: false
   #默认操作日志，保存天数，默认：180天（定时任务自动删除旧日志）
   auto-operate-log: 180
   #验证码配置
@@ -104,7 +104,7 @@ com.kg:
   oauth2:
     #服务端，是否启动(true/false)
     server.enable: true
-    #客户端信息配置
+    #客户端信息配置（作为Oauth2的客户端，集成第三方Oauth2统一认证登录时使用）
     client:
       clientId: dev
       clientSecret: qwer@123
@@ -115,8 +115,10 @@ com.kg:
       successRouter: http://localhost:9527/#/oauth2/success
   #微信配置
   weixin:
-    appid: xxxxx
-    secret: xxxxx
+    #小程序配置(其中accessTokenUrl、jsCodeUrl、qrCodeUrl如需自定义，在此处配置即可覆盖默认值)
+    applet:
+      appId: xxxxx
+      secret: xxxxx
     #微信支付（商户号）配置（WxPayConfig.java）
     pay:
       #微信绑定的公众号appId
@@ -156,7 +158,7 @@ com.kg:
     client-secret: xxxxx
     grant-type: xxxxx
 
-#输出日志配置
+#输出日志配置（日志级别：trace/debug/info/warn/error）
 logging.level:
   root: info
   com:
