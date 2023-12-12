@@ -56,17 +56,14 @@ http://yanshi.java119.cn/
 
 ------------------------------------- 运行脚本说明 -------------------------------------
 
-### 1. 使用本模块，第一步：初始化npm
-npm init
+### 1. 使用本模块，第一步：初始化 npm ，安装 node-ssh 库
+npm i
 
-### 2. 第二步：安装 node-ssh 库
-npm install node-ssh
-
-### 3. 修改配置文件
+### 2. 修改配置文件
 - 修改 config.js
 相关配置说明在config.js内顶部，有详细信息说明，使用前必须仔细阅读
 
-### 4. 初次部署
+### 3. 初次部署
 第一步：安装docker环境（需要拷贝和下载资源，运行可能较慢）
 node 1.ci-docker-install.js
 
@@ -77,7 +74,7 @@ node 2.ci-docker-start.js
 node 3.ci-mysql-restart.js
 
 
-### 5. 后续更新
+### 4. 后续更新
 - 前端更新：
 - 先打包前端项目，再更新前端页面：  
 cd web-vue2
