@@ -15,6 +15,7 @@ const {
 // 拷贝docker相关文件到服务器
 const localDirectory = localProjectDir + '\\ci\\docker';
 // 安装docker环境
+const command0 = 'mv ' + remoteHomeDirectory + '/install_docker ' + remoteHomeDirectory + '/install_docker.sh';
 const command1 = 'chmod +x ' + remoteHomeDirectory + '/install_docker.sh';
 const command2 = 'sudo ' + remoteHomeDirectory + '/install_docker.sh';
 
@@ -45,6 +46,7 @@ async function executeRemoteCommand() {
     await ssh.connect({host: remoteHost, username: remoteUser, password: remotePassword, port: remotePort});
     // 执行
     console.log('开始执行远程命令1...（配置install_docker.sh为可执行文件）');
+    const result0 = await ssh.execCommand(command0);
     const result1 = await ssh.execCommand(command1);
     console.log('执行结果1', result1)
     console.log('开始执行远程命令2...（执行install_docker.sh，安装docker环境，需下载，可能执行较慢，请耐心等待）');
