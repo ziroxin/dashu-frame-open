@@ -15,7 +15,7 @@ const {
 // 拷贝docker相关文件到服务器
 const localDirectory = localProjectDir + '\\ci\\docker';
 // 安装docker环境
-const command0 = 'mv ' + remoteHomeDirectory + '/install_docker ' + remoteHomeDirectory + '/install_docker.sh';
+const command0 = 'tar -xvf ' + remoteHomeDirectory + '/install_docker.tar -C ' + remoteHomeDirectory;
 const command1 = 'chmod +x ' + remoteHomeDirectory + '/install_docker.sh';
 const command2 = 'sudo ' + remoteHomeDirectory + '/install_docker.sh';
 
