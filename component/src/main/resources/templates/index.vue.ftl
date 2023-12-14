@@ -132,12 +132,12 @@
 import waves from '@/directive/waves'
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util';
-<#if templateHtml?contains("my-wang-editor")>
+<#if templateHtml?? && templateHtml?contains("my-wang-editor")>
 import MyWangEditor from '@/components/MyWangEditor/index.vue';
 </#if>
 
 export default {
-  <#if templateHtml?contains("my-wang-editor")>
+  <#if templateHtml?? && templateHtml?contains("my-wang-editor")>
   components: {MyWangEditor},
   </#if>
   directives: {waves},
