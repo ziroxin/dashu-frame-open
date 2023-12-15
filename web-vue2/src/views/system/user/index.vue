@@ -359,17 +359,20 @@ export default {
       if (this.changeData.length <= 0) {
         this.$message({message: '至少选择一个用户重置密码！', type: 'error'})
       } else {
-        this.$confirm('确定要重置密码吗?', '重置密码提醒', {
-          confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
-        }).then(() => {
-          this.userIds = []
-          this.userIds.push(...this.changeData.map(r => r.userId))
-          console.log(this.userIds)
-          userResetPassword(this.userIds).then(response => {
-            this.$message({type: 'success', message: '重置密码成功！'})
-            this.getUserList()
-          })
-        })
+        this.$request({url: '/zsafety/zSafety/getSafety', method: 'get'})
+            .then((response) => {
+              this.$confirm('确定要重置成  默认密码：' + response.data.defaultPassword + '  吗?', '重置密码提醒', {
+                confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+              }).then(() => {
+                this.userIds = []
+                this.userIds.push(...this.changeData.map(r => r.userId))
+                console.log(this.userIds)
+                userResetPassword(this.userIds).then(response => {
+                  this.$message({type: 'success', message: '重置密码成功！'})
+                  this.getUserList()
+                })
+              })
+            })
       }
     },
     // 启用/禁用用户
