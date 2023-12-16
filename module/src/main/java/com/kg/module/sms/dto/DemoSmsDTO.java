@@ -46,4 +46,7 @@ public class DemoSmsDTO implements BaseDTO {
     @ApiModelProperty("发送时间")
     @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
+
+    @ApiModelProperty("短信模板")
+    private String smsTemplate;
 }

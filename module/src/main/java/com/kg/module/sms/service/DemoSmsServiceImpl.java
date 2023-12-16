@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelCommonUtils;
+import com.kg.component.sms.aliyun.AliyunSmsResult;
+import com.kg.component.sms.aliyun.AliyunSmsSender;
 import com.kg.component.utils.GuidUtils;
 import com.kg.component.utils.TimeUtils;
 import com.kg.core.exception.BaseException;
@@ -42,6 +44,8 @@ public class DemoSmsServiceImpl extends ServiceImpl<DemoSmsMapper, DemoSms> impl
 
     @Resource
     private DemoSmsConvert demoSmsConvert;
+    @Resource
+    private AliyunSmsSender aliyunSmsSender;
 
 
     /**
@@ -112,11 +116,27 @@ public class DemoSmsServiceImpl extends ServiceImpl<DemoSmsMapper, DemoSms> impl
      */
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public void add(DemoSmsDTO demoSmsDTO) {
+    public void add(DemoSmsDTO demoSmsDTO) throws BaseException {
         DemoSms demoSms = demoSmsConvert.dtoToEntity(demoSmsDTO);
         demoSms.setSmsId(GuidUtils.getUuid());
         demoSms.setCreateTime(LocalDateTime.now());
-        save(demoSms);
+        // 发送短信
+        if (StringUtils.hasText(demoSmsDTO.getSmsChannel()) && "阿里云短信".equals(demoSmsDTO.getSmsChannel())) {
+            AliyunSmsResult sendResult = aliyunSmsSender.send(demoSmsDTO.getSmsTemplate(),
+                    demoSmsDTO.getSmsPhones(), demoSmsDTO.getSendJson());
+            if (sendResult.isSuccess()) {
+                // 发送成功
+                demoSms.setStatus("1");
+                demoSms.setResultJson(JSONUtil.toJsonStr(sendResult.getResultJson()));
+                save(demoSms);
+            } else {
+                // 发送失败
+                demoSms.setStatus("0");
+                demoSms.setResultJson(JSONUtil.toJsonStr(sendResult.getResultJson()));
+                save(demoSms);
+                throw new BaseException("发送失败，错误信息：" + sendResult.getErrorMessage());
+            }
+        }
     }
 
     /**

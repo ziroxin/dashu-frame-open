@@ -157,6 +157,13 @@ com.kg:
     client-id: xxxxx
     client-secret: xxxxx
     grant-type: xxxxx
+  #短信通知相关配置
+  sms:
+    aliyun:
+      accessKeyId: xxxxx
+      accessKeySecret: xxxxx
+      endpoint: dysmsapi.aliyuncs.com
+      sign: 短信签名xxxxx
 
 #输出日志配置（日志级别：trace/debug/info/warn/error）
 logging.level:

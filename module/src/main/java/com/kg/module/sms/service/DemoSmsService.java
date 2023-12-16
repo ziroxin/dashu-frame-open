@@ -34,7 +34,7 @@ public interface DemoSmsService extends IService<DemoSms> {
      *
      * @param demoSmsDTO 新增实体
      */
-    void add(DemoSmsDTO demoSmsDTO);
+    void add(DemoSmsDTO demoSmsDTO) throws BaseException;
 
     /**
      * 修改
