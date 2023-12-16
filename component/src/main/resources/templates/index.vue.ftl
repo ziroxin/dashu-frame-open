@@ -82,8 +82,9 @@
 		<#assign rules1=field.metaInfo.nullable?string("","{required: true, message: '" + field.comment + "不能为空'}")>
 		<#if field.propertyType=='String'>
 			<#if field.metaInfo.length gte 255>
-				<el-form-item label="${field.comment}" prop="${field.propertyName}">
-					<el-input v-model="temp.${field.propertyName}" :rules="[${rules1}]" type="textarea" maxlength="${field.metaInfo.length}"
+				<el-form-item label="${field.comment}" prop="${field.propertyName}"
+                      :rules="[${rules1}]">
+					<el-input v-model="temp.${field.propertyName}" type="textarea" maxlength="${field.metaInfo.length}"
                     placeholder="请输入${field.comment}"/>
 				</el-form-item>
 			<#else>
