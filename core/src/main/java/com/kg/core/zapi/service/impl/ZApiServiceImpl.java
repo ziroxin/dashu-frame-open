@@ -197,7 +197,7 @@ public class ZApiServiceImpl extends ServiceImpl<ZApiMapper, ZApi> implements IZ
             apiClassList.add(apiClassDTO);
         }
         apiDTO.setApiClass(apiClassList);
-        result.add(apiDTO);
+        result.add(0, apiDTO);
 
         return result;
     }

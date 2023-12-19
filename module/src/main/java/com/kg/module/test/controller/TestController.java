@@ -2,6 +2,7 @@ package com.kg.module.test.controller;
 
 import com.kg.core.annotation.IsResponseResult;
 import com.kg.core.exception.BaseException;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +40,7 @@ public class TestController {
      * 用途：正常业务接口
      * 有权限标签，必须对应角色用户才能访问
      */
+    @ApiOperation(value = "/test/abc2", notes = "正常权限标签", httpMethod = "GET")
     @GetMapping("abc2")
     @PreAuthorize("hasAuthority('test:abc2')")
     public String abc2() {
@@ -49,6 +51,7 @@ public class TestController {
      * 不推荐的方式（既然要控制权限，就不要放入忽略列表）
      * 有权限标签，必须对应角色用户才能访问，在security.ignore放开也无效
      */
+    @ApiOperation(value = "/test/abc3", notes = "反例:[权限标记+忽略列表]", httpMethod = "GET")
     @GetMapping("abc3")
     @PreAuthorize("hasAuthority('test:abc3')")
     public String abc3() {
