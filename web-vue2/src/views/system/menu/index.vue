@@ -120,13 +120,13 @@
         </el-form-item>
         <el-form-item label="菜单地址：" prop="permissionRouter">
           <el-input v-if="routerShow" v-model="temp.permissionRouter" placeholder="菜单地址，不含/index（例：/system/menu）"
-                    @input="temp.permissionComponent = temp.permissionRouter + '/index'"
+                    @input="permissionRouterInput"
           />
           <el-input v-else v-model="temp.permissionRouter" placeholder="外链以 http:// 或 https:// 开头"/>
         </el-form-item>
         <el-form-item v-if="routerShow" label="组件地址：" prop="permissionComponent">
           <el-input v-model="temp.permissionComponent" placeholder="组件完整地址（例：/system/menu/index）"/>
-          <el-tag type="info">根节点请填写：/layout/index</el-tag>
+          <el-tag type="info">根节点，且有子菜单时，请填写：/layout/index</el-tag>
         </el-form-item>
 
         <el-form-item v-if="routerShow" label="是否显示：" prop="permissionIsShow">
@@ -534,6 +534,12 @@ export default {
           });
         }
       })
+    },
+    // 路由输入监听
+    permissionRouterInput() {
+      if (this.temp.permissionComponent === '' || this.temp.permissionComponent.endsWith('/index')) {
+        this.temp.permissionComponent = this.temp.permissionRouter + '/index'
+      }
     }
   }
 }
