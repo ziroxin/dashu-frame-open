@@ -44,7 +44,7 @@
               </li>
             </template>
           </el-table-column>
-          <el-table-column prop="permissionRouter" label="菜单详情" width="200" :show-overflow-tooltip="true">
+          <el-table-column prop="permissionRouter" label="菜单详情" width="300" :show-overflow-tooltip="true">
             <template v-slot="{row}">
               <el-tooltip v-if="row.permissionType === '0'" class="item" effect="dark" placement="left">
                 <div slot="content" :key="'tipcontent'+row.permissionId" style="line-height: 30px;">
@@ -207,6 +207,7 @@ import PermissionButton from '@/views/system/menu/permissionButton/index'
 // 菜单项目
 import Item from '@/layout/components/Sidebar/Item';
 import request from '@/utils/request';
+import {generateUUID} from "@/utils/tools";
 
 export default {
   components: {IconPicker, PermissionButton, Item},
@@ -244,6 +245,7 @@ export default {
           message: '请填写数字'
         }]
       },
+      // vue路由相关配置表单
       routerShow: true,
       // 修改上下级关系表单
       temp2: {},
@@ -289,6 +291,7 @@ export default {
         affix: false,
         permissionOrder: 0
       }
+      this.routerShow = true
     },
     // 查询表格数据
     getList() {
@@ -317,6 +320,10 @@ export default {
         if (valid) {
           if (this.temp.noRedirect !== 'noRedirect') {
             this.temp.noRedirect = this.temp.permissionRouter
+          }
+          // 外链处理菜单标记
+          if (this.temp.permissionType === '2') {
+            this.temp.permissionName = generateUUID()
           }
           permissionAdd(this.temp).then(response => {
             this.dialogFormVisible = false
@@ -482,7 +489,7 @@ export default {
         this.getPermissionTreeList()
       })
     },
-    // 对话框提交判断
+    // 保存菜单
     submitJudgment(dialogStatus) {
       if (dialogStatus === 'update') {
         this.updateData()
