@@ -254,6 +254,8 @@ export default {
               url: '/dictData/zDictData/update', method: 'put', data
             }).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
+              // 更新当前字典缓存
+              this.clearDictCache(this.currentDictType.typeCode)
               this.loadTableList()
               this.dialogFormVisible = false
             })
@@ -262,6 +264,8 @@ export default {
               url: '/dictData/zDictData/add', method: 'post', data
             }).then(response => {
               this.$message({type: 'success', message: '添加成功！'})
+              // 更新当前字典缓存
+              this.clearDictCache(this.currentDictType.typeCode)
               this.loadTableList()
               this.dialogFormVisible = false
             })
@@ -287,6 +291,8 @@ export default {
             url: '/dictData/zDictData/delete', method: 'delete', data
           }).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
+            // 更新当前字典缓存
+            this.clearDictCache(this.currentDictType.typeCode)
             this.loadTableList()
           })
         })
