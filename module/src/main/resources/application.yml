@@ -55,9 +55,11 @@ com.kg:
     allow-extend: jpg|jpeg|png|gif|bpm|mp3|mp4|doc|docx|xls|xlsx|pdf|zip|rar|txt|
     #允许上传的图片格式（图片需要压缩，格式必须正确，以|结尾）
     image-extend: jpg|jpeg|png|gif|bpm|
-    #默认上传路径（文件保存的物理绝对路径;不要使用\；若使用docker部署，要配置容器内部路径，一般是/usr/local/springboot/））
+    #图片自动压缩，压缩比率（0-1之间的小数，例如：0.6表示压缩为60%）
+    image-quality: 0.6
+    #文件上传物理路径（文件保存的物理绝对路径;不要使用\；若使用docker部署，要配置容器内部路径，一般是/usr/local/springboot/））
     save-path: e:/IdeaProjects/fwwbsyb/dashu-frame-open/component/target/myupload/files
-    #隐藏上传路径（用于访问的路径，通过spring代理;不要使用\;要在security.ignore放开）
+    #文件路径映射（对外访问的路径，通过spring映射到物理路径;不要使用\;要在security.ignore放开）
     url-pre: /upload
   #登录常量配置
   login:

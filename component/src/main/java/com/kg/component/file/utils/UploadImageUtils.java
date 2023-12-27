@@ -108,7 +108,7 @@ public class UploadImageUtils {
                 if (isCompress && !"gif".equalsIgnoreCase(extend)) {
                     // 压缩
                     Img.from(multipartFile.getInputStream())
-                            .setQuality(0.6)// 压缩比率60%
+                            .setQuality(Float.parseFloat(FilePathConfig.DEFAULT_IMAGE_QUALITY))// 压缩比率，默认0.6 即60%
                             .write(FileUtil.getOutputStream(saveFile));
                 } else {
                     // 不压缩直接复制
