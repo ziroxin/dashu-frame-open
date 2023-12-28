@@ -13,6 +13,10 @@ const localDirectory = localProjectDir + '\\web-vue2\\dist';
 const remoteDirectory = remoteHomeDirectory + '/openresty/html/dashu-vue';
 // 重启服务命令
 const command = `docker restart openresty`;
+// 需要拷贝的目录(目前只拷贝static，如需拷贝swagger，form-generator则在下面数组中加上)
+const copyFolders = ['static']
+// 需要拷贝的文件(目前只拷贝index.html和favicon.ico，如需拷贝其他根目录文件，在下面数组中加上)
+const copyFiles = ['index.html', 'favicon.ico']
 
 
 // 使用 node-ssh 库进行目录拷贝
@@ -23,9 +27,16 @@ async function copyDirectory() {
       host: remoteHost, username: remoteUser, password: remotePassword, port: remotePort
     });
 
-    await ssh.putDirectory(localDirectory, remoteDirectory, {
-      recursive: true, concurrency: 10
-    });
+    // 拷贝目录
+    for (let i = 0; i < copyFolders.length; i++) {
+      await ssh.putDirectory(localDirectory + '\\' + copyFolders[i], remoteDirectory + '/' + copyFolders[i], {
+        recursive: true, concurrency: 10
+      });
+    }
+    // 拷贝文件
+    for (let i = 0; i < copyFiles.length; i++) {
+      await ssh.putFile(localDirectory + '\\' + copyFiles[i], remoteDirectory + '/' + copyFiles[i]);
+    }
 
     console.log('目录拷贝成功！');
   } catch (err) {
