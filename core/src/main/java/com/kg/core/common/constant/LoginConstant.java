@@ -52,4 +52,13 @@ public class LoginConstant {
         LoginConstant.IS_USER_LOGIN_ONLY_ONE = onlyOne;
     }
 
+    /**
+     * 判断 userId 是否开发管理员
+     *
+     * @param userId 用户id
+     * @return boolean 是否开发管理员
+     */
+    public static boolean isDeveloper(String userId) {
+        return (LoginConstant.DEVELOPER_USER_IDS + ",").contains(userId + ",");
+    }
 }

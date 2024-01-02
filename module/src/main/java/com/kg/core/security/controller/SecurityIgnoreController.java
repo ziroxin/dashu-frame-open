@@ -53,7 +53,7 @@ public class SecurityIgnoreController {
     @GetMapping("/restart")
     public void restartApplication() throws BaseException {
         try {
-            if ((LoginConstant.DEVELOPER_USER_IDS + ",").contains(CurrentUserUtils.getCurrentUser().getUserId() + ",")) {
+            if (LoginConstant.isDeveloper(CurrentUserUtils.getCurrentUser().getUserId())) {
                 StaticLog.warn("用户重启了应用！");
                 Thread thread = new Thread(() -> {
                     // 关闭当前应用上下文
