@@ -25,10 +25,10 @@ export default {
       alert('ok')
     },
     oauth2HandleClick() {
-      location.href = 'http://localhost:8123/oauth/authorize' +
+      location.href = this.$baseServer + '/oauth/authorize' +
           '?response_type=code' +
           '&client_id=dev' +
-          '&redirect_uri=http%3A%2F%2Flocalhost%3A8123%2Foauth2%2Fclient%2Flogin%2Fcode' +
+          '&redirect_uri=' + encodeURI('http://localhost:9527/oauth2/client/login/code') +
           '&state=my_state'
     }
   }
