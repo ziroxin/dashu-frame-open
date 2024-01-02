@@ -34,7 +34,7 @@
       </div>
     </div>
     <!-- 新闻表-测试-列表 -->
-    <el-table :data="tableData" stripe border @selection-change="handleTableSelectChange">
+    <el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="新闻标题" prop="newsTitle" align="center"/>
       <el-table-column label="顺序" prop="orderIndex" align="center"/>
@@ -62,15 +62,17 @@
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible" width="900px"
                :close-on-click-modal="dialogType !== 'view' ? false : true"
-               @close="resetTemp"
+               @close="resetTemp" :key="'myDialog'+dialogIndex"
     >
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
-        <el-form-item label-width="0px" prop="newsTitle">
-          <el-input v-model="temp.newsTitle" :rules="[]" maxlength="30" :show-word-limit="true"
+        <el-form-item label-width="0px" prop="newsTitle"
+                      :rules="[{required: true, message: '新闻标题不能为空'}]">
+          <el-input v-model="temp.newsTitle" maxlength="30" :show-word-limit="true"
                     placeholder="请输入新闻标题"
           />
         </el-form-item>
-        <el-form-item label-width="0px" prop="newsContent">
+        <el-form-item label-width="0px" prop="newsContent"
+                      :rules="[{required: true, message: '新闻内容不能为空'}]">
           <my-wang-editor ref="myEditor" v-model="temp.newsContent" placeholder="请输入新闻内容"/>
         </el-form-item>
         <el-form-item label="顺序" prop="orderIndex"
@@ -110,7 +112,8 @@ export default {
       // 弹窗显示隐藏
       dialogFormVisible: false,
       // 表单临时数据
-      temp: {}
+      temp: {},
+      dialogIndex: 0
     }
   },
   created() {
@@ -157,6 +160,7 @@ export default {
     // 清空表单temp数据
     resetTemp() {
       this.temp = {orderIndex: 0}
+      this.dialogIndex++
     },
     // 打开添加窗口
     openAdd() {
@@ -170,8 +174,8 @@ export default {
     // 打开修改窗口
     openUpdate(row) {
       if (row) {
-        this.tableSelectRows = [row]
-        console.log(this.tableSelectRows)
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据修改！', type: 'warning'})
@@ -193,9 +197,6 @@ export default {
       this.dialogType = 'view'
       this.dialogFormVisible = true
       this.$nextTick(() => {
-        for (const $elElement of this.$refs['dataForm'].$el) {
-          $elElement.placeholder = '';
-        }
         this.$refs['dataForm'].clearValidate()
       })
     },
@@ -227,7 +228,8 @@ export default {
     // 删除
     deleteByIds(row) {
       if (row) {
-        this.tableSelectRows = [row]
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据删除！', type: 'warning'})

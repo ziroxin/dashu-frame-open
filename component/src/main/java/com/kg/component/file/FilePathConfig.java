@@ -21,6 +21,10 @@ public class FilePathConfig extends FilenameUtils {
      */
     public static String DEFAULT_IMAGE_FILE_EXTEND;
     /**
+     * 图片自动压缩，压缩比率（0-1之间的小数，例如0.6表示压缩为60%）
+     */
+    public static String DEFAULT_IMAGE_QUALITY;
+    /**
      * 文件存储绝对路径
      */
     public static String SAVE_PATH;
@@ -43,6 +47,14 @@ public class FilePathConfig extends FilenameUtils {
     @Value("${com.kg.file.image-extend}")
     public void setDefaultImageFileExtend(String imageExtend) {
         FilePathConfig.DEFAULT_IMAGE_FILE_EXTEND = imageExtend;
+    }
+
+    /**
+     * 图片压缩比例
+     */
+    @Value("${com.kg.file.image-quality}")
+    public void setDefaultImageQuality(String imageQuality) {
+        FilePathConfig.DEFAULT_IMAGE_QUALITY = imageQuality;
     }
 
     /**

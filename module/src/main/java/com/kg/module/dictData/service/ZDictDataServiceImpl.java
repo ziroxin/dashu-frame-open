@@ -107,9 +107,8 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public void add(ZDictDataDTO zDictDataDTO) {
-        String typeCode = zDictDataDTO.getTypeCode();
         // 查重
-        List<ZDictData> dataList = lambdaQuery().eq(ZDictData::getTypeCode, typeCode)
+        List<ZDictData> dataList = lambdaQuery().eq(ZDictData::getTypeCode, zDictDataDTO.getTypeCode())
                 .and(query -> query.eq(ZDictData::getDictValue, zDictDataDTO.getDictValue())
                         .or().eq(ZDictData::getDictLabel, zDictDataDTO.getDictLabel()))
                 .list();
@@ -131,7 +130,7 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
     @Transactional(rollbackFor = RuntimeException.class)
     public void update(ZDictDataDTO zDictDataDTO) {
         // 查重
-        List<ZDictData> dataList = lambdaQuery()
+        List<ZDictData> dataList = lambdaQuery().eq(ZDictData::getTypeCode, zDictDataDTO.getTypeCode())
                 .ne(ZDictData::getDictId, zDictDataDTO.getDictId()).and(wr -> {
                     wr.eq(ZDictData::getDictValue, zDictDataDTO.getDictValue())
                             .or().eq(ZDictData::getDictLabel, zDictDataDTO.getDictLabel());
@@ -253,7 +252,8 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
             return JSONUtil.toList(redisUtils.get(key).toString(), ZDictData.class);
         }
         // 查询所有字典数据
-        List<ZDictData> dataList = lambdaQuery().eq(ZDictData::getTypeCode, typeCode).list();
+        List<ZDictData> dataList = lambdaQuery().eq(ZDictData::getTypeCode, typeCode)
+                .orderByAsc(ZDictData::getOrderIndex).list();
         if (dataList != null && dataList.size() > 0) {
             // 将缓存存入redis
             redisUtils.set(key, JSONUtil.toJsonStr(dataList));

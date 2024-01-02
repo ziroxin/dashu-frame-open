@@ -1,0 +1,3 @@
+\<(iframe|script|body|img|layer|div|meta|style|base|object|input)
+(onmouseover|onerror|onload)\=
+[\'\"\;\*\<\>]+.*\b(on)[a-zA-Z]{3,15}[\s\r\n\v\f]*\=|\b(expression)\(|<script[\s\\\\\/]*.*>|(<!\[cdata\[)|\b(eval|alert|prompt|msgbox)\s*\(|url\((\#|data|javascript)

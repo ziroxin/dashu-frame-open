@@ -45,7 +45,7 @@ public class TableDTO {
     private List<TableFieldDTO> fields;
 
     /**
-     * 代码生成模板
+     * 代码生成html模板
      */
     private String template;
     /**
@@ -64,4 +64,12 @@ public class TableDTO {
      * 代码生成css
      */
     private String css;
+    /**
+     * 是否覆盖数据库表
+     */
+    private Boolean isCoverTable;
+    /**
+     * 表单管理表id
+     */
+    private String formId;
 }

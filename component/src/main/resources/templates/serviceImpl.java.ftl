@@ -9,6 +9,12 @@ import ${superServiceImplClassPackage};
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelCommonUtils;
 import com.kg.component.utils.GuidUtils;
+<#if childTableList??>
+    <#list childTableList as child>
+import ${packageBaseParent}.${child}.entity.${child?cap_first};
+import ${packageBaseParent}.${child}.service.${child?cap_first}Service;
+    </#list>
+</#if>
 import ${package.DTO}.${dtoName};
 import ${package.Convert}.${dtoconvertName};
 import ${package.Entity}.${entity};
@@ -45,6 +51,13 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     @Resource
     private ${dtoconvertName} ${dtoconvertName?uncap_first};
 
+<#if childTableList??>
+    <#list childTableList as child>
+    @Resource
+    private ${child?cap_first}Service ${child}Service;
+    </#list>
+</#if>
+
     /**
      * 分页列表
      *
@@ -74,9 +87,30 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         </#list>
         //返回数据
         Page<${entity}> pageEntity = page(pager, wrapper);
+        if (pageEntity.getTotal() == 0) {
+            return new Page<>();
+        }
+<#if childTableList??>
+        // 查询所有附件列表
+    <#list childTableList as child>
+        List<${child?cap_first}> all${child?cap_first}List = ${child}Service.lambdaQuery().in(${child?cap_first}::get${entity}Id,
+                pageEntity.getRecords().stream().map(${entity}::get${entityKeyName?cap_first}).collect(Collectors.toList())).list();
+    </#list>
+</#if>
         Page<${dtoName}> result = new Page<>();
-        result.setRecords(
-                pageEntity.getRecords().stream().map(m -> ${dtoconvertName?uncap_first}.entityToDto(m)).collect(Collectors.toList()));
+        result.setRecords(pageEntity.getRecords().stream()
+                .map(m -> {
+                    ${dtoName} ${dtoName?uncap_first} = ${dtoconvertName?uncap_first}.entityToDto(m);
+<#if childTableList??>
+                    // 过滤附件列表，放入实体中
+    <#list childTableList as child>
+                    ${dtoName?uncap_first}.set${child?lower_case?cap_first}List(all${child?cap_first}List.stream()
+                            .filter(f -> f.get${entity}Id().equals(m.get${entityKeyName?cap_first}())).collect(Collectors.toList()));
+    </#list>
+</#if>
+                    return ${dtoName?uncap_first};
+                })
+                .collect(Collectors.toList()));
         result.setTotal(pageEntity.getTotal());
         return result;
     }
@@ -99,6 +133,20 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             </#if>
         </#list>
         save(${entity?uncap_first});
+<#if childTableList??>
+        // 保存附件
+    <#list childTableList as child>
+        if (${dtoName?uncap_first}.get${child?lower_case?cap_first}List() != null && ${dtoName?uncap_first}.get${child?lower_case?cap_first}List().size() > 0) {
+            List<${child?cap_first}> save${child?cap_first}List = ${dtoName?uncap_first}.get${child?lower_case?cap_first}List()
+                    .stream().map(m -> {
+                        m.set${entity}Id(${entity?uncap_first}.get${entityKeyName?cap_first}());
+                        m.setCreateTime(LocalDateTime.now());
+                        return m;
+                    }).collect(Collectors.toList());
+            ${child}Service.saveBatch(save${child?cap_first}List);
+        }
+    </#list>
+</#if>
     }
 
     /**
@@ -116,6 +164,24 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             </#if>
         </#list>
         updateById(${entity?uncap_first});
+<#if childTableList??>
+        // 先删除附件
+    <#list childTableList as child>
+        ${child}Service.lambdaUpdate().eq(${child?cap_first}::get${entity}Id, ${entity?uncap_first}.get${entityKeyName?cap_first}()).remove();
+    </#list>
+        // 再保存附件
+    <#list childTableList as child>
+        if (${dtoName?uncap_first}.get${child?lower_case?cap_first}List() != null && ${dtoName?uncap_first}.get${child?lower_case?cap_first}List().size() > 0) {
+            List<${child?cap_first}> save${child?cap_first}List = ${dtoName?uncap_first}.get${child?lower_case?cap_first}List()
+                    .stream().map(m -> {
+                        m.set${entity}Id(${entity?uncap_first}.get${entityKeyName?cap_first}());
+                        m.setCreateTime(LocalDateTime.now());
+                        return m;
+                    }).collect(Collectors.toList());
+            ${child}Service.saveBatch(save${child?cap_first}List);
+        }
+    </#list>
+</#if>
     }
 
     /**
@@ -127,6 +193,12 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     @Transactional(rollbackFor = RuntimeException.class)
     public void delete(List<String> idlist) {
         removeBatchByIds(idlist);
+<#if childTableList??>
+        // 删除附件
+    <#list childTableList as child>
+        ${child}Service.lambdaUpdate().in(${child?cap_first}::get${entity}Id, idlist).remove();
+    </#list>
+</#if>
     }
 
     /**

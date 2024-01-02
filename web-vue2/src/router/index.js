@@ -36,14 +36,7 @@ export const constantRoutes = [
     hidden: true
   }, {
     path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      component: () => import('@/views/dashboard/index'),
-      name: 'dashboard',
-      meta: {title: '首页', icon: 'dashboard', affix: true}
-    }]
+    redirect: '/dashboard/index',
   }, {
     path: '/oauth2/error',
     component: () => import('@/views/oauth2/error'),
@@ -51,6 +44,10 @@ export const constantRoutes = [
   }, {
     path: '/oauth2/success',
     component: () => import('@/views/oauth2/success'),
+    hidden: true
+  }, {
+    path: '/knife4jVue3/dashuSwagger/home',
+    component: () => import('@/views/swagger/home'),
     hidden: true
   }
 ]

@@ -1,0 +1,49 @@
+[mysqld]
+port=13306
+transaction_isolation = READ-COMMITTED
+max_connections=2000
+skip-name-resolve
+#innodb_flush_method="fsync"
+#忽略大小写
+lower_case_table_names=1
+
+#开启日志
+#1.慢日志
+#开启慢日志查询
+#slow_query_log=ON
+#当SQL语句执行时间超过此数值（秒）时，就会被记录到日志中，建议设置为1或者更短。
+long_query_time=1
+#记录日志的文件名。
+slow_query_log_file=/var/log/mysql/slowquery.log
+#2.错误日志
+log-error=/var/log/mysql/error.log
+#3.开启binlog日志
+#binlog日志格式，mysql默认采用statement，建议使用mixed
+binlog_format           = MIXED
+#binlog日志文件
+log-bin                 = /var/lib/mysql/bin-log
+#binlog过期清理时间
+expire_logs_days        = 7
+#binlog每个日志文件大小
+max_binlog_size         = 100m
+#binlog缓存大小
+binlog_cache_size       = 4m
+#最大binlog缓存大小
+max_binlog_cache_size   = 512m
+server_id                 = 1
+#4.设置锁超时
+#锁等待的时间默认50s,改成5s
+innodb_lock_wait_timeout=5
+
+init_connect='SET collation_connection = utf8_unicode_ci'
+init_connect='SET NAMES utf8'
+character-set-server=utf8
+collation-server=utf8_unicode_ci
+skip-character-set-client-handshake
+
+
+[client]
+default-character-set=utf8
+
+[mysql]
+default-character-set=utf8

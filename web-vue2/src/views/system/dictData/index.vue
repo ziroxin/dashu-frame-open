@@ -36,7 +36,7 @@
       <div style="float: right;">
         <el-upload v-permission="'dictData-zDictData-importExcel'" style="display: inline-block;margin: 0px 10px;"
                    :action="$baseServer+'/dictData/zDictData/import/excel'"
-                   :headers="$store.state.user.headerToken" :data="{typeCode:currentDictType.typeCode}"
+                   :headers="$store.getters.headerToken" :data="{typeCode:currentDictType.typeCode}"
                    :on-success="importExcelSuccess" accept=".xls,.xlsx"
                    :show-file-list="false" :auto-upload="true">
           <el-button v-waves type="warning" icon="el-icon-upload2" size="small">导入</el-button>
@@ -47,7 +47,7 @@
       </div>
     </div>
     <!-- 字典数据-列表 -->
-    <el-table :data="tableData" stripe border :height="this.$windowHeight-270" v-loading="isLoading"
+    <el-table ref="dataTable" :data="tableData" stripe border :height="this.$windowHeight-270" v-loading="isLoading"
               @selection-change="handleTableSelectChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="字典code" prop="typeCode" align="center"/>
@@ -216,7 +216,8 @@ export default {
     // 打开修改窗口
     openUpdate(row) {
       if (row) {
-        this.tableSelectRows = [row]
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据修改！', type: 'warning'})
@@ -234,14 +235,10 @@ export default {
     },
     // 打开查看窗口
     openView(row) {
-      // 修改弹窗
       this.temp = Object.assign({}, row)
       this.dialogType = 'view'
       this.dialogFormVisible = true
       this.$nextTick(() => {
-        for (const $elElement of this.$refs['dataForm'].$el) {
-          $elElement.placeholder = '';
-        }
         this.$refs['dataForm'].clearValidate()
       })
     },
@@ -257,6 +254,8 @@ export default {
               url: '/dictData/zDictData/update', method: 'put', data
             }).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
+              // 更新当前字典缓存
+              this.clearDictCache(this.currentDictType.typeCode)
               this.loadTableList()
               this.dialogFormVisible = false
             })
@@ -265,6 +264,8 @@ export default {
               url: '/dictData/zDictData/add', method: 'post', data
             }).then(response => {
               this.$message({type: 'success', message: '添加成功！'})
+              // 更新当前字典缓存
+              this.clearDictCache(this.currentDictType.typeCode)
               this.loadTableList()
               this.dialogFormVisible = false
             })
@@ -275,7 +276,8 @@ export default {
     // 删除
     deleteByIds(row) {
       if (row) {
-        this.tableSelectRows = [row]
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据删除！', type: 'warning'})
@@ -289,6 +291,8 @@ export default {
             url: '/dictData/zDictData/delete', method: 'delete', data
           }).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
+            // 更新当前字典缓存
+            this.clearDictCache(this.currentDictType.typeCode)
             this.loadTableList()
           })
         })

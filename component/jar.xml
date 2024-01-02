@@ -12,7 +12,7 @@
     <!-- 发布命令：mvn clean deploy -f jar.xml -->
     <groupId>com.gitee.ziro</groupId>
     <artifactId>dashu-frame-component</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.11</version>
     <packaging>jar</packaging>
     <name>dashu-frame-component</name>
     <description>大树快速开发平台::Component::组件库</description>
@@ -97,6 +97,12 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>31.1-jre</version>
+        </dependency>
+        <!-- 阿里云短信 -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>dysmsapi20170525</artifactId>
+            <version>2.0.24</version>
         </dependency>
     </dependencies>
 

@@ -98,10 +98,12 @@ public class TypeRegistry {
     }
 
     private IColumnType getBitType(TableField.MetaInfo metaInfo) {
-        if (metaInfo.getLength() > 1) {
-            return DbColumnType.BYTE_ARRAY;
-        }
-        return DbColumnType.BOOLEAN;
+//        if (metaInfo.getLength() > 1) {
+//            return DbColumnType.BYTE_ARRAY;
+//        }
+//        return DbColumnType.BOOLEAN;
+        // tinyint、bit 类型 默认使用 integer
+        return DbColumnType.INTEGER;
     }
 
     private IColumnType getNumber(TableField.MetaInfo metaInfo) {

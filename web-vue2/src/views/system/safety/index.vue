@@ -87,7 +87,7 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer width600">
-      <el-button v-waves type="primary" style="margin-left: 120px;" @click="saveData">保存配置</el-button>
+      <el-button v-waves type="primary" style="margin-left: 120px;" @click="saveData" icon="el-icon-check">保存配置</el-button>
     </div>
   </div>
 </template>

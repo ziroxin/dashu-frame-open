@@ -281,6 +281,7 @@ export default {
           saveApiGroup(data).then((response) => {
             this.groupDialogShow = false
             this.$notify({title: '保存成功', message: '分组信息保存成功！', type: 'success'})
+            this.selectPermissionApiList = []
             this.getApiList()
           })
         }

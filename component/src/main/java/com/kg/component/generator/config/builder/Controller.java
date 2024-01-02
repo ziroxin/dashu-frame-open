@@ -104,12 +104,18 @@ public class Controller implements ITemplate {
     @NotNull
     public Map<String, Object> renderData(@NotNull ConfigBuilder config, @NotNull TableInfo tableInfo) {
         Map<String, Object> data = new HashMap<>(5);
-        String mapping = (StringUtils.isNotBlank(config.getPackageConfig().getModuleName()) ? config.getPackageConfig().getModuleName() + "/" : "")
-                + (this.hyphenStyle ? StringUtils.camelToHyphen(tableInfo.getEntityPath()) : tableInfo.getEntityPath());
-        data.put("controllerMapping", mapping);
-        String authorize = (StringUtils.isNotBlank(config.getPackageConfig().getModuleName()) ? config.getPackageConfig().getModuleName() + ":" : "")
-                + (this.hyphenStyle ? StringUtils.camelToHyphen(tableInfo.getEntityPath()) : tableInfo.getEntityPath()) + ":";
-        data.put("controllerAuthorizePre", authorize);
+        String packageStr = config.getPackageConfig().getModuleName();
+        if (StringUtils.isNotBlank(packageStr)) {
+            data.put("controllerMapping", packageStr.replaceAll("\\.", "/") + "/" +
+                    (this.hyphenStyle ? StringUtils.camelToHyphen(tableInfo.getEntityPath()) : tableInfo.getEntityPath()));
+            data.put("controllerAuthorizePre", packageStr.replaceAll("\\.", ":") + ":" +
+                    (this.hyphenStyle ? StringUtils.camelToHyphen(tableInfo.getEntityPath()) : tableInfo.getEntityPath()) + ":");
+        } else {
+            data.put("controllerMapping",
+                    (this.hyphenStyle ? StringUtils.camelToHyphen(tableInfo.getEntityPath()) : tableInfo.getEntityPath()));
+            data.put("controllerAuthorizePre",
+                    (this.hyphenStyle ? StringUtils.camelToHyphen(tableInfo.getEntityPath()) : tableInfo.getEntityPath()) + ":");
+        }
         data.put("restControllerStyle", this.restStyle);
         data.put("superControllerClassPackage", StringUtils.isBlank(superClass) ? null : superClass);
         data.put("superControllerClass", ClassUtils.getSimpleName(this.superClass));

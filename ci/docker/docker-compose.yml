@@ -1,0 +1,67 @@
+version: "3"
+networks:
+ dashu-net:
+  name: dashu-net
+
+services:
+ openresty:
+  container_name: openresty
+  image: registry.cn-beijing.aliyuncs.com/dashu_pub/dashu-openresty-waf:1.21.4.1.1-alpine
+  volumes:
+   - /etc/localtime:/etc/localtime:ro
+   - /etc/timezone:/etc/timezone:ro
+   - ./openresty/conf:/usr/local/openresty/nginx/conf:Z
+   - ./openresty/logs:/usr/local/openresty/nginx/logs
+   - ./openresty/html:/usr/local/openresty/nginx/html
+  ports:
+   - 80:80
+  restart: always
+  networks:
+   - dashu-net
+#****************************sprringboot容器****************************
+ springboot:
+  image: registry.cn-beijing.aliyuncs.com/dashu_pub/springboot:1.1
+  container_name: springboot
+  volumes:
+   - ./springboot:/usr/local/springboot
+#   - ./win:/usr/share/fonts/win
+  entrypoint: ["java", "-jar", "app.jar"]
+  ports:
+   - 8123:8123
+  restart: always
+  networks:
+   - dashu-net
+ mariadb:
+  container_name: mariadb
+  image: mariadb:10.3
+  volumes:
+   - /etc/localtime:/etc/localtime:ro
+   - /etc/timezone:/etc/timezone:ro
+   - ./mysql/conf:/etc/mysql/conf.d
+   - ./mysql/data:/var/lib/mysql
+   - ./mysql/logs:/var/log/mysql
+  environment:
+# 设置root用户的默认密码（只有第一次安装启动时起作用）
+   - MYSQL_ROOT_PASSWORD=dashu@2023++
+  ports:
+   - 13306:13306
+  restart: always
+  networks:
+   - dashu-net
+#****************************redis容器****************************
+ redis:
+  container_name: redis
+  image: redis:5
+  command: redis-server /usr/local/etc/redis/redis.conf
+  volumes:
+   - /etc/localtime:/etc/localtime:ro
+   - /etc/timezone:/etc/timezone:ro
+   - ./redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+   - ./redis/data:/data
+  ports:
+   - 6379:6379
+  restart: always
+  networks:
+   - dashu-net
+  sysctls:
+    net.core.somaxconn: 1024

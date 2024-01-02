@@ -8,13 +8,16 @@ import com.kg.core.zpermission.dto.ZRolePermissionDTO;
 import com.kg.core.zpermission.dto.convert.ZPermissionConvert;
 import com.kg.core.zpermission.dto.convert.ZRolePermissionConvert;
 import com.kg.core.zpermission.entity.ZPermission;
+import com.kg.core.zpermission.entity.ZPermissionApi;
 import com.kg.core.zpermission.enums.PermissionTypeEnum;
 import com.kg.core.zpermission.mapper.ZPermissionMapper;
+import com.kg.core.zpermission.service.IZPermissionApiService;
 import com.kg.core.zpermission.service.IZPermissionService;
 import com.kg.core.zrole.entity.ZRolePermission;
 import com.kg.core.zrole.service.IZRolePermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -42,6 +45,8 @@ public class ZPermissionServiceImpl extends ServiceImpl<ZPermissionMapper, ZPerm
     private ZPermissionConvert permissionConvert;
     @Autowired
     private ZRolePermissionConvert rolePermissionConvert;
+    @Autowired
+    private IZPermissionApiService permissionApiService;
 
     // 查询该用户有权限的所有资源
     @Override
@@ -176,6 +181,23 @@ public class ZPermissionServiceImpl extends ServiceImpl<ZPermissionMapper, ZPerm
                 .or().eq(ZPermission::getPermissionType, PermissionTypeEnum.OTHER.getCode());
         List<ZPermission> list2 = list(wrapper2);
         return rolePermissionChildren(list, list2, rolePermissionList, "-1");
+    }
+
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public boolean delete(List<String> idList) {
+        // 删除菜单/按钮和api的关联关系
+        List<ZPermission> list = lambdaQuery().in(ZPermission::getParentId, idList).list();
+        List<String> childIdList = list.stream().map(ZPermission::getPermissionId).collect(Collectors.toList());
+        if (childIdList != null && childIdList.size() > 0) {
+            permissionApiService.lambdaUpdate().in(ZPermissionApi::getPermissionId, childIdList).remove();
+        }
+        permissionApiService.lambdaUpdate().in(ZPermissionApi::getPermissionId, idList).remove();
+        // 删除子元素
+        lambdaUpdate().in(ZPermission::getParentId, idList).remove();
+        // 删除菜单列表
+        removeBatchByIds(idList);
+        return true;
     }
 
     private List<ZRolePermissionDTO> rolePermissionChildren(

@@ -34,15 +34,19 @@ public class PermissionSQL implements ITemplate {
     @NotNull
     public Map<String, Object> renderData(@NotNull ConfigBuilder config, @NotNull TableInfo tableInfo) {
         Map<String, Object> data = new HashMap<>();
-        String mapping = (StringUtils.isNotBlank(config.getPackageConfig().getModuleName()) ? "/" + config.getPackageConfig().getModuleName() : "")
-                + "/" + tableInfo.getEntityPath();
-        data.put("controllerMapping", mapping);
-        String authorize = (StringUtils.isNotBlank(config.getPackageConfig().getModuleName()) ? config.getPackageConfig().getModuleName() + ":" : "")
-                + tableInfo.getEntityPath() + ":";
-        data.put("controllerAuthorizePre", authorize);
-        String buttonNamePre = (StringUtils.isNotBlank(config.getPackageConfig().getModuleName()) ? config.getPackageConfig().getModuleName() + "-" : "")
-                + tableInfo.getEntityPath();
-        data.put("permissionName", buttonNamePre);
+        String packageStr = config.getPackageConfig().getModuleName();
+        if (StringUtils.isNotBlank(packageStr)) {
+            data.put("controllerMapping", "/" + packageStr.replaceAll("\\.", "/") +
+                    "/" + tableInfo.getEntityPath());
+            data.put("controllerAuthorizePre", packageStr.replaceAll("\\.", ":") + ":" +
+                    tableInfo.getEntityPath() + ":");
+            data.put("permissionName", packageStr.replaceAll("\\.", "-") + "-" +
+                    tableInfo.getEntityPath());
+        } else {
+            data.put("controllerMapping", "/" + tableInfo.getEntityPath());
+            data.put("controllerAuthorizePre", tableInfo.getEntityPath() + ":");
+            data.put("permissionName", tableInfo.getEntityPath());
+        }
         String permissionRouter = config.getStrategyConfig().indexVue().getViewPath();
         // 路由
         data.put("permissionRouter", permissionRouter);

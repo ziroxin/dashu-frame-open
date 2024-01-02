@@ -8,7 +8,7 @@ import cn.hutool.crypto.symmetric.SymmetricCrypto;
  * Aes方式，对称加密、解密
  *
  * @author ziro
- * @date 2020/8/11 14:21
+ * @date 2023/8/11 14:21
  */
 public class MyAESUtils {
     /**

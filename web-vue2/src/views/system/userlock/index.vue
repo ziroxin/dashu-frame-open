@@ -5,8 +5,7 @@
         <!-- 用户锁定-管理按钮 -->
         <div style="margin-bottom: 10px;float: right;">
           <el-button v-waves v-permission="'zuserlock-zUserLock-unlock'" type="danger" size="small"
-                     @click="deleteByIds"
-          >用户解锁
+                     @click="deleteByIds" icon="el-icon-unlock">用户解锁
           </el-button>
         </div>
         <!-- 用户锁定-列表 -->

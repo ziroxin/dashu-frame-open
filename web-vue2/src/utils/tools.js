@@ -30,7 +30,9 @@ export function parseTime(time, pattern) {
   const time_str = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result, key) => {
     let value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value] }
+    if (key === 'a') {
+      return ['日', '一', '二', '三', '四', '五', '六'][value]
+    }
     if (result.length > 0 && value < 10) {
       value = '0' + value
     }
@@ -107,7 +109,9 @@ export function selectDictLabels(datas, value, separator) {
 
 // 字符串格式化(%s )
 export function sprintf(str) {
-  var args = arguments; var flag = true; var i = 1;
+  var args = arguments;
+  var flag = true;
+  var i = 1;
   str = str.replace(/%s/g, function () {
     var arg = args[i++];
     if (typeof arg === 'undefined') {
@@ -152,9 +156,7 @@ export function mergeRecursive(source, target) {
  */
 export function handleTree(data, id, parentId, children) {
   let config = {
-    id: id || 'id',
-    parentId: parentId || 'parentId',
-    childrenList: children || 'children'
+    id: id || 'id', parentId: parentId || 'parentId', childrenList: children || 'children'
   };
 
   var childrenListMap = {};
@@ -191,13 +193,14 @@ export function handleTree(data, id, parentId, children) {
       }
     }
   }
+
   return tree;
 }
 
 /**
-* 参数处理
-* @param {*} params  参数
-*/
+ * 参数处理
+ * @param {*} params  参数
+ */
 export function tansParams(params) {
   let result = ''
   for (const propName of Object.keys(params)) {
@@ -224,9 +227,19 @@ export function tansParams(params) {
 export function blobValidate(data) {
   return data.type !== 'application/json'
 }
+
 // 对象的快速复制  不存在的key不复制
 export function objCopy(obj, obj1) {
   Object.keys(obj1).forEach(key => {
     obj1[key] = obj[key]
   })
+}
+
+// 生成uuid
+export function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = Math.random() * 16 | 0,
+      v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
 }

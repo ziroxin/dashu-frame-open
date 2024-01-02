@@ -16,23 +16,27 @@
       </el-button>
       <div style="float: right;">
         <el-button v-waves v-permission="'zquartz-zQuartz-add'" type="primary"
-                   size="small"
+                   size="small" icon="el-icon-plus"
                    @click="openAdd"
         >新增
         </el-button>
+        <el-button v-waves type="warning" size="small" v-permission="'zquartz-zQuartz-copy'"
+                   @click="copyById" icon="el-icon-copy-document"
+        >复制任务
+        </el-button>
         <el-button v-waves v-permission="'zquartz-zQuartz-delete'" type="danger" size="small"
-                   @click="deleteByIds"
+                   @click="deleteByIds" icon="el-icon-delete"
         >删除
         </el-button>
       </div>
     </div>
     <!-- 定时任务调度表-列表 -->
-    <el-table :data="tableData" stripe border @selection-change="handleTableSelectChange">
+    <el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
-      <el-table-column label="任务名称" prop="jobName" align="center" min-width="10%"/>
-      <el-table-column label="任务执行类" prop="jobClass" align="center" min-width="20%"/>
+      <el-table-column label="任务名称" prop="jobName" align="center" min-width="10%" show-overflow-tooltip/>
+      <el-table-column label="任务执行类" prop="jobClass" align="center" min-width="20%" show-overflow-tooltip/>
       <el-table-column label="任务执行时间" prop="jobTimeCron" align="center" min-width="10%"/>
-      <el-table-column label="任务描述" prop="description" align="center" min-width="20%"/>
+      <el-table-column label="任务描述" prop="description" align="center" min-width="20%" show-overflow-tooltip/>
       <el-table-column label="状态" align="center" min-width="10%">
         <template v-slot="scope">
           <span v-if="scope.row.status==='1'" style="color: #2ac06d;">开启</span>
@@ -93,7 +97,7 @@
           <el-input v-model="temp.jobTimeCron" placeholder="请输入任务执行时间（Cron表达式：秒 分 时 日 月 年）"/>
         </el-form-item>
         <el-form-item label="任务描述" prop="description">
-          <el-input v-model="temp.description" placeholder="请输入任务描述"/>
+          <el-input type="textarea" autosize v-model="temp.description" placeholder="请输入任务描述"/>
         </el-form-item>
         <el-form-item label="状态" prop="status"
                       :rules="[]"
@@ -194,8 +198,8 @@ export default {
     // 打开修改窗口
     openUpdate(row) {
       if (row) {
-        this.tableSelectRows = []
-        this.tableSelectRows.push(row)
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据修改！', type: 'warning'})
@@ -262,6 +266,23 @@ export default {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()
           })
+        })
+      }
+    },
+    // 复制
+    copyById() {
+      if (this.tableSelectRows.length <= 0) {
+        this.$message({message: '请选择一条数据复制！', type: 'warning'})
+      } else if (this.tableSelectRows.length > 1) {
+        this.$message({message: '只能选择一条数据复制！', type: 'warning'})
+      } else {
+        // 复制弹窗
+        this.temp = Object.assign({}, this.tableSelectRows[0])
+        this.temp.quartzId = null
+        this.dialogType = 'add'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
         })
       }
     },

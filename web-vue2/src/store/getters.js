@@ -4,7 +4,10 @@ const getters = {
   device: state => state.app.device,
   visitedViews: state => state.tagsView.visitedViews,
   cachedViews: state => state.tagsView.cachedViews,
+  // token值
   token: state => state.user.token,
+  // 格式：{UserJwtToken: 'token值'}
+  headerToken: state => state.user.headerToken,
   avatar: state => state.user.avatar,
   name: state => state.user.name,
   introduction: state => state.user.introduction,

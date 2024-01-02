@@ -4,13 +4,15 @@
       <el-col :span="elColSpanValue">
         <!--  操作按钮  -->
         <div style="margin-bottom: 10px;">
-          <el-button v-permission="'system-menu-add'" size="small" type="primary" @click="permissionAdd">新增一级菜单
+          <el-button v-permission="'system-menu-add'" size="small" type="primary"
+                     @click="permissionAdd" icon="el-icon-plus">新增一级菜单
           </el-button>
-          <el-button v-permission="'system-menu-delete'" size="small" type="danger" @click="permissionDelete">批量删除
+          <el-button v-permission="'system-menu-delete'" size="small" type="danger"
+                     @click="permissionDelete" icon="el-icon-delete">批量删除
           </el-button>
         </div>
         <!-- 表格部分 -->
-        <el-table :data="tableData" row-key="permissionId" :height="this.$windowHeight-200"
+        <el-table ref="dataTable" :data="tableData" row-key="permissionId" :height="this.$windowHeight-200"
                   border :tree-props="{children: 'children'}" :default-expand-all="true"
                   highlight-current-row @selection-change="selectionChangeHandlerOrder"
         >
@@ -23,7 +25,7 @@
                 <el-tag v-if="row.permissionType === '2'" disable-transitions type="success" size="mini">外链</el-tag>
                 <el-tag v-if="!row.permissionIsShow" disable-transitions type="danger" size="mini">隐藏</el-tag>
                 <el-tag v-if="!row.permissionIsEnabled" disable-transitions type="danger" size="mini">禁用</el-tag>
-                <div v-if="!buttonTableVisible" style="display: inline-block;margin-left: 20px;">
+                <div v-if="!buttonTableVisible" style="display: inline-block;margin-left: 10px;">
                   <el-button v-permission="'system-menu-update-parent'" type="text" plain
                              icon="el-icon-sort" size="mini" @click="permissionUpdateParent(row)"
                   />
@@ -36,10 +38,13 @@
                   >添加下级
                   </el-button>
                 </div>
+                <div v-if="!buttonTableVisible" style="float: right;">
+                  <el-tag type="info" size="mini">{{ row.permissionOrder }}</el-tag>
+                </div>
               </li>
             </template>
           </el-table-column>
-          <el-table-column prop="permissionRouter" label="菜单详情" width="200" :show-overflow-tooltip="true">
+          <el-table-column prop="permissionRouter" label="菜单详情" width="300" :show-overflow-tooltip="true">
             <template v-slot="{row}">
               <el-tooltip v-if="row.permissionType === '0'" class="item" effect="dark" placement="left">
                 <div slot="content" :key="'tipcontent'+row.permissionId" style="line-height: 30px;">
@@ -115,13 +120,13 @@
         </el-form-item>
         <el-form-item label="菜单地址：" prop="permissionRouter">
           <el-input v-if="routerShow" v-model="temp.permissionRouter" placeholder="菜单地址，不含/index（例：/system/menu）"
-                    @input="temp.permissionComponent = temp.permissionRouter + '/index'"
+                    @input="permissionRouterInput"
           />
           <el-input v-else v-model="temp.permissionRouter" placeholder="外链以 http:// 或 https:// 开头"/>
         </el-form-item>
         <el-form-item v-if="routerShow" label="组件地址：" prop="permissionComponent">
           <el-input v-model="temp.permissionComponent" placeholder="组件完整地址（例：/system/menu/index）"/>
-          <el-tag type="info">根节点请填写：/layout/index</el-tag>
+          <el-tag type="info">根节点，且有子菜单时，请填写：/layout/index</el-tag>
         </el-form-item>
 
         <el-form-item v-if="routerShow" label="是否显示：" prop="permissionIsShow">
@@ -202,6 +207,7 @@ import PermissionButton from '@/views/system/menu/permissionButton/index'
 // 菜单项目
 import Item from '@/layout/components/Sidebar/Item';
 import request from '@/utils/request';
+import {generateUUID} from "@/utils/tools";
 
 export default {
   components: {IconPicker, PermissionButton, Item},
@@ -239,6 +245,7 @@ export default {
           message: '请填写数字'
         }]
       },
+      // vue路由相关配置表单
       routerShow: true,
       // 修改上下级关系表单
       temp2: {},
@@ -284,6 +291,7 @@ export default {
         affix: false,
         permissionOrder: 0
       }
+      this.routerShow = true
     },
     // 查询表格数据
     getList() {
@@ -313,6 +321,10 @@ export default {
           if (this.temp.noRedirect !== 'noRedirect') {
             this.temp.noRedirect = this.temp.permissionRouter
           }
+          // 外链处理菜单标记
+          if (this.temp.permissionType === '2') {
+            this.temp.permissionName = generateUUID()
+          }
           permissionAdd(this.temp).then(response => {
             this.dialogFormVisible = false
             if (response.data) {
@@ -334,8 +346,8 @@ export default {
     // 点击修改按钮后
     permissionUpdate(row) {
       if (row) {
-        this.changeData = []
-        this.changeData.push(row)
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.changeData.length <= 0) {
         this.$message({
@@ -363,8 +375,8 @@ export default {
     // 修改上下级关系
     permissionUpdateParent(row) {
       if (row) {
-        this.changeData = []
-        this.changeData.push(row)
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.changeData.length <= 0) {
         this.$message({
@@ -415,39 +427,33 @@ export default {
     // 数据删除
     permissionDelete() {
       if (this.changeData.length <= 0) {
-        this.$message({
-          message: '请选择一条数据进行删除！',
-          type: 'warning'
-        });
+        this.$message({message: '请选择一条数据进行删除！', type: 'warning'});
       } else {
         const changeData = this.changeData
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+        this.$confirm('永久删除菜单无法恢复，确定要删除吗?', '提示', {
+          confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
         }).then(() => {
-          for (var i = 0; i < changeData.length; i++) {
-            this.permissionIds.push(changeData[i].permissionId)
-          }
-          permissionDelete(this.permissionIds).then(response => {
-            if (response.data) {
-              this.$message({
-                type: 'success',
-                message: '删除成功！'
-              });
-              this.getPermissionTreeList()
-            } else {
-              this.$message({
-                type: 'error',
-                message: '删除失败！'
-              });
+          this.$confirm('会同时删除子元素（按钮等），确定要删除吗?', '提示', {
+            confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+          }).then(() => {
+            for (var i = 0; i < changeData.length; i++) {
+              this.permissionIds.push(changeData[i].permissionId)
             }
+            permissionDelete(this.permissionIds).then(response => {
+              if (response.data) {
+                this.$message({
+                  type: 'success',
+                  message: '删除成功！'
+                });
+                this.getPermissionTreeList()
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: '删除失败！'
+                });
+              }
+            })
           })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
         });
       }
     },
@@ -483,7 +489,7 @@ export default {
         this.getPermissionTreeList()
       })
     },
-    // 对话框提交判断
+    // 保存菜单
     submitJudgment(dialogStatus) {
       if (dialogStatus === 'update') {
         this.updateData()
@@ -528,6 +534,12 @@ export default {
           });
         }
       })
+    },
+    // 路由输入监听
+    permissionRouterInput() {
+      if (this.temp.permissionComponent === '' || this.temp.permissionComponent.endsWith('/index')) {
+        this.temp.permissionComponent = this.temp.permissionRouter + '/index'
+      }
     }
   }
 }

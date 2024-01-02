@@ -28,4 +28,11 @@ public interface IZPermissionService extends IService<ZPermission> {
 
 
     List<ZRolePermissionDTO> listForRole(String roleId);
+
+    /**
+     * 删除菜单及子元素
+     *
+     * @param idList 菜单ID
+     */
+    boolean delete(List<String> idList);
 }

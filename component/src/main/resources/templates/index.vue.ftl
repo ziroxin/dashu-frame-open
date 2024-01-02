@@ -29,7 +29,7 @@
                    v-permission="'${buttonNamePre}delete'">删除
 				</el-button>
 				<el-upload v-permission="'${buttonNamePre}importExcel'" style="display: inline-block;margin: 0px 10px;"
-						   :action="$baseServer+'${controllerMapping}/import/excel'" :headers="$store.state.user.headerToken"
+						   :action="$baseServer+'${controllerMapping}/import/excel'" :headers="$store.getters.headerToken"
 						   :on-success="importExcelSuccess" accept=".xls,.xlsx"
 						   :show-file-list="false" :auto-upload="true">
 					<el-button v-waves type="warning" icon="el-icon-upload2" size="small">导入Excel</el-button>
@@ -40,7 +40,7 @@
 			</div>
 		</div>
 		<!-- ${table.comment!}-列表 -->
-		<el-table :data="tableData" stripe border @selection-change="handleTableSelectChange" v-loading="isLoading">
+		<el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange" v-loading="isLoading">
 			<el-table-column type="selection" width="50" align="center" header-align="center"/>
 <#list table.fields as field>
 			<el-table-column label="${field.comment}" prop="${field.propertyName}" align="center"/>
@@ -66,7 +66,7 @@
 		/>
 		<!-- 添加修改弹窗 -->
 		<el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-				   :visible.sync="dialogFormVisible" @close="resetTemp" width="600px">
+				   :visible.sync="dialogFormVisible" @close="resetTemp" width="600px" :key="'myDialog'+dialogIndex">
 <#if templateHtml??>
 			${templateHtml}
 <#else>
@@ -82,8 +82,9 @@
 		<#assign rules1=field.metaInfo.nullable?string("","{required: true, message: '" + field.comment + "不能为空'}")>
 		<#if field.propertyType=='String'>
 			<#if field.metaInfo.length gte 255>
-				<el-form-item label="${field.comment}" prop="${field.propertyName}">
-					<el-input v-model="temp.${field.propertyName}" :rules="[${rules1}]" type="textarea" maxlength="${field.metaInfo.length}"
+				<el-form-item label="${field.comment}" prop="${field.propertyName}"
+                      :rules="[${rules1}]">
+					<el-input v-model="temp.${field.propertyName}" type="textarea" maxlength="${field.metaInfo.length}"
                     placeholder="请输入${field.comment}"/>
 				</el-form-item>
 			<#else>
@@ -132,8 +133,14 @@
 import waves from '@/directive/waves'
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util';
+<#if templateHtml?? && templateHtml?contains("my-wang-editor")>
+import MyWangEditor from '@/components/MyWangEditor/index.vue';
+</#if>
 
 export default {
+  <#if templateHtml?? && templateHtml?contains("my-wang-editor")>
+  components: {MyWangEditor},
+  </#if>
   directives: {waves},
   data() {
     return {
@@ -154,6 +161,7 @@ export default {
       // 表单临时数据
       temp: {},
       isLoading: false,
+      dialogIndex: 0,
 <#if jsData??>
       ${jsData}
 </#if>
@@ -208,6 +216,7 @@ export default {
     // 清空表单temp数据
     resetTemp() {
       this.temp = {orderIndex: 0}
+      this.dialogIndex++
 <#if childTableList??>
 	<#list childTableList as child>
       this.load${child}FileList()
@@ -229,7 +238,8 @@ export default {
     // 打开修改窗口
     openUpdate(row) {
       if (row) {
-        this.tableSelectRows = [row]
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据修改！', type: 'warning'})
@@ -255,14 +265,10 @@ export default {
     },
     // 打开查看窗口
     openView(row) {
-      // 修改弹窗
       this.temp = Object.assign({}, row)
       this.dialogType = 'view'
       this.dialogFormVisible = true
       this.$nextTick(() => {
-        for (const $elElement of this.$refs['dataForm'].$el) {
-          $elElement.placeholder = '';
-        }
         this.$refs['dataForm'].clearValidate()
       })
     },
@@ -297,7 +303,8 @@ export default {
     // 删除
     deleteByIds(row) {
       if (row) {
-        this.tableSelectRows = [row]
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据删除！', type: 'warning'})

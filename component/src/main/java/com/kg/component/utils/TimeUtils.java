@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -53,6 +54,18 @@ public class TimeUtils {
      */
     public static TimeUtils setTime(LocalDateTime localDateTime) {
         return new TimeUtils(localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+    }
+
+    /**
+     * 设置要操作的时间
+     *
+     * @param dateStr   时间字符串
+     * @param formatStr 格式（如：yyyy-MM-dd HH:mm:ss 或者 yyyy-MM-dd'T'HH:mm:ss.SSS'Z'）
+     * @throws ParseException 格式转换异常
+     */
+    public static TimeUtils setTime(String dateStr, String formatStr) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat(formatStr);
+        return new TimeUtils(formatter.parse(dateStr).getTime());
     }
 
     /**
@@ -157,7 +170,7 @@ public class TimeUtils {
     /**
      * 输出格式化字符串
      *
-     * @param format 格式
+     * @param format 格式（如：yyyy-MM-dd HH:mm:ss 或者 yyyy-MM-dd'T'HH:mm:ss.SSS'Z'）
      */
     public String toFormat(String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);

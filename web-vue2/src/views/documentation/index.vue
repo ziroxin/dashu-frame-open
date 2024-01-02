@@ -1,11 +1,36 @@
 <template>
   <div class="app-container documentation-container">
-    <dropdown-menu class="document-btn" :items="articleList" title="系列文章" />
-    <a class="document-btn" target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">Github</a>
-    <a class="document-btn" target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/zh/guide/#%E5%AE%89%E8%A3%85">国内文档</a>
-    <a class="document-btn" target="_blank" href="https://element.eleme.cn/#/zh-CN/component/installation">Element-ui</a>
-    <a class="document-btn" target="_blank" href="https://cn.vuejs.org/v2/guide/">VUE</a>
-    <a class="document-btn" target="_blank" href="https://www.runoob.com/vue2/vue-tutorial.html">VUE-菜鸟</a>
+    <div class="mydocument">
+      <h2 style="width: 100%;">本框架相关</h2>
+      <a target="_blank" href="https://gitee.com/ziro/dashu-frame-open">
+        Gitee仓库
+      </a>
+      <a target="_blank" href="http://docs.java119.cn/">
+        中文文档
+      </a>
+      <a target="_blank" href="http://yanshi.java119.cn/">
+        演示网站
+      </a>
+    </div>
+    <el-divider></el-divider>
+    <h2 style="width: 100%;margin-left: 20px;">使用技术栈相关文档</h2>
+    <a class="document-btn" target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
+      vue-element-admin仓库Github
+    </a>
+    <a class="document-btn" target="_blank" href="https://panjiachen.gitee.io/vue-element-admin-site/zh/">
+      vue-element-admin文档
+    </a>
+    <a class="document-btn" target="_blank" href="https://element.eleme.cn/#/zh-CN/component/installation">
+      element-ui文档
+    </a>
+    <a class="document-btn" target="_blank" href="https://v2.cn.vuejs.org/">
+      vue2官方文档
+    </a>
+    <a class="document-btn" target="_blank" href="https://www.runoob.com/vue2/vue-tutorial.html">
+      vue2-菜鸟文档
+    </a>
+
+    <dropdown-menu class="document-btn" :items="articleList" title="其他文章"/>
   </div>
 </template>
 
@@ -52,6 +77,26 @@ export default {
     line-height: 60px;
     font-size: 20px;
     text-align: center;
+    border-radius: 5px;
+  }
+
+  .mydocument {
+    margin-bottom: 20px;
+    margin-left: 20px;
+    line-height: 40px;
+
+    a {
+      margin: 30px 30px 30px 0px;
+      color: black;
+      padding: 15px 30px;
+      border: 1px solid black;
+      border-radius: 5px;
+
+      &:hover {
+        color: #FFFFFF;
+        background-color: black;
+      }
+    }
   }
 }
 </style>

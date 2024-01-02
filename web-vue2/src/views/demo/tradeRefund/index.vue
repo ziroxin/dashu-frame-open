@@ -12,7 +12,7 @@
       <el-button v-else type="info" size="small">已全部退款</el-button>
     </div>
     <!-- 退款 - 支付demo-列表 -->
-    <el-table :data="tableData" stripe border @selection-change="handleTableSelectChange">
+    <el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="商户退款单号" prop="outRefundNo" align="center"/>
       <el-table-column label="退款原因" prop="refundDesc" align="center"/>
@@ -225,7 +225,8 @@ export default {
     // 打开修改窗口
     openUpdate(row) {
       if (row) {
-        this.tableSelectRows = [row]
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据修改！', type: 'warning'})
@@ -243,14 +244,10 @@ export default {
     },
     // 打开查看窗口
     openView(row) {
-      // 修改弹窗
       this.temp = Object.assign({}, row)
       this.dialogType = 'view'
       this.dialogFormVisible = true
       this.$nextTick(() => {
-        for (const $elElement of this.$refs['dataForm'].$el) {
-          $elElement.placeholder = '';
-        }
         this.$refs['dataForm'].clearValidate()
       })
     },
@@ -293,7 +290,8 @@ export default {
     // 删除
     deleteByIds(row) {
       if (row) {
-        this.tableSelectRows = [row]
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据删除！', type: 'warning'})

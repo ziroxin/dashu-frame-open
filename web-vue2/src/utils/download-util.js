@@ -62,6 +62,12 @@ export default {
       downloadLoadingInstance.close();
     })
   },
+  /**
+   * 下载文件（通过文件链接下载，并重命名下载文件名）
+   * @param text 文件url/blob
+   * @param name 重命名文件名（下载文件名）
+   * @param opts 其他参数
+   */
   saveAs(text, name, opts) {
     saveAs(text, name, opts);
   },

@@ -68,7 +68,11 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void add(ZUserRoleSaveDTO zUserRoleSaveDTO) {
+    public void add(ZUserRoleSaveDTO zUserRoleSaveDTO) throws BaseException {
+        // 查重
+        if (lambdaQuery().eq(ZUser::getUserName, zUserRoleSaveDTO.getUserName()).exists()) {
+            throw new BaseException("用户名已存在!");
+        }
         // 保存用户
         ZUser zUser = new ZUser();
         BeanUtils.copyProperties(zUserRoleSaveDTO, zUser);
@@ -90,7 +94,12 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public void update(ZUserRoleSaveDTO zUserRoleSaveDTO) {
+    public void update(ZUserRoleSaveDTO zUserRoleSaveDTO) throws BaseException {
+        // 查重
+        if (lambdaQuery().eq(ZUser::getUserName, zUserRoleSaveDTO.getUserName())
+                .ne(ZUser::getUserId, zUserRoleSaveDTO.getUserId()).exists()) {
+            throw new BaseException("用户名已存在!");
+        }
         ZUser zUser = new ZUser();
         BeanUtils.copyProperties(zUserRoleSaveDTO, zUser);
         zUser.setUpdateTime(LocalDateTime.now());

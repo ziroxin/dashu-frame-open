@@ -13,7 +13,7 @@ const service = axios.create({
   // 跨域请求时，携带cookie
   // withCredentials: true,
   // 请求超时时间：20s
-  timeout: 20000
+  timeout: 2000000
 })
 
 // 请求拦截器
@@ -59,9 +59,9 @@ service.interceptors.request.use(
 
 // 防止数据重复提交处理
 function requestCheckRepeatSubmit(config) {
-  // 如果请求头中，带有repeatSubmit=false，则跳过
-  const isRepeatSubmit = (config.headers || {}).repeatSubmit === false
-  if (!isRepeatSubmit) {
+  // 如果请求头中，带有 skipRepeatSubmitCheck = true，则跳过
+  const skipRepeatSubmitCheck = (config.headers || {}).skipRepeatSubmitCheck
+  if (!skipRepeatSubmitCheck) {
     // 间隔时间(ms)，小于此时间视为重复提交
     const repeatSubmitInterval = 1000
     const requestObj = {

@@ -55,9 +55,11 @@ com.kg:
     allow-extend: jpg|jpeg|png|gif|bpm|mp3|mp4|doc|docx|xls|xlsx|pdf|zip|rar|txt|
     #允许上传的图片格式（图片需要压缩，格式必须正确，以|结尾）
     image-extend: jpg|jpeg|png|gif|bpm|
-    #默认上传路径（文件保存的物理绝对路径;不要使用\）
+    #图片自动压缩，压缩比率（0-1之间的小数，例如：0.6表示压缩为60%）
+    image-quality: 0.6
+    #文件上传物理路径（文件保存的物理绝对路径;不要使用\；若使用docker部署，要配置容器内部路径，一般是/usr/local/springboot/））
     save-path: e:/IdeaProjects/fwwbsyb/dashu-frame-open/component/target/myupload/files
-    #隐藏上传路径（用于访问的路径，通过spring代理;不要使用\;要在security.ignore放开）
+    #文件路径映射（对外访问的路径，通过spring映射到物理路径;不要使用\;要在security.ignore放开）
     url-pre: /upload
   #登录常量配置
   login:
@@ -67,22 +69,12 @@ com.kg:
     is-yzm: true
     #jwtToken过期时限，单位：分钟
     jwt-token-expiry: 120
-  #oauth2配置
-  oauth2:
-    #服务端，是否启动(true/false)
-    server.enable: true
-    #客户端信息配置
-    client:
-      oauthServerUri: http://localhost:8123/
-      clientId: dev
-      clientSecret: qwer@123
-      redirectUri: http://localhost:8123/oauth2/client/login/code
-      errorRouter: http://localhost:9529/#/oauth2/error
-      successRouter: http://localhost:9529/#/oauth2/success
   #开发管理员配置 (所有开发管理员的ids，多个用逗号隔开)
   developer-user-ids: 1
   #跨域配置，是否允许跨域：默认关闭（true开启；false关闭）
   cors-enable: false
+  #默认操作日志，保存天数，默认：180天（定时任务自动删除旧日志）
+  auto-operate-log: 180
   #验证码配置
   captcha:
     #类型枚举 ARITHMETIC-算数；CHINESE-中文；CHINESE_GIF-中文闪图；GIF-闪图；SPEC-常规
@@ -110,10 +102,25 @@ com.kg:
       name: "ziro"
       www: "https://www.java119.cn"
       email: "877185959@qq.com"
+  #oauth2配置
+  oauth2:
+    #服务端，是否启动(true/false)
+    server.enable: true
+    #客户端信息配置（作为Oauth2的客户端，集成第三方Oauth2统一认证登录时使用）
+    client:
+      clientId: dev
+      clientSecret: qwer@123
+      redirectUri: http://localhost:8123/oauth2/client/login/code
+      #本地相关路径配置
+      oauthServerUri: http://localhost:8123/
+      errorRouter: http://localhost:9527/#/oauth2/error
+      successRouter: http://localhost:9527/#/oauth2/success
   #微信配置
   weixin:
-    appid: xxxxx
-    secret: xxxxx
+    #小程序配置(其中accessTokenUrl、jsCodeUrl、qrCodeUrl如需自定义，在此处配置即可覆盖默认值)
+    applet:
+      appId: xxxxx
+      secret: xxxxx
     #微信支付（商户号）配置（WxPayConfig.java）
     pay:
       #微信绑定的公众号appId
@@ -152,8 +159,15 @@ com.kg:
     client-id: xxxxx
     client-secret: xxxxx
     grant-type: xxxxx
+  #短信通知相关配置
+  sms:
+    aliyun:
+      accessKeyId: xxxxx
+      accessKeySecret: xxxxx
+      endpoint: dysmsapi.aliyuncs.com
+      sign: 短信签名xxxxx
 
-#输出日志配置
+#输出日志配置（日志级别：trace/debug/info/warn/error）
 logging.level:
   root: info
   com:

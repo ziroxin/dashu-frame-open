@@ -9,7 +9,7 @@ function resolve(dir) {
 const name = defaultSettings.title || '大树快速开发平台'
 
 // 带端口运行命令：npm run dev --port = 9527
-const port = process.env.port || process.env.npm_config_port || 9529 // dev port
+const port = process.env.port || process.env.npm_config_port || 9527 // dev port
 
 // 配置说明：https://cli.vuejs.org/zh/config/index.html
 module.exports = {
@@ -35,6 +35,8 @@ module.exports = {
       }
     }
   },
+  // 解决导入第三方包时，因为es语法导致的错误（让源码中的es6、es7的特性转换为es5）
+  transpileDependencies: ['swagger-ui-dist'],
   configureWebpack: {
     // 打包时，给index.html设置title
     name: name,
@@ -44,8 +46,6 @@ module.exports = {
       }
     }
   },
-  // 解决导入第三方包时，因为es语法导致的错误（让源码中的es6、es7的特性转换为es5）
-  transpileDependencies: ['swagger-ui-dist'],
   chainWebpack(config) {
     // Preload： 用于标记页面加载后即将用到的资源，浏览器将在主体渲染前加载preload标记文件。
     // 预加载（建议开启，可提高运行速度）

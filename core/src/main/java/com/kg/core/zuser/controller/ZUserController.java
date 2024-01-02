@@ -44,23 +44,15 @@ public class ZUserController {
     private ZOrganizationService organizationService;
 
     @ApiOperation(value = "/user/list", notes = "查询用户列表", httpMethod = "GET")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", value = "当前页码", paramType = "query", required = false, dataType = "Integer"),
-            @ApiImplicitParam(name = "limit", value = "每页条数", paramType = "query", required = false, dataType = "Integer"),
-            @ApiImplicitParam(name = "params", value = "查询条件", paramType = "query", required = false, dataType = "String")
-    })
+    @ApiImplicitParams({@ApiImplicitParam(name = "page", value = "当前页码", paramType = "query", required = false, dataType = "Integer"), @ApiImplicitParam(name = "limit", value = "每页条数", paramType = "query", required = false, dataType = "Integer"), @ApiImplicitParam(name = "params", value = "查询条件", paramType = "query", required = false, dataType = "String")})
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('user:list')")
-    public Page<ZUserDTO> list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                               @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
-                               @RequestParam(value = "params", required = false) String params) {
+    public Page<ZUserDTO> list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit, @RequestParam(value = "params", required = false) String params) {
         return userService.getUserList(page, limit, params);
     }
 
     @ApiOperation(value = "/user/getById", notes = "用户详情", httpMethod = "GET")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", value = "ID", paramType = "query", required = true, dataType = "String")
-    })
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", value = "ID", paramType = "query", required = true, dataType = "String")})
     @GetMapping("/getById")
     @PreAuthorize("hasAuthority('user:getById')")
     public ZUserRoleSaveDTO getById(String userId) {
@@ -68,9 +60,7 @@ public class ZUserController {
     }
 
     @ApiOperation(value = "/user/org/tree", notes = "用户管理组织机构树", httpMethod = "GET")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "parentId", value = "父节点ID（若不传，则根据当前用户查询）", paramType = "query", required = false, dataType = "String")
-    })
+    @ApiImplicitParams({@ApiImplicitParam(name = "parentId", value = "父节点ID（若不传，则根据当前用户查询）", paramType = "query", required = false, dataType = "String")})
     @GetMapping("/org/tree")
     @PreAuthorize("hasAuthority('user:org:tree')")
     public List<ZOrganizationTreeSelectDTO> orgTree(String parentId) {
@@ -95,6 +85,8 @@ public class ZUserController {
     public void add(@RequestBody ZUserRoleSaveDTO zUserRoleSaveDTO) throws BaseException {
         try {
             userService.add(zUserRoleSaveDTO);
+        } catch (BaseException e) {
+            throw new BaseException(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException("添加用户失败!");
@@ -109,6 +101,8 @@ public class ZUserController {
     public void update(@RequestBody ZUserRoleSaveDTO zUserRoleSaveDTO) throws BaseException {
         try {
             userService.update(zUserRoleSaveDTO);
+        } catch (BaseException e) {
+            throw new BaseException(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException("修改用户信息失败");
@@ -156,9 +150,7 @@ public class ZUserController {
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/user/change/status", logMsg = "启用/禁用用户")
     public void changeStatus(@RequestBody ZUserStatusDTO userStatusDTO) throws BaseException {
-        boolean update = userService.lambdaUpdate().set(ZUser::getStatus, userStatusDTO.getStatus())
-                .in(ZUser::getUserId, Arrays.asList(userStatusDTO.getUserIds()))
-                .update();
+        boolean update = userService.lambdaUpdate().set(ZUser::getStatus, userStatusDTO.getStatus()).in(ZUser::getUserId, Arrays.asList(userStatusDTO.getUserIds())).update();
         if (!update) {
             throw new BaseException("用户状态更新失败！");
         }

@@ -1,0 +1,12 @@
+/home/docker/openresty/logs/*log {
+    daily
+    dateext
+    rotate 180
+    missingok
+    notifempty
+    nocompress
+    sharedscripts
+    postrotate
+        docker exec openresty /bin/bash -c 'kill -USR1 `cat /usr/local/openresty/nginx/logs/nginx.pid`'
+    endscript
+}
