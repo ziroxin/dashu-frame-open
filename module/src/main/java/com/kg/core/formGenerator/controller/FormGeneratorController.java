@@ -328,6 +328,9 @@ public class FormGeneratorController {
                 // 无字段名，跳过（如行容器）
                 continue;
             }
+            if ("create_time".equals(field.getName()) || "update_time".equals(field.getName())) {
+                throw new BaseException("生成表失败！create_time或update_time为生成表默认字段，不可在表单中配置，请修改字段名后重新生成！");
+            }
             // 附件子表
             if (StringUtils.hasText(field.getChildFileTable())) {
                 // 判断附件是否有此表
