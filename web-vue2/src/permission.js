@@ -8,6 +8,7 @@ import 'nprogress/nprogress.css'
 import {getToken} from '@/utils/auth'
 import getPageTitle from '@/utils/get-page-title'
 import {isWhiteList} from '@/router/white-list'
+import {saveLastedRoutes} from '@/utils/lasted-routes'
 
 // 进度条配置
 NProgress.configure({showSpinner: false})
@@ -29,6 +30,7 @@ router.beforeEach(async (to, from, next) => {
   }
   // 路由白名单，直接跳转（不需检测token）
   if (isWhiteList(to.path)) {
+    saveLastedRoutes(to.path)
     next()
     NProgress.done()
   } else {
@@ -40,6 +42,7 @@ router.beforeEach(async (to, from, next) => {
       // 跳转前，先判断：store里是否有角色信息
       const hasRouters = store.getters.perrouters && store.getters.perrouters.length > 0
       if (hasRouters) {
+        saveLastedRoutes(to.path)
         next()
       } else {
         try {
