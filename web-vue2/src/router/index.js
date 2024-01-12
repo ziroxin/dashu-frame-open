@@ -49,6 +49,10 @@ export const constantRoutes = [
     path: '/knife4jVue3/dashuSwagger/home',
     component: () => import('@/views/swagger/home'),
     hidden: true
+  }, {
+    path: '/generator/form',
+    component: () => import('@/views/generator/form'),
+    hidden: true
   }
 ]
 
