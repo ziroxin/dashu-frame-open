@@ -37,7 +37,9 @@ export const constantRoutes = [
   }, {
     path: '/',
     redirect: '/dashboard/index',
-  }, {
+  },
+  // oauth2 client 相关页面
+  {
     path: '/oauth2/error',
     component: () => import('@/views/oauth2/error'),
     hidden: true
@@ -45,11 +47,15 @@ export const constantRoutes = [
     path: '/oauth2/success',
     component: () => import('@/views/oauth2/success'),
     hidden: true
-  }, {
+  },
+  // swagger 静态页
+  {
     path: '/knife4jVue3/dashuSwagger/home',
     component: () => import('@/views/swagger/home'),
     hidden: true
-  }, {
+  },
+  // 在线表单代码生成器 静态页
+  {
     path: '/generator/form',
     component: () => import('@/views/generator/form'),
     hidden: true
