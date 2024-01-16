@@ -63,7 +63,6 @@ public class ZUserThemeController {
     //updateByUser
     @ApiOperation(value = "/userTheme/zUserTheme/updateByUser", notes = "新增-用户主题配置", httpMethod = "POST")
     @PostMapping("/updateByUser")
-    @NoRepeatSubmit
     public void updateByUser(@RequestBody ZUserThemeDTO zUserThemeDTO) throws BaseException {
         try {
             ZUser currentUser = CurrentUserUtils.getCurrentUser();
