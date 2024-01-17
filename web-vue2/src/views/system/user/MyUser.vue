@@ -33,18 +33,33 @@
     </el-form>
     <el-divider></el-divider>
     <div style="text-align: center;">
-      <el-button type="primary" @click="submitJudgment">保存个人资料</el-button>
+      <el-button type="primary" @click="submitJudgment" icon="el-icon-edit">保存个人资料</el-button>
+      <el-button type="danger" icon="el-icon-setting" v-if="!showSettings"
+                 @click="showSettings=true" style="float: right;">
+        显示主题设置
+      </el-button>
     </div>
   </div>
 </template>
 <script>
-
 import ImageAvatar from "@/components/Upload/ImageAvatar.vue";
 import SelectTree from "@/components/SelectTree/index.vue";
-import store from "@/store";
 
 export default {
   components: {SelectTree, ImageAvatar},
+  computed: {
+    showSettings: {
+      get() {
+        return this.$store.state.settings.showSettings
+      },
+      set(val) {
+        this.$store.dispatch('settings/changeSetting', {
+          key: 'showSettings',
+          value: val
+        })
+      }
+    }
+  },
   data() {
     return {
       isLoading: false,
@@ -96,6 +111,10 @@ export default {
         }
       })
     },
+    // 显示设置按钮
+    updateSettingsStatus() {
+
+    }
   }
 }
 </script>

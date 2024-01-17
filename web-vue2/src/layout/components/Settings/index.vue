@@ -52,6 +52,16 @@
         <el-switch v-model="sidebarLogo" class="drawer-switch"/>
       </div>
 
+      <div class="drawer-item">
+        <span>
+          是否显示设置按钮
+          <el-tooltip effect="dark" content="【设置】按钮隐藏后，可在【个人中心】重新打开显示" placement="top">
+            <i class="el-icon-question" style="font-size: 20px;color: #f5222d;"></i>
+          </el-tooltip>
+        </span>
+        <el-switch v-model="showSettings" class="drawer-switch"/>
+      </div>
+
       <el-divider></el-divider>
 
       <div class="drawer-item" style="text-align: center;">
@@ -125,6 +135,18 @@ export default {
           key: 'sidebarLogo',
           value: val
         })
+      }
+    },
+    showSettings: {
+      get() {
+        return this.$store.state.settings.showSettings
+      },
+      set(val) {
+        this.$store.dispatch('settings/changeSetting', {
+          key: 'showSettings',
+          value: val
+        })
+        this.refreshPage()
       }
     },
     theme() {
