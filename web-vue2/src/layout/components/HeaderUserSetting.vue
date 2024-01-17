@@ -1,23 +1,20 @@
 <template>
-  <div class="avatar-container right-menu-item hover-effect" >
+  <div class="avatar-container right-menu-item hover-effect">
     <el-dropdown trigger="click">
       <div class="avatar-wrapper">
-        <img v-if="avatar!==null" :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+        <img v-if="avatar" :src="this.$baseServer + avatar" class="user-avatar">
         <img v-else src="@/assets/images/avatar.png" class="user-avatar">
         <i class="el-icon-caret-bottom"/>
       </div>
       <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item @click.native="toMyUser">
+          <span style="display:block;"><i class="el-icon-user"/>个人中心</span>
+        </el-dropdown-item>
         <a @click="editPassword=true">
-          <el-dropdown-item>
-            <i class="el-icon-key"/>
-            修改密码
-          </el-dropdown-item>
+          <el-dropdown-item><i class="el-icon-key"/>修改密码</el-dropdown-item>
         </a>
         <el-dropdown-item divided @click.native="logout">
-        <span style="display:block;">
-          <svg-icon icon-class="exit"/>
-          退出
-        </span>
+          <span style="display:block;"><svg-icon icon-class="exit"/> 退出</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -50,6 +47,9 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    toMyUser() {
+      this.$router.replace('/system/user/MyUser')
     }
   }
 }

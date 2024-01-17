@@ -59,6 +59,17 @@ export const constantRoutes = [
     path: '/generator/form',
     component: () => import('@/views/generator/form'),
     hidden: true
+  },
+  // 用户个人中心（登录可用）
+  {
+    path: '/system/user/MyUser',
+    component: () => import('@/layout'),
+    hidden: true,
+    children: [{
+      path: '/system/user/MyUser',
+      component: () => import('@/views/system/user/MyUser.vue'),
+      meta: {title: '个人中心'}
+    }]
   }
 ]
 
