@@ -64,7 +64,7 @@ public class ZPermissionServiceImpl extends ServiceImpl<ZPermissionMapper, ZPerm
         // 2 所有权限列表
         map.put("permissions", zPermissions);
         // 3 组装路由
-        map.put("perrouters", getChildrenPermission(zPermissions, "-1"));
+        map.put("perRouters", getChildrenPermission(zPermissions, "-1"));
         return map;
     }
 

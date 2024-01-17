@@ -147,13 +147,13 @@ const actions = {
   generateRoutes({commit}, routers) {
     return new Promise(resolve => {
       // 动态生成菜单（排除隐藏路由）
-      let accessedRoutes = filterAsyncRoutes(routers, true)
+      let accessedRoutes = filterAsyncRoutes(routers.perRouters, true)
       // 单独处理隐藏路由
-      accessedRoutes.push(...filterAsyncRoutes4Hidden(routers, true))
+      accessedRoutes.push(...filterAsyncRoutes4Hidden(routers.perRouters, true))
       // 404路由
       accessedRoutes.push(errorRoute)
-      // 首页路由，插入到第1条
-      accessedRoutes.unshift(homeRoute)
+      // 静态路由插入
+      accessedRoutes.unshift(...routers.staticRouters)
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })

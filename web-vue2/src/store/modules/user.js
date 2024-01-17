@@ -9,7 +9,7 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  perrouters: [],
+  perRouters: [],
   permissions: []
 }
 
@@ -27,8 +27,8 @@ const mutations = {
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
   },
-  SET_PERROUTERS: (state, perrouters) => {
-    state.perrouters = perrouters
+  SET_PERROUTERS: (state, perRouters) => {
+    state.perRouters = perRouters
   },
   SET_PERMISSIONS: (state, permissions) => {
     state.permissions = permissions
@@ -61,11 +61,11 @@ const actions = {
         if (!data) {
           reject('验证失败，请重新登录！')
         }
-        const {permissions, perrouters} = data
+        const {permissions, perRouters} = data
         const {nickName, avatar, introduce} = data.user
 
         commit('SET_PERMISSIONS', permissions)
-        commit('SET_PERROUTERS', perrouters)
+        commit('SET_PERROUTERS', perRouters)
         commit('SET_NAME', nickName)
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', introduce)

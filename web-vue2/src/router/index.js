@@ -70,6 +70,20 @@ export const constantRoutes = [
       component: () => import('@/views/system/user/MyUser.vue'),
       meta: {title: '个人中心'}
     }]
+  },
+  // 首页路由
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: () => import('@/layout'),
+    hidden: false,
+    redirect: 'noRedirect',
+    children: [{
+      path: 'index',
+      name: 'dashboard',
+      component: () => import('@/views/dashboard/index'),
+      meta: {title: '首页', activeMenu: '', affix: false, breadcrumb: true, icon: 'dashboard', noCache: false}
+    }]
   }
 ]
 
@@ -78,21 +92,6 @@ export const errorRoute = {
   path: '*',
   redirect: '/404',
   hidden: true
-}
-
-// 首页路由
-export const homeRoute = {
-  path: '/dashboard',
-  name: 'dashboard',
-  component: () => import('@/layout'),
-  hidden: false,
-  redirect: 'noRedirect',
-  children: [{
-    path: 'index',
-    name: 'dashboard',
-    component: () => import('@/views/dashboard/index'),
-    meta: {title: '首页', activeMenu: '', affix: false, breadcrumb: true, icon: 'dashboard', noCache: false}
-  }]
 }
 
 // 重置路由

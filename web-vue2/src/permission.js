@@ -40,18 +40,21 @@ router.beforeEach(async (to, from, next) => {
     if (hasToken) {
       // 登录后，跳转到原来打开的页面
       // 跳转前，先判断：store里是否有角色信息
-      const hasRouters = store.getters.perrouters && store.getters.perrouters.length > 0
+      const hasRouters = store.getters.perRouters && store.getters.perRouters.length > 0
       if (hasRouters) {
         saveLastedRoutes(to.path)
         next()
       } else {
         try {
           // 查询角色信息
-          const {perrouters} = await store.dispatch('user/getInfo')
-          if (perrouters && perrouters.length > 0) {
-            // 根据角色，生成可访问权限（路由）
-            const accessRoutes = await store.dispatch('permission/generateRoutes', perrouters)
-            // 动态加载路由
+          const {perRouters} = await store.dispatch('user/getInfo')
+          if (perRouters && perRouters.length > 0) {
+            console.log(JSON.stringify(router.options.routes.length), 111);
+            // 根据角色，生成可访问权限（路由），同时加载静态路由
+            const accessRoutes = await store.dispatch('permission/generateRoutes',
+              {perRouters: perRouters, staticRouters: router.options.routes})
+            console.log(accessRoutes.length, 333)
+            // 静态加载路由
             router.addRoutes(accessRoutes)
             // 加载路由完成，跳转
             // replace: true 不缓存，每次页面都刷新

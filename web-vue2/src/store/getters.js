@@ -12,7 +12,7 @@ const getters = {
   name: state => state.user.name,
   introduction: state => state.user.introduction,
   // 用户路由
-  perrouters: state => state.user.perrouters,
+  perRouters: state => state.user.perRouters,
   // 用户权限
   permissions: state => state.user.permissions,
   // 组装好的路由
