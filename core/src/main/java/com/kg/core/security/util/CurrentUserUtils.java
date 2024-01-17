@@ -13,7 +13,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class CurrentUserUtils {
 
     /**
-     * @return 获取当前用户信息
+     * 获取当前用户信息（ZUser）
+     *
+     * @return 当前用户信息
      */
     public static ZUser getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -25,5 +27,19 @@ public class CurrentUserUtils {
         return userDetailEntity.getZUser();
     }
 
+    /**
+     * 获取 Security 用户详情（SecurityUserDetailEntity）
+     *
+     * @return 当前用户信息
+     */
+    public static SecurityUserDetailEntity getSecurityUserDetailEntity() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal == null || "anonymousUser".equals(principal.toString())) {
+            // 无用户或匿名用户返回null
+            return null;
+        }
+        SecurityUserDetailEntity userDetailEntity = (SecurityUserDetailEntity) principal;
+        return userDetailEntity;
+    }
 
 }

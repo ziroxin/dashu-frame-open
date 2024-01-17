@@ -54,7 +54,7 @@ public class ZPermissionServiceImpl extends ServiceImpl<ZPermissionMapper, ZPerm
         Map<String, Object> map = new HashMap<>();
         // 1 查出该用户所有资源
         List<ZPermission> zPermissions;
-        if ((LoginConstant.DEVELOPER_USER_IDS + ",").contains(userId + ",")) {
+        if (LoginConstant.isDeveloper(userId)) {
             // 开发管理员，拥有全部资源权限
             zPermissions = lambdaQuery().orderByAsc(ZPermission::getPermissionOrder).list();
         } else {

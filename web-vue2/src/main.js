@@ -29,7 +29,7 @@ import clipboard from '@/directive/clipboard'
 import request from '@/utils/request'
 // 初始化数据字典
 import '@/utils/dict-install'
-import { loadTheme } from "@/utils/loadTheme";
+import { loadTheme } from "@/utils/load-theme";
 import PATCH_ElOverlayAutoClose from '@/utils/el-overlay-auto-close';
 
 // 加载自定义主题

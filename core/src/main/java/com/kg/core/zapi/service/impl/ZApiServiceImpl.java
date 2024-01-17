@@ -56,7 +56,7 @@ public class ZApiServiceImpl extends ServiceImpl<ZApiMapper, ZApi> implements IZ
 
     @Override
     public List<String> listApiByUserId(String userId) {
-        if ((LoginConstant.DEVELOPER_USER_IDS + ",").contains(userId + ",")) {
+        if (LoginConstant.isDeveloper(userId)) {
             // 判断是否开发管理员，拥有全部api权限（直接返回全部权限标记）
             return scanApiList().stream().map(zApi -> zApi.getApiPermission()).collect(Collectors.toList());
         }

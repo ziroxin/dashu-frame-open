@@ -52,12 +52,18 @@
         <el-switch v-model="sidebarLogo" class="drawer-switch"/>
       </div>
 
+      <el-divider></el-divider>
+
+      <div class="drawer-item" style="text-align: center;">
+        <el-button type="primary" plain icon="el-icon-refresh" @click="resetMyTheme">重置默认配置</el-button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import ThemePicker from '@/components/ThemePicker'
+import defaultSettings from '@/settings'
 
 export default {
   components: {ThemePicker},
@@ -138,7 +144,25 @@ export default {
         lock: true, spinner: 'el-icon-loading', background: 'rgba(0, 0, 0, 1)', fullscreen: true,
         text: '正在应用样式，请稍等...'
       });
-      window.location.reload()
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000)
+    },
+    resetMyTheme() {
+      this.$confirm('确定要重置样式吗？', '提示', {
+        confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning', zIndex: 40001
+      }).then(() => {
+        // 重置
+        for (const key in defaultSettings) {
+          if (defaultSettings.hasOwnProperty(key)) {
+            this.$store.dispatch('settings/changeSetting', {
+              key: key, value: defaultSettings[key]
+            })
+          }
+        }
+        // 刷新页面
+        this.refreshPage()
+      })
     }
   }
 }

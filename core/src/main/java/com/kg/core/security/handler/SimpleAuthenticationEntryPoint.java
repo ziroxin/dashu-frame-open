@@ -27,11 +27,10 @@ public class SimpleAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException, ServletException {
-        if (request.getRequestURL().indexOf("/oauth/authorize") >= 0) {
+        if (request.getServletPath().equals("/oauth/authorize")) {
             // Oauth2 授权码模式，未登录状态，则 forward 跳转：统一认证中心登录页
             System.out.println(authException.getMessage());
-            request.getRequestDispatcher(request.getContextPath() + "/oauth2/login.html").
-                    forward(request, response);
+            request.getRequestDispatcher("/oauth2/login.html").forward(request, response);
         } else {
             // 其他接口，未登录状态，抛出自定义异常
             String result = ResponseResult.builder()

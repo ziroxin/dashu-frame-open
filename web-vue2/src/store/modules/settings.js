@@ -31,7 +31,7 @@ const mutations = {
       // 保存用户参数到数据库
       const data = {themeJson: JSON.stringify(state)}
       request({
-        url: '/userTheme/zUserTheme/updateByUser', method: 'post', data
+        url: '/userTheme/zUserTheme/updateByUser', method: 'post', data, headers: {skipRepeatSubmitCheck: true}
       }).then((response) => {
         console.log('保存用户配置成功！')
       })

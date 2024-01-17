@@ -332,7 +332,7 @@ export default {
     },
     // 测试认证
     testOauth(row) {
-      window.open('http://localhost:8123/oauth/authorize?response_type=code' +
+      window.open(this.$baseServer + '/oauth/authorize?response_type=code' +
           '&client_id=' + row.clientId +
           '&redirect_uri=' + encodeURI(row.webServerRedirectUri) +
           '&state=my_state')

@@ -1,5 +1,5 @@
 import Layout from '@/layout'
-import {errorRoute} from '@/router';
+import {errorRoute, homeRoute} from '@/router';
 
 // 转换成组件
 function convertComponent(component) {
@@ -152,6 +152,8 @@ const actions = {
       accessedRoutes.push(...filterAsyncRoutes4Hidden(routers, true))
       // 404路由
       accessedRoutes.push(errorRoute)
+      // 首页路由，插入到第1条
+      accessedRoutes.unshift(homeRoute)
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })

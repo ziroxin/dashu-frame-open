@@ -1,18 +1,21 @@
 <template>
   <div class="home" :style="{height: ($windowHeight-45) + 'px'}">
     <div class="title" @click="back">
-      返回后台首页
+      < 返回后台
     </div>
     <iframe :src="htmlPageURL" frameborder="0" style="overflow:hidden;"
             width="100%" height="100%"></iframe>
   </div>
 </template>
 <script>
+import {getLastedRoutes} from '@/utils/lasted-routes'
+
 export default {
   data() {
     return {
       htmlPageURL: '',
-      bServer: this.$baseServer
+      bServer: this.$baseServer,
+      backRoute: '/'
     }
   },
   created() {
@@ -21,10 +24,15 @@ export default {
     } else {
       this.htmlPageURL = 'swagger/index.html#/home?burl=' + location.origin + this.bServer + '/'
     }
+    // 处理返回的路由
+    const lastedRoutes = getLastedRoutes()
+    if (lastedRoutes && lastedRoutes.length > 0) {
+      this.backRoute = lastedRoutes.find(item => !item.startsWith(this.$route.path)) || '/'
+    }
   },
   methods: {
     back() {
-      this.$router.push({path: '/'})
+      this.$router.push({path: this.backRoute})
     }
   }
 }

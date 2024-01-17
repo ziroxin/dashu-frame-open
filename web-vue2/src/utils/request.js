@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {Message, MessageBox} from 'element-ui'
 import store from '@/store'
-import {getToken, getTokenValidTime} from '@/utils/auth'
+import {getToken, getTokenValidTime, getTokenRefreshInterval} from '@/utils/auth'
 import qs from 'qs'
 import {isWhiteList} from '@/router/white-list'
 import cache from '@/utils/cache'
@@ -12,8 +12,8 @@ const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
   // 跨域请求时，携带cookie
   // withCredentials: true,
-  // 请求超时时间：20s
-  timeout: 2000000
+  // 请求超时时间：120s
+  timeout: 120000
 })
 
 // 请求拦截器
@@ -28,7 +28,7 @@ service.interceptors.request.use(
           // 判断token的有效期
           let tokenValidTime = getTokenValidTime();
           if (new Date().getTime() < new Date(tokenValidTime).getTime() &&
-            (new Date().getTime() + (10 * 60 * 1000)) > new Date(tokenValidTime).getTime()) {
+            (new Date().getTime() + getTokenRefreshInterval()) > new Date(tokenValidTime).getTime()) {
             // token失效前10分钟，刷新token
             store.dispatch('user/refreshToken')
           }
