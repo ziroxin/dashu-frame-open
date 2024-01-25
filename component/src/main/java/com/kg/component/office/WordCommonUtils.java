@@ -175,8 +175,36 @@ public class WordCommonUtils {
                 });
                 // 6 单元格垂直居中
                 c.setVerticalAlignment(format.getCellValign());
+                // 7 单元格背景色
+                c.setColor(format.getBgColor());
             });
         });
+    }
+
+    /**
+     * 设置单元格背景色
+     */
+    public static void tableBgColor(XWPFTable table, int startRow, int endRow, int startCol, int endCol,
+                                    WordTableFormatDTO format) {
+        for (int i = startRow; i <= endRow; i++) {
+            XWPFTableRow row = table.getRow(i);
+            // 3 行高
+            row.setHeight(format.getRowHeight());
+            for (int j = startCol; j <= endCol; j++) {
+                XWPFTableCell c = row.getCell(j);
+                c.getParagraphs().forEach(p -> {
+                    // 4 内容水平居中
+                    p.setAlignment(format.getCellAlign());
+                    // 5 单倍行距
+                    p.setSpacingBefore(format.getCellSpaceBefore());// 段前
+                    p.setSpacingAfter(format.getCellSpaceAfter());// 段后
+                });
+                // 6 单元格垂直居中
+                c.setVerticalAlignment(format.getCellValign());
+                // 7 单元格背景色
+                c.setColor(format.getBgColor());
+            }
+        }
     }
 
 

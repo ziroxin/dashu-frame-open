@@ -87,6 +87,17 @@ public class Test2 {
             // 2.4 格式化表格（内容居中）
             WordCommonUtils.tableFormat(table, new WordTableFormatDTO());
 
+            // 2.5 给某 n 个单元格配置格式
+            WordTableFormatDTO cellFormat = new WordTableFormatDTO();
+            cellFormat.setBgColor("CCCCCC");// 设置标题行背景色和行高
+            cellFormat.setRowHeight(800);
+            WordCommonUtils.tableBgColor(table, 0, 0,
+                    0, table.getRow(0).getTableCells().size() - 1, cellFormat);
+            cellFormat.toDefault();// 恢复默认配置
+            cellFormat.setBgColor("FF0000");
+            WordCommonUtils.tableBgColor(table, 3, 4, 1, 2, cellFormat);
+
+
             doc.write(new FileOutputStream(outPath));
             doc.close();
 

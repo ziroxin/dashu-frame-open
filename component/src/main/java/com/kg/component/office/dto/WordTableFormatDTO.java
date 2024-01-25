@@ -16,21 +16,41 @@ import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 @Getter
 @Setter
 public class WordTableFormatDTO {
-    // 表格宽度类型（PCT-百分比）
-    private TableWidthType widthType = TableWidthType.PCT;
-    // 表格宽度
-    private String width = "100%";
-    // 表格对齐方式（该表格在行内的对齐方式，不是表格内容的对齐方式）
-    private TableRowAlign align = TableRowAlign.CENTER;
-    // 行高
-    private int rowHeight = 400;
-    // 单元格对齐方式
-    private ParagraphAlignment cellAlign = ParagraphAlignment.CENTER;
-    // 单元格垂直对齐方式
-    private XWPFTableCell.XWPFVertAlign cellValign = XWPFTableCell.XWPFVertAlign.CENTER;
-    // 单元格段前空白
-    private int cellSpaceBefore = 0;
-    // 单元格段后空白
-    private int cellSpaceAfter = 0;
+    public WordTableFormatDTO() {
+        toDefault();
+    }
 
+    // 表格宽度类型（PCT-百分比）
+    private TableWidthType widthType;
+    // 表格宽度
+    private String width;
+    // 表格对齐方式（该表格在行内的对齐方式，不是表格内容的对齐方式）
+    private TableRowAlign align;
+    // 行高
+    private int rowHeight;
+    // 单元格对齐方式
+    private ParagraphAlignment cellAlign;
+    // 单元格垂直对齐方式
+    private XWPFTableCell.XWPFVertAlign cellValign;
+    // 单元格段前空白
+    private int cellSpaceBefore;
+    // 单元格段后空白
+    private int cellSpaceAfter;
+    // 单元格背景色
+    private String bgColor;
+
+    /**
+     * 默认格式
+     */
+    public void toDefault() {
+        widthType = TableWidthType.PCT;
+        width = "100%";
+        align = TableRowAlign.CENTER;
+        rowHeight = 400;
+        cellAlign = ParagraphAlignment.CENTER;
+        cellValign = XWPFTableCell.XWPFVertAlign.CENTER;
+        cellSpaceBefore = 0;
+        cellSpaceAfter = 0;
+        bgColor = "FFFFFF";
+    }
 }
