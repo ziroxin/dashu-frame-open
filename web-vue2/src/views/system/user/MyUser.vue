@@ -34,7 +34,7 @@
     <el-divider></el-divider>
     <div style="text-align: center;">
       <el-button type="primary" @click="submitJudgment" icon="el-icon-edit">保存个人资料</el-button>
-      <el-button type="danger" icon="el-icon-setting" v-if="!showSettings"
+      <el-button type="danger" icon="el-icon-setting" v-if="!showSettings && defaultSettings.showSettings"
                  @click="showSettings=true" style="float: right;">
         显示主题设置
       </el-button>
@@ -44,6 +44,7 @@
 <script>
 import ImageAvatar from "@/components/Upload/ImageAvatar.vue";
 import SelectTree from "@/components/SelectTree/index.vue";
+import defaultSettings from '@/settings'
 
 export default {
   components: {SelectTree, ImageAvatar},
@@ -74,6 +75,7 @@ export default {
           }
         }]
       },
+      defaultSettings: defaultSettings
     }
   },
   created() {

@@ -57,7 +57,7 @@ Vue.directive('clipboard', clipboard)
 // window.innerHeight自适应（1是否显示多标签；2横向布局多出一行面包屑）
 let windowHeight = window.innerHeight
 windowHeight = store.getters.settings.tagsView ? windowHeight : windowHeight + 40
-windowHeight = store.getters.settings.layout === 'horizontal' ? windowHeight - 50 : windowHeight
+windowHeight = store.getters.settings.layout === 'topMenu' ? windowHeight - 50 : windowHeight
 // 注册全局变量
 Object.assign(Vue.prototype, {
   $objCopy: objCopy,

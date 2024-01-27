@@ -24,13 +24,17 @@
       <div class="drawer-item">
         <span>导航模式</span>
         <ul>
-          <li :class="layout === 'vertical'?'active':''" @click="layout = 'vertical'">
+          <li :class="layout === 'leftMenu'?'active':''" @click="layout = 'leftMenu'">
             <svg-icon icon-class="left-menu"></svg-icon>
-            <br/><span>侧边菜单布局</span>
+            <br/><span>左侧菜单</span>
           </li>
-          <li :class="layout === 'horizontal'?'active':''" @click="layout = 'horizontal'">
+          <li :class="layout === 'topMenu'?'active':''" @click="layout = 'topMenu'">
             <svg-icon icon-class="top-menu"></svg-icon>
-            <br/><span>顶部菜单布局</span>
+            <br/><span>顶部菜单</span>
+          </li>
+          <li :class="layout === 'topLeftMenu'?'active':''" @click="layout = 'topLeftMenu'">
+            <svg-icon icon-class="top-left-menu"></svg-icon>
+            <br/><span>综合布局</span>
           </li>
         </ul>
       </div>
@@ -241,14 +245,14 @@ export default {
         text-align: center;
         list-style: none;
         font-size: 10px;
-        width: 44%;
+        width: 31%;
         cursor: pointer;
         padding: 5px 0px;
-        margin: 0 3%;
+        margin: 0 1%;
 
         .svg-icon {
-          width: 80px;
-          height: 80px;
+          width: 45px;
+          height: 45px;
         }
 
         &:hover {

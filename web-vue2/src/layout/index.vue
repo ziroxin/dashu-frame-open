@@ -1,6 +1,6 @@
 <template>
-  <!-- ==================================横向布局================================== -->
-  <div v-if="'horizontal' === layout" class="app-wrapper">
+  <!-- ==================================顶部菜单布局================================== -->
+  <div v-if="'topMenu' === layout" class="app-wrapper">
     <div :class="{hasTagsViewHor:needTagsView}">
       <!--顶部-->
       <div :class="{'fixed-header-hor':fixedHeader}">
@@ -18,10 +18,35 @@
     <right-panel v-if="showSettings">
       <settings/>
     </right-panel>
+    <!--修改密码弹窗-->
     <user-edit-password v-model="editPassword" :info="editPasswordInfo"/>
   </div>
 
-  <!-- ==================================纵向布局================================== -->
+  <!-- ==================================综合布局================================== -->
+  <div v-else-if="'topLeftMenu' === layout" :class="classObj" class="app-wrapper">
+    <!--左侧菜单-->
+    <sidebar class="sidebar-container"/>
+    <!--右侧-->
+    <div :class="{hasTagsViewAll:needTagsView}" class="main-container">
+      <!--顶部-->
+      <div :class="{'fixed-header-all':fixedHeader}">
+        <!--顶部导航栏-->
+        <navbar-top-left/>
+        <!--标签-->
+        <tags-view v-if="needTagsView"/>
+      </div>
+      <!--主区域-->
+      <app-main :layout="layout"/>
+    </div>
+    <!--右侧面板-->
+    <right-panel v-if="showSettings">
+      <settings/>
+    </right-panel>
+    <!--修改密码弹窗-->
+    <user-edit-password v-model="editPassword" :info="editPasswordInfo"/>
+  </div>
+
+  <!-- ==================================左侧菜单布局（手机端默认会调整为左侧菜单布局）================================== -->
   <div v-else :class="classObj" class="app-wrapper">
     <!--手机端显示蒙版-->
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
@@ -38,32 +63,33 @@
       </div>
       <!--主区域-->
       <app-main :layout="layout"/>
-      <!--右侧面板-->
-      <right-panel v-if="showSettings">
-        <settings/>
-      </right-panel>
     </div>
+    <!--右侧面板-->
+    <right-panel v-if="showSettings">
+      <settings/>
+    </right-panel>
+    <!--修改密码弹窗-->
     <user-edit-password v-model="editPassword" :info="editPasswordInfo"/>
   </div>
 </template>
 
 <script>
 import RightPanel from '@/components/RightPanel'
-import {AppMain, Navbar, Settings, Sidebar, TagsView} from './components'
+import {AppMain, Navbar, NavbarHor, NavbarTopLeft, Settings, Sidebar, TagsView} from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import {mapState} from 'vuex'
 import Cookies from 'js-cookie';
 import UserEditPassword from '@/views/system/user/UserEditPassword';
-import NavbarHor from '@/layout/components/NavbarHor';
 import Breadcrumb from '@/components/Breadcrumb'
 
 export default {
   name: 'Layout',
   components: {
-    NavbarHor,
     UserEditPassword,
     AppMain,
     Navbar,
+    NavbarHor,
+    NavbarTopLeft,
     RightPanel,
     Settings,
     Sidebar,
@@ -157,15 +183,26 @@ export default {
 .mobile .fixed-header {
   width: 100%;
 }
-</style>
 
-<style lang="scss" scoped>
 .fixed-header-hor {
   position: fixed;
   top: 0;
   right: 0;
   z-index: 9;
   width: calc(100%);
+}
+
+.fixed-header-all {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9;
+  width: calc(100% - #{$sideBarWidth});
+  transition: width 0.28s;
+}
+
+.hideSidebar .fixed-header-all {
+  width: calc(100% - 54px)
 }
 
 .breadcrumb-container {

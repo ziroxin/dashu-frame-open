@@ -14,9 +14,9 @@ module.exports = {
   tagsView: false,
 
   /**
-   * 布局：vertical:纵向布局;horizontal:横向布局
+   * 布局：leftMenu:左侧菜单布局;topMenu:顶部菜单布局;topLeftMenu:综合布局;
    */
-  layout: 'vertical',
+  layout: 'leftMenu',
 
   /**
    * @type {boolean} true | false

@@ -23,7 +23,7 @@ export default {
       store.dispatch('app/toggleDevice', 'mobile')
       store.dispatch('app/closeSideBar', {withoutAnimation: true})
       // 手机端默认纵向布局
-      store.dispatch('settings/changeSetting', {key: 'layout', value: 'vertical'})
+      store.dispatch('settings/changeSetting', {key: 'layout', value: 'leftMenu'})
     }
   },
   methods: {
@@ -41,7 +41,7 @@ export default {
         if (isMobile) {
           store.dispatch('app/closeSideBar', {withoutAnimation: true})
           // 手机端默认纵向布局
-          store.dispatch('settings/changeSetting', {key: 'layout', value: 'vertical'})
+          store.dispatch('settings/changeSetting', {key: 'layout', value: 'leftMenu'})
         }
       }
     }
