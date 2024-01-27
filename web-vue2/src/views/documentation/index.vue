@@ -20,6 +20,9 @@
     <a class="document-btn" target="_blank" href="https://panjiachen.gitee.io/vue-element-admin-site/zh/">
       vue-element-admin文档
     </a>
+    <a class="document-btn" target="_blank" href="https://panjiachen.gitee.io/vue-element-admin/">
+      vue-element-admin预览
+    </a>
     <a class="document-btn" target="_blank" href="https://element.eleme.cn/#/zh-CN/component/installation">
       element-ui文档
     </a>

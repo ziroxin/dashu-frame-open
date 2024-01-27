@@ -3,7 +3,6 @@
     <admin-dashboard></admin-dashboard>
   </div>
 </template>
-
 <script>
 import adminDashboard from './admin'
 
@@ -18,3 +17,14 @@ export default {
   computed: {}
 }
 </script>
+<style lang="scss" scoped>
+.dashboard-container {
+  margin-top: -4px;
+}
+
+.app-main-hor {
+  .dashboard-container {
+    margin-top: 40px;
+  }
+}
+</style>

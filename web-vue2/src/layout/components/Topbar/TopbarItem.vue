@@ -1,7 +1,7 @@
 <template>
-  <div v-if="!item.hidden" class="hor-menu">
+  <div v-if="item.hidden!==undefined&&!item.hidden" class="hor-menu">
     <template
-      v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
+        v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
           <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title"/>
@@ -14,12 +14,12 @@
         <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title"/>
       </template>
       <topbar-item
-        v-for="child in item.children"
-        :key="child.path"
-        :is-nest="true"
-        :item="child"
-        :base-path="resolvePath(child.path)"
-        class="nest-menu"
+          v-for="child in item.children"
+          :key="child.path"
+          :is-nest="true"
+          :item="child"
+          :base-path="resolvePath(child.path)"
+          class="nest-menu"
       />
     </el-submenu>
   </div>
@@ -91,14 +91,6 @@ export default {
       line-height: 45px;
       margin: 3px 5px;
       border-radius: 10px;
-
-      &:hover {
-        background-color: #{$subMenuHover} !important;
-      }
-
-      &:active {
-        background-color: #{$subMenuHover} !important;
-      }
     }
 
     .is-active {
@@ -113,6 +105,18 @@ export default {
       &:hover {
         background-color: #{$subMenuActive} !important;
       }
+    }
+  }
+
+  .submenu-title-noDropdown {
+    &:hover {
+      height: 58px;
+      background-color: #{$subMenuActive} !important;
+      border-bottom: 2px solid var(--theme-color) !important;
+    }
+
+    &.is-active {
+      height: 58px;
     }
   }
 
