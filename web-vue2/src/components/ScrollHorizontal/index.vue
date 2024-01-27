@@ -83,7 +83,6 @@ export default {
 
   .content {
     white-space: nowrap; /* 防止内容换行 */
-    display: inline-block;
     overflow: hidden;
   }
 

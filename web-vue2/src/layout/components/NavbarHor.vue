@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar">
+  <div class="navbar" ref="navbar">
     <!-- logo -->
     <div class="hor-logo-div">
       <router-link v-if="showLogo" key="collapse" class="hor-logo-link" to="/">
@@ -8,7 +8,10 @@
       </router-link>
     </div>
     <!-- 顶部菜单 -->
-    <topbar/>
+    <scroll-horizontal v-if="leftMenuWidth" :container-width="leftMenuWidth" :container-height="57"
+                       style="float: left;margin:0px 30px;line-height: 17px;">
+      <topbar/>
+    </scroll-horizontal>
     <!-- 头像菜单 -->
     <div class="right-menu">
       <template v-if="device!=='mobile'">
@@ -36,9 +39,11 @@ import variables from '@/styles/variables.scss';
 import Topbar from './Topbar/index'
 import HeaderUserSetting from "@/layout/components/HeaderUserSetting";
 import Logo from "@/layout/components/Sidebar/Logo.vue";
+import ScrollHorizontal from "@/components/ScrollHorizontal/index.vue";
 
 export default {
   components: {
+    ScrollHorizontal,
     Logo,
     HeaderUserSetting,
     ErrorLog,
@@ -49,8 +54,14 @@ export default {
   },
   data() {
     return {
-      logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
+      // logo默认图片
+      logo: require('@/assets/images/logo.png'),
+      // 顶部左侧菜单宽度
+      leftMenuWidth: null,
     }
+  },
+  mounted() {
+    this.leftMenuWidth = this.showLogo ? this.$refs.navbar.offsetWidth - 400 : this.$refs.navbar.offsetWidth - 230
   },
   computed: {
     ...mapGetters([

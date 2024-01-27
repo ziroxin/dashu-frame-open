@@ -99,6 +99,14 @@ export default {
   }
 }
 
+.nest-menu { // 子菜单图标
+  .el-menu-item {
+    .svg-icon {
+      margin: 0 10px 0px 5px !important;
+    }
+  }
+}
+
 .hor-menu {
   .el-submenu {
     ::v-deep .el-submenu__title {
@@ -111,6 +119,7 @@ export default {
   .submenu-title-noDropdown {
     &:hover {
       height: 58px;
+      margin-bottom: -1px !important;
       background-color: #{$subMenuActive} !important;
       border-bottom: 2px solid var(--theme-color) !important;
     }
@@ -121,7 +130,7 @@ export default {
   }
 
   .svg-icon {
-    margin: 0 10px 0px 5px !important;
+    margin: 0 10px 0px 0px !important;
   }
 }
 

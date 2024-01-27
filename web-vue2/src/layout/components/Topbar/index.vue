@@ -45,9 +45,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .top-bar {
-  margin-left: 20px;
-  display: inline-block;
-  width: calc(100% - 350px);
+  display: inline-flex;
+  width: 100%;
 
   .hor-menu {
     float: left;
