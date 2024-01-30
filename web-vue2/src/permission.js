@@ -36,6 +36,8 @@ router.beforeEach(async (to, from, next) => {
   } else {
     // 判断用户是否登录（有token代表登录）
     const hasToken = getToken()
+    // query字符串
+    const otherQuery = new URLSearchParams(to.query).toString()
 
     if (hasToken) {
       // 登录后，跳转到原来打开的页面
@@ -59,7 +61,7 @@ router.beforeEach(async (to, from, next) => {
             next({...to, replace: true})
           } else {
             await store.dispatch('user/resetToken')
-            next(`/login?redirect=${to.path}&${new URLSearchParams(to.query).toString()}`)
+            next(`/login?redirect=${to.path}${!otherQuery ? '' : `&${otherQuery}`}`)
             Message.error('抱歉，您没有权限！')
             NProgress.done()
           }
@@ -68,14 +70,14 @@ router.beforeEach(async (to, from, next) => {
           await store.dispatch('user/resetToken')
           // Message.error(error || 'Has Error')
           Message.error({message: error || 'Has Error'})
-          next(`/login?redirect=${to.path}&${new URLSearchParams(to.query).toString()}`)
+          next(`/login?redirect=${to.path}${!otherQuery ? '' : `&${otherQuery}`}`)
           NProgress.done()
         }
       }
     } else {
       // 无token
       // 无权限，跳到登录页
-      next(`/login?redirect=${to.path}&${new URLSearchParams(to.query).toString()}`)
+      next(`/login?redirect=${to.path}${!otherQuery ? '' : `&${otherQuery}`}`)
       NProgress.done()
     }
   }
