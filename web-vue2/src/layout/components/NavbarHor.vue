@@ -36,7 +36,7 @@ import Screenfull from '@/components/Screenfull'
 // import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 import variables from '@/styles/variables.scss';
-import Topbar from './Topbar/index'
+import {Topbar} from '@/layout/components'
 import HeaderUserSetting from "@/layout/components/HeaderUserSetting";
 import Logo from "@/layout/components/Sidebar/Logo.vue";
 import ScrollHorizontal from "@/components/ScrollHorizontal/index.vue";

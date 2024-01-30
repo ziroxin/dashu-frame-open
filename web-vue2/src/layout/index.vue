@@ -25,13 +25,13 @@
   <!-- ==================================综合布局================================== -->
   <div v-else-if="'topLeftMenu' === layout" :class="classObj" class="app-wrapper">
     <!--左侧菜单-->
-    <sidebar class="sidebar-container"/>
+    <top-sidebar :permission_routes="permissionRoutes" class="sidebar-container"/>
     <!--右侧-->
     <div :class="{hasTagsViewAll:needTagsView}" class="main-container">
       <!--顶部-->
       <div :class="{'fixed-header-all':fixedHeader}">
         <!--顶部导航栏-->
-        <navbar-top-left/>
+        <navbar-top-left @menuChanged="menuChanged"/>
         <!--标签-->
         <tags-view v-if="needTagsView"/>
       </div>
@@ -75,7 +75,7 @@
 
 <script>
 import RightPanel from '@/components/RightPanel'
-import {AppMain, Navbar, NavbarHor, NavbarTopLeft, Settings, Sidebar, TagsView} from './components'
+import {AppMain, Navbar, NavbarHor, NavbarTopLeft, Settings, Sidebar, TagsView, TopSidebar} from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import {mapState} from 'vuex'
 import Cookies from 'js-cookie';
@@ -85,6 +85,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 export default {
   name: 'Layout',
   components: {
+    TopSidebar,
     UserEditPassword,
     AppMain,
     Navbar,
@@ -101,7 +102,10 @@ export default {
     return {
       // 是否默认密码
       editPassword: false,
-      editPasswordInfo: ''
+      // 修改密码提示信息
+      editPasswordInfo: '',
+      // 综合布局时，左侧菜单内容
+      permissionRoutes: []
     }
   },
   mounted() {
@@ -136,6 +140,10 @@ export default {
   methods: {
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', {withoutAnimation: false})
+    },
+    // 综合布局菜单改变（点击顶部菜单时）
+    menuChanged(childrenMenu) {
+      this.permissionRoutes = childrenMenu;
     }
   }
 }

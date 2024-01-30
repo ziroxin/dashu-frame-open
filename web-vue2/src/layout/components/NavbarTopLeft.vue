@@ -7,7 +7,7 @@
       <scroll-horizontal v-if="leftMenuWidth" :container-width="leftMenuWidth" :container-height="50">
         <el-menu :style="{'--theme-color': themeColor}"
                  class="top-left-bar"
-                 :default-active="activeMenu"
+                 :default-active="activeTopMenu.name"
                  :background-color="variables.menuBg"
                  :text-color="variables.menuText"
                  :active-text-color="themeColor"
@@ -17,15 +17,17 @@
                  menu-trigger="hover"
         >
           <template v-for="item in permission_routes" v-if="item.hidden!==undefined&&!item.hidden">
+            <!-- 无子菜单（跳页） -->
             <template
                 v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
-              <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path,item.path)">
-                <el-menu-item :index="resolvePath(onlyOneChild.path,item.path)">
+              <a v-if="onlyOneChild.meta" @click="loadLeftMenu(item,true)">
+                <el-menu-item :index="item.name">
                   <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title"/>
                 </el-menu-item>
-              </app-link>
+              </a>
             </template>
-            <el-menu-item v-else :index="resolvePath(item.path,item.path)" popper-append-to-body>
+            <!-- 有子菜单（加载左侧菜单） -->
+            <el-menu-item v-else :index="item.name" @click="loadLeftMenu(item)">
               <template slot="title">
                 <item :icon="item.meta.icon" :title="item.meta.title"/>
               </template>
@@ -73,10 +75,9 @@ export default {
       editPassword: false,
       // 顶部左侧菜单宽度
       leftMenuWidth: null,
+      // 当前路由
+      activeTopMenu: ''
     }
-  },
-  mounted() {
-    this.leftMenuWidth = this.$refs.navbarTopLeft.offsetWidth - 190
   },
   computed: {
     ...mapGetters([
@@ -87,32 +88,110 @@ export default {
     themeColor() {
       return this.$store.state.settings.theme
     },
-    activeMenu() {
-      const route = this.$route
-      const {meta, path} = route
-      if (meta.activeMenu) {
-        return meta.activeMenu
-      }
-      return path
-    },
     variables() {
       return variables
     }
   },
+  mounted() {
+    this.leftMenuWidth = this.$refs.navbarTopLeft.offsetWidth - 190
+    this.firstOrRefreshLoad()
+  },
   methods: {
+    // 首次加载或刷新页面
+    firstOrRefreshLoad() {
+      if (sessionStorage.hasOwnProperty('activeTopMenu')) {
+        // 刷新
+        this.activeTopMenu = JSON.parse(sessionStorage.getItem('activeTopMenu'))
+        const item = this.activeTopMenu;
+        const isRouter = this.hasOneShowingChild(item.children, item)
+            && (!this.onlyOneChild.children || this.onlyOneChild.noShowingChildren)
+            && !item.alwaysShow;
+        this.loadLeftMenu(item, isRouter)
+      } else {
+        // 取当前顶级路由（首次加载，判断选中项）
+        const itemArr = this.permission_routes.filter(item => {
+          if (!item.hidden && item.children !== undefined) {
+            if (this.$route.fullPath.indexOf(item.path) >= 0) {
+              // 顶级菜单判断
+              return this.$route.path === this.resolvePath(item.children[0].path, item.path)
+            } else {
+              // 子菜单判断
+              const c1Arr = item.children.filter(c => {
+                if (!c.children) {
+                  console.log('c.children', this.resolvePath(c.path, item.path))
+                  return !c.hidden && this.$route.path === this.resolvePath(c.path, item.path)
+                } else {
+                  // 三级菜单判断（若有更多级菜单需要修改此处）
+                  const c2Arr = c.children.filter(c2 => {
+                    return !c2.hidden && this.$route.path === this.resolvePath(c2.path, c.path)
+                  })
+                  console.log('c2Arr', c2Arr)
+                  return c2Arr.length > 0
+                }
+              })
+              console.log('c1Arr', c1Arr)
+              return c1Arr.length > 0
+            }
+          }
+          return false;
+        });
+        console.log('itemArr', itemArr)
+        if (itemArr.length > 0) {
+          // 加载选中项
+          const item = itemArr[0]
+          const isRouter = this.hasOneShowingChild(item.children, item)
+              && (!this.onlyOneChild.children || this.onlyOneChild.noShowingChildren)
+              && !item.alwaysShow;
+          this.loadLeftMenu(item, isRouter)
+        } else {
+          // 未取到，加载第一项
+          this.permission_routes.forEach(item => {
+            if (!item.hidden) {
+              const isRouter = this.hasOneShowingChild(item.children, item)
+                  && (!this.onlyOneChild.children || this.onlyOneChild.noShowingChildren)
+                  && !item.alwaysShow;
+              this.loadLeftMenu(item, isRouter)
+              return
+            }
+          })
+        }
+      }
+    },
+    // 加载左侧菜单
+    loadLeftMenu(item, isRouter) {
+      if (isRouter) {
+        const path = this.resolvePath('index', item.path)
+        if (path !== this.$route.path) {
+          this.$router.push(path) // 跳转路由
+        }
+        // 无子菜单，加载自己作为左侧菜单
+        if (item.children) {
+          this.$emit('menuChanged', [item])
+        }
+      } else {
+        // 有子菜单，加载子菜单
+        for (let i = 0; i < this.permission_routes.length; i++) {
+          const menuItem = this.permission_routes[i]
+          if (menuItem.name === item.name) {
+            // 回调父组件，加载左侧菜单
+            this.$emit('menuChanged', menuItem.children)
+          }
+        }
+      }
+      sessionStorage.setItem('activeTopMenu', JSON.stringify(item))
+      this.activeTopMenu = item
+    },
     hasOneShowingChild(children = [], parent) {
       // 子菜单数量
-      const realChildren = children.filter(o => !o.hidden)
+      const realChildren = children.filter(o => !o.hidden && o.path === 'index')
       // 只有一个子菜单
       if (realChildren.length === 1) {
         this.onlyOneChild = realChildren[0]
-        console.log(666, this.onlyOneChild)
         return true
       }
       // 没有子菜单，显示父级信息
       if (realChildren.length === 0) {
         this.onlyOneChild = {...parent, path: '', noShowingChildren: true}
-        console.log(555, this.onlyOneChild)
         return true
       }
       return false
@@ -121,15 +200,12 @@ export default {
       this.$store.dispatch('app/toggleSideBar')
     },
     resolvePath(routePath, basePath) {
-      console.log(111)
-      console.log('routePath', routePath, 'basePath', basePath)
       if (isExternal(routePath)) {
         return routePath
       }
       if (isExternal(basePath)) {
         return basePath
       }
-      console.log('path.resolve', path.resolve(basePath, routePath))
       return path.resolve(basePath, routePath)
     }
   }

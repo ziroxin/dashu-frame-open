@@ -88,6 +88,9 @@ const actions = {
         // 重置标签缓存
         dispatch('tagsView/delAllViews', null, {root: true})
 
+        // 清空导航缓存
+        sessionStorage.clear()
+
         resolve()
       }).catch(error => {
         reject(error)
