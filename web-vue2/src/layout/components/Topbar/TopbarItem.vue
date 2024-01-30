@@ -56,7 +56,7 @@ export default {
   methods: {
     hasOneShowingChild(children = [], parent) {
       // 子菜单数量
-      const realChildren = children.filter(o => !o.hidden)
+      const realChildren = children.filter(o => !o.hidden && o.path === 'index')
       // 只有一个子菜单
       if (realChildren.length === 1) {
         this.onlyOneChild = realChildren[0]

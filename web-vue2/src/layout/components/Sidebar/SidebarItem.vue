@@ -61,7 +61,7 @@ export default {
   methods: {
     hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter(item => {
-        if (item.hidden) {
+        if (item.hidden && item.path !== 'index') {
           return false
         } else {
           // Temp set(will be used if only has one showing child)
