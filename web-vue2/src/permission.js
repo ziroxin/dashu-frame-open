@@ -49,11 +49,9 @@ router.beforeEach(async (to, from, next) => {
           // 查询角色信息
           const {perRouters} = await store.dispatch('user/getInfo')
           if (perRouters && perRouters.length > 0) {
-            console.log(JSON.stringify(router.options.routes.length), 111);
             // 根据角色，生成可访问权限（路由），同时加载静态路由
             const accessRoutes = await store.dispatch('permission/generateRoutes',
               {perRouters: perRouters, staticRouters: router.options.routes})
-            console.log(accessRoutes.length, 333)
             // 静态加载路由
             router.addRoutes(accessRoutes)
             // 加载路由完成，跳转
@@ -61,7 +59,7 @@ router.beforeEach(async (to, from, next) => {
             next({...to, replace: true})
           } else {
             await store.dispatch('user/resetToken')
-            next(`/login?redirect=${to.path}`)
+            next(`/login?redirect=${to.path}&${new URLSearchParams(to.query).toString()}`)
             Message.error('抱歉，您没有权限！')
             NProgress.done()
           }
@@ -70,14 +68,14 @@ router.beforeEach(async (to, from, next) => {
           await store.dispatch('user/resetToken')
           // Message.error(error || 'Has Error')
           Message.error({message: error || 'Has Error'})
-          next(`/login?redirect=${to.path}`)
+          next(`/login?redirect=${to.path}&${new URLSearchParams(to.query).toString()}`)
           NProgress.done()
         }
       }
     } else {
       // 无token
       // 无权限，跳到登录页
-      next(`/login?redirect=${to.path}`)
+      next(`/login?redirect=${to.path}&${new URLSearchParams(to.query).toString()}`)
       NProgress.done()
     }
   }
