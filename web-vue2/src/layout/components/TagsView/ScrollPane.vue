@@ -90,7 +90,6 @@ export default {
 
     .el-scrollbar__wrap {
       height: 49px;
-      margin-bottom: -17px !important;
     }
   }
 }

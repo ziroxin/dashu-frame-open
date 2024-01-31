@@ -1,12 +1,11 @@
 <template>
-  <div class="navbar" ref="navbarTopLeft">
+  <div class="navbar" ref="navbarTopLeft" :style="{'--theme-color': themeColor}">
     <!-- 显示隐藏侧边栏按钮 -->
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container"
                @toggleClick="toggleSideBar"/>
     <div class="left-menu">
       <scroll-horizontal v-if="leftMenuWidth" :container-width="leftMenuWidth" :container-height="50">
-        <el-menu :style="{'--theme-color': themeColor}"
-                 class="top-left-bar"
+        <el-menu class="top-left-bar"
                  :default-active="activeTopMenu.name"
                  :background-color="variables.menuBg"
                  :text-color="variables.menuText"
@@ -247,7 +246,6 @@ export default {
 
     .top-left-bar.el-menu {
       display: inline-flex;
-      border-bottom: 0px;
       vertical-align: middle;
 
       .el-menu-item, .el-submenu__title {
@@ -256,6 +254,7 @@ export default {
         margin: 5px 2px;
         padding: 0px 12px;
         border-radius: 5px;
+        border-bottom: 0px;
 
         &:hover {
           background-color: #{$subMenuHover} !important;
@@ -272,7 +271,6 @@ export default {
 
       .is-active {
         background-color: #{$subMenuActive} !important;
-        border-bottom: 0px;
       }
     }
   }
