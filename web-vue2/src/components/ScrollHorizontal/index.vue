@@ -41,13 +41,14 @@ export default {
     }
   },
   mounted() {
-    console.log(999,this.containerWidth)
     // 判断是否需要滚动
     this.showScroll = this.containerWidth < this.$refs.content.scrollWidth;
     if (this.showScroll) {
       // 监听滚动事件，更新左右按钮状态
       this.$refs.content.addEventListener('scroll', this.updateButtonStatus);
       this.updateButtonStatus();
+      // 滚轮事件
+      this.$refs.content.addEventListener('wheel', this.handleWheelEvent);
     }
   },
   methods: {
@@ -59,15 +60,23 @@ export default {
       // 右滑逻辑
       this.$refs.content.scrollBy({left: this.$refs.content.scrollWidth / 4, behavior: 'smooth'});
     },
+    // 更新两侧按钮状态
     updateButtonStatus() {
       this.isLeftButtonDisabled = this.$refs.content.scrollLeft === 0;
       this.isRightButtonDisabled = this.$refs.content.scrollLeft + this.contentWidth >= this.$refs.content.scrollWidth;
+    },
+    // 监听滚轮事件
+    handleWheelEvent(e) {
+      if (e.deltaY === 0) return; // 不处理垂直滚动
+      e.preventDefault();
+      this.$refs.content.scrollLeft += e.deltaY;
     }
   },
   beforeDestroy() {
     try {
       // 移除滚动事件
       this.$refs.content.removeEventListener('scroll', this.updateButtonStatus);
+      this.$refs.content.removeEventListener('wheel', this.handleWheelEvent);
     } catch (e) {
     }
   }
@@ -83,7 +92,12 @@ export default {
 
   .content {
     white-space: nowrap; /* 防止内容换行 */
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
+    /* 隐藏滚动条 */
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .scroll-btn {
