@@ -63,13 +63,15 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-::v-deep .is-active {
-  .el-submenu__title {
+::v-deep .is-active.el-submenu {
+  .el-submenu__title, .el-submenu__title > i {
     color: var(--theme-color) !important;
+  }
+}
 
-    i {
-      color: var(--theme-color) !important;
-    }
+::v-deep .el-submenu:not(.is-active) {
+  .el-submenu__title, .el-submenu__title > i {
+    color: #4e5969 !important;
   }
 }
 </style>

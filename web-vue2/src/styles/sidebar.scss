@@ -98,10 +98,8 @@
     }
 
     & .el-submenu {
-      el-menu-item {
-        .is-active {
-          background-color: $subMenuActive !important;
-        }
+      .el-menu-item.is-active {
+        background-color: $subMenuActive !important;
       }
 
       & > .el-menu--inline {

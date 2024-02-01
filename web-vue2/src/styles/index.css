@@ -148,7 +148,7 @@
       background-color: #ebebeb !important; }
     #app .sidebar-container .nest-menu .el-submenu > .el-submenu__title:active, #app .sidebar-container .el-submenu .el-menu-item:active {
       background-color: #e6f4ff !important; }
-  #app .sidebar-container .el-submenu el-menu-item .is-active {
+  #app .sidebar-container .el-submenu .el-menu-item.is-active {
     background-color: #e6f4ff !important; }
   #app .sidebar-container .el-submenu > .el-menu--inline {
     background-color: #fafafa !important; }

@@ -100,9 +100,17 @@ export default {
 }
 
 .nest-menu { // 子菜单图标
-  .el-menu-item {
+  .el-menu-item > .svg-icon {
+    margin: 0 10px 0px 5px !important;
+  }
+
+  ::v-deep .el-submenu > .el-submenu__title {
     .svg-icon {
-      margin: 0 10px 0px 5px !important;
+      margin: 0 10px 0px 10px !important;
+    }
+
+    .sub-el-icon {
+      margin: 0 5px 0px 5px !important;
     }
   }
 }
