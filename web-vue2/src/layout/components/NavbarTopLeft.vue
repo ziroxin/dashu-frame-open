@@ -115,26 +115,11 @@ export default {
               return this.$route.path === this.resolvePath(item.children[0].path, item.path)
             } else {
               // 子菜单判断
-              const c1Arr = item.children.filter(c => {
-                if (!c.children) {
-                  console.log('c.children', this.resolvePath(c.path, item.path))
-                  return !c.hidden && this.$route.path === this.resolvePath(c.path, item.path)
-                } else {
-                  // 三级菜单判断（若有更多级菜单需要修改此处）
-                  const c2Arr = c.children.filter(c2 => {
-                    return !c2.hidden && this.$route.path === this.resolvePath(c2.path, c.path)
-                  })
-                  console.log('c2Arr', c2Arr)
-                  return c2Arr.length > 0
-                }
-              })
-              console.log('c1Arr', c1Arr)
-              return c1Arr.length > 0
+              return this.checkChildrenMenu(item);
             }
           }
           return false;
         });
-        console.log('itemArr', itemArr)
         if (itemArr.length > 0) {
           // 加载选中项
           const item = itemArr[0]
@@ -155,6 +140,18 @@ export default {
           })
         }
       }
+    },
+    // 判断子菜单是否满足条件
+    checkChildrenMenu(item) {
+      const c1Arr = item.children.filter(c => {
+        if (!c.children) {
+          return !c.hidden && this.$route.path === this.resolvePath(c.path, item.path)
+        } else {
+          // 三级或更多菜单递归判断
+          return this.checkChildrenMenu(c)
+        }
+      })
+      return c1Arr.length > 0
     },
     // 加载左侧菜单
     loadLeftMenu(item, isRouter) {
