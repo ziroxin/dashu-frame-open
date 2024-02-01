@@ -1,5 +1,6 @@
 import Layout from '@/layout'
-import {errorRoute, homeRoute} from '@/router';
+import ErrorComponent from "@/views/error-page/ErrorComponent.vue";
+import {errorRoute} from '@/router';
 
 // 转换成组件
 function convertComponent(component) {
@@ -13,12 +14,18 @@ function convertComponent(component) {
   } else {
     // 转换组件
     const view = component.indexOf('/') === 0 ? component.substring(1) : component
-
-    if (process.env.NODE_ENV === 'development') {
-      return resolve => require([`@/views/${view}`], resolve)
-    } else {
-      return () => import('@/views/' + view)
-    }
+    // return resolve => require([`@/views/${view}`], resolve)
+    return function (resolve) {
+      require.ensure([], (require) => {
+        try {
+          const module = require(`@/views/${view}`);
+          resolve(module.default);
+        } catch (error) {
+          console.error('路由加载出错了，错误信息:', error);
+          resolve(ErrorComponent);
+        }
+      });
+    };
   }
 }
 
