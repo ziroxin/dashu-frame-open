@@ -127,6 +127,10 @@
         <el-form-item v-if="routerShow" label="组件地址：" prop="permissionComponent">
           <el-input v-model="temp.permissionComponent" placeholder="组件完整地址（例：/system/menu/index）"/>
           <el-tag type="info">根节点，且有子菜单时，请填写：/layout/index</el-tag>
+          &nbsp;
+          <el-button size="mini" v-waves @click="temp.permissionComponent='/layout/index'">
+            点击填入 /layout/index
+          </el-button>
         </el-form-item>
 
         <el-form-item v-if="routerShow" label="是否显示：" prop="permissionIsShow">
@@ -208,9 +212,11 @@ import PermissionButton from '@/views/system/menu/permissionButton/index'
 import Item from '@/layout/components/Sidebar/Item';
 import request from '@/utils/request';
 import {generateUUID} from "@/utils/tools";
+import waves from '@/directive/waves'
 
 export default {
   components: {IconPicker, PermissionButton, Item},
+  directives: {waves},
   data() {
     return {
       // 表格数据
