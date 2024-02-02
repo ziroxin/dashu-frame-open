@@ -164,9 +164,11 @@
   #app .hideSidebar .submenu-title-noDropdown .el-tooltip {
     padding: 0 !important; }
     #app .hideSidebar .submenu-title-noDropdown .el-tooltip .svg-icon {
-      margin-left: 20px !important; }
+      margin: 21px auto !important;
+      display: block; }
     #app .hideSidebar .submenu-title-noDropdown .el-tooltip .sub-el-icon {
-      margin-left: 19px !important; }
+      margin: 19px auto !important;
+      display: block; }
 #app .hideSidebar .el-submenu {
   overflow: hidden; }
   #app .hideSidebar .el-submenu > .el-submenu__title {
