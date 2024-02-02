@@ -41,7 +41,7 @@ export default {
 $n: 9; //和items.length 相同
 $t: .1s;
 .share-dropdown-menu {
-  width: 250px;
+  width: 210px;
   position: relative;
   z-index: 1;
   height: auto!important;
@@ -51,9 +51,9 @@ $t: .1s;
     cursor: pointer;
     background: black;
     color: white;
-    height: 60px;
-    line-height: 60px;
-    font-size: 20px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 16px;
     text-align: center;
     z-index: 2;
     transform: translate3d(0,0,0);
@@ -67,10 +67,10 @@ $t: .1s;
     width: 100%;
     background: #e0e0e0;
     color: #000;
-    line-height: 60px;
-    height: 60px;
+    line-height: 40px;
+    height: 40px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 14px;
     overflow: hidden;
     opacity: 1;
     transition: transform 0.28s ease;
@@ -82,7 +82,7 @@ $t: .1s;
       &:nth-of-type(#{$i}) {
         z-index: -1;
         transition-delay: $i*$t;
-        transform: translate3d(0, -60px, 0);
+        transform: translate3d(0, -40px, 0);
       }
     }
   }
@@ -94,7 +94,7 @@ $t: .1s;
       @for $i from 1 through $n {
         &:nth-of-type(#{$i}) {
           transition-delay: ($n - $i)*$t;
-          transform: translate3d(0, ($i - 1)*60px, 0);
+          transform: translate3d(0, ($i - 1)*40px, 0);
         }
       }
     }

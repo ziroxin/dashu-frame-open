@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container documentation-container">
+  <div class="app-container">
     <div class="mydocument">
       <h2 style="width: 100%;">本框架相关</h2>
       <a target="_blank" href="https://gitee.com/ziro/dashu-frame-open">
@@ -12,28 +12,39 @@
         演示网站
       </a>
     </div>
-    <el-divider></el-divider>
-    <h2 style="width: 100%;margin-left: 20px;">使用技术栈相关文档</h2>
-    <a class="document-btn" target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
-      vue-element-admin仓库Github
-    </a>
-    <a class="document-btn" target="_blank" href="https://panjiachen.gitee.io/vue-element-admin-site/zh/">
-      vue-element-admin文档
-    </a>
-    <a class="document-btn" target="_blank" href="https://panjiachen.gitee.io/vue-element-admin/">
-      vue-element-admin预览
-    </a>
-    <a class="document-btn" target="_blank" href="https://element.eleme.cn/#/zh-CN/component/installation">
-      element-ui文档
-    </a>
-    <a class="document-btn" target="_blank" href="https://v2.cn.vuejs.org/">
-      vue2官方文档
-    </a>
-    <a class="document-btn" target="_blank" href="https://www.runoob.com/vue2/vue-tutorial.html">
-      vue2-菜鸟文档
-    </a>
+    <el-divider>使用技术栈相关文档</el-divider>
+    <div class="documentation-container">
+      <a class="document-btn" target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
+        vue-element-admin仓库Github
+      </a>
+      <a class="document-btn" target="_blank" href="https://panjiachen.gitee.io/vue-element-admin-site/zh/">
+        vue-element-admin文档
+      </a>
+      <a class="document-btn" target="_blank" href="https://element.eleme.cn/#/zh-CN/component/installation">
+        element-ui文档
+      </a>
+      <a class="document-btn" target="_blank" href="https://v2.cn.vuejs.org/">
+        vue2官方文档
+      </a>
+      <a class="document-btn" target="_blank" href="https://www.runoob.com/vue2/vue-tutorial.html">
+        vue2-菜鸟文档
+      </a>
+      <dropdown-menu class="document-btn nohover" :items="articleList" title="其他文章"/>
+    </div>
 
-    <dropdown-menu class="document-btn" :items="articleList" title="其他文章"/>
+    <el-divider>其他框架预览</el-divider>
+    <div class="documentation-container">
+      <a class="document-btn" target="_blank" href="https://panjiachen.gitee.io/vue-element-admin/">
+        vue-element-admin预览
+      </a>
+      <a class="document-btn" target="_blank" href="https://vue-admin-beautiful.com/admin-pro/">
+        vue-admin-beautiful预览（收费框架）
+      </a>
+      <a class="document-btn" target="_blank" href="https://vue.ruoyi.vip/">
+        若依前后分离版预览
+      </a>
+
+    </div>
   </div>
 </template>
 
@@ -74,31 +85,36 @@ export default {
     cursor: pointer;
     background: black;
     color: white;
-    height: 60px;
+    height: 40px;
     padding: 0 16px;
     margin: 16px;
-    line-height: 60px;
-    font-size: 20px;
+    line-height: 40px;
+    font-size: 16px;
     text-align: center;
     border-radius: 5px;
-  }
+    border: 1px solid black;
 
-  .mydocument {
-    margin-bottom: 20px;
-    margin-left: 20px;
-    line-height: 40px;
-
-    a {
-      margin: 30px 30px 30px 0px;
+    &:hover:not(.nohover) {
+      background-color: #FFFFFF;
       color: black;
-      padding: 15px 30px;
-      border: 1px solid black;
-      border-radius: 5px;
+    }
+  }
+}
 
-      &:hover {
-        color: #FFFFFF;
-        background-color: black;
-      }
+.mydocument {
+  margin: 0px 0px 50px 20px;
+  line-height: 40px;
+
+  a {
+    margin: 30px 30px 30px 0px;
+    padding: 10px 30px;
+    color: black;
+    border: 1px solid black;
+    border-radius: 5px;
+
+    &:hover {
+      color: #FFFFFF;
+      background-color: black;
     }
   }
 }
