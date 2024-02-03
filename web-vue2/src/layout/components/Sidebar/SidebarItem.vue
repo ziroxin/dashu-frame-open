@@ -53,8 +53,6 @@ export default {
     }
   },
   data() {
-    // To fix https://github.com/PanJiaChen/vue-admin-template/issues/237
-    // TODO: refactor with render function
     this.onlyOneChild = null
     return {}
   },
@@ -62,25 +60,22 @@ export default {
     hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter(item => {
         if (item.hidden && item.path !== 'index') {
+          // 只有一个children，且path=index时，代表没有子菜单
           return false
         } else {
-          // Temp set(will be used if only has one showing child)
+          // 否则是有子菜单
           this.onlyOneChild = item
           return true
         }
       })
-
-      // When there is only one child router, the child router is displayed by default
       if (showingChildren.length === 1) {
+        // 当有一个子路由时，直接返回
         return true
-      }
-
-      // Show parent if there are no child router to display
-      if (showingChildren.length === 0) {
+      } else if (showingChildren.length === 0) {
+        // 如果没有子路由，则children是父级扩展内容
         this.onlyOneChild = {...parent, path: '', noShowingChildren: true}
         return true
       }
-
       return false
     },
     resolvePath(routePath) {

@@ -110,10 +110,13 @@ com.kg:
     client:
       clientId: dev
       clientSecret: qwer@123
+      #回调地址
       redirectUri: http://localhost:8123/oauth2/client/login/code
-      #本地相关路径配置
+      #第三方Oauth2服务端地址
       oauthServerUri: http://localhost:8123/
+      #回调登录错误时，跳转前端错误页
       errorRouter: http://localhost:9527/#/oauth2/error
+      #回调登录成功时，跳转前端成功页（处理本系统登录逻辑）
       successRouter: http://localhost:9527/#/oauth2/success
   #微信配置
   weixin:
@@ -156,6 +159,7 @@ com.kg:
     returnUrl: http://www.xxxx.com/api/pay/alipay/returnUrl
   #百度OCR配置
   baidu:
+    host: https://aip.baidubce.com/oauth/2.0/token
     client-id: xxxxx
     client-secret: xxxxx
     grant-type: xxxxx
@@ -170,5 +174,4 @@ com.kg:
 #输出日志配置（日志级别：trace/debug/info/warn/error）
 logging.level:
   root: info
-  com:
-    kg: trace
+  com.kg: trace
