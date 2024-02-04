@@ -40,18 +40,22 @@ public class Test2 {
 
     public static void main(String[] args) {
         try {
-            String path = System.getProperty("user.dir") + "/module/target/hello.docx";
+
+            String path = System.getProperty("user.dir") + "/module/src/test/java/com/kg/hello.docx";
             String outPath = System.getProperty("user.dir") + "/module/target/hello1.docx";
             XWPFDocument doc = new XWPFDocument(new FileInputStream(path));
 
             // 1 写入内容
-            WordCommonUtils.writeStrByKey(doc, "data1", "标题1");
-            WordCommonUtils.writeStrByKey(doc, "data2", "标题2");
-            WordCommonUtils.writeStrByKey(doc, "data4", "内容4");
-            WordCommonUtils.writeStrByKey(doc, "data5", "内容5");
+            WordCommonUtils.writeStrByKey(doc, "data1", "标题1", false);
+
+            WordCommonUtils.writeStrByKey(doc, "data2", "标题2", true);
+            WordCommonUtils.writeStrByKey(doc, "data2", "===========标题2", false);
+
+            WordCommonUtils.writeStrByKey(doc, "data4", "内容4", false);
+            WordCommonUtils.writeStrByKey(doc, "data5", "内容5", false);
 
             // 2 写入表格
-            XWPFTable table = WordCommonUtils.tableWriteByKey(doc, "data3", 10, 4);
+            XWPFTable table = WordCommonUtils.tableWriteByKey(doc, "data3", 10, 4, true);
             // 2.1 标题行（自定义格式）
             WordStrFormatDTO titleFormat = new WordStrFormatDTO();
             titleFormat.setBold(true);

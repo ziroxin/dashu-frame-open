@@ -30,9 +30,9 @@ public class WordCommonUtils {
      * @param columnLength 列数
      * @return 返回已插入的表格
      */
-    public static XWPFTable tableWriteByKey(XWPFDocument doc, String key, int rowLength, int columnLength) {
+    public static XWPFTable tableWriteByKey(XWPFDocument doc, String key, int rowLength, int columnLength, boolean isAppend) {
         // 找到key，插入表格
-        XWPFParagraph currentParagraph = WordCommonUtils.writeStrByKey(doc, key, "", null);
+        XWPFParagraph currentParagraph = WordCommonUtils.writeStrByKey(doc, key, "", null, isAppend);
         // 获取光标的位置
         XmlCursor cursor = currentParagraph.getCTP().newCursor();
         // 在光标位置创建表格（默认创建 1行1列的表）
@@ -216,8 +216,8 @@ public class WordCommonUtils {
      * @param content 写入文本内容
      * @return 返回当前段落
      */
-    public static XWPFParagraph writeStrByKey(XWPFDocument doc, String key, String content) {
-        return writeStrByKey(doc, key, content, null);
+    public static XWPFParagraph writeStrByKey(XWPFDocument doc, String key, String content, boolean isAppend) {
+        return writeStrByKey(doc, key, content, null, isAppend);
     }
 
     /**
@@ -229,7 +229,8 @@ public class WordCommonUtils {
      * @param format  常用格式设置
      * @return 返回当前段落
      */
-    public static XWPFParagraph writeStrByKey(XWPFDocument doc, String key, String content, WordStrFormatDTO format) {
+    public static XWPFParagraph writeStrByKey(XWPFDocument doc, String key, String content,
+                                              WordStrFormatDTO format, boolean isAppend) {
         key = "${" + key + "}";
         for (XWPFParagraph paragraph : doc.getParagraphs()) {
             StringBuilder sb = new StringBuilder();
@@ -252,6 +253,10 @@ public class WordCommonUtils {
                 if (format != null) {
                     // 设置样式
                     runTextFormat(run, format);
+                }
+                if (isAppend) {
+                    // 追加内容，不把标签移除
+                    paragraph.createRun().setText(key);
                 }
                 return paragraph;
             }
