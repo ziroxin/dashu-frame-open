@@ -25,14 +25,37 @@ public class WordCommonUtils {
      * 默认创建一个：宽度100%，居中显示的表格
      *
      * @param doc          所操作的文档
-     * @param key          要匹配的key
+     * @param keyStr       要匹配的key
      * @param rowLength    行数
      * @param columnLength 列数
      * @return 返回已插入的表格
      */
-    public static XWPFTable tableWriteByKey(XWPFDocument doc, String key, int rowLength, int columnLength, boolean isAppend) {
+    public static XWPFTable tableWriteByKey(XWPFDocument doc, String keyStr, int rowLength, int columnLength, boolean isAppend) {
+        XWPFParagraph currentParagraph = null;
         // 找到key，插入表格
-        XWPFParagraph currentParagraph = WordCommonUtils.writeStrByKey(doc, key, "", null, isAppend);
+        String key = "${" + keyStr + "}";
+        for (XWPFParagraph paragraph : doc.getParagraphs()) {
+            StringBuilder sb = new StringBuilder();
+            for (XWPFRun run : paragraph.getRuns()) {
+                sb.append(run.getText(0));// 本段落内容关联起来
+            }
+            // 匹配key
+            String text = sb.toString();
+            Pattern pattern = Pattern.compile(Pattern.quote(key));
+            Matcher matcher = pattern.matcher(text);
+            if (matcher.find()) {
+                // 在当前段落前插入新段落，内容插入新段落
+                XWPFParagraph newParagraph = doc.insertNewParagraph(paragraph.getCTP().newCursor());
+                newParagraph.createRun().setText(matcher.replaceAll(""), 0);
+                // 移除当前段落内容，并返回，准备写入表格
+                for (int i = 0; i < paragraph.getRuns().size(); i++) {
+                    paragraph.removeRun(i);
+                }
+                currentParagraph = paragraph;
+                break;
+            }
+        }
+
         // 获取光标的位置
         XmlCursor cursor = currentParagraph.getCTP().newCursor();
         // 在光标位置创建表格（默认创建 1行1列的表）
@@ -46,6 +69,9 @@ public class WordCommonUtils {
                     row.createCell();
                 }
             }
+        }
+        if (!isAppend) {
+            writeStrByKey(doc, keyStr, "", false);
         }
         return table;
     }
