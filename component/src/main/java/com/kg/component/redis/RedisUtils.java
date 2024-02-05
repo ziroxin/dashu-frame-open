@@ -183,7 +183,6 @@ public class RedisUtils {
                     // 检查key是否过期，过期的删除
                     List<String> updateList = allKeys.stream()
                             .filter(k -> redisTemplate.hasKey(k)).collect(Collectors.toList());
-                    updateList.stream().forEach(System.out::println);
                     // 更新REDIS_ALL_SAVE_KEYS_LIST
                     redisTemplate.opsForValue().set("REDIS_ALL_SAVE_KEYS_LIST",
                             updateList.stream().collect(Collectors.joining(",")));
