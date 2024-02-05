@@ -82,7 +82,7 @@ public class FileTypeUtils {
         // MS Excel 注意：2003版word、msi和excel的文件头一样
         FILE_TYPE_MAP.put("d0cf11e0a1b11ae10", "doc,vsd,xls,wps,ppt");
         // 新版word、excel、ppt等，文件头一样
-        FILE_TYPE_MAP.put("504B0304", "docx,xlsx,pptx,zip,jar");
+        FILE_TYPE_MAP.put("504B0304", "docx,xlsx,pptx,zip,jar,ofd");
     }
 
     /**
