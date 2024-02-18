@@ -46,9 +46,13 @@ public class WordCommonUtils {
             if (matcher.find()) {
                 // 在当前段落前插入新段落，内容插入新段落
                 XWPFParagraph newParagraph = doc.insertNewParagraph(paragraph.getCTP().newCursor());
-                newParagraph.createRun().setText(matcher.replaceAll(""), 0);
+                XWPFRun newRun = newParagraph.createRun();
+                newRun.setText(matcher.replaceAll(""), 0);
+                if (paragraph.getRuns().size() > 0) {
+                    runTextFormat(newRun, getFormat(paragraph.getRuns().get(0)));
+                }
                 // 移除当前段落内容，并返回，准备写入表格
-                for (int i = 0; i < paragraph.getRuns().size(); i++) {
+                for (int i = paragraph.getRuns().size() - 1; i >= 0; i--) {
                     paragraph.removeRun(i);
                 }
                 currentParagraph = paragraph;
@@ -70,8 +74,8 @@ public class WordCommonUtils {
                 }
             }
         }
-        if (!isAppend) {
-            writeStrByKey(doc, keyStr, "", false);
+        if (isAppend) {
+            currentParagraph.createRun().setText(key);
         }
         return table;
     }
@@ -313,5 +317,21 @@ public class WordCommonUtils {
         if (StringUtils.hasText(format.getColor())) {
             run.setColor(format.getColor());
         }
+    }
+
+    /**
+     * 获取格式
+     */
+    private static WordStrFormatDTO getFormat(XWPFRun run) {
+        WordStrFormatDTO format = new WordStrFormatDTO();
+        format.setBold(run.isBold());
+        format.setItalic(run.isItalic());
+        format.setUnderline(run.getUnderline() == UnderlinePatterns.SINGLE);
+        format.setFontFamily(run.getFontFamily());
+        if (run.getFontSize() > 0) {
+            format.setFontSize(run.getFontSize());
+        }
+        format.setColor(run.getColor());
+        return format;
     }
 }
