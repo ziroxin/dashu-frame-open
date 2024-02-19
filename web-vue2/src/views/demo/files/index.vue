@@ -17,7 +17,7 @@
         <el-upload
             :action="$baseServer+'/upload/files'" :headers="$store.getters.headerToken"
             :on-success="uploadFileSuccess" accept=".zip,.rar"
-            :show-file-list="false" :auto-upload="true">
+            :show-file-list="true" :auto-upload="true">
           <el-button type="primary" icon="el-icon-upload2" size="small">点击选择文件上传</el-button>
         </el-upload>
       </div>
