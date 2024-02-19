@@ -44,20 +44,26 @@
               </li>
             </template>
           </el-table-column>
-          <el-table-column prop="permissionRouter" label="菜单详情" width="300" :show-overflow-tooltip="true">
+          <el-table-column prop="permissionRouter" label="菜单详情" width="200">
             <template v-slot="{row}">
               <el-tooltip v-if="row.permissionType === '0'" class="item" effect="dark" placement="left">
-                <div slot="content" :key="'tipcontent'+row.permissionId" style="line-height: 30px;">
+                <div slot="content" :key="'tipcontent'+row.permissionId" style="line-height: 40px;">
                   菜单标记：{{ row.permissionName }}
+                  <el-button type="success" size="mini" circle plain icon="el-icon-document-copy"
+                             v-clipboard:copy="row.permissionName"></el-button>
                   <br>菜单地址：{{ row.permissionRouter }}
+                  <el-button type="success" size="mini" circle plain icon="el-icon-document-copy"
+                             v-clipboard:copy="row.permissionRouter"></el-button>
                   <br>组件地址：{{ row.permissionComponent }}
+                  <el-button type="success" size="mini" circle plain icon="el-icon-document-copy"
+                             v-clipboard:copy="row.permissionComponent"></el-button>
                   <br>noRedirect: {{ row.noRedirect }}
                   <br>noCache: {{ row.noCache }}
                   <br>breadcrumb: {{ row.breadcrumb }}
                   <br>affix: {{ row.affix }}
                   <br>activeMenu: {{ row.activeMenu }}
                 </div>
-                <el-button>{{ row.permissionRouter }}</el-button>
+                <el-button size="mini" plain>{{ row.permissionRouter }}</el-button>
               </el-tooltip>
               <a v-else :href="row.permissionRouter" style="text-decoration: underline;color: #1890ff;"
                  target="_blank"
