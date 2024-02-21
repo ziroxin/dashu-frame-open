@@ -1,5 +1,6 @@
 package com.kg.component.captcha;
 
+import com.kg.component.captcha.cover.*;
 import com.kg.component.utils.GuidUtils;
 import com.wf.captcha.ChineseCaptcha;
 import com.wf.captcha.ChineseGifCaptcha;
@@ -8,7 +9,9 @@ import com.wf.captcha.SpecCaptcha;
 import com.wf.captcha.base.Captcha;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.awt.*;
 import java.util.Date;
 
@@ -20,8 +23,10 @@ import java.util.Date;
  */
 @Setter
 @Getter
+@Component
 public class CaptchaUtils {
-    private CaptchaEntity captchaEntity;
+    @Resource
+    private CaptchaConfig config;
 
     /**
      * 获取验证码 - 生产验证码
@@ -31,7 +36,7 @@ public class CaptchaUtils {
     public CaptchaResult getCaptcha() {
         CaptchaResult cr = new CaptchaResult();
         // 有效期（当前时间 + 配置有效期）
-        cr.setCodeExpire(new Date(new Date().getTime() + (captchaEntity.getExpiration() * 60 * 1000)));
+        cr.setCodeExpire(new Date(new Date().getTime() + (config.getExpiration() * 60 * 1000)));
         // 生成验证码
         Captcha captcha = createCaptcha();
         // 验证码内容
@@ -53,31 +58,31 @@ public class CaptchaUtils {
     private Captcha createCaptcha() {
         Captcha captcha = null;
         synchronized (this) {
-            switch (captchaEntity.getCaptchaType()) {
+            switch (config.getCaptchaType()) {
                 case ARITHMETIC:
-                    captcha = new CaptchaFixedArithmetic(captchaEntity.getWidth(), captchaEntity.getHeight());
-                    captcha.setLen(captchaEntity.getLength());
+                    captcha = new MyArithmeticCaptcha(config.getWidth(), config.getHeight(), config);
+                    captcha.setLen(config.getLength());
                     break;
                 case CHINESE:
-                    captcha = new ChineseCaptcha(captchaEntity.getWidth(), captchaEntity.getHeight());
-                    captcha.setLen(captchaEntity.getLength());
+                    captcha = new MyChineseCaptcha(config.getWidth(), config.getHeight(), config);
+                    captcha.setLen(config.getLength());
                     break;
                 case CHINESE_GIF:
-                    captcha = new ChineseGifCaptcha(captchaEntity.getWidth(), captchaEntity.getHeight());
-                    captcha.setLen(captchaEntity.getLength());
+                    captcha = new MyChineseGifCaptcha(config.getWidth(), config.getHeight(), config);
+                    captcha.setLen(config.getLength());
                     break;
                 case GIF:
-                    captcha = new GifCaptcha(captchaEntity.getWidth(), captchaEntity.getHeight());
-                    captcha.setLen(captchaEntity.getLength());
+                    captcha = new MyGifCaptcha(config.getWidth(), config.getHeight(), config);
+                    captcha.setLen(config.getLength());
                     break;
                 case SPEC:
-                    captcha = new SpecCaptcha(captchaEntity.getWidth(), captchaEntity.getHeight());
-                    captcha.setLen(captchaEntity.getLength());
+                    captcha = new MySpecCaptcha(config.getWidth(), config.getHeight(), config);
+                    captcha.setLen(config.getLength());
                 default:
                     System.out.println("验证码配置信息错误！");
             }
         }
-        captcha.setFont(new Font(captchaEntity.getFontFamily(), captchaEntity.getFontStyle(), captchaEntity.getFontSize()));
+        captcha.setFont(new Font(config.getFontFamily(), config.getFontStyle(), config.getFontSize()));
         return captcha;
     }
 }

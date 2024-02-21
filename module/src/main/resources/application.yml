@@ -91,6 +91,8 @@ com.kg:
     font-size: 20
     #0正常、1加粗、2斜体
     font-style: 0
+    #背景色（设置为空时，代表透明图，无背景色）
+    bg-color: FFFFFF
   #swagger相关配置
   swagger:
     enable: true
