@@ -89,9 +89,11 @@ com.kg:
     #字体样式
     font-family: Default
     font-size: 20
+    #字体颜色（如：FFFFFF  允许为空，颜色随机）
+    font-color:
     #0正常、1加粗、2斜体
     font-style: 0
-    #背景色（设置为空时，代表透明图，无背景色）
+    #背景色（如：FFFFFF  允许为空，透明图无背景色；注意：闪图不支持透明背景色）
     bg-color: FFFFFF
   #swagger相关配置
   swagger:

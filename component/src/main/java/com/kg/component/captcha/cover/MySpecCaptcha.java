@@ -77,7 +77,13 @@ public class MySpecCaptcha extends SpecCaptcha {
             int fW = width / strs.length;  // 每一个字符所占的宽度
             int fSp = (fW - (int) fontMetrics.getStringBounds("W", g2d).getWidth()) / 2;  // 字符的左右边距
             for (int i = 0; i < strs.length; i++) {
-                g2d.setColor(color());
+                if (null != config.getFontColor() && StringUtils.hasText(config.getFontColor())) {
+                    // 字体设置颜色
+                    g2d.setColor(new Color(Integer.parseInt(config.getFontColor(), 16)));
+                } else {
+                    // 字体随机颜色
+                    g2d.setColor(color());
+                }
                 int fY = height - ((height - (int) fontMetrics.getStringBounds(String.valueOf(strs[i]), g2d).getHeight()) >> 1);  // 文字的纵坐标
                 g2d.drawString(String.valueOf(strs[i]), i * fW + fSp + 3, fY - 3);
             }

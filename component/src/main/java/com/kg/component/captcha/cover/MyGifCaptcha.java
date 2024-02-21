@@ -35,7 +35,13 @@ public class MyGifCaptcha extends GifCaptcha {
             // 随机生成每个文字的颜色
             Color fontColor[] = new Color[len];
             for (int i = 0; i < len; i++) {
-                fontColor[i] = color();
+                if (null != config.getFontColor() && StringUtils.hasText(config.getFontColor())) {
+                    // 字体设置颜色
+                    fontColor[i] = new Color(Integer.parseInt(config.getFontColor(), 16));
+                } else {
+                    // 字体随机颜色
+                    fontColor[i] = color();
+                }
             }
             // 随机生成贝塞尔曲线参数
             int x1 = 5, y1 = num(5, height / 2);

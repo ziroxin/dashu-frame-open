@@ -51,12 +51,17 @@ public class CaptchaConfig {
     @Value("${com.kg.captcha.font-size:20}")
     private int fontSize;
     /**
+     * 字体颜色（如：FFFFFF  允许为空，颜色随机）
+     */
+    @Value("${com.kg.captcha.font-color}")
+    private String fontColor;
+    /**
      * 字体样式（0正常、1加粗、2斜体） 默认：Font.PLAIN=0
      */
     @Value("${com.kg.captcha.font-style:0}")
     private int fontStyle;
     /**
-     * 背景色（设置为空时，代表透明图，无背景色）
+     * 背景色（如：FFFFFF  允许为空，透明图无背景色）
      */
     @Value("${com.kg.captcha.bg-color}")
     private String bgColor;
