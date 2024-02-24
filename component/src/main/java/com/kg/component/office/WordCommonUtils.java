@@ -31,34 +31,8 @@ public class WordCommonUtils {
      * @return 返回已插入的表格
      */
     public static XWPFTable tableWriteByKey(XWPFDocument doc, String keyStr, int rowLength, int columnLength, boolean isAppend) {
-        XWPFParagraph currentParagraph = null;
-        // 找到key，插入表格
-        String key = "${" + keyStr + "}";
-        for (XWPFParagraph paragraph : doc.getParagraphs()) {
-            StringBuilder sb = new StringBuilder();
-            for (XWPFRun run : paragraph.getRuns()) {
-                sb.append(run.getText(0));// 本段落内容关联起来
-            }
-            // 匹配key
-            String text = sb.toString();
-            Pattern pattern = Pattern.compile(Pattern.quote(key));
-            Matcher matcher = pattern.matcher(text);
-            if (matcher.find()) {
-                // 在当前段落前插入新段落，内容插入新段落
-                XWPFParagraph newParagraph = doc.insertNewParagraph(paragraph.getCTP().newCursor());
-                XWPFRun newRun = newParagraph.createRun();
-                newRun.setText(matcher.replaceAll(""), 0);
-                if (paragraph.getRuns().size() > 0) {
-                    runTextFormat(newRun, getFormat(paragraph.getRuns().get(0)));
-                }
-                // 移除当前段落内容，并返回，准备写入表格
-                for (int i = paragraph.getRuns().size() - 1; i >= 0; i--) {
-                    paragraph.removeRun(i);
-                }
-                currentParagraph = paragraph;
-                break;
-            }
-        }
+        // 另起一行，并获取当前段落
+        XWPFParagraph currentParagraph = writeStrNewline(doc, keyStr, "", null, false);
 
         // 获取光标的位置
         XmlCursor cursor = currentParagraph.getCTP().newCursor();
@@ -75,7 +49,7 @@ public class WordCommonUtils {
             }
         }
         if (isAppend) {
-            currentParagraph.createRun().setText(key);
+            currentParagraph.createRun().setText("${" + keyStr + "}");
         }
         return table;
     }
@@ -285,7 +259,7 @@ public class WordCommonUtils {
                     runTextFormat(run, format);
                 }
                 if (isAppend) {
-                    // 追加内容，不把标签移除
+                    // 追加内容，把原标签写入
                     paragraph.createRun().setText(key);
                 }
                 return paragraph;
@@ -293,6 +267,78 @@ public class WordCommonUtils {
         }
         return null;
     }
+
+    /**
+     * 另起一行：匹配 ${key} 写入文本内容
+     *
+     * @param doc     所操作文档
+     * @param key     要匹配的key
+     * @param content 写入文本内容
+     * @return 返回当前段落
+     */
+    public static XWPFParagraph writeStrNewline(XWPFDocument doc, String key, String content, boolean isAppend) {
+        return writeStrNewline(doc, key, content, null, isAppend);
+    }
+
+
+    /**
+     * 另起一行：匹配 ${key} 写入文本内容（自定义格式）
+     *
+     * @param doc     所操作文档
+     * @param key     要匹配的key
+     * @param content 写入文本内容
+     * @param format  常用格式设置
+     * @return 返回当前段落
+     */
+    public static XWPFParagraph writeStrNewline(XWPFDocument doc, String key, String content,
+                                                WordStrFormatDTO format, boolean isAppend) {
+        key = "${" + key + "}";
+        for (XWPFParagraph paragraph : doc.getParagraphs()) {
+            StringBuilder sb = new StringBuilder();
+            for (XWPFRun run : paragraph.getRuns()) {
+                sb.append(run.getText(0));// 本段落内容关联起来
+            }
+            // 匹配key
+            String text = sb.toString();
+            Pattern pattern = Pattern.compile(Pattern.quote(key));
+            Matcher matcher = pattern.matcher(text);
+            if (matcher.find()) {
+                // 移除文档中包含${key}的内容
+                for (int i = paragraph.getRuns().size() - 1; i > 0; i--) {
+                    paragraph.removeRun(i);
+                }
+                // 插入替换后的内容
+                XWPFRun run = paragraph.getRuns().get(0);
+                run.setText(matcher.replaceAll(""), 0);// 先把原内容写入，替换掉${key}
+                if (StringUtils.hasText(run.text())) {
+                    // 创建新段落，写入新内容
+                    XmlCursor cursor1 = paragraph.getCTP().newCursor();
+                    cursor1.toNextSibling();
+                    XWPFParagraph newParagraph = doc.insertNewParagraph(cursor1);
+                    XWPFRun newRun = newParagraph.createRun();
+                    newRun.setText(content, 0);
+                    paragraph = newParagraph;
+                    run = newRun;
+                } else {
+                    // 原内容为空，则直接写入
+                    run.setText(content, 0);
+                }
+                if (format != null) {
+                    // 设置样式
+                    runTextFormat(run, format);
+                }
+                if (isAppend) {
+                    // 追加内容，在新段落把原标签写入
+                    XmlCursor cursor2 = paragraph.getCTP().newCursor();
+                    cursor2.toNextSibling();
+                    doc.insertNewParagraph(cursor2).createRun().setText(key);
+                }
+                return paragraph;
+            }
+        }
+        return null;
+    }
+
 
     /**
      * 写入文本格式
