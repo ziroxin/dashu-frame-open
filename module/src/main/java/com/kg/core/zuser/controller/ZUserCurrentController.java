@@ -1,14 +1,20 @@
 package com.kg.core.zuser.controller;
 
+import cn.hutool.json.JSONUtil;
 import com.kg.component.redis.RedisUtils;
 import com.kg.core.common.constant.CacheConstant;
 import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
 import com.kg.core.security.entity.SecurityUserDetailEntity;
 import com.kg.core.security.util.CurrentUserUtils;
+import com.kg.core.zorg.entity.ZOrganization;
+import com.kg.core.zorg.service.ZOrganizationService;
+import com.kg.core.zuser.dto.MyUserDTO;
 import com.kg.core.zuser.dto.ZUserRoleSaveDTO;
 import com.kg.core.zuser.entity.ZUser;
 import com.kg.core.zuser.service.IZUserService;
+import com.kg.module.oauth2.user.entity.OauthClientUser;
+import com.kg.module.oauth2.user.service.OauthClientUserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * 用户个人中心接口
@@ -29,15 +36,30 @@ public class ZUserCurrentController {
     @Resource
     private IZUserService userService;
     @Resource
+    private ZOrganizationService orgService;
+    @Resource
+    private OauthClientUserService userBindService;
+    @Resource
     private RedisUtils redisUtils;
 
     /**
      * 获取当前用户个人信息
      */
     @GetMapping("user/getCurrentUser")
-    public ZUserRoleSaveDTO getCurrentUser() {
+    public MyUserDTO getCurrentUser() {
         try {
-            return userService.getUserById(CurrentUserUtils.getCurrentUser().getUserId());
+            // 用户基本资料
+            ZUserRoleSaveDTO user = userService.getUserById(CurrentUserUtils.getCurrentUser().getUserId());
+            MyUserDTO myUserDTO = JSONUtil.toBean(JSONUtil.parseObj(user), MyUserDTO.class);
+            // 单位名称
+            Optional<ZOrganization> oneOpt = orgService.lambdaQuery().eq(ZOrganization::getOrgId, myUserDTO.getOrgId()).oneOpt();
+            if (oneOpt.isPresent()) {
+                myUserDTO.setOrgName(oneOpt.get().getOrgName());
+            }
+            // 是否绑定Oauth2的openId
+            Long count = userBindService.lambdaQuery().eq(OauthClientUser::getUserId, myUserDTO.getUserId()).count();
+            myUserDTO.setBind(count > 0 ? true : false);
+            return myUserDTO;
         } catch (Exception e) {
             e.printStackTrace();
         }

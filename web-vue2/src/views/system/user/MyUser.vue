@@ -1,9 +1,11 @@
 <template>
   <div class="app-container" v-loading="isLoading">
-    <div style="text-align: center">
-      <h2>个人信息</h2>
-    </div>
-    <el-divider></el-divider>
+    <el-divider>
+      <h2>
+        <el-icon class="el-icon-user-solid"></el-icon>
+        用户基本信息
+      </h2>
+    </el-divider>
     <el-form ref="userDataForm" :model="temp" :rules="rules" label-position="right"
              label-width="100px" style="width: 500px;margin: auto;"
     >
@@ -31,11 +33,39 @@
         <el-input v-model="temp.phone" placeholder="请输入手机号"/>
       </el-form-item>
     </el-form>
-    <el-divider></el-divider>
-    <div style="text-align: center;">
+    <div style="width:500px;margin:0px auto 30px auto;padding-left:100px">
       <el-button type="primary" @click="submitJudgment" icon="el-icon-edit">保存个人资料</el-button>
-      <el-button type="danger" icon="el-icon-setting" v-if="!showSettings && defaultSettings.showSettings"
-                 @click="showSettings=true" style="float: right;">
+    </div>
+
+
+    <!-- 绑定Oauth2用户信息 -->
+    <div style="margin-top:60px;">
+      <el-divider>
+        <h2>
+          <el-icon class="el-icon-link"></el-icon>
+          绑定 Oauth2 信息
+        </h2>
+      </el-divider>
+      <div v-if="this.temp.bind" style="width: 500px;text-align: center;margin: 50px auto;">
+        <span style="color: #00a226;margin-right: 20px;">已绑定</span>
+        <el-button type="danger" icon="el-icon-delete" @click="unBindOauthUser">解绑</el-button>
+      </div>
+      <div v-else style="width: 500px;text-align: center;color: #D7000F;margin: 50px auto;">
+        抱歉！您还没有绑定其他 “ Oauth2平台 ” 账号！
+      </div>
+    </div>
+
+
+    <!-- 主题设置配置 -->
+    <div v-if="!showSettings && defaultSettings.showSettings" style="text-align: center;margin-top:60px;">
+      <el-divider>
+        <h2>
+          <el-icon class="el-icon-setting"></el-icon>
+          主题设置
+        </h2>
+      </el-divider>
+      <el-button type="danger" icon="el-icon-setting" style="margin-top: 10px;"
+                 @click="showSettings=true">
         显示主题设置
       </el-button>
     </div>
@@ -116,10 +146,29 @@ export default {
     // 显示设置按钮
     updateSettingsStatus() {
 
+    },
+    // 解绑
+    unBindOauthUser() {
+      this.$confirm('确定要解绑【Oauth2平台】账号吗?', '取消绑定确认', {
+        confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+      }).then(() => {
+        this.isLoading = true
+        this.$request({
+          url: '/oauth2/client/login/userUnbind', method: 'get'
+        }).then((response) => {
+          this.$message({type: 'success', message: '用户解绑成功！'})
+          this.loadCurrentUser()
+          this.isEdit = false
+        })
+      })
     }
   }
 }
 </script>
 <style scoped lang="scss">
-
+.app-container {
+  h2 {
+    clear: both;
+  }
+}
 </style>
