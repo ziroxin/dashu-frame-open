@@ -45,4 +45,9 @@ public class Oauth2ClientProperties {
      */
     @Value("${com.kg.oauth2.client.successRouter}")
     private String successRouter;
+    /**
+     * 客户端，用户绑定页
+     */
+    @Value("${com.kg.oauth2.client.userBindRouter}")
+    private String userBindRouter;
 }

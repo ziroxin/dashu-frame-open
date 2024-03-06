@@ -47,6 +47,10 @@ export const constantRoutes = [
     path: '/oauth2/success',
     component: () => import('@/views/oauth2/success'),
     hidden: true
+  }, {
+    path: '/oauth2/bind',
+    component: () => import('@/views/oauth2/bind'),
+    hidden: true
   },
   // swagger 静态页
   {

@@ -25,11 +25,12 @@ export default {
       alert('ok')
     },
     oauth2HandleClick() {
-      location.href = this.$baseServer + '/oauth/authorize' +
-          '?response_type=code' +
-          '&client_id=dev' +
-          '&redirect_uri=' + encodeURI('http://localhost:9527/oauth2/client/login/code') +
-          '&state=my_state'
+      this.$request({
+        url: '/oauth2/client/login/getOauthAuthorizationUrl', method: 'get', params: {state: 'myState'}
+      }).then((response) => {
+        const {data} = response
+        location.href = data;
+      })
     }
   }
 }

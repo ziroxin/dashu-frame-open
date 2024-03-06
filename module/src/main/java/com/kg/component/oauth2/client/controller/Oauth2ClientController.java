@@ -3,24 +3,38 @@ package com.kg.component.oauth2.client.controller;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.kg.component.jwt.JwtUtils;
 import com.kg.component.oauth2.client.dto.Oauth2ClientProperties;
 import com.kg.component.oauth2.client.dto.Oauth2ClientUser;
+import com.kg.component.oauth2.client.dto.Oauth2UserBindDTO;
 import com.kg.component.redis.RedisUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.component.utils.MyRSAUtils;
+import com.kg.core.common.constant.CacheConstant;
+import com.kg.core.exception.BaseException;
+import com.kg.core.exception.enums.BaseErrorCode;
+import com.kg.core.security.entity.SecurityUserDetailEntity;
+import com.kg.core.security.util.CurrentUserUtils;
+import com.kg.core.zcaptcha.service.ZCaptchaService;
 import com.kg.core.zlogin.dto.LoginFormDTO;
 import com.kg.core.zlogin.dto.LoginSuccessDTO;
 import com.kg.core.zlogin.service.ZLoginService;
 import com.kg.core.zuser.dto.ZUserRoleSaveDTO;
+import com.kg.core.zuser.entity.ZUser;
 import com.kg.core.zuser.service.IZUserService;
+import com.kg.module.oauth2.user.entity.OauthClientUser;
+import com.kg.module.oauth2.user.service.OauthClientUserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 /**
@@ -33,11 +47,17 @@ public class Oauth2ClientController {
     @Resource
     private IZUserService userService;
     @Resource
+    private OauthClientUserService userBindService;
+    @Resource
     private ZLoginService loginService;
     @Resource
     private RedisUtils redisUtils;
     @Resource
     private Oauth2ClientProperties client;
+    @Resource
+    private ZCaptchaService captchaService;
+    @Value("${com.kg.login.is-yzm}")
+    private boolean IS_YZM;
 
     /**
      * Oauth2 Client(客户端)回调地址
@@ -72,18 +92,34 @@ public class Oauth2ClientController {
                             JSONObject result2Obj = JSONUtil.parseObj(result2);
                             Oauth2ClientUser oauthUser = JSONUtil.toBean(result2Obj.getJSONObject("data"), Oauth2ClientUser.class);
 
-                            // ========== 自己写登录逻辑，跳转至登录成功界面 ==========
-                            ZUserRoleSaveDTO user = userService.getUserById(oauthUser.getOpenId());
-                            LoginFormDTO loginForm = new LoginFormDTO();
-                            loginForm.setUserName(user.getUserName());
-                            loginForm.setPassword(user.getPassword());
-                            String oauthLoginInfoId = GuidUtils.getUuid32();
-                            redisUtils.set(oauthLoginInfoId, loginService.login(loginForm));
-                            response.sendRedirect(client.getSuccessRouter() + "?loginId=" + oauthLoginInfoId);
+                            // ====================== 自己写登录逻辑 =======================
+                            OauthClientUser bindUser = userBindService.lambdaQuery()
+                                    .eq(OauthClientUser::getOpenId, oauthUser.getOpenId())
+                                    .last("limit 1").one();
+                            if (bindUser != null) {
+                                ZUserRoleSaveDTO user = userService.getUserById(bindUser.getUserId());
+                                if (user != null) {
+                                    // 已绑定用户，跳转至登录成功界面
+                                    LoginFormDTO loginForm = new LoginFormDTO();
+                                    loginForm.setUserName(user.getUserName());
+                                    loginForm.setPassword(user.getPassword());
+                                    String oauthLoginInfoId = GuidUtils.getUuid32();
+                                    redisUtils.set(oauthLoginInfoId, loginService.login(loginForm));// 登录
+                                    response.sendRedirect(client.getSuccessRouter() + "?loginId=" + oauthLoginInfoId);
+                                }
+                            }
+                            // 未绑定用户，或绑定的用户不存在，跳转至绑定界面
+                            String uuid = GuidUtils.getUuid32();
+                            redisUtils.set(uuid, oauthUser.getOpenId());
+                            response.sendRedirect(client.getUserBindRouter() + "?loginId=" + uuid);
                         }
                     }
                 }
             }
+        } catch (BaseException ex) {
+            // 自定义异常，抛出异常，并跳转至登录失败界面，显示失败原因
+            ex.printStackTrace();
+            response.sendRedirect(client.getErrorRouter() + "?err=统一认证出现异常，失败原因：" + ex.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -112,6 +148,98 @@ public class Oauth2ClientController {
         LoginSuccessDTO errorResult = new LoginSuccessDTO();
         errorResult.setSuccessMsg("error|授权意外失败了！请重新登录");
         return errorResult;
+    }
+
+    /**
+     * Oauth2 用户绑定
+     */
+    @PostMapping("/login/userBind")
+    @ResponseBody
+    public LoginSuccessDTO bind(@RequestBody Oauth2UserBindDTO bindUser) {
+        try {
+            if (StringUtils.hasText(bindUser.getLoginId()) && redisUtils.hasKey(bindUser.getLoginId())) {
+                // 尝试登录
+                // 验证码
+                if (IS_YZM) {
+                    if (!StringUtils.hasText(bindUser.getYzm())) {
+                        throw new BaseException("请输入验证码！");
+                    }
+                    if (!captchaService.checkCaptcha(bindUser.getCodeUuid(), bindUser.getYzm())) {
+                        throw new BaseException("验证码错误！请检查");
+                    }
+                }
+                if (bindUser.getIsEncrypt() != null && bindUser.getIsEncrypt()) {
+                    // 参数解密（前端公钥加密，后端私钥解密）
+                    bindUser.setUserName(MyRSAUtils.decryptPrivate(bindUser.getUserName()));
+                    bindUser.setPassword(MyRSAUtils.decryptPrivate(bindUser.getPassword()));
+                }
+                LoginFormDTO loginForm = JSONUtil.toBean(JSONUtil.parseObj(bindUser), LoginFormDTO.class);
+                LoginSuccessDTO loginSuccess = loginService.login(loginForm);
+                // 登录成功，开始绑定
+                Object userId;
+                try {
+                    userId = JwtUtils.parseToken(loginSuccess.getAccessToken());
+                    if (ObjectUtils.isEmpty(userId)) {
+                        throw new BaseException(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new BaseException(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID);
+                }
+                SecurityUserDetailEntity userDetailEntity = (SecurityUserDetailEntity)
+                        redisUtils.get(CacheConstant.LOGIN_INFO_REDIS_PRE + userId);
+                if (ObjectUtils.isEmpty(userDetailEntity)) {
+                    throw new BaseException(BaseErrorCode.LOGIN_ERROR_NOT_LOGIN);
+                }
+                OauthClientUser entity = new OauthClientUser();
+                entity.setUserId(userDetailEntity.getZUser().getUserId());
+                entity.setOpenId(redisUtils.get(bindUser.getLoginId()).toString());
+                userBindService.save(entity);
+                // 绑定成功，返回登录成功信息
+                return loginSuccess;
+            }
+        } catch (BaseException ex) {
+            ex.printStackTrace();
+            // 自定义异常处理
+            LoginSuccessDTO errorResult = new LoginSuccessDTO();
+            errorResult.setSuccessMsg("error|绑定用户失败，失败原因：" + ex.getMessage());
+            return errorResult;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        LoginSuccessDTO errorResult = new LoginSuccessDTO();
+        errorResult.setSuccessMsg("error|绑定用户失败，未知异常，请重试！");
+        return errorResult;
+    }
+
+
+    /**
+     * Oauth2 用户解绑
+     */
+    @GetMapping("/login/userUnbind")
+    @ResponseBody
+    public void userUnbind() throws BaseException {
+        ZUser currentUser = CurrentUserUtils.getCurrentUser();
+        if (currentUser == null) {
+            throw new BaseException(BaseErrorCode.LOGIN_ERROR_NOT_LOGIN);
+        }
+        // 解绑
+        userBindService.lambdaUpdate()
+                .eq(OauthClientUser::getUserId, currentUser.getUserId())
+                .remove();
+    }
+
+    /**
+     * 获取 oauth2 服务端 authorization 地址
+     */
+    @GetMapping("/login/getOauthAuthorizationUrl")
+    @ResponseBody
+    public String getOauthAuthorizationUrl(String state) throws UnsupportedEncodingException {
+        return client.getOauthServerUri() + "oauth/authorize" +
+                "?client_id=" + client.getClientId() +
+                "&redirect_uri=" + URLEncoder.encode(client.getRedirectUri(), "UTF-8") +
+                "&response_type=code" +
+                "&state=" + state;
     }
 
 }

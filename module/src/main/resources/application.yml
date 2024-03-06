@@ -94,7 +94,7 @@ com.kg:
     #0正常、1加粗、2斜体
     font-style: 0
     #背景色（如：FFFFFF  允许为空，透明图无背景色；注意：闪图不支持透明背景色）
-    bg-color: FFFFFF
+    bg-color:
   #swagger相关配置
   swagger:
     enable: true
@@ -122,6 +122,8 @@ com.kg:
       errorRouter: http://localhost:9527/#/oauth2/error
       #回调登录成功时，跳转前端成功页（处理本系统登录逻辑）
       successRouter: http://localhost:9527/#/oauth2/success
+      #回调登录成功，但首次登录时，跳转到绑定用户界面
+      userBindRouter: http://localhost:9527/#/oauth2/bind
   #微信配置
   weixin:
     #小程序配置(其中accessTokenUrl、jsCodeUrl、qrCodeUrl如需自定义，在此处配置即可覆盖默认值)
