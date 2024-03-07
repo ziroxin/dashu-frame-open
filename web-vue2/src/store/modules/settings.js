@@ -24,17 +24,20 @@ const state = {
 
 const mutations = {
   CHANGE_SETTING: (state, {key, value}) => {
-    if (state.hasOwnProperty(key)) {
-      state[key] = value
-      // settings的cookie永远有效
-      Cookies.set('settings', JSON.stringify(state), {expires: new Date('9999-12-31T23:59:59')})
-      // 保存用户参数到数据库
-      const data = {themeJson: JSON.stringify(state)}
-      request({
-        url: '/userTheme/zUserTheme/updateByUser', method: 'post', data, headers: {skipRepeatSubmitCheck: true}
-      }).then((response) => {
-        console.log('保存用户配置成功！')
-      })
+    if (defaultSettings.showSettings) {
+      // 是否禁用主题设置，未禁用则改变配置并保存
+      if (state.hasOwnProperty(key)) {
+        state[key] = value
+        // settings的cookie永远有效
+        Cookies.set('settings', JSON.stringify(state), {expires: new Date('9999-12-31T23:59:59')})
+        // 保存用户参数到数据库
+        const data = {themeJson: JSON.stringify(state)}
+        request({
+          url: '/userTheme/zUserTheme/updateByUser', method: 'post', data, headers: {skipRepeatSubmitCheck: true}
+        }).then((response) => {
+          console.log('保存用户配置成功！')
+        })
+      }
     }
   }
 }

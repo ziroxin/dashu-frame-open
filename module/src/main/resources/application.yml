@@ -1,6 +1,6 @@
 #端口
 server:
-  port: 8123
+  port: 8124
   servlet:
     #上下文
     context-path: /
@@ -30,7 +30,7 @@ spring:
     host: localhost
     port: 6379
     password:
-    database: 0
+    database: 7
   mvc:
     # 解决swagger2冲突，导致启动报错问题(@See：https://blog.csdn.net/mapboo/article/details/121568519)
     pathmatch.matching-strategy: ant_path_matcher
@@ -115,36 +115,44 @@ com.kg:
       clientId: dev
       clientSecret: qwer@123
       #回调地址
-      redirectUri: http://localhost:8123/oauth2/client/login/code
+      redirectUri: http://localhost:8124/oauth2/client/login/code
       #第三方Oauth2服务端地址
-      oauthServerUri: http://localhost:8123/
+      oauthServerUri: http://localhost:8124/
       #回调登录错误时，跳转前端错误页
-      errorRouter: http://localhost:9527/#/oauth2/error
+      errorRouter: http://localhost:9532/#/oauth2/error
       #回调登录成功时，跳转前端成功页（处理本系统登录逻辑）
-      successRouter: http://localhost:9527/#/oauth2/success
+      successRouter: http://localhost:9532/#/oauth2/success
       #回调登录成功，但首次登录时，跳转到绑定用户界面
-      userBindRouter: http://localhost:9527/#/oauth2/bind
+      userBindRouter: http://localhost:9532/#/oauth2/bind
   #微信配置
   weixin:
     #小程序配置(其中accessTokenUrl、jsCodeUrl、qrCodeUrl如需自定义，在此处配置即可覆盖默认值)
     applet:
       appId: xxxxx
       secret: xxxxx
+    #服务号配置（见 WxMpLoginConfig.java）
+    mp:
+      #服务号appId
+      clientId: wx089f5f07265e8026
+      #服务号appSecret
+      clientSecret: 8c8c6cf9b51b8f9bfc20337b92fa90dc
+      #回调域名（有端口或上下文的要加上）（前后端分离，前端根目录）
+      domain: http://58.57.95.202:19527
     #微信支付（商户号）配置（WxPayConfig.java）
     pay:
       #微信绑定的公众号appId
       #商户号只能绑定：已通过微信认证的服务号、政府或媒体类订阅号、小程序、企业微信、移动应用、网站应用
-      appId: xxxxx
+      appId: wx089f5f07265e8026
       #商户号mchId
-      mchId: xxxxx
+      mchId: 1642005801
       #当前密钥版本(v2/v3)
       keyVersion: v2
       #商户号v2密钥
-      partnerKey: xxxxx
+      partnerKey: 39a1c424d74111ed8b82005056ad6b1e
       #证书p12地址(v2退款时需要)
       certP12Path: pems/apiclient_cert.p12
       #商户号v3密钥
-      partnerKeyV3: xxxxx
+      partnerKeyV3: 39a1c424d74111ed8b82005056ad6b1e
       #证书pem地址(v3时需要)
       certPath: pems/apiclient_cert.pem
       #私钥pem地址(v3时需要)
@@ -154,11 +162,11 @@ com.kg:
   #支付宝支付配置
   alipay:
     #应用id
-    appId: xxxxx
+    appId: 2021003141637400
     #支付宝私钥
-    privateKey: xxxxx
+    privateKey: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCRWjVGx5WhiA6mAqGewvyvT2D2+ef5mJlM6XFev2Z+9Fa01gtv3yt3Q2XKXgJK+tEFcf3crBUhu7TyK5xWHR4xJ1Rf1Mi6gPDQ86CO/CqjJK5T2u5GpVX+eJnGf6dR24skMaxQjsi8gxxK2vewJF8ZidXkOp8rQl+OKSsK7SStjdPO7xvVn8I1BznDyECHtde6XthbLbZSR/3DIq5qFdt5mv+rz0YIGTABVQMZRsrHG2v4uHYGOYM6M0m+H7EU19u7xlh8411RKVTRdo2NorLJqPHFGf0XY1cW8iQdEACgNy0N/CsGcoAUkGEgyeEc054d35I6IKVxj1qyU6ZsqlujAgMBAAECggEAPXfbnfIbajNClpv4Q06MU4sLI4btvhT1h5wVUI86xieIX3NBZO8Iz6fV7S2yZIkLSfU5+U9gpGJgFCWzOIuZ0Amk2d3/gTe0H3lYBf/H/DQv8NBeAcw7wKC5z0L+vFRO1GCZUXwAkhAUL+fH5VqMSR2MMbdExqOMC2+Hf1hoMWhr/8LXsgGRb3UHmZmvnTh/LQSN2z4HmPIWN9ylp6Pz3MbeFzvzQev5DgLV7zKMls2s0NeCwRd8riTP1xj0jRuVPm+M2cg8DkaiOVoxiFyjI3rtJvUa/+ipAc+xrfHdP10Gp4JxpMChyfXZQLhIrzf35Ikgbpz5AfQq84GtYHlqQQKBgQDWcSslEOJ62U+7otTFzMAMIZ8jTaWf9jivJI6qIz5xUR5SQI3LoJS/I6abMJfxmV5t9oOtWEmq6liY/vwYDosv6QZ0pKfw7T3kc3ZsBDxdGYnenAg4dpj2rNivCwKN8GGU00JU+uSMeemrJDSf93m+mxTP1s1XBFTE7hW8HCv8YQKBgQCthWJHnsq23ZeY5DAzXfizhUevN494FgKflMUWYziEbinL0Qu3CVFL6MtTud21gKobOFcq0y2A0ts3kaPdP2HUYdcEOd/VAKBK1oA9AIayNBQrY8uKXvjBeJ9g052PWMY3D898ZkIQzj4VNFA5PAfis8QJAZ0vtvl06fy2mIP2gwKBgBpphe7izYJkEbYCsEJMnbrgyUEH50Z0hTbNQeUiwiYi36Ex4kUaWjfQpEypB43yXfcdTcqj/S7X/mGZxmMQJ4SXJvxm62h5UA47SnKzctvksV6ByWFq+hwn3ehxarcgzGQQQTNGU7AZs/YoV3L8gDpBz6ZpxpDZL7exu2uX7LMBAoGAaJ16W2PJI+cFdxBcXxvQzasVRPZicSwT+NJg4NaBRJaGbHNkdL4RXYrEy33LxZoE9NRK+W7IiFqYADC2crW77afvUoTyBiGSgoxAVIb0rovnfSF1nb8UitCGhoIPBFWpa5kEpyOfwTIXDAG2PEuNFYj8L9HhStsuGubXjd718LECgYEAwMQcyvSXBpGKs/xfRX1M+hUG7GXGU72PpX7N7fmNiIiOld+DZrzgScvoDB5RTKd30IWliIR/DValmnRZFjmkOd5WVOe+u0aTsN2E8/gi9QSV4WejVVOMOM8GBSibXw7WdT50pHfB+RmTxhpFQOzaBk6UclhHSUgWszgo2C5uKKA=
     #支付宝的公钥（注意：非应用公钥）
-    aliPayPublicKey: xxxxx
+    aliPayPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvnUJF8NcAbbBdU0PHfNsncqVVLWXLO56sNso/u/Q/AumyQtWOMuYCor2XVp465ZKzWG7VLmyJtJezSB4hPTnIIGepk+DJgfD8l2QPFySOl8darBJ6MHXwPtEQuQ4/ZG8JpHAP11uHQtohdvaFEAfl4BZDE1pA7YDFkSTyhqiEgJtDYtAf0Xik52s1rpoGykCoEKef1TqwwqbaZ+iUmNGEDLwOIA8Klt9TaXOHOJaaY9D54OVvGFVznsMeK6J2SlVHtSVMq1OEkxnmFffXAIKoNsY5nLYHLNelp5UWPEmV9QstWjAR+trke3u35/DbjcALz0m8AJbEuGKlMjrGQBOZQIDAQAB
     #支付结果通知地址（后台接口地址：http://www.xxxx.com/api/）
     notifyUrl: http://www.xxxx.com/api/pay/alipay/payNotify
     #支付返回地址
@@ -172,10 +180,10 @@ com.kg:
   #短信通知相关配置
   sms:
     aliyun:
-      accessKeyId: xxxxx
-      accessKeySecret: xxxxx
+      accessKeyId: LTAI5t8EGvqGbyx7hAaEZDZg
+      accessKeySecret: j7wunkgc1GCXTtMZ7gtphVWFuaNPt6
       endpoint: dysmsapi.aliyuncs.com
-      sign: 短信签名xxxxx
+      sign: 阿里云短信测试
 
 #输出日志配置（日志级别：trace/debug/info/warn/error）
 logging.level:
