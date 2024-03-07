@@ -1,7 +1,9 @@
 package com.kg.core.zrole.mapper;
 
-import com.kg.core.zrole.entity.ZRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.kg.core.zrole.entity.ZRole;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +15,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface ZRoleMapper extends BaseMapper<ZRole> {
 
+    /**
+     * 查询用户的角色列表
+     */
+    List<ZRole> getRoleListByUserId(String userId);
 }

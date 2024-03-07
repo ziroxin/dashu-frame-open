@@ -8,8 +8,11 @@ import com.kg.component.utils.GuidUtils;
 import com.kg.component.utils.PasswordRegexUtils;
 import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
+import com.kg.core.zorg.entity.ZOrganization;
+import com.kg.core.zorg.service.ZOrganizationService;
 import com.kg.core.zsafety.entity.ZSafety;
 import com.kg.core.zsafety.service.ZSafetyService;
+import com.kg.core.zuser.dto.ZUserAllDTO;
 import com.kg.core.zuser.dto.ZUserDTO;
 import com.kg.core.zuser.dto.ZUserEditPasswordDTO;
 import com.kg.core.zuser.dto.ZUserRoleSaveDTO;
@@ -50,6 +53,8 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
     private ZSafetyService safetyService;
     @Resource
     private ZUserPasswordService passwordService;
+    @Resource
+    private ZOrganizationService organizationService;
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -196,5 +201,26 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
         userPassword.setOldPassword(user.getPassword());
         userPassword.setEditPasswordTime(LocalDateTime.now());
         passwordService.save(userPassword);
+    }
+
+    @Override
+    public ZUserAllDTO getUserAllInfo(String userId) {
+        try {
+            ZUser user = getById(userId);
+            if (user != null) {
+                ZUserAllDTO result = new ZUserAllDTO();
+                // 查询部门信息
+                ZOrganization org = organizationService.getById(user.getOrgId());
+                if (org != null) {
+                    result.setOrgName(org.getOrgName());
+                }
+                // 查询角色列表
+                result.setRoleList(userRoleService.getRoleListByUserId(userId));
+                return result;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

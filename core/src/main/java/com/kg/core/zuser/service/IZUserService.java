@@ -3,6 +3,7 @@ package com.kg.core.zuser.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kg.core.exception.BaseException;
+import com.kg.core.zuser.dto.ZUserAllDTO;
 import com.kg.core.zuser.dto.ZUserDTO;
 import com.kg.core.zuser.dto.ZUserEditPasswordDTO;
 import com.kg.core.zuser.dto.ZUserRoleSaveDTO;
@@ -48,4 +49,10 @@ public interface IZUserService extends IService<ZUser> {
      * @param userIds 用户id数组
      */
     void delete(String[] userIds);
+
+    /**
+     * 获取完整用户信息（包含用户角色、部门信息）
+     */
+    ZUserAllDTO getUserAllInfo(String userId);
+
 }
