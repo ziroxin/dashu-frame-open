@@ -1,13 +1,13 @@
 <template>
   <div class="app-container" v-loading="isLoading">
     <el-divider>
-      <h2>
+      <div class="title">
         <el-icon class="el-icon-user-solid"></el-icon>
         用户基本信息
-      </h2>
+      </div>
     </el-divider>
     <el-form ref="userDataForm" :model="temp" :rules="rules" label-position="right"
-             label-width="100px" style="width: 500px;margin: auto;"
+             label-width="100px" style="width: 500px;margin: 50px auto;"
     >
       <el-form-item label="用户名：" prop="userName">
         <el-input v-model="temp.userName" placeholder="请输入用户名"/>
@@ -41,10 +41,10 @@
     <!-- 绑定Oauth2用户信息 -->
     <div style="margin-top:60px;">
       <el-divider>
-        <h2>
+        <div class="title">
           <el-icon class="el-icon-link"></el-icon>
           绑定 Oauth2 信息
-        </h2>
+        </div>
       </el-divider>
       <div v-if="this.temp.bind" style="width: 500px;text-align: center;margin: 50px auto;">
         <span style="color: #00a226;margin-right: 20px;">已绑定</span>
@@ -59,10 +59,10 @@
     <!-- 主题设置配置 -->
     <div v-if="!showSettings && defaultSettings.showSettings" style="text-align: center;margin-top:60px;">
       <el-divider>
-        <h2>
+        <div class="title">
           <el-icon class="el-icon-setting"></el-icon>
           主题设置
-        </h2>
+        </div>
       </el-divider>
       <el-button type="danger" icon="el-icon-setting" style="margin-top: 10px;"
                  @click="showSettings=true">
@@ -167,8 +167,9 @@ export default {
 </script>
 <style scoped lang="scss">
 .app-container {
-  h2 {
-    clear: both;
+  .title {
+    font-size: 20px;
+    font-weight: bold;
   }
 }
 </style>
