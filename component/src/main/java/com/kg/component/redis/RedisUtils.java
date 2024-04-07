@@ -199,6 +199,8 @@ public class RedisUtils {
                     throw new RuntimeException(e);
                 }
             }
+            // 销毁当前线程
+            Thread.currentThread().interrupt();
         });
     }
 }
