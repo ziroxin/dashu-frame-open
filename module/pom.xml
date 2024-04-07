@@ -107,6 +107,7 @@
                         <!--<exclude>aspose/**</exclude>-->
                         <exclude>**.yml</exclude>
                         <exclude>**.ignore</exclude>
+                        <exclude>**.properties</exclude>
                     </excludes>
                     <archive>
                         <manifest>
@@ -164,8 +165,8 @@
                                     <directory>src/main/resources</directory>
                                     <include>**.yml</include>
                                     <include>**.ignore</include>
-                                    <!--<include>*.properties</include>
-                                    <include>aspose/**</include>-->
+                                    <include>**.properties</include>
+                                    <!--<include>aspose/**</include>-->
                                 </resource>
                             </resources>
                             <outputDirectory>${finalpackage.path}/config</outputDirectory>
