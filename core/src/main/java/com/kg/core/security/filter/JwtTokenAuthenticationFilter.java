@@ -9,6 +9,7 @@ import com.kg.core.exception.enums.BaseErrorCode;
 import com.kg.core.security.entity.SecurityUserDetailEntity;
 import com.kg.core.security.util.SecurityIgnoreUtils;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Component
 public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
-    @Resource
+    @Autowired
     private RedisUtils redisUtils;
 
     @SneakyThrows
