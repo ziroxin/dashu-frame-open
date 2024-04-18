@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -54,6 +55,16 @@ public class TimeUtils {
      */
     public static TimeUtils setTime(LocalDateTime localDateTime) {
         return new TimeUtils(localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+    }
+
+    /**
+     * 设置要操作的时间（默认字符串格式：yyyy-MM-dd HH:mm:ss）
+     *
+     * @param dateStr 时间字符串
+     * @throws ParseException 格式转换异常
+     */
+    public static TimeUtils setTime(String dateStr) throws ParseException {
+        return setTime(dateStr, "yyyy-MM-dd HH:mm:ss");
     }
 
     /**
@@ -168,7 +179,14 @@ public class TimeUtils {
     }
 
     /**
-     * 输出格式化字符串
+     * 输出Timestamp
+     */
+    public Timestamp toSqlTimestamp() {
+        return new Timestamp(this.timestamp);
+    }
+
+    /**
+     * 输出格式化字符串=toString(format)
      *
      * @param format 格式（如：yyyy-MM-dd HH:mm:ss 或者 yyyy-MM-dd'T'HH:mm:ss.SSS'Z'）
      */
@@ -176,6 +194,24 @@ public class TimeUtils {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         return sdf.format(new Date(this.timestamp));
     }
+
+    /**
+     * 输出格式化字符串=toFormat(format)
+     *
+     * @param format 格式（如：yyyy-MM-dd HH:mm:ss 或者 yyyy-MM-dd'T'HH:mm:ss.SSS'Z'）
+     */
+    public String toString(String format) {
+        return toFormat(format);
+    }
+
+    /**
+     * 输出默认日期格式字符串，如：2022-01-17 10:23:26
+     */
+    @Override
+    public String toString() {
+        return toFormat("yyyy-MM-dd HH:mm:ss");
+    }
+
 
     public static void main(String[] args) {
         // 使用示例
@@ -186,5 +222,7 @@ public class TimeUtils {
         System.out.println(TimeUtils.now().addDay(1).getTimestamp());
         System.out.println(TimeUtils.now().addDay(-5).toFormat("yyyy-MM-dd"));
         System.out.println(TimeUtils.now().addMinute(10).toFormat("yyyy-MM-dd HH:mm:ss"));
+        System.out.println("---");
+        System.out.println(TimeUtils.now());
     }
 }
