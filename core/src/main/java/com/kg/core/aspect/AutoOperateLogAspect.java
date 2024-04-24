@@ -15,6 +15,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartRequest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -41,21 +42,34 @@ public class AutoOperateLogAspect {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             ZOperateLog log = new ZOperateLog();
             log.setLogId(GuidUtils.getUuid());
-            // 操作接口信息
+            // 1. 操作接口信息
             log.setLogMethod(autoOperateLog.logMethod());
             log.setLogMsg(autoOperateLog.logMsg());
             log.setActionUrl(request.getRequestURI());
-            // 操作用户信息
+            // 2. 操作用户信息
             ZUser currentUser = CurrentUserUtils.getCurrentUser();
             if (null != currentUser) {
                 log.setUserId(currentUser.getUserId());
                 log.setUserName(currentUser.getUserName());
             }
-            // 操作IP
+            // 3. 操作IP
             log.setIp(ServletUtil.getClientIP(request));
-            // 操作参数
+            // 4. body参数
             JSONObject content = new JSONObject();
-            content.set("body", JSONUtil.toJsonStr(joinPoint.getArgs()));
+            boolean hasFile = false;// 判断传参数中是否有上传文件，如果有，则不记录body参数
+            for (Object arg : joinPoint.getArgs()) {
+                if (arg instanceof MultipartRequest) {
+                    // 包含上传文件，不处理body参数
+                    hasFile = true;
+                    break;
+                }
+            }
+            if (hasFile) {
+                content.set("body", "参数中包含文件，不记录body");
+            } else {
+                content.set("body", JSONUtil.toJsonStr(joinPoint.getArgs()));
+            }
+            // 5. params参数
             content.set("params", JSONUtil.toJsonStr(request.getParameterMap()));
             log.setContent(content.toString());
             log.setCreateTime(LocalDateTime.now());
