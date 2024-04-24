@@ -1,6 +1,7 @@
 package com.kg.module.dictData.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.kg.core.annotation.AutoOperateLog;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.module.dictData.dto.ZDictDataDTO;
@@ -138,6 +139,7 @@ public class ZDictDataController {
     @PostMapping("/import/excel")
     @PreAuthorize("hasAuthority('dictData:zDictData:import:excel')")
     @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/dictData/zDictData/import/excel", logMsg = "导入数据字典")
     public void importExcel(HttpServletRequest request) throws BaseException {
         try {
             zDictDataService.importExcel(request);
