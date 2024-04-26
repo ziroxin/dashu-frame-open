@@ -125,11 +125,11 @@ public class ZPermissionController {
     @AutoOperateLog(logMethod = "/permission/changeIsEnabled", logMsg = "启用/禁用菜单")
     public void changeIsEnabled(@RequestBody ZPermission zPermission) throws BaseException {
         try {
-            permissionService.lambdaUpdate().set(ZPermission::isPermissionIsEnabled, zPermission.isPermissionIsEnabled())
+            permissionService.lambdaUpdate().set(ZPermission::getPermissionIsEnabled, zPermission.getPermissionIsEnabled())
                     .eq(ZPermission::getPermissionId, zPermission.getPermissionId()).update();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new BaseException(zPermission.isPermissionIsEnabled() ? "启用菜单失败！" : "禁用菜单失败！");
+            throw new BaseException(zPermission.getPermissionIsEnabled() == 1 ? "启用菜单失败！" : "禁用菜单失败！");
         }
     }
 

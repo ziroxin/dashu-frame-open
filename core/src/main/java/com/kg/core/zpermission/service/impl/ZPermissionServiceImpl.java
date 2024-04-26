@@ -101,7 +101,7 @@ public class ZPermissionServiceImpl extends ServiceImpl<ZPermissionMapper, ZPerm
         QueryWrapper<ZPermission> wrapper = new QueryWrapper<>();
         wrapper.lambda()
                 // 不查询外链
-                .ne(ZPermission::getPermissionType, 2)
+                .ne(ZPermission::getPermissionType, PermissionTypeEnum.LINK.getCode() + "")
                 .orderByAsc(ZPermission::getPermissionOrder);
         List<ZPermission> list = list(wrapper);
         return treeListChildren(list, "-1");
@@ -116,8 +116,8 @@ public class ZPermissionServiceImpl extends ServiceImpl<ZPermissionMapper, ZPerm
         wrapper.lambda().orderByAsc(ZPermission::getPermissionOrder);
         List<ZPermission> list = list(wrapper);
         List<String> list2 = new ArrayList<>();
-        list2.add("0");
-        list2.add("2");
+        list2.add(PermissionTypeEnum.ROUTER.getCode() + "");// 路由
+        list2.add(PermissionTypeEnum.LINK.getCode() + "");// 外链
         return permissionTreeListChildren(list, list2, "-1");
     }
 
@@ -170,15 +170,15 @@ public class ZPermissionServiceImpl extends ServiceImpl<ZPermissionMapper, ZPerm
         // 全部列表
         QueryWrapper<ZPermission> wrapper = new QueryWrapper<>();
         wrapper.lambda().orderByAsc(ZPermission::getPermissionOrder)
-                .eq(ZPermission::getPermissionType, PermissionTypeEnum.ROUTER.getCode())
+                .eq(ZPermission::getPermissionType, PermissionTypeEnum.ROUTER.getCode() + "")
                 .ne(ZPermission::getPermissionId, "system-api") // 去掉API菜单的权限控制，保证只有开发管理员能管理api
-                .or().eq(ZPermission::getPermissionType, PermissionTypeEnum.LINK.getCode());
+                .or().eq(ZPermission::getPermissionType, PermissionTypeEnum.LINK.getCode() + "");
         List<ZPermission> list = list(wrapper);
         // 路由列表
         QueryWrapper<ZPermission> wrapper2 = new QueryWrapper<>();
         wrapper2.lambda().orderByAsc(ZPermission::getPermissionOrder)
-                .eq(ZPermission::getPermissionType, PermissionTypeEnum.BUTTON.getCode())
-                .or().eq(ZPermission::getPermissionType, PermissionTypeEnum.OTHER.getCode());
+                .eq(ZPermission::getPermissionType, PermissionTypeEnum.BUTTON.getCode() + "")
+                .or().eq(ZPermission::getPermissionType, PermissionTypeEnum.OTHER.getCode() + "");
         List<ZPermission> list2 = list(wrapper2);
         return rolePermissionChildren(list, list2, rolePermissionList, "-1");
     }

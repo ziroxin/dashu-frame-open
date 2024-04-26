@@ -74,10 +74,10 @@
             <template slot-scope="{row}">
               <div>
                 <el-button v-if="row.permissionIsEnabled" type="text" plain size="mini"
-                           @click="changeIsEnabled(row, false)"
+                           @click="changeIsEnabled(row, 0)"
                 >禁用
                 </el-button>
-                <el-button v-else type="text" plain size="mini" @click="changeIsEnabled(row, true)">启用</el-button>
+                <el-button v-else type="text" plain size="mini" @click="changeIsEnabled(row, 1)">启用</el-button>
                 <el-button v-if="row.permissionType !== '2'" type="text" plain size="mini"
                            @click="openButtonTable(row)"
                 >按钮
@@ -140,8 +140,8 @@
         </el-form-item>
 
         <el-form-item v-if="routerShow" label="是否显示：" prop="permissionIsShow">
-          <el-switch v-model="temp.permissionIsShow" :active-value="true" active-text="显示"
-                     :inactive-value="false" inactive-text="隐藏"
+          <el-switch v-model="temp.permissionIsShow" :active-value="1" active-text="显示"
+                     :inactive-value="0" inactive-text="隐藏"
           />
         </el-form-item>
         <el-form-item v-if="routerShow && !temp.permissionIsShow" label="activeMenu：" prop="activeMenu">
@@ -155,20 +155,20 @@
           <el-tag type="info" style="margin-left: 20px;">等于noRedirect时,在面包屑导航不可点击</el-tag>
         </el-form-item>
         <el-form-item v-if="routerShow" label="noCache：" prop="noCache">
-          <el-switch v-model="temp.noCache" :active-value="true" active-text="TRUE"
-                     :inactive-value="false" inactive-text="FALSE"
+          <el-switch v-model="temp.noCache" :active-value="1" active-text="TRUE"
+                     :inactive-value="0" inactive-text="FALSE"
           />
           <el-tag type="info" style="margin-left: 20px;">默认false,为true时不被keep-alive缓存</el-tag>
         </el-form-item>
         <el-form-item v-if="routerShow" label="breadcrumb：" prop="breadcrumb">
-          <el-switch v-model="temp.breadcrumb" :active-value="true" active-text="TRUE"
-                     :inactive-value="false" inactive-text="FALSE"
+          <el-switch v-model="temp.breadcrumb" :active-value="1" active-text="TRUE"
+                     :inactive-value="0" inactive-text="FALSE"
           />
           <el-tag type="info" style="margin-left: 20px;">默认true,为false时不在面包屑中显示</el-tag>
         </el-form-item>
         <el-form-item v-if="routerShow" label="affix：" prop="affix">
-          <el-switch v-model="temp.affix" :active-value="true" active-text="TRUE"
-                     :inactive-value="false" inactive-text="FALSE"
+          <el-switch v-model="temp.affix" :active-value="1" active-text="TRUE"
+                     :inactive-value="0" inactive-text="FALSE"
           />
           <el-tag type="info" style="margin-left: 20px;">默认false,为true时固定在标签里</el-tag>
         </el-form-item>
@@ -295,12 +295,12 @@ export default {
         permissionIcon: '',
         permissionRouter: '',
         permissionComponent: '',
-        permissionIsEnabled: true,
-        permissionIsShow: true,
+        permissionIsEnabled: 1,
+        permissionIsShow: 1,
         noRedirect: 'noRedirect',
-        noCache: false,
-        breadcrumb: true,
-        affix: false,
+        noCache: 0,
+        breadcrumb: 1,
+        affix: 0,
         permissionOrder: 0
       }
       this.routerShow = true
