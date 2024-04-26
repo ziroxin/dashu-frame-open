@@ -60,10 +60,10 @@ public class ZPermission implements BaseEntity {
     private String permissionConfig;
 
     @ApiModelProperty("是否可见（0隐藏1显示）")
-    private boolean permissionIsShow;
+    private int permissionIsShow;
 
     @ApiModelProperty("是否禁用（0禁用1启用）")
-    private boolean permissionIsEnabled;
+    private int permissionIsEnabled;
 
     @ApiModelProperty("=noRedirect时,在面包屑导航不可点击")
     @TableField("no_redirect")
@@ -71,15 +71,15 @@ public class ZPermission implements BaseEntity {
 
     @ApiModelProperty("默认false,为true时不被<keep-alive>缓存")
     @TableField("no_cache")
-    private boolean noCache;
+    private int noCache;
 
     @ApiModelProperty("默认true,为false时不在面包屑中显示")
     @TableField("breadcrumb")
-    private boolean breadcrumb;
+    private int breadcrumb;
 
     @ApiModelProperty("默认false,为true时固定在标签里")
     @TableField("affix")
-    private boolean affix;
+    private int affix;
 
     @ApiModelProperty("本路由hidden时，菜单栏高亮显示的路由")
     @TableField("active_menu")
