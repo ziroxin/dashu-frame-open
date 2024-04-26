@@ -309,7 +309,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .collapse-title {
   color: red;
   font-weight: bold;
