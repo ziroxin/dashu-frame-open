@@ -16,6 +16,7 @@ import com.kg.core.zapigroup.entity.ZApiGroup;
 import com.kg.core.zapigroup.service.IZApiGroupService;
 import com.kg.core.zuser.entity.ZUserRole;
 import com.kg.core.zuser.service.IZUserRoleService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -222,7 +223,14 @@ public class ZApiServiceImpl extends ServiceImpl<ZApiMapper, ZApi> implements IZ
 
             // 组装实体
             ZApi zApi = new ZApi();
-            zApi.setApiClassName(method.getDeclaringClass().getSimpleName());
+            Class<?> declaringClass = method.getDeclaringClass();
+            // 类名（Api注解值，若无Api注解，则类名）
+            Api apiAnnotation = declaringClass.getAnnotation(Api.class);
+            if (apiAnnotation != null) {
+                zApi.setApiClassName(apiAnnotation.value() + "@" + declaringClass.getSimpleName() + ".java");
+            } else {
+                zApi.setApiClassName(declaringClass.getSimpleName() + ".java");
+            }
             zApi.setApiMethodName(method.getName());
             //hasAuthority('permission:delete')
             zApi.setApiPermission(annotation.value().replace("hasAuthority('", "").replace("')", ""));

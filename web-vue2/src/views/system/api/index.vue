@@ -57,7 +57,11 @@
                 </template>
                 <el-checkbox-group v-model="selectPermissionApiList" style="line-height: 50px;">
                   <template v-for="cls in group2.apiClass">
-                    <el-divider :key="cls.className">{{ cls.className }}</el-divider>
+                    <el-divider :key="cls.className">
+                      <p class="class-name-p">{{ cls.className.split('@')[0] }}</p>
+                      <p v-if="cls.className.split('@').length > 1" class="class-name-p controller">
+                        {{ cls.className.split('@')[1] }}</p>
+                    </el-divider>
                     <template v-for="api2 in cls.apiList">
                       <el-tooltip :key="'tip'+api2.apiId" placement="left">
                         <div slot="content" :key="'tipcontent'+api2.apiId" style="line-height: 30px;">
@@ -309,38 +313,46 @@ export default {
   }
 }
 </script>
-<style scoped>
-.collapse-title {
-  color: red;
-  font-weight: bold;
+<style lang="scss" scoped>
+::v-deep .el-collapse-item {
+  .el-collapse-item__header {
+    background-color: #4e5969 !important;
+    border-radius: 20px;
+    color: white;
+
+    &.is-active {
+      color: #828282;
+      background-color: #FFFFFF !important;
+      border-radius: 20px;
+      border-top: 5px solid #4e5969;
+
+      .collapse-title {
+        color: red;
+      }
+    }
+
+    .collapse-title {
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      width: 100%;
+    }
+  }
+
+  .el-collapse-item__wrap {
+    margin: 10px auto;
+    border-bottom: 2px solid #4e5969;
+    border-radius: 20px;
+  }
+}
+
+::v-deep .class-name-p {
+  line-height: 5px;
   text-align: center;
-  width: 100%;
-}
+  color: #4e5969;
 
-.el-collapse-item__header.is-active {
-  color: #828282;
-  background-color: #FFFFFF !important;
-  border-radius: 20px;
-  border-top: 5px solid #0a76a4;
-}
-
-.el-collapse-item__header.is-active .collapse-title {
-  color: red;
-}
-
-.el-collapse-item__header {
-  background-color: #0a76a4 !important;
-  border-radius: 20px;
-  color: white;
-}
-
-.el-collapse-item__header .collapse-title {
-  color: white;
-}
-
-.el-collapse-item__wrap {
-  margin: 10px auto;
-  border-bottom: 2px solid #0a76a4;
-  border-radius: 20px;
+  &.controller {
+    color: #999999;
+  }
 }
 </style>
