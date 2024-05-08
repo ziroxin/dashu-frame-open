@@ -73,7 +73,8 @@
         </el-form-item>
         <el-form-item label-width="0px" prop="newsContent"
                       :rules="[{required: true, message: '新闻内容不能为空'}]">
-          <my-wang-editor ref="myEditor" v-model="temp.newsContent" placeholder="请输入新闻内容"/>
+          <my-wang-editor ref="myEditor" v-model="temp.newsContent" height="600px"
+                          placeholder="请输入新闻内容"/>
         </el-form-item>
         <el-form-item label="顺序" prop="orderIndex"
                       :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]"
