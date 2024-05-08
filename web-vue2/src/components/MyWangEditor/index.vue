@@ -1,24 +1,29 @@
 <template>
   <div style="border: 1px solid #ccc;z-index: 9999;">
     <Toolbar
-      style="border-bottom: 1px solid #ccc"
-      :editor="editor"
-      :default-config="toolbarConfig"
-      :mode="mode"
+        style="border-bottom: 1px solid #ccc"
+        :editor="editor"
+        :default-config="toolbarConfig"
+        :mode="mode"
     />
     <Editor
-      v-model="html"
-      style="height: 400px; overflow-y: hidden;"
-      :default-config="editorConfig"
-      :mode="mode"
-      @onCreated="onCreated"
+        v-model="html"
+        :style="{height: this.height, overflowY: 'hidden'}"
+        :default-config="editorConfig"
+        :mode="mode"
+        @onCreated="onCreated"
     />
   </div>
 </template>
 <script>
 import {Editor, Toolbar} from '@wangeditor/editor-for-vue'
 import '@wangeditor/editor/dist/css/style.css'
-import {customParseImageSrc, customParseVideoSrc, imagesDefaultOptions, videosDefaultOptions} from '@/components/MyWangEditor/myWangEditorConfig';
+import {
+  customParseImageSrc,
+  customParseVideoSrc,
+  imagesDefaultOptions,
+  videosDefaultOptions
+} from '@/components/MyWangEditor/myWangEditorConfig';
 
 export default {
   name: 'MyWangEditor',
@@ -39,7 +44,9 @@ export default {
     // 更多配置 @see:https://www.wangeditor.com/v5/toolbar-config.html#toolbarkeys
     // 工具栏配置 例如：['bold', 'underline', 'italic']
     // 下方onCreated()方法中，可以获取全部key
-    toolbarKeys: {type: Array, default: () => []}
+    toolbarKeys: {type: Array, default: () => []},
+    // 编辑器内容区高度
+    height: {type: String, default: '400px'},
   },
   data() {
     return {
@@ -60,7 +67,12 @@ export default {
           insertVideo: {parseVideoSrc: customParseVideoSrc},
           // 代码块语言
           codeSelectLang: {
-            codeLangs: [{text: 'JAVA', value: 'java'}, {text: 'HTML', value: 'html'}, {text: 'JS', value: 'javascript'}, {text: 'CSS', value: 'css'}]
+            codeLangs: [
+              {text: 'JAVA', value: 'java'},
+              {text: 'HTML', value: 'html'},
+              {text: 'JS', value: 'javascript'},
+              {text: 'CSS', value: 'css'}
+            ]
           }
         }
       },
