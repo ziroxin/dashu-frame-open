@@ -21,6 +21,29 @@ import java.util.Date;
  * @date 2024-04-16 16:04
  */
 public class DownloadNetFileUtils {
+
+
+    /**
+     * 获取文件大小
+     *
+     * @param fileUrl 文件地址
+     * @return 文件大小（单位：byte）
+     */
+    public static long getFileSize(String fileUrl) {
+        return Long.parseLong(HttpRequest.head(fileUrl).execute().header(Header.CONTENT_LENGTH));
+    }
+
+    /**
+     * 获取文件扩展名
+     *
+     * @param fileUrl 文件地址
+     * @return 文件扩展名
+     */
+    public static String getExtend(String fileUrl) {
+        String contentType = HttpRequest.head(fileUrl).execute().header(Header.CONTENT_TYPE);
+        return contentType.split("/")[1];
+    }
+
     /**
      * 下载网络图片并压缩
      *
@@ -43,7 +66,6 @@ public class DownloadNetFileUtils {
         return download(fileUrl, dirName, false);
     }
 
-
     /**
      * 下载网络文件（私有方法）
      *
@@ -54,9 +76,7 @@ public class DownloadNetFileUtils {
      */
     private static FileDTO download(String fileUrl, String dirName, boolean isCompress) {
         // 获取文件扩展名
-        String contentType = HttpRequest.head(fileUrl).execute().header(Header.CONTENT_TYPE);
-        System.out.println(contentType);
-        String extend = contentType.split("/")[1];
+        String extend = getExtend(fileUrl);
 
         // 上传文件实体
         FileDTO fileDto = new FileDTO();
@@ -75,7 +95,9 @@ public class DownloadNetFileUtils {
         if (isCompress) {
             if (FilePathConfig.DEFAULT_IMAGE_FILE_EXTEND.toLowerCase().indexOf(extend) >= 0) {
                 // 判断是否图片格式
-                Img.from(saveFile).setQuality(0.6).write(saveFile);
+                Img.from(FileUtil.getInputStream(saveFile))
+                        .setQuality(Float.parseFloat(FilePathConfig.DEFAULT_IMAGE_QUALITY))// 压缩比率，默认0.6 即60%
+                        .write(FileUtil.getOutputStream(saveFile));
             }
         }
         // 文件大小
