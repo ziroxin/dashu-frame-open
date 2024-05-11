@@ -6,8 +6,10 @@
 <template>
   <div>
     <!-- 图片预览 -->
-    <el-dialog :visible.sync="dialogVisible" :fullscreen="true" append-to-body>
-      <img width="100%" :src="dialogImageUrl" alt="">
+    <el-dialog :visible.sync="dialogVisible" :fullscreen="true" @click.native="dialogVisible=false"
+               append-to-body custom-class="img-preview-dialog">
+      <img width="100%" :src="dialogImageUrl" alt="" @click.stop="dialogVisible=true"/>
+      <div class="img-text-info">按ESC键或点击遮罩可关闭预览</div>
     </el-dialog>
     <!-- 图片上传 -->
     <el-upload ref="imageOne"
@@ -24,7 +26,7 @@
                list-type="picture-card"
                accept="image/*"
     >
-      <i class="el-icon-plus" />
+      <i class="el-icon-plus"/>
     </el-upload>
   </div>
 </template>
@@ -101,9 +103,35 @@ export default {
   }
 }
 </script>
-
-<style>
+<style lang="scss">
 .hidden-btn .el-upload--picture-card {
   display: none;
+}
+
+.img-preview-dialog {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  text-align: center;
+
+  .el-dialog__close {
+    color: #fff !important;
+    font-size: 24px !important;
+  }
+
+  img {
+    position: absolute;
+    left: 3%;
+    max-width: 94%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .img-text-info {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.70);
+    font-size: 16px;
+  }
 }
 </style>
