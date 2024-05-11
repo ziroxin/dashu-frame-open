@@ -81,7 +81,7 @@ export default {
   },
   watch: {
     html() {
-      this.$emit('input', this.editor.isEmpty() ? '' : this.html)
+      this.$emit('input', this.html)
     },
     value() {
       this.html = this.value
