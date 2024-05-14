@@ -1,16 +1,21 @@
 package com.kg;
 
 import cn.hutool.json.JSONUtil;
-import com.kg.component.office.WordCommonUtils;
+import com.kg.component.office.WordWriteImageUtils;
+import com.kg.component.office.WordWriteStringUtils;
+import com.kg.component.office.WordWriteTableUtils;
 import com.kg.component.office.dto.WordStrFormatDTO;
 import com.kg.component.office.dto.WordTableFormatDTO;
 import com.kg.module.news.mapper.NewsMapper;
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -40,28 +45,43 @@ public class Test2 {
 
     public static void main(String[] args) {
         try {
-
             String path = System.getProperty("user.dir") + "/module/src/test/java/com/kg/hello.docx";
             String outPath = System.getProperty("user.dir") + "/module/target/hello1.docx";
             XWPFDocument doc = new XWPFDocument(new FileInputStream(path));
 
+            // 写入图片（自动宽高）
+            File imgFile = new File("D:\\Users\\Administrator\\Pictures\\9315e9f1612a950938cdda0491795a95.gif");
+            XWPFParagraph newP1 = WordWriteImageUtils.imageWriteAutoSize(doc, "pic1", imgFile, true);
+            newP1.setAlignment(ParagraphAlignment.LEFT); //图片居左（默认）
+            // 写入图片（指定宽高）
+            File imgFile2 = new File("D:\\Users\\Administrator\\Pictures\\java119\\3.jpg");
+            XWPFParagraph newP2 = WordWriteImageUtils.imageWrite(doc, "pic1", imgFile2, 400, 300, true);
+            newP2.setAlignment(ParagraphAlignment.CENTER); //图片居中
+
             // 1 写入内容
-            WordCommonUtils.writeStrByKey(doc, "data1", "标题1", false);
+            WordWriteStringUtils.writeStrByKey(doc, "data1", "标题1", false);
 
-            WordCommonUtils.writeStrByKey(doc, "data2", "标题2", true);
-            WordCommonUtils.writeStrByKey(doc, "data2", "===========标题2", false);
+            WordWriteStringUtils.writeStrByKey(doc, "data2", "标题2", true);
+            WordWriteStringUtils.writeStrByKey(doc, "data2", "===========标题2", false);
 
-            WordCommonUtils.writeStrByKey(doc, "data4", "内容4", false);
-            WordCommonUtils.writeStrByKey(doc, "data5", "内容5", false);
+            WordWriteStringUtils.writeStrByKey(doc, "data4", "内容4", false);
+            WordStrFormatDTO ff = new WordStrFormatDTO();
+            ff.setBold(true);
+            ff.setFontSize(14);
+            WordWriteStringUtils.writeStrNewline(doc, "data5", "新行写入===", ff, true);
+            WordWriteStringUtils.writeStrNewline(doc, "data5", "内容5新行写入===", true);
+            WordWriteStringUtils.writeStrNewline(doc, "data5", "内容5新行写入===", true);
+            WordWriteStringUtils.writeStrByKey(doc, "data5", "内容5", true);
+            WordWriteStringUtils.writeStrByKey(doc, "data5", "内容5", true);
 
             // 2 写入表格
-            XWPFTable table = WordCommonUtils.tableWriteByKey(doc, "data3", 10, 4, true);
+            XWPFTable table = WordWriteTableUtils.tableWriteByKey(doc, "data3", 10, 4, true);
             // 2.1 标题行（自定义格式）
             WordStrFormatDTO titleFormat = new WordStrFormatDTO();
             titleFormat.setBold(true);
             titleFormat.setFontSize(14);
             String[] titles = new String[]{"类型", "总受理量（件）", "已处理数量（件）", "未处理数量（件）"};
-            WordCommonUtils.tableWriteRowOne(table, 0, Arrays.asList(titles), true, titleFormat);
+            WordWriteTableUtils.tableWriteRowOne(table, 0, Arrays.asList(titles), true, titleFormat);
 
             // 2.2 数据行
             List<List<String>> rowList = new ArrayList<>();
@@ -73,33 +93,33 @@ public class Test2 {
                 row.add("未处理数量" + (300 - i));
                 rowList.add(row);
             }
-            WordCommonUtils.tableWriteRowList(table, 1, rowList, true);
+            WordWriteTableUtils.tableWriteRowList(table, 1, rowList, true);
 
             // 2.3 合并单元格
             String[] other = new String[]{"合计"};
-            WordCommonUtils.tableWriteRowOne(table, 6, Arrays.asList(other), true);
-            WordCommonUtils.tableMerge(table, 6, 7, 0, 0);
+            WordWriteTableUtils.tableWriteRowOne(table, 6, Arrays.asList(other), true);
+            WordWriteTableUtils.tableMerge(table, 6, 7, 0, 0);
 
             String[] other2 = new String[]{"合计2"};
-            WordCommonUtils.tableWriteRowOne(table, 8, Arrays.asList(other2), true);
-            WordCommonUtils.tableMerge(table, 8, 8, 0, 2);
+            WordWriteTableUtils.tableWriteRowOne(table, 8, Arrays.asList(other2), true);
+            WordWriteTableUtils.tableMerge(table, 8, 8, 0, 2);
 
             // 写入某一单元格（第3行 第3列）
             String[] other3 = new String[]{null, null, "只修改第3行第3列"};
-            WordCommonUtils.tableWriteRowOne(table, 2, Arrays.asList(other3), true);
+            WordWriteTableUtils.tableWriteRowOne(table, 2, Arrays.asList(other3), true);
 
             // 2.4 格式化表格（内容居中）
-            WordCommonUtils.tableFormat(table, new WordTableFormatDTO());
+            WordWriteTableUtils.tableFormat(table, new WordTableFormatDTO());
 
             // 2.5 给某 n 个单元格配置格式
             WordTableFormatDTO cellFormat = new WordTableFormatDTO();
             cellFormat.setBgColor("CCCCCC");// 设置标题行背景色和行高
             cellFormat.setRowHeight(800);
-            WordCommonUtils.tableBgColor(table, 0, 0,
+            WordWriteTableUtils.tableBgColor(table, 0, 0,
                     0, table.getRow(0).getTableCells().size() - 1, cellFormat);
             cellFormat.toDefault();// 恢复默认配置
             cellFormat.setBgColor("FF0000");
-            WordCommonUtils.tableBgColor(table, 3, 4, 1, 2, cellFormat);
+            WordWriteTableUtils.tableBgColor(table, 3, 4, 1, 2, cellFormat);
 
 
             doc.write(new FileOutputStream(outPath));
