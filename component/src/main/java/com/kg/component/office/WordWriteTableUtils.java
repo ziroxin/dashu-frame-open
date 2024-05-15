@@ -71,7 +71,8 @@ public class WordWriteTableUtils {
      * @param rowData  一行数据
      * @param cover    是否覆盖已有数据
      */
-    public static void tableWriteRowOne(XWPFTable table, int startRow, List<String> rowData, boolean cover, WordStrFormatDTO format) {
+    public static void tableWriteRowOne(XWPFTable table, int startRow, List<String> rowData, boolean cover,
+                                        WordStrFormatDTO format) {
         List<List<String>> rowList = new ArrayList<>();
         rowList.add(rowData);
         tableWriteRowList(table, startRow, rowList, cover, format);
@@ -98,7 +99,8 @@ public class WordWriteTableUtils {
      * @param rowList  写入的数据
      * @param cover    是否覆盖已有数据
      */
-    public static void tableWriteRowList(XWPFTable table, int startRow, List<List<String>> rowList, boolean cover, WordStrFormatDTO format) {
+    public static void tableWriteRowList(XWPFTable table, int startRow, List<List<String>> rowList, boolean cover,
+                                         WordStrFormatDTO format) {
         int rowIndex = startRow < 0 ? 0 : startRow;
         for (List<String> cellData : rowList) {
             // 取行
@@ -131,7 +133,7 @@ public class WordWriteTableUtils {
     /**
      * 合并单元格
      */
-    public static void tableMerge(XWPFTable table, int startRow, int endRow, int startCol, int endCol) throws Exception {
+    public static void tableMerge(XWPFTable table, int startRow, int endRow, int startCol, int endCol) {
         for (int i = startRow; i <= endRow; i++) {
             XWPFTableRow row = table.getRow(i);
             for (int j = startCol; j <= endCol; j++) {
