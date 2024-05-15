@@ -7,7 +7,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
-import com.kg.component.office.ExcelCommonUtils;
+import com.kg.component.office.ExcelReadUtils;
+import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.sms.aliyun.AliyunSmsResult;
 import com.kg.component.sms.aliyun.AliyunSmsSender;
 import com.kg.component.utils.GuidUtils;
@@ -210,7 +211,7 @@ public class DemoSmsServiceImpl extends ServiceImpl<DemoSmsMapper, DemoSms> impl
             // 第一行标题
             String title = "短信 - demo";
             // 写入导出excel文件
-            ExcelCommonUtils.write(path, title, dataList, DemoSmsExcelConstant.EXPORT_EXCEL_COLUMN);
+            ExcelWriteUtils.write(path, title, dataList, DemoSmsExcelConstant.EXPORT_EXCEL_COLUMN);
             // 导出成功，返回导出地址
             return FilePathConfig.switchUrl(path);
         } catch (Exception e) {
@@ -228,7 +229,7 @@ public class DemoSmsServiceImpl extends ServiceImpl<DemoSmsMapper, DemoSms> impl
     @Transactional(rollbackFor = RuntimeException.class)
     public void importExcel(HttpServletRequest request) {
         // 读取导入数据
-        List<DemoSms> importData = ExcelCommonUtils.read(request, 1, 2, DemoSms.class, DemoSmsExcelConstant.IMPORT_EXCEL_COLUMN);
+        List<DemoSms> importData = ExcelReadUtils.read(request, 1, 2, DemoSms.class, DemoSmsExcelConstant.IMPORT_EXCEL_COLUMN);
         // 处理数据
         List<DemoSms> saveData = importData.stream().map(o -> {
             o.setSmsId(GuidUtils.getUuid());

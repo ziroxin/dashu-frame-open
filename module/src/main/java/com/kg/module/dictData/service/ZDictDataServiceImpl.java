@@ -7,7 +7,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
-import com.kg.component.office.ExcelCommonUtils;
+import com.kg.component.office.ExcelReadUtils;
+import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.redis.RedisUtils;
 import com.kg.component.utils.GuidUtils;
 import com.kg.core.common.constant.CacheConstant;
@@ -212,7 +213,7 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
             // 第一行标题
             String title = "字典数据表格";
             // 写入导出excel文件
-            ExcelCommonUtils.write(path, title, dataList, ZDictDataExcelConstant.EXPORT_EXCEL_COLUMN);
+            ExcelWriteUtils.write(path, title, dataList, ZDictDataExcelConstant.EXPORT_EXCEL_COLUMN);
             // 导出成功，返回导出地址
             return FilePathConfig.switchUrl(path);
         } catch (Exception e) {
@@ -232,7 +233,7 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
         String typeCode = request.getParameter("typeCode");
         // 读取导入数据
         List<ZDictData> importData =
-                ExcelCommonUtils.read(request, 1, 2, ZDictData.class, ZDictDataExcelConstant.IMPORT_EXCEL_COLUMN);
+                ExcelReadUtils.read(request, 1, 2, ZDictData.class, ZDictDataExcelConstant.IMPORT_EXCEL_COLUMN);
         // 处理数据
         List<ZDictData> saveData = importData.stream().map(o -> {
             o.setDictId(GuidUtils.getUuid());

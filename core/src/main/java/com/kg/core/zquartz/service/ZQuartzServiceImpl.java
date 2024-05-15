@@ -6,7 +6,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
-import com.kg.component.office.ExcelCommonUtils;
+import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
 import com.kg.core.zquartz.dto.ZQuartzDTO;
 import com.kg.core.zquartz.entity.ZQuartz;
@@ -82,7 +82,7 @@ public class ZQuartzServiceImpl extends ServiceImpl<ZQuartzMapper, ZQuartz> impl
             // 第一行标题
             String title = "定时任务调度表";
             // 写入导出excel文件
-            ExcelCommonUtils.write(path, title, dataList, ZQuartzExcelConstant.EXPORT_EXCEL_COLUMN);
+            ExcelWriteUtils.write(path, title, dataList, ZQuartzExcelConstant.EXPORT_EXCEL_COLUMN);
             // 导出成功，返回导出地址
             return FilePathConfig.switchUrl(path);
         } catch (Exception e) {

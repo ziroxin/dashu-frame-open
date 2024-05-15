@@ -7,7 +7,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
-import com.kg.component.office.ExcelCommonUtils;
+import com.kg.component.office.ExcelReadUtils;
+import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
 import com.kg.module.userTheme.dto.ZUserThemeDTO;
 import com.kg.module.userTheme.dto.convert.ZUserThemeConvert;
@@ -163,7 +164,7 @@ public class ZUserThemeServiceImpl extends ServiceImpl<ZUserThemeMapper, ZUserTh
             // 第一行标题
             String title = "用户主题配置";
             // 写入导出excel文件
-            ExcelCommonUtils.write(path, title, dataList, ZUserThemeExcelConstant.EXPORT_EXCEL_COLUMN);
+            ExcelWriteUtils.write(path, title, dataList, ZUserThemeExcelConstant.EXPORT_EXCEL_COLUMN);
             // 导出成功，返回导出地址
             return FilePathConfig.switchUrl(path);
         } catch (Exception e) {
@@ -182,7 +183,7 @@ public class ZUserThemeServiceImpl extends ServiceImpl<ZUserThemeMapper, ZUserTh
     public void importExcel(HttpServletRequest request) {
         // 读取导入数据
         List<ZUserTheme> importData =
-                ExcelCommonUtils.read(request, 1, 2, ZUserTheme.class, ZUserThemeExcelConstant.IMPORT_EXCEL_COLUMN);
+                ExcelReadUtils.read(request, 1, 2, ZUserTheme.class, ZUserThemeExcelConstant.IMPORT_EXCEL_COLUMN);
         // 处理数据
         List<ZUserTheme> saveData = importData.stream().map(o -> {
             o.setThemeId(GuidUtils.getUuid());
