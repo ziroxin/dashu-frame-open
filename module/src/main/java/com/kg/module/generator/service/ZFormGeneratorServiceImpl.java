@@ -7,7 +7,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
-import com.kg.component.office.ExcelCommonUtils;
+import com.kg.component.office.ExcelReadUtils;
+import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
 import com.kg.module.generator.dto.ZFormGeneratorDTO;
 import com.kg.module.generator.dto.convert.ZFormGeneratorConvert;
@@ -212,7 +213,7 @@ public class ZFormGeneratorServiceImpl extends ServiceImpl<ZFormGeneratorMapper,
             // 第一行标题
             String title = "代码生成器表单";
             // 写入导出excel文件
-            ExcelCommonUtils.write(path, title, dataList, ZFormGeneratorExcelConstant.EXPORT_EXCEL_COLUMN);
+            ExcelWriteUtils.write(path, title, dataList, ZFormGeneratorExcelConstant.EXPORT_EXCEL_COLUMN);
             // 导出成功，返回导出地址
             return FilePathConfig.switchUrl(path);
         } catch (Exception e) {
@@ -231,7 +232,7 @@ public class ZFormGeneratorServiceImpl extends ServiceImpl<ZFormGeneratorMapper,
     public void importExcel(HttpServletRequest request) {
         // 读取导入数据
         List<ZFormGenerator> importData =
-                ExcelCommonUtils.read(request, 1, 2, ZFormGenerator.class, ZFormGeneratorExcelConstant.IMPORT_EXCEL_COLUMN);
+                ExcelReadUtils.read(request, 1, 2, ZFormGenerator.class, ZFormGeneratorExcelConstant.IMPORT_EXCEL_COLUMN);
         // 处理数据
         List<ZFormGenerator> saveData = importData.stream().map(o -> {
             o.setFormId(GuidUtils.getUuid());

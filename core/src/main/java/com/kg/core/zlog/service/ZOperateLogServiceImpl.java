@@ -6,7 +6,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
-import com.kg.component.office.ExcelCommonUtils;
+import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
 import com.kg.core.zlog.entity.ZOperateLog;
 import com.kg.core.zlog.excels.ZOperateLogExcelConstant;
@@ -83,7 +83,7 @@ public class ZOperateLogServiceImpl extends ServiceImpl<ZOperateLogMapper, ZOper
             // 第一行标题
             String title = "操作日志表";
             // 写入导出excel文件
-            ExcelCommonUtils.write(path, title, dataList, ZOperateLogExcelConstant.EXPORT_EXCEL_COLUMN);
+            ExcelWriteUtils.write(path, title, dataList, ZOperateLogExcelConstant.EXPORT_EXCEL_COLUMN);
             // 导出成功，返回导出地址
             return FilePathConfig.switchUrl(path);
         } catch (Exception e) {

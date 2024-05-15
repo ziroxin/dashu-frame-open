@@ -6,7 +6,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
-import com.kg.component.office.ExcelCommonUtils;
+import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
 import com.kg.module.news.entity.News;
 import com.kg.module.news.excels.NewsExcelConstant;
@@ -74,7 +74,7 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, News> implements Ne
             // 第一行标题
             String title = "新闻表-测试";
             // 写入导出excel文件
-            ExcelCommonUtils.write(path, title, dataList, NewsExcelConstant.EXPORT_EXCEL_COLUMN);
+            ExcelWriteUtils.write(path, title, dataList, NewsExcelConstant.EXPORT_EXCEL_COLUMN);
             // 导出成功，返回导出地址
             return FilePathConfig.switchUrl(path);
         } catch (Exception e) {

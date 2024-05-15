@@ -8,7 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.file.utils.RemoveFileUtils;
-import com.kg.component.office.ExcelCommonUtils;
+import com.kg.component.office.ExcelReadUtils;
+import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
 import com.kg.module.files.dto.ZFilesDTO;
 import com.kg.module.files.dto.convert.ZFilesConvert;
@@ -187,7 +188,7 @@ public class ZFilesServiceImpl extends ServiceImpl<ZFilesMapper, ZFiles> impleme
             // 第一行标题
             String title = "文件记录表";
             // 写入导出excel文件
-            ExcelCommonUtils.write(path, title, dataList, ZFilesExcelConstant.EXPORT_EXCEL_COLUMN);
+            ExcelWriteUtils.write(path, title, dataList, ZFilesExcelConstant.EXPORT_EXCEL_COLUMN);
             // 导出成功，返回导出地址
             return FilePathConfig.switchUrl(path);
         } catch (Exception e) {
@@ -206,7 +207,7 @@ public class ZFilesServiceImpl extends ServiceImpl<ZFilesMapper, ZFiles> impleme
     public void importExcel(HttpServletRequest request) {
         // 读取导入数据
         List<ZFiles> importData =
-                ExcelCommonUtils.read(request, 1, 2, ZFiles.class, ZFilesExcelConstant.IMPORT_EXCEL_COLUMN);
+                ExcelReadUtils.read(request, 1, 2, ZFiles.class, ZFilesExcelConstant.IMPORT_EXCEL_COLUMN);
         // 处理数据
         List<ZFiles> saveData = importData.stream().map(o -> {
             o.setFileId(GuidUtils.getUuid());
