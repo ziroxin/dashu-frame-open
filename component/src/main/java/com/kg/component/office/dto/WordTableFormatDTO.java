@@ -43,14 +43,14 @@ public class WordTableFormatDTO {
      * 默认格式
      */
     public void toDefault() {
-        widthType = TableWidthType.PCT;
-        width = "100%";
-        align = TableRowAlign.CENTER;
-        rowHeight = 400;
-        cellAlign = ParagraphAlignment.CENTER;
-        cellValign = XWPFTableCell.XWPFVertAlign.CENTER;
-        cellSpaceBefore = 0;
-        cellSpaceAfter = 0;
-        bgColor = "FFFFFF";
+        widthType = TableWidthType.PCT;// 宽度类型：百分比
+        width = "100%";// 宽度：100%
+        align = TableRowAlign.CENTER;// 对齐方式：居中
+        rowHeight = 400;// 行高：400
+        cellAlign = ParagraphAlignment.CENTER;// 单元格对齐方式：居中
+        cellValign = XWPFTableCell.XWPFVertAlign.CENTER;// 单元格垂直对齐方式：居中
+        cellSpaceBefore = 0;// 单元格段前空白：0
+        cellSpaceAfter = 0;// 单元格段后空白：0
+        bgColor = "FFFFFF";// 单元格背景色：白色
     }
 }

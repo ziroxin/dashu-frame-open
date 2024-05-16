@@ -172,7 +172,7 @@ public class WordWriteStringUtils {
     }
 
     /**
-     * 获取格式
+     * 获取文本格式
      */
     private static WordStrFormatDTO getFormat(XWPFRun run) {
         WordStrFormatDTO format = new WordStrFormatDTO();
