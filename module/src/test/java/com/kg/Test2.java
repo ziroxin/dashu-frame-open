@@ -115,11 +115,11 @@ public class Test2 {
             WordTableFormatDTO cellFormat = new WordTableFormatDTO();
             cellFormat.setBgColor("CCCCCC");// 设置标题行背景色和行高
             cellFormat.setRowHeight(800);
-            WordWriteTableUtils.tableBgColor(table, 0, 0,
+            WordWriteTableUtils.tableCellFormat(table, 0, 0,
                     0, table.getRow(0).getTableCells().size() - 1, cellFormat);
             cellFormat.toDefault();// 恢复默认配置
             cellFormat.setBgColor("FF0000");
-            WordWriteTableUtils.tableBgColor(table, 3, 4, 1, 2, cellFormat);
+            WordWriteTableUtils.tableCellFormat(table, 3, 4, 1, 2, cellFormat);
 
 
             doc.write(new FileOutputStream(outPath));

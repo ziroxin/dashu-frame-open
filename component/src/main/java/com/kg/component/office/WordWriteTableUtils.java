@@ -156,7 +156,7 @@ public class WordWriteTableUtils {
     }
 
     /**
-     * 格式化表格
+     * 设置表格整体格式
      */
     public static void tableFormat(XWPFTable table, WordTableFormatDTO format) {
         // 1 设置表宽度
@@ -185,9 +185,9 @@ public class WordWriteTableUtils {
     }
 
     /**
-     * 设置单元格背景色
+     * 设置单元格格式
      */
-    public static void tableBgColor(XWPFTable table, int startRow, int endRow, int startCol, int endCol,
+    public static void tableCellFormat(XWPFTable table, int startRow, int endRow, int startCol, int endCol,
                                     WordTableFormatDTO format) {
         for (int i = startRow; i <= endRow; i++) {
             XWPFTableRow row = table.getRow(i);
