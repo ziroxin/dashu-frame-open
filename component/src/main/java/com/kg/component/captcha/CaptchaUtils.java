@@ -2,10 +2,6 @@ package com.kg.component.captcha;
 
 import com.kg.component.captcha.cover.*;
 import com.kg.component.utils.GuidUtils;
-import com.wf.captcha.ChineseCaptcha;
-import com.wf.captcha.ChineseGifCaptcha;
-import com.wf.captcha.GifCaptcha;
-import com.wf.captcha.SpecCaptcha;
 import com.wf.captcha.base.Captcha;
 import lombok.Getter;
 import lombok.Setter;

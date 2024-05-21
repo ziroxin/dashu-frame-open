@@ -1,9 +1,7 @@
 package com.kg.component.utils;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -20,8 +18,6 @@ import java.util.Date;
  * @author ziro
  * @date 2023-01-17 09:23:26
  */
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class TimeUtils {
@@ -155,6 +151,13 @@ public class TimeUtils {
     }
 
     /**
+     * 获取时间戳
+     */
+    public long toTimestamp() {
+        return this.timestamp;
+    }
+
+    /**
      * 输出Date格式日期
      */
     public Date toDate() {
@@ -219,7 +222,7 @@ public class TimeUtils {
         System.out.println(TimeUtils.setTime(new Date()));// 操作设置时间
         // 操作示例
         System.out.println(TimeUtils.now().addDay(1).toLocalDateTime());
-        System.out.println(TimeUtils.now().addDay(1).getTimestamp());
+        System.out.println(TimeUtils.now().addDay(1).toTimestamp());
         System.out.println(TimeUtils.now().addDay(-5).toFormat("yyyy-MM-dd"));
         System.out.println(TimeUtils.now().addMinute(10).toFormat("yyyy-MM-dd HH:mm:ss"));
         System.out.println("---");
