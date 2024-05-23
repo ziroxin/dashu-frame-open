@@ -1,13 +1,11 @@
 package com.kg.component.office;
 
 import com.kg.component.office.dto.WordStrFormatDTO;
-import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlCursor;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,14 +41,36 @@ public class WordWriteStringUtils {
     public static XWPFParagraph writeStrByKey(XWPFDocument doc, String key, String content,
                                               WordStrFormatDTO format, boolean isAppend) {
         key = "${" + key + "}";
-        for (XWPFParagraph paragraph : doc.getParagraphs()) {
+        // 遍历段落
+        List<XWPFParagraph> paragraphs = doc.getParagraphs();
+        XWPFParagraph result = write(paragraphs, key, content, format, isAppend);
+        if (result == null) {
+            // 遍历表格，每个单元格遍历段落
+            List<XWPFTable> tables = doc.getTables();
+            for (XWPFTable table : tables) {
+                for (XWPFTableRow row : table.getRows()) {
+                    for (XWPFTableCell cell : row.getTableCells()) {
+                        result = write(cell.getParagraphs(), key, content, format, isAppend);
+                        if (result != null) {
+                            return result;
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private static XWPFParagraph write(List<XWPFParagraph> paragraphs, String key, String content,
+                                       WordStrFormatDTO format, boolean isAppend) {
+        for (XWPFParagraph paragraph : paragraphs) {
+            Pattern pattern = Pattern.compile(Pattern.quote(key));
             StringBuilder sb = new StringBuilder();
             for (XWPFRun run : paragraph.getRuns()) {
                 sb.append(run.getText(0));// 本段落内容关联起来
             }
             // 匹配key
             String text = sb.toString();
-            Pattern pattern = Pattern.compile(Pattern.quote(key));
             Matcher matcher = pattern.matcher(text);
             if (matcher.find()) {
                 // 移除文档中包含${key}的内容
