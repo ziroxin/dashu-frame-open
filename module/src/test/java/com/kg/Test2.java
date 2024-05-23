@@ -52,8 +52,11 @@ public class Test2 {
             WordWriteStringUtils.writeStrByKey(doc, "data1", "标题1", true);
             WordWriteStringUtils.writeStrByKey(doc, "data1", "标题11", false);
             WordWriteStringUtils.writeStrByKey(doc, "data2", "标题2", false);
-            WordWriteStringUtils.writeStrByKey(doc, "qmyjr", "亲米一家人", false);
-
+            // 写入图片（自动宽高）
+            File imgFile0 = new File("D:\\Users\\Administrator\\Pictures\\9315e9f1612a950938cdda0491795a95.gif");
+            XWPFParagraph newP0 = WordWriteImageUtils.imageInTableAutoSize(doc, "qmyjr", imgFile0, true);
+            newP0.setAlignment(ParagraphAlignment.LEFT); //图片居左（默认）
+            WordWriteImageUtils.imageInTable(doc, "qmyjr", imgFile0, 100, 100, false);
 
             if (false) {
 

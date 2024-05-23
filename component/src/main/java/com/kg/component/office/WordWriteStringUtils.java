@@ -61,8 +61,8 @@ public class WordWriteStringUtils {
         return result;
     }
 
-    private static XWPFParagraph write(List<XWPFParagraph> paragraphs, String key, String content,
-                                       WordStrFormatDTO format, boolean isAppend) {
+    static XWPFParagraph write(List<XWPFParagraph> paragraphs, String key, String content,
+                               WordStrFormatDTO format, boolean isAppend) {
         for (XWPFParagraph paragraph : paragraphs) {
             Pattern pattern = Pattern.compile(Pattern.quote(key));
             StringBuilder sb = new StringBuilder();
