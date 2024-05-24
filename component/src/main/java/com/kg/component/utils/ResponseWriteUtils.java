@@ -16,6 +16,9 @@ public class ResponseWriteUtils {
 
     /**
      * 响应：状态200，json格式
+     *
+     * @param response 响应对象
+     * @param body     响应内容
      */
     public static void writeJson200(HttpServletResponse response, Object body) throws IOException {
         response.setStatus(HttpStatus.OK.value());

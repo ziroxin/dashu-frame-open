@@ -45,20 +45,29 @@ public class Test2 {
 
     public static void main(String[] args) {
         try {
-            String path = System.getProperty("user.dir") + "/module/src/test/java/com/kg/bbda.docx";
-            String outPath = System.getProperty("user.dir") + "/module/target/hello1.docx";
-            XWPFDocument doc = new XWPFDocument(new FileInputStream(path));
-
-            WordWriteStringUtils.writeStrByKey(doc, "data1", "标题1", true);
-            WordWriteStringUtils.writeStrByKey(doc, "data1", "标题11", false);
-            WordWriteStringUtils.writeStrByKey(doc, "data2", "标题2", false);
-            // 写入图片（自动宽高）
-            File imgFile0 = new File("D:\\Users\\Administrator\\Pictures\\9315e9f1612a950938cdda0491795a95.gif");
-            XWPFParagraph newP0 = WordWriteImageUtils.imageInTableAutoSize(doc, "qmyjr", imgFile0, true);
-            newP0.setAlignment(ParagraphAlignment.LEFT); //图片居左（默认）
-            WordWriteImageUtils.imageInTable(doc, "qmyjr", imgFile0, 100, 100, false);
-
             if (false) {
+                String path = System.getProperty("user.dir") + "/module/src/test/java/com/kg/bbda.docx";
+                String outPath = System.getProperty("user.dir") + "/module/target/hello1.docx";
+                XWPFDocument doc = new XWPFDocument(new FileInputStream(path));
+
+                WordWriteStringUtils.writeStrByKey(doc, "data1", "标题1", true);
+                WordWriteStringUtils.writeStrByKey(doc, "data1", "标题11", false);
+                WordWriteStringUtils.writeStrByKey(doc, "data2", "标题2", false);
+                // 写入图片（自动宽高）
+                File imgFile0 = new File("D:\\Users\\Administrator\\Pictures\\9315e9f1612a950938cdda0491795a95.gif");
+                XWPFParagraph newP0 = WordWriteImageUtils.imageInTableAutoSize(doc, "qmyjr", imgFile0, true);
+                newP0.setAlignment(ParagraphAlignment.LEFT); //图片居左（默认）
+                WordWriteImageUtils.imageInTable(doc, "qmyjr", imgFile0, 100, 100, false);
+
+                doc.write(new FileOutputStream(outPath));
+                doc.close();
+
+            }
+
+            if (true) {
+                String path = System.getProperty("user.dir") + "/module/src/test/java/com/kg/hello.docx";
+                String outPath = System.getProperty("user.dir") + "/module/target/hello1.docx";
+                XWPFDocument doc = new XWPFDocument(new FileInputStream(path));
 
                 // 写入图片（自动宽高）
                 File imgFile = new File("D:\\Users\\Administrator\\Pictures\\9315e9f1612a950938cdda0491795a95.gif");
@@ -130,13 +139,15 @@ public class Test2 {
                         0, table.getRow(0).getTableCells().size() - 1, cellFormat);
                 cellFormat.toDefault();// 恢复默认配置
                 cellFormat.setBgColor("FF0000");
+                cellFormat.setNoneBorder();
                 WordWriteTableUtils.tableCellFormat(table, 3, 4, 1, 2, cellFormat);
 
 
+                doc.write(new FileOutputStream(outPath));
+                doc.close();
+
             }
 
-            doc.write(new FileOutputStream(outPath));
-            doc.close();
 
         } catch (Exception e) {
             e.printStackTrace();
