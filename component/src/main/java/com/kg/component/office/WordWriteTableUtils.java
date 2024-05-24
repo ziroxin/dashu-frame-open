@@ -188,7 +188,8 @@ public class WordWriteTableUtils {
      * 设置单元格格式
      */
     public static void tableCellFormat(XWPFTable table, int startRow, int endRow, int startCol, int endCol,
-                                    WordTableFormatDTO format) {
+                                       WordTableFormatDTO format) {
+        // 设置单元格样式
         for (int i = startRow; i <= endRow; i++) {
             XWPFTableRow row = table.getRow(i);
             // 3 行高
@@ -207,6 +208,15 @@ public class WordWriteTableUtils {
                 // 7 单元格背景色
                 c.setColor(format.getBgColor());
             }
+        }
+        // 设置表格边框样式
+        if (format.getBorderType() != null) {
+            table.setLeftBorder(format.getBorderType(), format.getBorderSize(), format.getBorderSpace(), format.getBorderColor());
+            table.setRightBorder(format.getBorderType(), format.getBorderSize(), format.getBorderSpace(), format.getBorderColor());
+            table.setTopBorder(format.getBorderType(), format.getBorderSize(), format.getBorderSpace(), format.getBorderColor());
+            table.setBottomBorder(format.getBorderType(), format.getBorderSize(), format.getBorderSpace(), format.getBorderColor());
+            table.setInsideHBorder(format.getBorderType(), format.getBorderSize(), format.getBorderSpace(), format.getBorderColor());
+            table.setInsideVBorder(format.getBorderType(), format.getBorderSize(), format.getBorderSpace(), format.getBorderColor());
         }
     }
 }
