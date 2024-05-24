@@ -14,10 +14,7 @@ import java.util.Map;
  */
 @Component
 public class QuartzManagerUtils {
-
-    /**
-     * 注入任务调度器
-     */
+    // 注入任务调度器
     @Resource
     private Scheduler scheduler;
     // 任务组
