@@ -29,31 +29,27 @@
                 <p class="login-card-description">{{ title }}</p>
                 <!--登录表单-->
                 <el-form ref="loginForm" :model="loginForm" :rules="loginRules"
-                         autocomplete="on" label-position="left"
+                         autocomplete="off" label-position="left"
                 >
-                  <el-form-item prop="username">
-                    <span class="svg-container"><svg-icon icon-class="user"/></span>
-                    <el-input ref="username" v-model="loginForm.userName" placeholder="请输入用户名"
-                              name="userName" type="text" tabindex="1" autocomplete="on"
+                  <el-form-item prop="userName">
+                    <el-input ref="userName" prefix-icon="el-icon-user"
+                              v-model="loginForm.userName" placeholder="请输入用户名"
+                              name="userName" type="text" tabindex="1" autocomplete="off"
                     />
                   </el-form-item>
                   <el-tooltip v-model="capsTooltip" content="大写已打开" placement="right" manual>
                     <el-form-item prop="password">
-                      <span class="svg-container"><svg-icon icon-class="password"/></span>
-                      <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType"
-                                placeholder="请输入密码" name="password" tabindex="2" autocomplete="on"
+                      <el-input ref="password" prefix-icon="el-icon-lock"
+                                v-model="loginForm.password" type="password" show-password
+                                placeholder="请输入密码" name="password" tabindex="2" autocomplete="off"
                                 @keyup.native="checkCapslock" @blur="capsTooltip = false"
-                                @keyup.enter.native="handleLogin"
-                      />
-                      <span class="show-pwd" @click="showPwd">
-                        <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"/>
-                      </span>
+                                @keyup.enter.native="handleLogin"/>
                     </el-form-item>
                   </el-tooltip>
 
                   <el-form-item prop="yzm">
-                    <span class="svg-container"><svg-icon icon-class="example"/></span>
-                    <el-input ref="yzm" v-model="loginForm.yzm" class="yzmInput" placeholder="请输入验证码"
+                    <el-input ref="yzm" prefix-icon="el-icon-help"
+                              v-model="loginForm.yzm" class="yzmInput" placeholder="请输入验证码"
                               name="yzm" type="text" tabindex="3" autocomplete="off"
                               @keyup.enter.native="handleLogin"
                     />
@@ -68,16 +64,17 @@
 
                 <a href="#!" class="forgot-password-link">忘记密码?</a>
                 <a href="#!" class="forgot-password-link thirdparty-button" @click="showDialog=true">其他登录</a>
-                <p class="login-card-footer-text">还没有账号? <a href="#!" class="text-reset">立即注册</a></p>
+                <p class="login-card-footer-text">
+                  还没有账号?
+                  <router-link to="register" class="text-reset">立即注册</router-link>
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
     </main>
-    <el-dialog title="第三方登录" :visible.sync="showDialog"
-               :append-to-body="true" top="30vh"
-    >
+    <el-dialog title="第三方登录" :visible.sync="showDialog" :append-to-body="true" top="30vh">
       <social-sign/>
     </el-dialog>
   </div>
@@ -122,7 +119,6 @@ export default {
         password: [{required: true, message: '密码不能为空', trigger: 'blur'}],
         yzm: [{required: true, message: '验证码不能为空', trigger: 'blur'}]
       },
-      passwordType: 'password',
       capsTooltip: false,
       loading: false,
       showDialog: false,
@@ -146,7 +142,7 @@ export default {
   },
   mounted() {
     if (this.loginForm.userName === '') {
-      this.$refs.username.focus()
+      this.$refs.userName.focus()
     } else if (this.loginForm.password === '') {
       this.$refs.password.focus()
     }
@@ -285,39 +281,6 @@ export default {
 @import '~@/assets/css/bootstrap.min.css';
 @import '~@/assets/css/login.css';
 </style>
-<style lang="scss">
-.login-container {
-  .el-input {
-    display: inline-block;
-    height: 47px;
-    width: 85%;
-
-    input {
-      background: transparent;
-      border: 0px;
-      -webkit-appearance: none;
-      border-radius: 0px;
-      padding: 12px 5px 12px 15px;
-      height: 47px;
-      color: #495057;
-    }
-  }
-
-  .el-form-item {
-    border: 1px solid #d5dae2;
-    border-radius: .25rem;
-    color: #495057;
-    text-align: left;
-
-    &:hover {
-      border-color: #80bdff;
-      outline: 0;
-      box-shadow: 0 0 0 .2rem rgba(0, 123, 255, .25)
-    }
-  }
-}
-</style>
-
 <style lang="scss" scoped>
 a:hover {
   text-decoration: underline;
@@ -328,22 +291,17 @@ a:hover {
   width: 100%;
   overflow: hidden;
 
-  .svg-container {
-    padding: 6px 5px 6px 15px;
-    color: #889aa4;
-    vertical-align: middle;
-    width: 30px;
+  ::v-deep .el-form-item__content > .el-input {
     display: inline-block;
-  }
-
-  .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 7px;
+    height: 47px !important;
+    line-height: 47px !important;
     font-size: 16px;
-    color: #889aa4;
-    cursor: pointer;
-    user-select: none;
+
+    .el-input__inner {
+      height: 47px !important;
+      line-height: 47px !important;
+
+    }
   }
 
   @media only screen and (max-width: 470px) {
@@ -353,13 +311,14 @@ a:hover {
   }
 
   .yzmInput {
-    width: 40%;
+    width: 50%;
+    float: left;
   }
 
   .yzmImg {
-    height: 39px;
-    margin: 5px 0px;
-    padding-left: 7px;
+    height: 40px;
+    margin-top: 4px;
+    padding-left: 8px;
     float: right;
     cursor: pointer;
     border-left: 1px solid #d5dae2;
