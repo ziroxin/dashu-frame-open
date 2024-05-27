@@ -4,6 +4,8 @@
 # 登录登出接口
 /login/login
 /login/logout
+# 注册接口
+/register/**
 # Oauth2 Client(授权码模式，带code回调接口)
 /oauth2/client/login/code
 /oauth2/client/login/check
