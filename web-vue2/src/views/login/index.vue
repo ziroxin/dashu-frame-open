@@ -53,7 +53,7 @@
                               name="yzm" type="text" tabindex="3" autocomplete="off"
                               @keyup.enter.native="handleLogin"
                     />
-                    <img class="yzmImg" :src="loginForm.codeBaseImage" @click="loadCaptacha">
+                    <img class="yzmImg" :src="loginForm.codeBaseImage" @click="loadCaptcha">
                   </el-form-item>
 
                   <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;"
@@ -65,8 +65,11 @@
                 <a href="#!" class="forgot-password-link">忘记密码?</a>
                 <a href="#!" class="forgot-password-link thirdparty-button" @click="showDialog=true">其他登录</a>
                 <p class="login-card-footer-text">
-                  还没有账号?
-                  <router-link to="register" class="text-reset">立即注册</router-link>
+                  <template v-if="isRegisterOpen">
+                    还没有账号?
+                    <router-link to="register" class="text-reset">立即注册</router-link>
+                  </template>
+                  <template v-else>&nbsp;</template>
                 </p>
               </div>
             </div>
@@ -126,6 +129,7 @@ export default {
       otherQuery: {},
       intervalIndex: 0,
       autoRefresh: false,
+      isRegisterOpen: false,// 是否允许注册
     }
   },
   watch: {
@@ -146,12 +150,16 @@ export default {
     } else if (this.loginForm.password === '') {
       this.$refs.password.focus()
     }
-    // 加载验证码handleLogin
-    this.loadCaptacha()
+    // 加载验证码
+    this.loadCaptcha()
     // 开启定时刷新
     this.autoRefreshLoginBg()
     // 动态壁纸 - 远程图库
     this.loadRemoteWallpaper()
+    // 是否允许注册
+    this.$request({url: '/register/config/reg', method: 'get'}).then((response) => {
+      this.isRegisterOpen = response.data
+    })
   },
   destroyed() {
     clearInterval(this.intervalIndex)
@@ -215,7 +223,7 @@ export default {
               })
               .catch(() => {
                 console.log('login error!')
-                this.loadCaptacha()
+                this.loadCaptcha()
                 this.loading = false
               })
         } else {
@@ -233,7 +241,7 @@ export default {
       }, {})
     },
     //验证码
-    loadCaptacha() {
+    loadCaptcha() {
       request({
         url: '/captcha/get', method: 'get'
       }).then((response) => {
