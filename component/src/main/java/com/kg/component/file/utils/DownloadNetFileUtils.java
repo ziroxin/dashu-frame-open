@@ -10,6 +10,8 @@ import com.kg.component.file.FilePathConfig;
 import com.kg.component.file.dto.FileDTO;
 import com.kg.component.utils.GuidUtils;
 
+import javax.imageio.ImageIO;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Date;
 
@@ -21,7 +23,12 @@ import java.util.Date;
  * @date 2024-04-16 16:04
  */
 public class DownloadNetFileUtils {
-
+    /**
+     * 判断网络文件是否存在
+     */
+    public static boolean isExists(String fileUrl) {
+        return HttpRequest.head(fileUrl).execute().isOk();
+    }
 
     /**
      * 获取文件大小
@@ -41,7 +48,7 @@ public class DownloadNetFileUtils {
      */
     public static String getExtend(String fileUrl) {
         String contentType = HttpRequest.head(fileUrl).execute().header(Header.CONTENT_TYPE);
-        return contentType.split("/")[1];
+        return contentType.split("/")[1].toLowerCase();
     }
 
     /**
@@ -88,17 +95,29 @@ public class DownloadNetFileUtils {
                 + "/" + DateUtil.format(new Date(), "yyyyMMdd")
                 + "/" + fileDto.getFileName();
         savePath = savePath.replaceAll("//", "/");
-        // 保存文件
+        // 检查目录并创建
         FileUtil.mkParentDirs(savePath);
-        File saveFile = HttpUtil.downloadFileFromUrl(fileUrl, savePath);
-        // 压缩图片
-        if (isCompress) {
-            if (FilePathConfig.DEFAULT_IMAGE_FILE_EXTEND.toLowerCase().indexOf(extend) >= 0) {
+        // 保存文件
+        File saveFile;
+        if (FilePathConfig.DEFAULT_IMAGE_FILE_EXTEND.toLowerCase().indexOf(extend) >= 0) {
+            // 图片
+            try {
+                byte[] bytes = HttpUtil.downloadBytes(fileUrl);
+                // 写入图片（防止图片意外问题）
+                ImageIO.write(ImageIO.read(new ByteArrayInputStream(bytes)), extend, new File(savePath));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            saveFile = new File(savePath);
+            // 压缩图片
+            if (isCompress) {
                 // 判断是否图片格式
                 Img.from(FileUtil.getInputStream(saveFile))
-                        .setQuality(Float.parseFloat(FilePathConfig.DEFAULT_IMAGE_QUALITY))// 压缩比率，默认0.6 即60%
-                        .write(FileUtil.getOutputStream(saveFile));
+                        .setQuality(0.6).write(FileUtil.getOutputStream(saveFile));
             }
+        } else {
+            // 非图片
+            saveFile = HttpUtil.downloadFileFromUrl(fileUrl, savePath);
         }
         // 文件大小
         fileDto.setFileSize(saveFile.length());
