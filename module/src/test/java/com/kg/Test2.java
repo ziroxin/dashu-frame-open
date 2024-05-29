@@ -1,6 +1,10 @@
 package com.kg;
 
 import cn.hutool.json.JSONUtil;
+import com.kg.component.file.dto.FileDTO;
+import com.kg.component.pdf.ExcelToPdfUtils;
+import com.kg.component.pdf.ImgToPdfUtils;
+import com.kg.component.pdf.WordToPdfUtils;
 import com.kg.component.office.WordWriteImageUtils;
 import com.kg.component.office.WordWriteStringUtils;
 import com.kg.component.office.WordWriteTableUtils;
@@ -152,5 +156,35 @@ public class Test2 {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
+
+    @Test
+    public void test2() {
+        try {
+            String path = System.getProperty("user.dir") + "/src/test/java/com/kg/hello.docx";
+            FileDTO fileDTO = WordToPdfUtils.toPdf(path);
+            System.out.println(JSONUtil.toJsonStr(fileDTO));
+
+            String path1 = System.getProperty("user.dir") + "/src/test/java/com/kg/test.xlsx";
+//            FileDTO fileDTO1 = ExcelToPdfUtils.toPdf(path1);
+            FileDTO fileDTO1 = ExcelToPdfUtils.toPdf(path1, 0);
+            System.out.println(JSONUtil.toJsonStr(fileDTO1));
+
+            String path2 = System.getProperty("user.dir") + "/src/test/java/com/kg/1.jpg";
+//            ImgToPdfUtils.toPdf(path2);
+            ImgToPdfUtils.toPdf(path2, 500, 500);
+            String[] paths = new String[]{
+                    System.getProperty("user.dir") + "/src/test/java/com/kg/0.jpg",
+                    System.getProperty("user.dir") + "/src/test/java/com/kg/1.jpg"
+            };
+//            ImgToPdfUtils.listToPdf(paths, System.getProperty("user.dir") + "/src/test/java/com/kg/img.pdf");
+            ImgToPdfUtils.listToPdf(paths,
+                    System.getProperty("user.dir") + "/src/test/java/com/kg/img.pdf", 500, 500);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
