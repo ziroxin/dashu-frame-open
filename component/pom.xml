@@ -99,6 +99,22 @@
             <artifactId>dysmsapi20170525</artifactId>
             <version>2.0.24</version>
         </dependency>
+        <!-- pdf相关依赖（word、excel、图片）转pdf -->
+        <dependency>
+            <groupId>com.luhuiguo</groupId>
+            <artifactId>aspose-words</artifactId>
+            <version>23.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.luhuiguo</groupId>
+            <artifactId>aspose-cells</artifactId>
+            <version>23.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.24</version>
+        </dependency>
     </dependencies>
 
 </project>
