@@ -5,6 +5,64 @@ import Layout from '@/layout'
 // 开启路由
 Vue.use(Router)
 
+// oauth2 client 相关页面
+const oauthRouter = [
+  {
+    path: '/oauth2/error',
+    component: () => import('@/views/oauth2/error'),
+    hidden: true
+  }, {
+    path: '/oauth2/success',
+    component: () => import('@/views/oauth2/success'),
+    hidden: true
+  }, {
+    path: '/oauth2/bind',
+    component: () => import('@/views/oauth2/bind'),
+    hidden: true
+  }
+]
+
+// 其他静态页面
+const otherRouter = [
+  // swagger 静态页
+  {
+    path: '/knife4jVue3/dashuSwagger/home',
+    component: () => import('@/views/swagger/home'),
+    hidden: true
+  },
+  // 在线表单代码生成器 静态页
+  {
+    path: '/generator/form',
+    component: () => import('@/views/generator/form'),
+    hidden: true
+  },
+  // 用户个人中心（登录可用）
+  {
+    path: '/system/user/MyUser',
+    component: () => import('@/layout'),
+    hidden: true,
+    children: [{
+      path: '/system/user/MyUser',
+      component: () => import('@/views/system/user/MyUser.vue'),
+      meta: {title: '个人中心'}
+    }]
+  },
+  // 首页路由
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: () => import('@/layout'),
+    hidden: false,
+    redirect: 'noRedirect',
+    children: [{
+      path: 'index',
+      name: 'dashboard',
+      component: () => import('@/views/dashboard/index'),
+      meta: {title: '首页', activeMenu: '', affix: false, breadcrumb: true, icon: 'dashboard', noCache: false}
+    }]
+  },
+]
+
 /**
  * 路由说明文档：https://panjiachen.gitee.io/vue-element-admin-site/zh/guide/essentials/router-and-nav.html
  * 下面是静态路由
@@ -42,57 +100,8 @@ export const constantRoutes = [
     path: '/',
     redirect: '/dashboard/index',
   },
-  // oauth2 client 相关页面
-  {
-    path: '/oauth2/error',
-    component: () => import('@/views/oauth2/error'),
-    hidden: true
-  }, {
-    path: '/oauth2/success',
-    component: () => import('@/views/oauth2/success'),
-    hidden: true
-  }, {
-    path: '/oauth2/bind',
-    component: () => import('@/views/oauth2/bind'),
-    hidden: true
-  },
-  // swagger 静态页
-  {
-    path: '/knife4jVue3/dashuSwagger/home',
-    component: () => import('@/views/swagger/home'),
-    hidden: true
-  },
-  // 在线表单代码生成器 静态页
-  {
-    path: '/generator/form',
-    component: () => import('@/views/generator/form'),
-    hidden: true
-  },
-  // 用户个人中心（登录可用）
-  {
-    path: '/system/user/MyUser',
-    component: () => import('@/layout'),
-    hidden: true,
-    children: [{
-      path: '/system/user/MyUser',
-      component: () => import('@/views/system/user/MyUser.vue'),
-      meta: {title: '个人中心'}
-    }]
-  },
-  // 首页路由
-  {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: () => import('@/layout'),
-    hidden: false,
-    redirect: 'noRedirect',
-    children: [{
-      path: 'index',
-      name: 'dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: {title: '首页', activeMenu: '', affix: false, breadcrumb: true, icon: 'dashboard', noCache: false}
-    }]
-  }
+  ...oauthRouter,
+  ...otherRouter
 ]
 
 // 错误页跳转404
