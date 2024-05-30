@@ -12,7 +12,7 @@
     <!-- 发布命令：mvn clean deploy -f jar.xml -->
     <groupId>com.gitee.ziro</groupId>
     <artifactId>dashu-frame-component</artifactId>
-    <version>1.1.23</version>
+    <version>1.1.24</version>
     <packaging>jar</packaging>
     <name>dashu-frame-component</name>
     <description>大树快速开发平台::Component::组件库</description>
@@ -104,6 +104,7 @@
             <artifactId>dysmsapi20170525</artifactId>
             <version>2.0.24</version>
         </dependency>
+        <!-- pdf相关依赖（word、excel、图片）转pdf -->
         <dependency>
             <groupId>com.luhuiguo</groupId>
             <artifactId>aspose-words</artifactId>
@@ -113,6 +114,11 @@
             <groupId>com.luhuiguo</groupId>
             <artifactId>aspose-cells</artifactId>
             <version>23.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.24</version>
         </dependency>
     </dependencies>
 
