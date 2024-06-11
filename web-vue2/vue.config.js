@@ -29,7 +29,7 @@ module.exports = {
     },
     proxy: {
       '/dashuserver': {
-        target: 'http://localhost:8123',
+        target: 'http://localhost:8124',
         changeOrigin: true,
         pathRewrite: {"^/dashuserver": ""}
       }
