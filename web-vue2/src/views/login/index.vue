@@ -90,6 +90,7 @@ import request from '@/utils/request';
 import {encryptRSA} from '@/utils/jsencrypt-util'
 import {imageAdeskVertical} from "@/utils/image-data-util";
 import Cookies from 'js-cookie';
+import defaultSettings from '@/settings'
 
 export default {
   name: 'Login',
@@ -205,21 +206,39 @@ export default {
           data.password = encryptRSA(this.loginForm.password)
           this.$store.dispatch('user/login', data)
               .then(() => {
-                // 登录成功，加载用户主题配置
-                this.$request({
-                  url: '/userTheme/zUserTheme/getByUser', method: 'get'
-                }).then((response) => {
-                  // 跳转
-                  location.hash = (this.redirect || '/') +
-                      (this.otherQuery ? '?' + new URLSearchParams(this.otherQuery).toString() : '')
-                  this.loading = false
-                  // 刷新页面样式
-                  const {data} = response
-                  if (data) {
-                    Cookies.set('settings', data, {expires: new Date('9999-12-31T23:59:59')})
-                    location.reload()
+                const routerMode = this.$router.mode;
+                if (defaultSettings.showSettings) {
+                  // 登录成功，加载用户主题配置
+                  this.$request({
+                    url: '/userTheme/zUserTheme/getByUser', method: 'get'
+                  }).then((response) => {
+                    // 跳转
+                    if (routerMode === 'history') {
+                      location.href = location.href.split('/login')[0] + (this.redirect || '/') +
+                          (Object.keys(this.otherQuery).length === 0 ? '' : '?' + new URLSearchParams(this.otherQuery).toString())
+                    } else {
+                      location.hash = (this.redirect || '/') +
+                          (Object.keys(this.otherQuery).length === 0 ? '' : '?' + new URLSearchParams(this.otherQuery).toString())
+                    }
+                    this.loading = false
+                    // 刷新页面样式
+                    const {data} = response
+                    if (data) {
+                      Cookies.set('settings', data, {expires: new Date('9999-12-31T23:59:59')})
+                      if (routerMode !== 'history') location.reload()
+                    }
+                  })
+                } else {
+                  // 主题设置已禁用，直接跳转
+                  if (routerMode === 'history') {
+                    location.href = location.href.split('/login')[0] + (this.redirect || '/') +
+                        (Object.keys(this.otherQuery).length === 0 ? '' : '?' + new URLSearchParams(this.otherQuery).toString())
+                  } else {
+                    location.hash = (this.redirect || '/') +
+                        (Object.keys(this.otherQuery).length === 0 ? '' : '?' + new URLSearchParams(this.otherQuery).toString())
                   }
-                })
+                  this.loading = false
+                }
               })
               .catch(() => {
                 console.log('login error!')

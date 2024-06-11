@@ -49,7 +49,7 @@
 </h2>
 <div class="error-info" th:if="${errorCode == 400}">请求中有语法问题，或不能满足请求。</div>
 <div class="error-info" th:if="${errorCode == 401 || errorCode == 403}">您没有权限访问。</div>
-<div class="error-info" th:if="${errorCode == 404}">您访问的接口/页面不存在。</div>
+<div class="error-info" th:if="${errorCode == 404}">您访问的资源不存在。</div>
 <div class="error-info" th:if="${errorCode == 500}">服务器内部错误。</div>
 <div class="error-info" th:if="${errorCode == 502}">网关请求失败。</div>
 </body>

@@ -94,7 +94,9 @@ export default {
   },
   methods: {
     onCreated(editor) {
-      this.editor = Object.seal(editor) // 一定要用 Object.seal() ，否则会报错
+      // 一定要用 Object.seal() ，否则会报错
+      // Object.seal() 封闭对象，不能改变对象的属性字段，但能改变属性值
+      this.editor = Object.seal(editor)
       // 获取全部 toolbarKeys
       // console.log(this.editor.getAllMenuKeys())
     }

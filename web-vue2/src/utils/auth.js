@@ -5,7 +5,7 @@ const TokenKey = 'Admin-Token'
 // token过期时间
 const TokenValidTimeKey = 'Admin-Token-Valid-Time'
 // token到期前多久，刷新token（默认：10分钟；每次请求api前检测request.js中）
-// 注意：该时间必须大于，后台配置的jwtToken有效期！！！
+// 注意：该时间必须小于后台配置的jwtToken有效期！！！
 const TokenRefreshInterval = 10 * 60 * 1000
 // 用户关闭浏览器保持登录状态：默认关闭 false;开启 true
 // （若开启，则用户登录状态在：token到期后，或者用户手动清理cookie，才失效）
