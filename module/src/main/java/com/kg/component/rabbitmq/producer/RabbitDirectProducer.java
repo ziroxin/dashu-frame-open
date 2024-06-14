@@ -27,7 +27,7 @@ public class RabbitDirectProducer {
     /**
      * 默认 direct routeKey 路由
      */
-    private static final String DEFAULT_DIRECT_ROUTE_KEY = "dashu.direct.route";
+    private static final String DEFAULT_DIRECT_ROUTE_KEY = "dashu.direct.queue";
 
     /**
      * 发消息 - 默认交换机，默认路由

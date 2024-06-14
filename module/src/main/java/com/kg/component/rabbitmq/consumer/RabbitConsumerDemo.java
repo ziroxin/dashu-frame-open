@@ -27,7 +27,7 @@ public class RabbitConsumerDemo {
 
     @Bean
     public Queue queue2() {
-        return new Queue("dashu.direct.route");
+        return new Queue("dashu.direct.queue");
     }
 
     /**
@@ -40,9 +40,24 @@ public class RabbitConsumerDemo {
      *
      * @param message 消息内容
      */
-    @RabbitListener(queues = {"dashu.fanout.queue", "dashu.direct.route"}, ackMode = "AUTO")
+    @RabbitListener(queues = {"dashu.fanout.queue", "dashu.direct.queue"}, ackMode = "AUTO")
     public void receive(String message) {
-        System.out.println("接收消息：" + message);
+        System.out.println("接收fanout/direct消息：" + message);
+    }
+
+    /**
+     * 主题模式 demo
+     */
+    @Bean
+    public Queue queue3() {
+        return new Queue("dashu.topic.queue");
+    }
+
+
+    // queues 可配置主题模式的路由键，"#" 表示匹配一个或多个单词，"*" 表示匹配一个单词
+    @RabbitListener(queues = "dashu.topic.queue")
+    public void processMessage(String message) {
+        System.out.println("接收topic消息：" + message);
     }
 
     // ============= 监听其他队列，可自行添加 =============

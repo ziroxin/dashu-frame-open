@@ -1,10 +1,7 @@
 package com.kg.component.rabbitmq.producer;
 
 import com.kg.component.rabbitmq.enable.RabbitIsEnabled;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.FanoutExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.stereotype.Component;
 
@@ -65,5 +62,33 @@ public class RabbitBinding {
         rabbitAdmin.declareExchange(directExchange);
         rabbitAdmin.declareQueue(queueObj);
         rabbitAdmin.declareBinding(BindingBuilder.bind(queueObj).to(directExchange).with(routingKey));
+    }
+
+    /**
+     * 绑定队列到topic交换机
+     *
+     * @param exchange   交换机名称
+     * @param routingKey 路由（路由 = 队列名）
+     */
+    public void bindTopic(String exchange, String routingKey) {
+        bindTopic(exchange, routingKey, routingKey);
+    }
+
+    /**
+     * 绑定队列到topic交换机
+     *
+     * @param exchange   交换机名称
+     * @param routingKey 路由（路由 ≠ 队列名）
+     * @param queue      队列名称
+     */
+    public void bindTopic(String exchange, String routingKey, String queue) {
+        // 创建 topic exchange
+        TopicExchange topicExchange = new TopicExchange(exchange);
+        // 创建队列
+        Queue queueObj = new Queue(queue);
+        // 绑定队列到交换机
+        rabbitAdmin.declareExchange(topicExchange);
+        rabbitAdmin.declareQueue(queueObj);
+        rabbitAdmin.declareBinding(BindingBuilder.bind(queueObj).to(topicExchange).with(routingKey));
     }
 }
