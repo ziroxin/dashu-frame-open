@@ -4,6 +4,7 @@ import cn.hutool.cron.CronUtil;
 import cn.hutool.cron.task.Task;
 import com.kg.component.rabbitmq.producer.RabbitDirectProducer;
 import com.kg.component.rabbitmq.producer.RabbitFanoutProducer;
+import com.kg.component.rabbitmq.producer.RabbitTopicProducer;
 import com.kg.component.utils.TimeUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +13,7 @@ import javax.annotation.Resource;
 
 /**
  * RabbitMq测试类
+ *
  * @author ziro1
  * @date 2024/6/11 16:55
  */
@@ -22,19 +24,25 @@ public class RabbitmqTest {
     private RabbitFanoutProducer fanoutProducer;
     @Resource
     private RabbitDirectProducer directProducer;
+    @Resource
+    private RabbitTopicProducer topicProducer;
 
     @Test
     public void producer() throws InterruptedException {
         fanoutProducer.send("ziroxin111-----");
 
         directProducer.send("dict111-----");
+        String topicQueue = "dashu.topic.queue";
+        topicProducer.send("dashu.*.queue消息", "dashu.*.queue", topicQueue);
 
         Thread.sleep(5000);
         fanoutProducer.send("ziroxin222-----");
         directProducer.send("dict222-----");
+        topicProducer.send("dashu.#消息", "dashu.#", topicQueue);
         Thread.sleep(5000);
         fanoutProducer.send("ziroxin333-----");
         directProducer.send("dict333-----");
+        topicProducer.send("dashu.*.*消息", "dashu.*.*", topicQueue);
         Thread.sleep(1000);
         System.out.println("end");
     }
