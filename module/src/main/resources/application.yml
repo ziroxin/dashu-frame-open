@@ -176,6 +176,15 @@ com.kg:
       accessKeySecret: xxxxx
       endpoint: dysmsapi.aliyuncs.com
       sign: 短信签名xxxxx
+  #rabbitmq配置
+  rabbitmq:
+    #是否启用
+    enable: false
+    #连接信息
+    host: xxx.xxx.xxx.xxx
+    port: 5672
+    username: xxxx
+    password: xxxx
 
 #输出日志配置（日志级别：trace/debug/info/warn/error）
 logging.level:
