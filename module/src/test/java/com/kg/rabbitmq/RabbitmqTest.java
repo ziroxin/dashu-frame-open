@@ -1,4 +1,4 @@
-package com.kg;
+package com.kg.rabbitmq;
 
 import cn.hutool.cron.CronUtil;
 import cn.hutool.cron.task.Task;
