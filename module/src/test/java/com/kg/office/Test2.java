@@ -1,15 +1,15 @@
-package com.kg;
+package com.kg.office;
 
 import cn.hutool.json.JSONUtil;
 import com.kg.component.file.dto.FileDTO;
-import com.kg.component.pdf.ExcelToPdfUtils;
-import com.kg.component.pdf.ImgToPdfUtils;
-import com.kg.component.pdf.WordToPdfUtils;
 import com.kg.component.office.WordWriteImageUtils;
 import com.kg.component.office.WordWriteStringUtils;
 import com.kg.component.office.WordWriteTableUtils;
 import com.kg.component.office.dto.WordStrFormatDTO;
 import com.kg.component.office.dto.WordTableFormatDTO;
+import com.kg.component.pdf.ExcelToPdfUtils;
+import com.kg.component.pdf.ImgToPdfUtils;
+import com.kg.component.pdf.WordToPdfUtils;
 import com.kg.module.news.mapper.NewsMapper;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -34,6 +34,7 @@ import java.util.List;
 public class Test2 {
     @Resource
     private NewsMapper mapper;
+    private static final String officeFolder = "/src/test/java/com/kg/office/";
 
     @Test
     public void test() {
@@ -50,7 +51,7 @@ public class Test2 {
     public static void main(String[] args) {
         try {
             if (false) {
-                String path = System.getProperty("user.dir") + "/module/src/test/java/com/kg/bbda.docx";
+                String path = System.getProperty("user.dir") + "/module" + officeFolder + "bbda.docx";
                 String outPath = System.getProperty("user.dir") + "/module/target/hello1.docx";
                 XWPFDocument doc = new XWPFDocument(new FileInputStream(path));
 
@@ -69,7 +70,7 @@ public class Test2 {
             }
 
             if (true) {
-                String path = System.getProperty("user.dir") + "/module/src/test/java/com/kg/hello.docx";
+                String path = System.getProperty("user.dir") + "/module" + officeFolder + "hello.docx";
                 String outPath = System.getProperty("user.dir") + "/module/target/hello1.docx";
                 XWPFDocument doc = new XWPFDocument(new FileInputStream(path));
 
@@ -162,25 +163,25 @@ public class Test2 {
     @Test
     public void test2() {
         try {
-            String path = System.getProperty("user.dir") + "/src/test/java/com/kg/hello.docx";
+            String path = System.getProperty("user.dir") + officeFolder + "hello.docx";
             FileDTO fileDTO = WordToPdfUtils.toPdf(path);
             System.out.println(JSONUtil.toJsonStr(fileDTO));
 
-            String path1 = System.getProperty("user.dir") + "/src/test/java/com/kg/test.xlsx";
+            String path1 = System.getProperty("user.dir") + officeFolder + "test.xlsx";
 //            FileDTO fileDTO1 = ExcelToPdfUtils.toPdf(path1);
             FileDTO fileDTO1 = ExcelToPdfUtils.toPdf(path1, 0);
             System.out.println(JSONUtil.toJsonStr(fileDTO1));
 
-            String path2 = System.getProperty("user.dir") + "/src/test/java/com/kg/1.jpg";
+            String path2 = System.getProperty("user.dir") + officeFolder + "1.jpg";
 //            ImgToPdfUtils.toPdf(path2);
             ImgToPdfUtils.toPdf(path2, 500, 500);
             String[] paths = new String[]{
-                    System.getProperty("user.dir") + "/src/test/java/com/kg/0.jpg",
-                    System.getProperty("user.dir") + "/src/test/java/com/kg/1.jpg"
+                    System.getProperty("user.dir") + officeFolder + "0.jpg",
+                    System.getProperty("user.dir") + officeFolder + "1.jpg"
             };
-//            ImgToPdfUtils.listToPdf(paths, System.getProperty("user.dir") + "/src/test/java/com/kg/img.pdf");
+//            ImgToPdfUtils.listToPdf(paths, System.getProperty("user.dir") + officeFolder + "img.pdf");
             ImgToPdfUtils.listToPdf(paths,
-                    System.getProperty("user.dir") + "/src/test/java/com/kg/img.pdf", 500, 500);
+                    System.getProperty("user.dir") + officeFolder + "img.pdf", 500, 500);
 
         } catch (Exception e) {
             e.printStackTrace();
