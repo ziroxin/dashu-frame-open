@@ -187,6 +187,9 @@ public class Entity implements ITemplate {
      * @param clazz 实体父类 Class
      */
     public void convertSuperEntityColumns(Class<?> clazz) {
+        if (clazz.isInterface()) {
+            return;// 跳过BaseEntity接口
+        }
         List<Field> fields = TableInfoHelper.getAllFields(clazz);
         this.superEntityColumns.addAll(fields.stream().map(field -> {
             TableId tableId = field.getAnnotation(TableId.class);

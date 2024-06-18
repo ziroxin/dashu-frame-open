@@ -195,6 +195,9 @@ public class DTO implements ITemplate {
      * @param clazz 实体父类 Class
      */
     public void convertSuperDTOColumns(Class<?> clazz) {
+        if (clazz.isInterface()) {
+            return;// 跳过BaseDTO接口
+        }
         List<Field> fields = TableInfoHelper.getAllFields(clazz);
         this.superDTOColumns.addAll(fields.stream().map(field -> {
             TableId tableId = field.getAnnotation(TableId.class);
