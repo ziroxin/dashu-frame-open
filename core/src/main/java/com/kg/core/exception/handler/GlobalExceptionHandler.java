@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -97,6 +98,37 @@ public class GlobalExceptionHandler {
         log.error(ex.getMessage(), ex);
         return ResponseResult.error(ex.getMessage());
     }
+
+    /**
+     * 服务端异常：运行时异常
+     */
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseResult<Object> handleRuntimeException(RuntimeException ex) {
+        log.error(ex.getMessage(), ex);
+        return ResponseResult.error(ex.getMessage());
+    }
+
+    /**
+     * 服务端异常：IOException 文件读写异常
+     */
+    @ExceptionHandler(IOException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseResult<Object> handleIOException(IOException ex) {
+        log.error(ex.getMessage(), ex);
+        return ResponseResult.error(ex.getMessage());
+    }
+
+    /**
+     * 服务端异常：IllegalArgumentException.java 非法参数异常
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseResult<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
+        log.error(ex.getMessage(), ex);
+        return ResponseResult.error(ex.getMessage());
+    }
+
 
     /**
      * 客户端异常：请求类型错误

@@ -120,7 +120,6 @@ export default {
             const {data} = response
             if (data) {
               this.temp = data
-              console.log(data)
               this.isLoading = false
             } else {
               this.$message({type: 'error', message: '获取当前用户信息失败！请刷新或重新登录重试'})
