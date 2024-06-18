@@ -100,9 +100,10 @@
           </el-table-column>
         </el-table>
         <!--分页-->
-        <el-pagination style="text-align: center;margin-top: 5px;" background layout="total, pager"
+        <el-pagination style="text-align: center;margin-top:10px;" layout="total,prev,pager,next,sizes,jumper"
                        :page-size="pager.limit" :current-page="pager.page"
                        :total="pager.totalCount" @current-change="handleCurrentChange"
+                       @size-change="handleSizeChange"
         />
       </el-col>
     </el-row>
@@ -263,6 +264,11 @@ export default {
     //分页
     handleCurrentChange(page) {
       this.pager.page = page
+      this.getUserList()
+    },
+    // 分页条数改变
+    handleSizeChange(size) {
+      this.pager.limit = size
       this.getUserList()
     },
     // 查询角色

@@ -59,7 +59,7 @@
           </el-table-column>
         </el-table>
         <!-- 字典类型-分页 -->
-        <el-pagination style="text-align: center;" background layout="total,prev,pager,next,sizes"
+        <el-pagination style="text-align: center;margin-top: 10px;" layout="total,prev,pager,next,sizes"
                        :page-size="pager.limit" :current-page="pager.page"
                        :total="pager.totalCount" @current-change="handleCurrentChange"
                        @size-change="handleSizeChange"

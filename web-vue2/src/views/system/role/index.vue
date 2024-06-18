@@ -40,7 +40,7 @@
           </el-table-column>
         </el-table>
         <!-- 分页 -->
-        <el-pagination style="text-align: center;" background layout="total, pager"
+        <el-pagination style="text-align: center;margin-top: 10px;" layout="total,prev,pager,next"
                        :page-size="pager.limit" :current-page="pager.page"
                        :total="totalCount" @current-change="handleCurrentChange"
         />

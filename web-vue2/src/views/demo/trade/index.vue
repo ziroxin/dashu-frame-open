@@ -61,7 +61,7 @@
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column label="支付反馈结果json" prop="resultJson" align="center">
+      <el-table-column label="支付结果json" prop="resultJson" align="center">
         <template v-slot="scope">
           <el-popover placement="top-start" title="支付反馈结果JSON"
                       width="500" trigger="hover" :content="scope.row.resultJson">
@@ -74,7 +74,7 @@
       </el-table-column>
     </el-table>
     <!-- 交易 - 支付demo-分页 -->
-    <el-pagination style="text-align: center;" background layout="total,prev,pager,next,sizes"
+    <el-pagination style="text-align: center;margin-top:10px;" layout="total,prev,pager,next,sizes,jumper"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
                    @size-change="handleSizeChange"
