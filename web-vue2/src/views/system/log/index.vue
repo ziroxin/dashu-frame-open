@@ -39,8 +39,9 @@
       </el-table-column>
     </el-table>
     <!-- 操作日志表-分页 -->
-    <el-pagination style="text-align: center" background layout="total,prev,pager,next,sizes" :page-size="pager.limit"
-                   :current-page="pager.page" :total="pager.totalCount" @current-change="handleCurrentChange"
+    <el-pagination style="text-align: center;margin-top: 10px" layout="total,prev,pager,next,sizes,jumper"
+                   :page-size="pager.limit" :current-page="pager.page"
+                   :total="pager.totalCount" @current-change="handleCurrentChange"
                    @size-change="handleSizeChange"/>
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible">
