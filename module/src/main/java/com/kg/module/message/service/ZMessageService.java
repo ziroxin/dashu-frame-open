@@ -2,6 +2,7 @@ package com.kg.module.message.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kg.module.message.dto.MessageCountsDTO;
 import com.kg.module.message.dto.ZMessageDTO;
 import com.kg.module.message.entity.ZMessage;
 
@@ -63,4 +64,9 @@ public interface ZMessageService extends IService<ZMessage> {
      * @param request 请求文件
      */
     void importExcel(HttpServletRequest request);
+
+    /**
+     * 获取消息数量
+     */
+    MessageCountsDTO counts();
 }

@@ -2,4 +2,33 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kg.module.message.mapper.ZMessageMapper">
 
+    <select id="messageList" resultType="com.kg.module.message.dto.ZMessageDTO">
+        SELECT a.*,b.msg_status
+        FROM z_message a
+        LEFT JOIN z_message_to b ON a.msg_id = b.msg_id
+        WHERE b.to_user_id=#{params.userId}
+        <if test="params.msgTitle!=null and params.msgTitle!=''">
+            AND msg_title LIKE CONCAT('%',#{params.msgTitle},'%')
+        </if>
+        <if test="params.msgStatus!=null and params.msgStatus!=''">
+            AND b.msg_status=#{params.msgStatus}
+        </if>
+        ORDER BY create_time DESC,msg_status
+        <if test="offset!=null and limit!=null">
+            LIMIT #{offset},#{limit}
+        </if>
+    </select>
+    <select id="messageListCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM z_message a
+        LEFT JOIN z_message_to b ON a.msg_id = b.msg_id
+        WHERE b.to_user_id=#{params.userId}
+        <if test="params.msgTitle!=null and params.msgTitle!=''">
+            AND msg_title LIKE CONCAT('%',#{params.msgTitle},'%')
+        </if>
+        <if test="params.msgStatus!=null and params.msgStatus!=''">
+            AND b.msg_status=#{params.msgStatus}
+        </if>
+    </select>
+
 </mapper>

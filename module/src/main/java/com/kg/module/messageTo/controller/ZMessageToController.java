@@ -11,7 +11,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -41,7 +40,6 @@ public class ZMessageToController {
             @ApiImplicitParam(name = "toId", value = "ID", paramType = "query", required = true, dataType = "String")
     })
     @GetMapping("/getById")
-    @PreAuthorize("hasAuthority('messageTo:zMessageTo:getById')")
     public ZMessageToDTO getById(String toId) {
         return zMessageToConvert.entityToDto(zMessageToService.getById(toId));
     }
@@ -53,7 +51,6 @@ public class ZMessageToController {
             @ApiImplicitParam(name = "params", value = "查询条件", paramType = "query", required = false, dataType = "String")
     })
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('messageTo:zMessageTo:list')")
     public Page<ZMessageToDTO> list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
                                @RequestParam(value = "params", required = false) String params) {
@@ -61,9 +58,7 @@ public class ZMessageToController {
     }
 
     @ApiOperation(value = "/messageTo/zMessageTo/add", notes = "新增-消息发送至", httpMethod = "POST")
-    @ApiImplicitParams({})
     @PostMapping("/add")
-    @PreAuthorize("hasAuthority('messageTo:zMessageTo:add')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/messageTo/zMessageTo/add", logMsg = "新增-消息发送至")
     public void add(@RequestBody ZMessageToDTO zMessageToDTO) throws BaseException {
@@ -76,9 +71,7 @@ public class ZMessageToController {
     }
 
     @ApiOperation(value = "/messageTo/zMessageTo/update", notes = "修改-消息发送至", httpMethod = "PUT")
-    @ApiImplicitParams({})
     @PutMapping("/update")
-    @PreAuthorize("hasAuthority('messageTo:zMessageTo:update')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/messageTo/zMessageTo/update", logMsg = "修改-消息发送至")
     public void update(@RequestBody ZMessageToDTO zMessageToDTO) throws BaseException {
@@ -95,7 +88,6 @@ public class ZMessageToController {
             @ApiImplicitParam(name = "toIds", value = "待删除id列表", paramType = "body", required = true, allowMultiple = true, dataType = "String")
     })
     @DeleteMapping("/delete")
-    @PreAuthorize("hasAuthority('messageTo:zMessageTo:delete')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/messageTo/zMessageTo/delete", logMsg = "删除-消息发送至")
     public void delete(@RequestBody String[] toIds) throws BaseException {
@@ -112,7 +104,6 @@ public class ZMessageToController {
             @ApiImplicitParam(name = "params", value = "查询条件", paramType = "query", required = false, dataType = "String")
     })
     @GetMapping("/export/excel")
-    @PreAuthorize("hasAuthority('messageTo:zMessageTo:export:excel')")
     public String exportExcel(@RequestParam(value = "params", required = false) String params) throws BaseException {
         String result = zMessageToService.exportExcel(params);
         if ("error".equals(result)) {
@@ -126,7 +117,6 @@ public class ZMessageToController {
             @ApiImplicitParam(name = "request", value = "请求", paramType = "query", required = false, dataType = "HttpServletRequest")
     })
     @PostMapping("/import/excel")
-    @PreAuthorize("hasAuthority('messageTo:zMessageTo:import:excel')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/messageTo/zMessageTo/import/excel", logMsg = "导入excel-消息发送至")
     public void importExcel(HttpServletRequest request) throws BaseException {
