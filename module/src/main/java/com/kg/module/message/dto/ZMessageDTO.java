@@ -44,9 +44,6 @@ public class ZMessageDTO implements BaseDTO {
     @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime readTime;
 
-    @ApiModelProperty("消息类型（0私信1公开）")
-    private String msgType;
-
     @ApiModelProperty("所属模块/菜单（可为空）")
     private String permissionName;
 

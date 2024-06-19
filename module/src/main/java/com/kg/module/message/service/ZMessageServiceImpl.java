@@ -10,6 +10,8 @@ import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelReadUtils;
 import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.core.security.util.CurrentUserUtils;
+import com.kg.module.message.dto.MessageCountsDTO;
 import com.kg.module.message.dto.ZMessageDTO;
 import com.kg.module.message.dto.convert.ZMessageConvert;
 import com.kg.module.message.entity.ZMessage;
@@ -24,6 +26,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +43,8 @@ public class ZMessageServiceImpl extends ServiceImpl<ZMessageMapper, ZMessage> i
 
     @Resource
     private ZMessageConvert zMessageConvert;
+    @Resource
+    private ZMessageMapper mapper;
 
 
     /**
@@ -52,52 +57,18 @@ public class ZMessageServiceImpl extends ServiceImpl<ZMessageMapper, ZMessage> i
      */
     @Override
     public Page<ZMessageDTO> pagelist(Integer page, Integer limit, String params) {
-        Page<ZMessage> pager = new Page<>(page, limit);
-        // 根据条件查询
-        QueryWrapper<ZMessage> wrapper = new QueryWrapper<>();
-        if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
-            if (paramObj.containsKey("msgId")) {
-                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("msgId")), ZMessage::getMsgId, paramObj.getStr("msgId"));
-            }
-            if (paramObj.containsKey("msgTitle")) {
-                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("msgTitle")), ZMessage::getMsgTitle, paramObj.getStr("msgTitle"));
-            }
-            if (paramObj.containsKey("msgContent")) {
-                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("msgContent")), ZMessage::getMsgContent, paramObj.getStr("msgContent"));
-            }
-            if (paramObj.containsKey("msgRouter")) {
-                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("msgRouter")), ZMessage::getMsgRouter, paramObj.getStr("msgRouter"));
-            }
-            if (paramObj.containsKey("msgStatus")) {
-                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("msgStatus")), ZMessage::getMsgStatus, paramObj.getStr("msgStatus"));
-            }
-            if (paramObj.containsKey("readTime")) {
-                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("readTime")), ZMessage::getReadTime, paramObj.getStr("readTime"));
-            }
-            if (paramObj.containsKey("msgType")) {
-                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("msgType")), ZMessage::getMsgType, paramObj.getStr("msgType"));
-            }
-            if (paramObj.containsKey("permissionName")) {
-                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("permissionName")), ZMessage::getPermissionName, paramObj.getStr("permissionName"));
-            }
-            if (paramObj.containsKey("createTime")) {
-                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("createTime")), ZMessage::getCreateTime, paramObj.getStr("createTime"));
-            }
-        }
-        //返回数据
-        Page<ZMessage> pageEntity = page(pager, wrapper);
-        if (pageEntity.getTotal() == 0) {
-            return new Page<>();
-        }
-        Page<ZMessageDTO> result = new Page<>();
-        result.setRecords(pageEntity.getRecords().stream()
-                .map(m -> {
-                    ZMessageDTO zMessageDTO = zMessageConvert.entityToDto(m);
-                    return zMessageDTO;
-                })
-                .collect(Collectors.toList()));
-        result.setTotal(pageEntity.getTotal());
+        // 查询条件
+        HashMap<String, Object> paramsJson = JSONUtil.toBean(JSONUtil.parseObj(params), HashMap.class);
+        paramsJson.put("userId", CurrentUserUtils.getCurrentUser().getUserId());
+        Integer offset = (page - 1) * limit;
+        // 查询列表
+        List<ZMessageDTO> list = mapper.messageList(offset, limit, paramsJson);
+        // 查询总数
+        Integer count = mapper.messageListCount(paramsJson);
+        // 组装查询结果
+        Page<ZMessageDTO> result = new Page<>(page, limit);
+        result.setRecords(list);
+        result.setTotal(count);
         return result;
     }
 
@@ -167,15 +138,6 @@ public class ZMessageServiceImpl extends ServiceImpl<ZMessageMapper, ZMessage> i
                 if (paramObj.containsKey("msgRouter")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("msgRouter")), ZMessage::getMsgRouter, paramObj.getStr("msgRouter"));
                 }
-                if (paramObj.containsKey("msgStatus")) {
-                    wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("msgStatus")), ZMessage::getMsgStatus, paramObj.getStr("msgStatus"));
-                }
-                if (paramObj.containsKey("readTime")) {
-                    wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("readTime")), ZMessage::getReadTime, paramObj.getStr("readTime"));
-                }
-                if (paramObj.containsKey("msgType")) {
-                    wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("msgType")), ZMessage::getMsgType, paramObj.getStr("msgType"));
-                }
                 if (paramObj.containsKey("permissionName")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("permissionName")), ZMessage::getPermissionName, paramObj.getStr("permissionName"));
                 }
@@ -225,4 +187,16 @@ public class ZMessageServiceImpl extends ServiceImpl<ZMessageMapper, ZMessage> i
         saveBatch(saveData);
     }
 
+    @Override
+    public MessageCountsDTO counts() {
+        // 查询
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("userId", CurrentUserUtils.getCurrentUser().getUserId());
+        List<ZMessageDTO> list = mapper.messageList(null, null, params);
+        // 结果
+        MessageCountsDTO result = new MessageCountsDTO();
+        result.setCount(list.size());
+        result.setUnreadCount(list.stream().filter(d -> d.getMsgStatus().equals("0")).count());
+        return result;
+    }
 }

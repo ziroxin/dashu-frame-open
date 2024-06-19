@@ -52,11 +52,6 @@ public class ZMessageExcelOutDTO implements BaseDTO {
     private LocalDateTime readTime;
 
     /**
-     * 消息类型（0私信1公开）
-     */
-    private String msgType;
-
-    /**
      * 所属模块/菜单（可为空）
      */
     private String permissionName;
