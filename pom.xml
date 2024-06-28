@@ -10,7 +10,7 @@
     </parent>
 
     <!-- 父级项目配置信息 -->
-    <groupId>com.gitee.ziro</groupId>
+    <groupId>io.gitee.ziro</groupId>
     <artifactId>dashu-frame-quicker</artifactId>
     <version>1.1.4</version>
     <name>dashu-frame-quicker</name>
@@ -39,7 +39,7 @@
         <repository>
             <id>sonatype-nexus-releases</id>
             <name>Sonatype Nexus Repository</name>
-            <url>https://s01.oss.sonatype.org/content/repositories/releases/</url>
+            <url>https://repo1.maven.org/maven2/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
