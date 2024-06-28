@@ -10,7 +10,7 @@
     </parent>
 
     <!-- 发布命令：mvn clean deploy -f jar.xml -->
-    <groupId>com.gitee.ziro</groupId>
+    <groupId>io.gitee.ziro</groupId>
     <artifactId>dashu-frame-component</artifactId>
     <version>1.2.1</version>
     <packaging>jar</packaging>
@@ -147,27 +147,27 @@
         </developer>
     </developers>
 
-    <!-- 中央仓库地址配置 -->
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-
-    <!-- 发布到中心仓库：打开本模块文件夹; 打开cmd; 输入 mvn clean deploy 发布; 弹窗输入gpg密码 xxx666888 -->
+    <!-- 发布到中心仓库 -->
     <build>
         <!-- 下列插件是发布到中央仓库所需要的 -->
         <plugins>
+            <!-- Sonatype中央仓库发布插件 -->
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.5.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <tokenAuth>true</tokenAuth>
+                </configuration>
+            </plugin>
+
             <!-- 源码生成插件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -182,8 +182,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>3.6.3</version>
                 <configuration>
+                    <show>private</show>
+                    <nohelp>true</nohelp>
                     <!-- 忽略javadoc格式验证 -->
                     <doclint>none</doclint>
                 </configuration>
@@ -201,7 +203,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
