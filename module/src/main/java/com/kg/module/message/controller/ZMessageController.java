@@ -53,7 +53,20 @@ public class ZMessageController {
     @GetMapping("/read")
     public void read(String msgId) {
         messageToService.lambdaUpdate().set(ZMessageTo::getMsgStatus, "1") // 标记已读
-                .set(ZMessageTo::getReadTime, LocalDateTime.now()).eq(ZMessageTo::getMsgId, msgId).eq(ZMessageTo::getToUserId, CurrentUserUtils.getCurrentUser().getUserId()).update();
+                .set(ZMessageTo::getReadTime, LocalDateTime.now())
+                .eq(ZMessageTo::getMsgId, msgId)
+                .eq(ZMessageTo::getToUserId, CurrentUserUtils.getCurrentUser().getUserId())
+                .update();
+    }
+
+    @ApiOperation(value = "/message/zMessage/readAll", notes = "全部标记已读-消息中心", httpMethod = "GET")
+    @ApiImplicitParams({})
+    @GetMapping("/readAll")
+    public void readAll() {
+        messageToService.lambdaUpdate().set(ZMessageTo::getMsgStatus, "1") // 标记已读
+                .set(ZMessageTo::getReadTime, LocalDateTime.now())
+                .eq(ZMessageTo::getToUserId, CurrentUserUtils.getCurrentUser().getUserId())
+                .update();
     }
 
     @ApiOperation(value = "/message/zMessage/getById", notes = "详情-消息中心", httpMethod = "GET")

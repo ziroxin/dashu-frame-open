@@ -11,6 +11,9 @@
                  icon="el-icon-refresh" @click="resetTableList">重置
       </el-button>
       <div style="float: right;">
+        <el-button v-waves type="primary" size="small" v-if="msgStatus !== '1'"
+                   icon="el-icon-check" @click="markAllRead">全部标记已读
+        </el-button>
         <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                    v-permission="'message-zMessage-delete'">批量删除
         </el-button>
@@ -25,10 +28,15 @@
         <template v-slot="scope">
           <div :class="{'unread':scope.row.msgStatus==='0'}">
             {{ scope.row.msgTitle }}
-            <el-link :underline="false" type="primary" v-if="scope.row.msgRouter" style="margin-left: 10px;"
-                     @click="$router.push(scope.row.msgRouter)">
-              [进入页面]
-            </el-link>
+            <template v-if="scope.row.msgRouter">
+              <el-link v-if="scope.row.msgRouter.indexOf('http')===0" target="_blank"
+                 :underline="false" type="primary" style="margin-left: 10px;"
+                 :href="scope.row.msgRouter" @click="$router.push(scope.row.msgRouter)">查看
+              </el-link>
+              <el-link v-else :underline="false" type="primary" style="margin-left: 10px;"
+                       @click="$router.push(scope.row.msgRouter)">查看
+              </el-link>
+            </template>
           </div>
         </template>
       </el-table-column>
@@ -191,7 +199,6 @@ export default {
       if (row.msgStatus === '0') {
         // 标记已读
         this.$emit('unread-count-change');
-
         const params = {msgId: row.msgId, msgStatus: row.msgStatus}
         this.$request({
           url: '/message/zMessage/read', method: 'get', params
@@ -254,6 +261,19 @@ export default {
           })
         })
       }
+    },
+    // 全部标记已读
+    markAllRead() {
+      this.$confirm('确定要全部标记为已读吗?', '标记提醒', {
+        confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+      }).then(() => {
+        this.$request({
+          url: '/message/zMessage/readAll', method: 'get'
+        }).then((response) => {
+          this.$emit('all-read');
+          this.loadTableList();
+        })
+      })
     },
     // 导出Excel文件
     exportExcel() {
