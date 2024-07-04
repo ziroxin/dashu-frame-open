@@ -14,8 +14,7 @@
         <el-button v-waves type="primary" size="small" v-if="msgStatus !== '1'"
                    icon="el-icon-check" @click="markAllRead">全部标记已读
         </el-button>
-        <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
-                   v-permission="'message-zMessage-delete'">批量删除
+        <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small">批量删除
         </el-button>
       </div>
     </div>
@@ -30,8 +29,8 @@
             {{ scope.row.msgTitle }}
             <template v-if="scope.row.msgRouter">
               <el-link v-if="scope.row.msgRouter.indexOf('http')===0" target="_blank"
-                 :underline="false" type="primary" style="margin-left: 10px;"
-                 :href="scope.row.msgRouter" @click="$router.push(scope.row.msgRouter)">打开
+                       :underline="false" type="primary" style="margin-left: 10px;"
+                       :href="scope.row.msgRouter" @click="$router.push(scope.row.msgRouter)">打开
               </el-link>
               <el-link v-else :underline="false" type="primary" style="margin-left: 10px;"
                        @click="$router.push(scope.row.msgRouter)">打开
@@ -46,7 +45,7 @@
           <el-button type="text"
                      size="small" @click="openView(scope.row)">查看详情
           </el-button>
-          <el-button v-permission="'message-zMessage-delete'" style="color: #ff6d6d;"
+          <el-button style="color: #ff6d6d;"
                      type="text" size="small" @click="deleteByIds(scope.row)">删除
           </el-button>
         </template>
@@ -134,6 +133,7 @@ export default {
     },
     // 加载表格
     loadTableList() {
+      this.$emit('refresh');// 刷新数量
       this.isLoading = true
       const params = {...this.pager, params: JSON.stringify(this.searchData)};
       request({
@@ -197,8 +197,6 @@ export default {
     openView(row) {
       // 查询详情
       if (row.msgStatus === '0') {
-        // 标记已读
-        this.$emit('unread-count-change');
         const params = {msgId: row.msgId, msgStatus: row.msgStatus}
         this.$request({
           url: '/message/zMessage/read', method: 'get', params
@@ -270,7 +268,6 @@ export default {
         this.$request({
           url: '/message/zMessage/readAll', method: 'get'
         }).then((response) => {
-          this.$emit('all-read');
           this.loadTableList();
         })
       })
@@ -279,15 +276,6 @@ export default {
     exportExcel() {
       const params = {params: JSON.stringify(this.searchData)}
       downloadUtil.download('/message/zMessage/export/excel', params, '消息中心.xlsx')
-    },
-    // 导入Excel成功，提示
-    importExcelSuccess(response) {
-      if (response.code === '200') {
-        this.$message({type: 'success', message: '导入成功！'})
-        this.loadTableList()
-      } else {
-        this.$message({type: 'error', message: response.message})
-      }
     },
   }
 }

@@ -2,20 +2,15 @@
   <div class="app-container">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane :label="'全部(' + count + ')'" name="first">
-        <message-list :msg-status="msgStatus"
-                      @unread-count-change="unreadCount-=1"
-                      @all-read="getCounts"
+        <message-list :msg-status="msgStatus" @refresh="getCounts"
                       :key="'first'+keyIndex"></message-list>
       </el-tab-pane>
       <el-tab-pane :label="'未读(' + unreadCount + ')'" name="second">
-        <message-list :msg-status="msgStatus"
-                      @unread-count-change="unreadCount-=1"
-                      @all-read="getCounts"
+        <message-list :msg-status="msgStatus" @refresh="getCounts"
                       :key="'second'+keyIndex"></message-list>
       </el-tab-pane>
       <el-tab-pane :label="'已读(' + (count-unreadCount) + ')'" name="third">
-        <message-list :msg-status="msgStatus"
-                      @unread-count-change="unreadCount-=1"
+        <message-list :msg-status="msgStatus" @refresh="getCounts"
                       :key="'third'+keyIndex"></message-list>
       </el-tab-pane>
     </el-tabs>
