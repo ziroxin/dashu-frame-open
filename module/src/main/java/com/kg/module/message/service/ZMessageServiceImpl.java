@@ -11,6 +11,10 @@ import com.kg.component.office.ExcelReadUtils;
 import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
 import com.kg.core.security.util.CurrentUserUtils;
+import com.kg.core.zuser.entity.ZUser;
+import com.kg.core.zuser.entity.ZUserRole;
+import com.kg.core.zuser.service.IZUserRoleService;
+import com.kg.core.zuser.service.IZUserService;
 import com.kg.module.message.dto.MessageCountsDTO;
 import com.kg.module.message.dto.ZMessageDTO;
 import com.kg.module.message.dto.convert.ZMessageConvert;
@@ -18,6 +22,9 @@ import com.kg.module.message.entity.ZMessage;
 import com.kg.module.message.excels.ZMessageExcelConstant;
 import com.kg.module.message.excels.ZMessageExcelOutDTO;
 import com.kg.module.message.mapper.ZMessageMapper;
+import com.kg.module.message.dto.MessageToBaseDTO;
+import com.kg.module.messageTo.entity.ZMessageTo;
+import com.kg.module.messageTo.service.ZMessageToService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -25,6 +32,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +53,54 @@ public class ZMessageServiceImpl extends ServiceImpl<ZMessageMapper, ZMessage> i
     private ZMessageConvert zMessageConvert;
     @Resource
     private ZMessageMapper mapper;
+    @Resource
+    private ZMessageToService toService;
+    @Resource
+    private IZUserRoleService userRoleService;
+    @Resource
+    private IZUserService userService;
 
+    /**
+     * 发送消息
+     */
+    @Override
+    @Transactional(rollbackFor = RuntimeException.class)
+    public void send(MessageToBaseDTO msg) {
+        // 消息主体
+        ZMessage zMessage = new ZMessage();
+        zMessage.setMsgId(GuidUtils.getUuid());
+        zMessage.setMsgTitle(msg.getMsgTitle());
+        zMessage.setMsgContent(msg.getMsgContent());
+        zMessage.setMsgRouter(msg.getMsgRouter());
+        zMessage.setPermissionName(msg.getPermissionName());
+        zMessage.setCreateTime(LocalDateTime.now());
+        save(zMessage);
+        // 收信用户列表
+        List<ZMessageTo> toList = new ArrayList<>();
+        List<String> userIds = new ArrayList<>();
+        if (msg.getToType().equals("user")) {
+            userIds = msg.getToIds();
+        } else if (msg.getToType().equals("role")) {
+            // 角色查询用户
+            userIds = userRoleService.lambdaQuery().in(ZUserRole::getRoleId, msg.getToIds()).list()
+                    .stream().map(ru -> ru.getUserId()).collect(Collectors.toList());
+        } else if (msg.getToType().equals("org")) {
+            // 部门查询用户
+            userIds = userService.lambdaQuery().in(ZUser::getOrgId, msg.getToIds()).list()
+                    .stream().map(u -> u.getUserId()).collect(Collectors.toList());
+        }
+        userIds.stream().forEach(toUserId -> {
+            ZMessageTo zMessageTo = new ZMessageTo();
+            zMessageTo.setToId(GuidUtils.getUuid());
+            zMessageTo.setMsgId(zMessage.getMsgId());
+            zMessageTo.setSendUserId(CurrentUserUtils.getCurrentUser().getUserId());
+            zMessageTo.setToUserId(toUserId);// 接收用户
+            zMessageTo.setMsgStatus("0");
+            zMessageTo.setCreateTime(LocalDateTime.now());
+            toList.add(zMessageTo);
+        });
+        toService.saveBatch(toList);
+    }
 
     /**
      * 分页列表
@@ -99,14 +154,16 @@ public class ZMessageServiceImpl extends ServiceImpl<ZMessageMapper, ZMessage> i
     }
 
     /**
-     * 删除
+     * 删除关联用户，不删除消息主体
      *
      * @param idlist 删除id列表
      */
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public void delete(List<String> idlist) {
-        removeBatchByIds(idlist);
+        toService.lambdaUpdate().in(ZMessageTo::getMsgId, idlist)
+                .eq(ZMessageTo::getToUserId, CurrentUserUtils.getCurrentUser().getUserId())
+                .remove();
     }
 
     /**

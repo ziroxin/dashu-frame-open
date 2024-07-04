@@ -8,6 +8,8 @@ import com.kg.component.utils.GuidUtils;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.core.xss.XssFormatUtil;
+import com.kg.module.message.service.ZMessageService;
+import com.kg.module.message.dto.MessageToBaseDTO;
 import com.kg.module.news.dto.NewsDTO;
 import com.kg.module.news.dto.convert.NewsConvert;
 import com.kg.module.news.entity.News;
@@ -42,6 +44,8 @@ public class NewsController {
     private NewsService newsService;
     @Resource
     private NewsConvert newsConvert;
+    @Resource
+    private ZMessageService messageService;
 
     @ApiOperation(value = "/news/news/getById", notes = "详情-新闻表-测试", httpMethod = "GET")
     @ApiImplicitParams({
@@ -107,6 +111,10 @@ public class NewsController {
     @NoRepeatSubmit
     public void add(@RequestBody NewsDTO newsDTO) throws BaseException {
         try {
+            // 通知用户
+            MessageToBaseDTO msg = JSONUtil.toBean(JSONUtil.toJsonStr(newsDTO), MessageToBaseDTO.class);
+            messageService.send(msg);
+            // 保存news
             News news = newsConvert.dtoToEntity(newsDTO);
             news.setNewsId(GuidUtils.getUuid());
             news.setCreateTime(LocalDateTime.now());

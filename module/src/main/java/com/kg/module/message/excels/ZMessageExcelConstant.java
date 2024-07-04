@@ -26,8 +26,6 @@ public class ZMessageExcelConstant {
         EXPORT_EXCEL_COLUMN.put("msgTitle", "消息标题");
         EXPORT_EXCEL_COLUMN.put("msgContent", "消息内容");
         EXPORT_EXCEL_COLUMN.put("msgRouter", "跳转路由");
-        EXPORT_EXCEL_COLUMN.put("msgStatus", "消息状态（0未读1已读）");
-        EXPORT_EXCEL_COLUMN.put("readTime", "已读时间");
         EXPORT_EXCEL_COLUMN.put("permissionName", "所属模块/菜单（可为空）");
         EXPORT_EXCEL_COLUMN.put("createTime", "消息创建时间");
         // 初始化导入字段
@@ -35,8 +33,6 @@ public class ZMessageExcelConstant {
         IMPORT_EXCEL_COLUMN.put("消息标题", "msgTitle");
         IMPORT_EXCEL_COLUMN.put("消息内容", "msgContent");
         IMPORT_EXCEL_COLUMN.put("跳转路由", "msgRouter");
-        IMPORT_EXCEL_COLUMN.put("消息状态（0未读1已读）", "msgStatus");
-        IMPORT_EXCEL_COLUMN.put("已读时间", "readTime");
         IMPORT_EXCEL_COLUMN.put("所属模块/菜单（可为空）", "permissionName");
         IMPORT_EXCEL_COLUMN.put("消息创建时间", "createTime");
     }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.kg.module.message.dto.MessageCountsDTO;
 import com.kg.module.message.dto.ZMessageDTO;
 import com.kg.module.message.entity.ZMessage;
+import com.kg.module.message.dto.MessageToBaseDTO;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -18,6 +19,11 @@ import java.util.List;
  * @since 2024-06-18
  */
 public interface ZMessageService extends IService<ZMessage> {
+
+    /**
+     * 发送消息
+     */
+    void send(MessageToBaseDTO message);
 
     /**
      * 分页列表
@@ -44,7 +50,7 @@ public interface ZMessageService extends IService<ZMessage> {
     void update(ZMessageDTO zMessageDTO);
 
     /**
-     * 删除
+     * 删除关联用户，不删除消息主体
      *
      * @param idlist 删除id列表
      */

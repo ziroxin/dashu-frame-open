@@ -5,7 +5,7 @@
     <select id="messageList" resultType="com.kg.module.message.dto.ZMessageDTO">
         SELECT a.*,b.msg_status
         FROM z_message a
-        LEFT JOIN z_message_to b ON a.msg_id = b.msg_id
+        INNER JOIN z_message_to b ON a.msg_id = b.msg_id
         WHERE b.to_user_id=#{params.userId}
         <if test="params.msgTitle!=null and params.msgTitle!=''">
             AND msg_title LIKE CONCAT('%',#{params.msgTitle},'%')
@@ -21,7 +21,7 @@
     <select id="messageListCount" resultType="java.lang.Integer">
         SELECT COUNT(*)
         FROM z_message a
-        LEFT JOIN z_message_to b ON a.msg_id = b.msg_id
+        INNER JOIN z_message_to b ON a.msg_id = b.msg_id
         WHERE b.to_user_id=#{params.userId}
         <if test="params.msgTitle!=null and params.msgTitle!=''">
             AND msg_title LIKE CONCAT('%',#{params.msgTitle},'%')
