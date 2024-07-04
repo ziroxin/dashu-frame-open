@@ -1,13 +1,14 @@
 package com.kg.module.news.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import com.kg.core.base.dto.BaseDTO;
+import com.kg.module.message.dto.MessageToBaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 
 /**
@@ -21,7 +22,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @ApiModel(value = "NewsDTO", description = "新闻表-测试")
-public class NewsDTO implements BaseDTO {
+public class NewsDTO extends MessageToBaseDTO implements BaseDTO {
 
     private static final long serialVersionUID = 1L;
 
