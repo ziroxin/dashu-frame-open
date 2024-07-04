@@ -1,4 +1,4 @@
-package com.kg;
+package com.kg.generator;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
