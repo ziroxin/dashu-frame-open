@@ -1,22 +1,30 @@
 <template>
   <div class="navbar">
     <!-- 显示隐藏侧边栏按钮 -->
-    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container"
+               @toggleClick="toggleSideBar"/>
     <!-- 面包屑 -->
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
+    <breadcrumb id="breadcrumb-container" class="breadcrumb-container"/>
     <!-- 顶部右侧菜单 -->
     <div class="right-menu">
       <template v-if="device!=='mobile'">
         <!--PC菜单-->
-        <search id="header-search" class="right-menu-item" />
-        <error-log class="errLog-container right-menu-item hover-effect" />
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
-        <!--<el-tooltip content="全局文字大小配置" effect="dark" placement="bottom">
-                  <size-select id="size-select" class="right-menu-item hover-effect"/>
-                </el-tooltip>-->
+        <el-tooltip content="查询菜单" placement="top">
+          <search id="header-search" class="right-menu-item"/>
+        </el-tooltip>
+        <error-log class="errLog-container right-menu-item hover-effect"/>
+        <el-tooltip content="全屏/取消全屏" placement="top">
+          <screenfull id="screenfull" class="right-menu-item hover-effect"/>
+        </el-tooltip>
+        <!--点击打开消息中心路由-->
+        <el-tooltip content="消息中心" placement="bottom">
+          <router-link to="/system/message" class="right-menu-item hover-effect">
+            <i style="font-size: 28px;vertical-align: middle;" class="el-icon-message"/>
+          </router-link>
+        </el-tooltip>
       </template>
 
-      <header-user-setting />
+      <header-user-setting/>
     </div>
   </div>
 </template>
@@ -100,7 +108,7 @@ export default {
 
     .right-menu-item {
       display: inline-block;
-      padding: 0 8px;
+      padding: 0 10px;
       height: 100%;
       font-size: 18px;
       color: #5a5e66;

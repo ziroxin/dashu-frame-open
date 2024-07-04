@@ -47,6 +47,17 @@ const otherRouter = [
       meta: {title: '个人中心'}
     }]
   },
+  // 消息中心（登录可用）
+  {
+    path: '/system/message',
+    component: () => import('@/layout'),
+    hidden: true,
+    children: [{
+      path: '/system/message',
+      component: () => import('@/views/system/message/index.vue'),
+      meta: {title: '消息中心'}
+    }]
+  },
   // 首页路由
   {
     path: '/dashboard',
