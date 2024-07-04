@@ -31,10 +31,10 @@
             <template v-if="scope.row.msgRouter">
               <el-link v-if="scope.row.msgRouter.indexOf('http')===0" target="_blank"
                  :underline="false" type="primary" style="margin-left: 10px;"
-                 :href="scope.row.msgRouter" @click="$router.push(scope.row.msgRouter)">查看
+                 :href="scope.row.msgRouter" @click="$router.push(scope.row.msgRouter)">打开
               </el-link>
               <el-link v-else :underline="false" type="primary" style="margin-left: 10px;"
-                       @click="$router.push(scope.row.msgRouter)">查看
+                       @click="$router.push(scope.row.msgRouter)">打开
               </el-link>
             </template>
           </div>
