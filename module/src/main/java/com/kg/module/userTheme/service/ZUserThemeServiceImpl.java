@@ -90,7 +90,7 @@ public class ZUserThemeServiceImpl extends ServiceImpl<ZUserThemeMapper, ZUserTh
     @Transactional(rollbackFor = RuntimeException.class)
     public void add(ZUserThemeDTO zUserThemeDTO) {
         ZUserTheme zUserTheme = zUserThemeConvert.dtoToEntity(zUserThemeDTO);
-        zUserTheme.setThemeId(GuidUtils.getUuid());
+        zUserTheme.setThemeId(StringUtils.hasText(zUserTheme.getThemeId()) ? zUserTheme.getThemeId() : GuidUtils.getUuid());
         zUserTheme.setCreateTime(LocalDateTime.now());
         save(zUserTheme);
     }
