@@ -26,4 +26,14 @@ public interface ZUserMapper extends BaseMapper<ZUser> {
     Long getUserRoleCount(JSONObject paramObj);
 
     ZUserRoleSaveDTO getUserById(@Param("userId") String userId);
+
+    /**
+     * 列出子用户
+     *
+     * @param orgId         组织id
+     * @param isIncludeSelf 是否包括自己所在的部门
+     * @return {@link List }<{@link ZUser }>
+     */
+    List<ZUser> listChildrenUsers(@Param("orgId") String orgId,
+                                  @Param("isIncludeSelf") boolean isIncludeSelf);
 }

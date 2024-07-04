@@ -16,20 +16,16 @@
       </el-button>
       <div style="float: right;">
         <el-button v-waves v-permission="'news-news-add'" type="primary" icon="el-icon-plus"
-                   @click="openAdd" size="small"
-        >新增
+                   @click="openAdd" size="small">新增
         </el-button>
         <el-button v-waves v-permission="'news-news-update'" type="info" icon="el-icon-edit"
-                   @click="openUpdate(null)" size="small"
-        >修改
+                   @click="openUpdate(null)" size="small">修改
         </el-button>
         <el-button v-waves v-permission="'news-news-delete'" type="danger" icon="el-icon-delete"
-                   @click="deleteByIds(null)" size="small"
-        >删除
+                   @click="deleteByIds(null)" size="small">删除
         </el-button>
         <el-button v-waves v-permission="'news-news-exportExcel'" type="success" icon="el-icon-printer"
-                   @click="exportExcel" size="small"
-        >导出Excel
+                   @click="exportExcel" size="small">导出Excel
         </el-button>
       </div>
     </div>
@@ -43,7 +39,6 @@
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template v-slot="scope">
           <el-button type="text" size="mini" @click="openView(scope.row)">详情</el-button>
-
           <el-button v-permission="'news-news-update'" size="mini"
                      type="text" @click="openUpdate(scope.row)">修改
           </el-button>
@@ -62,25 +57,40 @@
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible" width="900px"
                :close-on-click-modal="dialogType !== 'view' ? false : true"
-               @close="resetTemp" :key="'myDialog'+dialogIndex"
-    >
-      <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
+               @close="resetTemp" :key="'myDialog'+dialogIndex">
+      <el-form ref="dataForm" :model="temp" label-position="right" label-width="50px" :disabled="dialogType==='view'">
         <el-form-item label-width="0px" prop="newsTitle"
                       :rules="[{required: true, message: '新闻标题不能为空'}]">
           <el-input v-model="temp.newsTitle" maxlength="30" :show-word-limit="true"
-                    placeholder="请输入新闻标题"
-          />
+                    placeholder="请输入新闻标题"/>
         </el-form-item>
         <el-form-item label-width="0px" prop="newsContent"
                       :rules="[{required: true, message: '新闻内容不能为空'}]">
-          <my-wang-editor ref="myEditor" v-model="temp.newsContent" height="600px"
+          <my-wang-editor ref="myEditor" v-model="temp.newsContent" height="300px"
                           placeholder="请输入新闻内容"/>
         </el-form-item>
-        <el-form-item label="顺序" prop="orderIndex"
-                      :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]"
-        >
-          <el-input-number v-model="temp.orderIndex" :min="0"/>
-        </el-form-item>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="顺序" prop="orderIndex"
+                          :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]">
+              <el-input-number v-model="temp.orderIndex" :min="0"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <!-- 选择消息发送的用户 -->
+            <el-form-item label="" prop="messageSend" label-width="50px">
+              <el-select v-model="messageSendData.type" placeholder="请选择消息发送类型">
+                <el-option label="选择用户" value="user"></el-option>
+                <el-option label="选择组织机构" value="org"></el-option>
+                <el-option label="选择角色" value="role"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <message-send v-model="messageSendData.ids" label-width="80px"
+                          :scope="messageSendData.scope" :type="messageSendData.type"/>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button v-if="dialogType !== 'view'" v-waves type="primary" @click="saveData">保存</el-button>
@@ -93,9 +103,10 @@
 <script>
 import request from '@/utils/request'
 import MyWangEditor from '@/components/MyWangEditor';
+import MessageSend from "@/components/MessageSend/index.vue";
 
 export default {
-  components: {MyWangEditor},
+  components: {MessageSend, MyWangEditor},
   data() {
     return {
       // 分页数据
@@ -114,7 +125,12 @@ export default {
       dialogFormVisible: false,
       // 表单临时数据
       temp: {},
-      dialogIndex: 0
+      dialogIndex: 0,
+      messageSendData: {
+        ids: [],// 根据用户选择自动获取
+        type: 'user',// 发送用户类型：user=用户；org=组织机构；role=角色（不根据scope查询）
+        scope: 'all',// all=全部；children=下级；selfAndChildren=本机构及下级
+      }
     }
   },
   created() {
@@ -161,6 +177,7 @@ export default {
     // 清空表单temp数据
     resetTemp() {
       this.temp = {orderIndex: 0}
+      this.messageSendData.ids = []
       this.dialogIndex++
     },
     // 打开添加窗口
@@ -205,7 +222,7 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          var data = this.temp;
+          let data = {...this.temp};
           if (this.dialogType === 'update') {
             request({
               url: '/news/news/update', method: 'post', data
@@ -215,6 +232,19 @@ export default {
               this.dialogFormVisible = false
             })
           } else {
+            if (this.messageSendData.ids.length > 0) {
+              // 有选择消息，则填充消息实体字段
+              data = {
+                ...data,
+                msgTitle: '发表了新闻《' + data.newsTitle + '》',
+                msgContent: '发表了新闻《' + data.newsTitle + '》',
+                msgRouter: '/demo/news',// 菜单管理-修改-菜单地址
+                permissionName: 'news-news',// 菜单管理-修改-菜单标记
+                toType: this.messageSendData.type,
+                toIds: this.messageSendData.ids
+              }
+            }
+            // 添加信息时，增加通知用户字段
             request({
               url: '/news/news/add', method: 'post', data
             }).then(response => {

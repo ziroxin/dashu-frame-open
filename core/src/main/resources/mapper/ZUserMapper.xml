@@ -76,10 +76,20 @@
     <select id="getUserById" resultType="com.kg.core.zuser.dto.ZUserRoleSaveDTO">
         SELECT a.*, GROUP_CONCAT(DISTINCT c.role_id) role_id, GROUP_CONCAT(DISTINCT c.role_name) role_name
         FROM z_user a
-                 LEFT JOIN z_user_role b ON a.user_id = b.user_id
-                 LEFT JOIN z_role c ON b.role_id = c.role_id
+        LEFT JOIN z_user_role b ON a.user_id = b.user_id
+        LEFT JOIN z_role c ON b.role_id = c.role_id
         WHERE a.user_id = #{userId}
         GROUP BY a.user_id
+    </select>
+    <select id="listChildrenUsers" resultType="com.kg.core.zuser.entity.ZUser">
+        SELECT * FROM z_user
+        WHERE org_id IN
+        (SELECT org_id FROM z_organization WHERE org_path LIKE
+        CONCAT('%',#{orgId},
+        <if test="!isIncludeSelf">
+            '.',
+        </if>
+        '%'))
     </select>
 
 </mapper>

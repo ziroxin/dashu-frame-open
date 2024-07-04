@@ -9,6 +9,8 @@ import com.kg.core.zuser.dto.ZUserEditPasswordDTO;
 import com.kg.core.zuser.dto.ZUserRoleSaveDTO;
 import com.kg.core.zuser.entity.ZUser;
 
+import java.util.List;
+
 /**
  * <p>
  * 用户表 服务类
@@ -55,4 +57,13 @@ public interface IZUserService extends IService<ZUser> {
      */
     ZUserAllDTO getUserAllInfo(String userId);
 
+
+    /**
+     * 列出子用户
+     *
+     * @param orgId         组织id
+     * @param isIncludeSelf 是否包括自己所在的部门
+     * @return {@link List }<{@link ZUser }>
+     */
+    List<ZUser> listChildrenUsers(String orgId, boolean isIncludeSelf);
 }

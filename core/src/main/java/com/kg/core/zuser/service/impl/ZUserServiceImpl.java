@@ -33,6 +33,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * <p>
@@ -208,7 +209,7 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
         try {
             ZUser user = getById(userId);
             if (user != null) {
-                ZUserAllDTO result = new ZUserAllDTO();
+                ZUserAllDTO result = JSONUtil.toBean(JSONUtil.parseObj(user), ZUserAllDTO.class);
                 // 查询部门信息
                 ZOrganization org = organizationService.getById(user.getOrgId());
                 if (org != null) {
@@ -222,5 +223,17 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 列出子用户
+     *
+     * @param orgId         组织id
+     * @param isIncludeSelf 是否包括自己所在的部门
+     * @return {@link List }<{@link ZUser }>
+     */
+    @Override
+    public List<ZUser> listChildrenUsers(String orgId, boolean isIncludeSelf) {
+        return zUserMapper.listChildrenUsers(orgId, isIncludeSelf);
     }
 }
