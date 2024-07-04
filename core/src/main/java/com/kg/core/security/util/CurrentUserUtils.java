@@ -7,7 +7,6 @@ import com.kg.core.zorg.service.ZOrganizationService;
 import com.kg.core.zuser.dto.ZUserAllDTO;
 import com.kg.core.zuser.entity.ZUser;
 import com.kg.core.zuser.service.IZUserRoleService;
-import com.kg.core.zuser.service.IZUserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
