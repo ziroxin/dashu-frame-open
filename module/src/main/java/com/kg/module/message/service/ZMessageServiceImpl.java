@@ -116,13 +116,13 @@ public class ZMessageServiceImpl extends ServiceImpl<ZMessageMapper, ZMessage> i
         // 查询条件
         HashMap<String, Object> paramsJson = JSONUtil.toBean(JSONUtil.parseObj(params), HashMap.class);
         paramsJson.put("userId", CurrentUserUtils.getCurrentUser().getUserId());
-        Integer offset = (page - 1) * limit;
+        Integer offset = page != null && limit != null ? (page - 1) * limit : null;
         // 查询列表
         List<ZMessageDTO> list = mapper.messageList(offset, limit, paramsJson);
         // 查询总数
         Integer count = mapper.messageListCount(paramsJson);
         // 组装查询结果
-        Page<ZMessageDTO> result = new Page<>(page, limit);
+        Page<ZMessageDTO> result = new Page<>(page != null ? page : 1, limit != null ? limit : 10);
         result.setRecords(list);
         result.setTotal(count);
         return result;

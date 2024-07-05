@@ -9,6 +9,7 @@ import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.core.xss.XssFormatUtil;
 import com.kg.module.message.dto.MessageToBaseDTO;
+import com.kg.module.message.dto.ZMessageDTO;
 import com.kg.module.message.service.ZMessageService;
 import com.kg.module.news.dto.NewsDTO;
 import com.kg.module.news.dto.convert.NewsConvert;
@@ -25,6 +26,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -92,13 +96,24 @@ public class NewsController {
                 wrapper.lambda().eq(News::getUpdateTime, paramObj.getStr("updateTime"));
             }
         }
-
+        // 查询关联的未读消息（这里demo查询未读消息list后，遍历处理；正式业务，建议用表关联查询，少一次sql连接）
+        HashMap<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("msgStatus", "0");// 未读消息
+        List<ZMessageDTO> msgList = messageService.pagelist(null, null, JSONUtil.toJsonStr(paramsMap)).getRecords();
         // 默认排序
         wrapper.lambda().orderByAsc(News::getOrderIndex);
         Page<News> result = newsService.page(pager, wrapper);
         result.setRecords(
                 result.getRecords().stream().map(news -> {
+                    // 处理富文本
                     news.setNewsContent(XssFormatUtil.toHtml(news.getNewsContent()));
+                    // 关联未读消息
+                    Optional<ZMessageDTO> any = msgList.stream()
+                            .filter(msg -> StringUtils.hasText(msg.getJoinId()) && msg.getJoinId().equals(news.getNewsId()))
+                            .findAny();
+                    if (any.isPresent()) {
+                        news.setMsgId(any.get().getMsgId());
+                    }
                     return news;
                 }).collect(Collectors.toList()));
         return result;
