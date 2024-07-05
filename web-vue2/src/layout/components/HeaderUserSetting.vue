@@ -57,7 +57,7 @@ export default {
 
 <style lang="scss" scoped>
 .avatar-container {
-  margin-right: 30px;
+  margin-right: 20px;
 
   .avatar-wrapper {
     margin-top: 5px;

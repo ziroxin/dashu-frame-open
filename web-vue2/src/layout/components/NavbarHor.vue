@@ -19,11 +19,9 @@
         <search id="header-search" class="right-menu-item"/>
         <error-log class="errLog-container right-menu-item hover-effect"/>
         <screenfull id="screenfull" class="right-menu-item hover-effect"/>
-        <!--<el-tooltip content="全局文字大小配置" effect="dark" placement="bottom">
-                  <size-select id="size-select" class="right-menu-item hover-effect"/>
-                </el-tooltip>-->
       </template>
 
+      <message-link/>
       <header-user-setting/>
     </div>
   </div>
@@ -40,9 +38,11 @@ import Topbar from './Topbar/index'
 import HeaderUserSetting from "@/layout/components/HeaderUserSetting";
 import Logo from "@/layout/components/Sidebar/Logo.vue";
 import ScrollHorizontal from "@/components/ScrollHorizontal/index.vue";
+import MessageLink from "@/layout/components/MessageLink.vue";
 
 export default {
   components: {
+    MessageLink,
     ScrollHorizontal,
     Logo,
     HeaderUserSetting,
@@ -61,7 +61,7 @@ export default {
     }
   },
   mounted() {
-    this.leftMenuWidth = this.showLogo ? this.$refs.navbar.offsetWidth - 400 : this.$refs.navbar.offsetWidth - 230
+    this.leftMenuWidth = this.showLogo ? this.$refs.navbar.offsetWidth - 440 : this.$refs.navbar.offsetWidth - 270
   },
   computed: {
     ...mapGetters([
@@ -148,7 +148,7 @@ export default {
 
     .right-menu-item {
       display: inline-block;
-      padding: 0 8px;
+      padding: 0 10px;
       height: 100%;
       font-size: 18px;
       color: #5a5e66;
