@@ -195,7 +195,7 @@ export default {
     },
     // 打开查看窗口
     openView(row) {
-      // 查询详情
+      // 标记已读
       if (row.msgStatus === '0') {
         const params = {msgId: row.msgId, msgStatus: row.msgStatus}
         this.$request({

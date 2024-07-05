@@ -38,12 +38,17 @@
       <el-table-column label="修改时间" prop="updateTime" align="center"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template v-slot="scope">
-          <el-button type="text" size="mini" @click="openView(scope.row)">详情</el-button>
+          <el-button type="text" size="mini" style="color: #4dd219;"
+                     @click="openView(scope.row)">详情</el-button>
           <el-button v-permission="'news-news-update'" size="mini"
                      type="text" @click="openUpdate(scope.row)">修改
           </el-button>
-          <el-button v-permission="'news-news-delete'" size="mini"
+          <el-button v-permission="'news-news-delete'" size="mini" style="color: #f56c6c;"
                      type="text" @click="deleteByIds(scope.row)">删除
+          </el-button>
+          <br/>
+          <el-button size="mini" v-if="scope.row.msgId" style="color: red;"
+                     type="text" @click="messageRead(scope.row)">[标记已读]
           </el-button>
         </template>
       </el-table-column>
@@ -278,6 +283,16 @@ export default {
           })
         })
       }
+    },
+    // 标记消息已读
+    messageRead(row){
+      const params = {msgId: row.msgId}
+      this.$request({
+        url: '/message/zMessage/read', method: 'get', params
+      }).then((response) => {
+        this.$store.dispatch('message/refreshMessageCount');
+        this.loadTableList()
+      })
     },
     // 导出Excel文件
     exportExcel() {
