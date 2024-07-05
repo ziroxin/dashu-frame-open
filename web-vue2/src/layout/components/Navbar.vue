@@ -9,21 +9,12 @@
     <div class="right-menu">
       <template v-if="device!=='mobile'">
         <!--PC菜单-->
-        <el-tooltip content="查询菜单" placement="top">
-          <search id="header-search" class="right-menu-item"/>
-        </el-tooltip>
+        <search id="header-search" class="right-menu-item"/>
         <error-log class="errLog-container right-menu-item hover-effect"/>
-        <el-tooltip content="全屏/取消全屏" placement="top">
-          <screenfull id="screenfull" class="right-menu-item hover-effect"/>
-        </el-tooltip>
-        <!--点击打开消息中心路由-->
-        <el-tooltip content="消息中心" placement="bottom">
-          <router-link to="/system/message" class="right-menu-item hover-effect">
-            <i style="font-size: 28px;vertical-align: middle;" class="el-icon-message"/>
-          </router-link>
-        </el-tooltip>
+        <screenfull id="screenfull" class="right-menu-item hover-effect"/>
       </template>
 
+      <message-link/>
       <header-user-setting/>
     </div>
   </div>
@@ -37,9 +28,11 @@ import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 import Search from '@/components/HeaderSearch'
 import HeaderUserSetting from '@/layout/components/HeaderUserSetting';
+import MessageLink from "@/layout/components/MessageLink.vue";
 
 export default {
   components: {
+    MessageLink,
     HeaderUserSetting,
     Breadcrumb,
     Hamburger,

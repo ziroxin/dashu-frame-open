@@ -18,6 +18,7 @@
 </template>
 <script>
 import MessageList from "@/views/system/message/message-list.vue";
+import {mapState} from 'vuex'
 
 export default {
   components: {MessageList},
@@ -26,10 +27,13 @@ export default {
       activeName: 'first',
       msgStatus: '',// 0:未读 1:已读 '':全部
       keyIndex: 0,
-      // 总数
-      count: 0,
-      unreadCount: 0,
     }
+  },
+  computed: {
+    ...mapState({
+      count: state => state.message.count,
+      unreadCount: state => state.message.unreadCount,
+    }),
   },
   mounted() {
     this.getCounts()
@@ -41,10 +45,7 @@ export default {
     },
     // 获取消息总数和未读数
     getCounts() {
-      this.$request({url: '/message/zMessage/counts', method: 'get'}).then((response) => {
-        this.count = response.data.count
-        this.unreadCount = response.data.unreadCount
-      })
+      this.$store.dispatch('message/refreshMessageCount');
     }
   }
 }

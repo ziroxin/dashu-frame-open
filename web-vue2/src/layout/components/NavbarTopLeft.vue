@@ -37,6 +37,7 @@
     </div>
     <!-- 顶部右侧菜单 -->
     <div class="right-menu">
+      <message-link/>
       <header-user-setting/>
     </div>
   </div>
@@ -55,9 +56,11 @@ import Item from "@/layout/components/Sidebar/Item.vue";
 import path from 'path'
 import {isExternal} from "@/utils/validate";
 import AppLink from "@/layout/components/Sidebar/Link.vue";
+import MessageLink from "@/layout/components/MessageLink.vue";
 
 export default {
   components: {
+    MessageLink,
     AppLink,
     Item,
     ScrollHorizontal,
@@ -92,7 +95,7 @@ export default {
     }
   },
   mounted() {
-    this.leftMenuWidth = this.$refs.navbarTopLeft.offsetWidth - 190
+    this.leftMenuWidth = this.$refs.navbarTopLeft.offsetWidth - 230
     this.firstOrRefreshLoad()
   },
   methods: {
