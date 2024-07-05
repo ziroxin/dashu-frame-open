@@ -1,18 +1,14 @@
 package com.kg.module.message.entity;
 
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.kg.core.base.model.BaseEntity;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -49,6 +45,10 @@ public class ZMessage implements BaseEntity {
     @ApiModelProperty("所属模块/菜单（可为空）")
     @TableField("permission_name")
     private String permissionName;
+
+    @ApiModelProperty("关联id(在模块内标记已读可用)")
+    @TableField("join_id")
+    private String joinId;
 
     @ApiModelProperty("消息创建时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)

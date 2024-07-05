@@ -8,8 +8,8 @@ import com.kg.component.utils.GuidUtils;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.core.xss.XssFormatUtil;
-import com.kg.module.message.service.ZMessageService;
 import com.kg.module.message.dto.MessageToBaseDTO;
+import com.kg.module.message.service.ZMessageService;
 import com.kg.module.news.dto.NewsDTO;
 import com.kg.module.news.dto.convert.NewsConvert;
 import com.kg.module.news.entity.News;
@@ -111,12 +111,15 @@ public class NewsController {
     @NoRepeatSubmit
     public void add(@RequestBody NewsDTO newsDTO) throws BaseException {
         try {
+            // 生成news的uuid
+            String newsId = GuidUtils.getUuid();
             // 通知用户
             MessageToBaseDTO msg = JSONUtil.toBean(JSONUtil.toJsonStr(newsDTO), MessageToBaseDTO.class);
+            msg.setJoinId(newsId);
             messageService.send(msg);
             // 保存news
             News news = newsConvert.dtoToEntity(newsDTO);
-            news.setNewsId(GuidUtils.getUuid());
+            news.setNewsId(newsId);
             news.setCreateTime(LocalDateTime.now());
             newsService.save(news);
         } catch (Exception e) {

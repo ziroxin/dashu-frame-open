@@ -20,4 +20,9 @@ public class MessageCountsDTO {
      * 未读消息数
      */
     private long unreadCount;
+    /**
+     * 各模块未读数Json字符串
+     * 例如：｛key:'permissionName',value:未读数｝
+     */
+    private String permissionUnreadJson;
 }

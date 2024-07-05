@@ -21,14 +21,15 @@
                 v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
               <a v-if="onlyOneChild.meta" @click="loadLeftMenu(item,true)">
                 <el-menu-item :index="item.name">
-                  <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title"/>
+                  <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)"
+                        :title="onlyOneChild.meta.title" :permission-name="onlyOneChild.name"/>
                 </el-menu-item>
               </a>
             </template>
             <!-- 有子菜单（加载左侧菜单） -->
             <el-menu-item v-else :index="item.name" @click="loadLeftMenu(item)">
               <template slot="title">
-                <item :icon="item.meta.icon" :title="item.meta.title"/>
+                <item :icon="item.meta.icon" :title="item.meta.title" :permission-name="item.name"/>
               </template>
             </el-menu-item>
           </template>

@@ -16,13 +16,13 @@ import com.kg.core.zuser.entity.ZUserRole;
 import com.kg.core.zuser.service.IZUserRoleService;
 import com.kg.core.zuser.service.IZUserService;
 import com.kg.module.message.dto.MessageCountsDTO;
+import com.kg.module.message.dto.MessageToBaseDTO;
 import com.kg.module.message.dto.ZMessageDTO;
 import com.kg.module.message.dto.convert.ZMessageConvert;
 import com.kg.module.message.entity.ZMessage;
 import com.kg.module.message.excels.ZMessageExcelConstant;
 import com.kg.module.message.excels.ZMessageExcelOutDTO;
 import com.kg.module.message.mapper.ZMessageMapper;
-import com.kg.module.message.dto.MessageToBaseDTO;
 import com.kg.module.messageTo.entity.ZMessageTo;
 import com.kg.module.messageTo.service.ZMessageToService;
 import org.springframework.stereotype.Service;
@@ -73,6 +73,7 @@ public class ZMessageServiceImpl extends ServiceImpl<ZMessageMapper, ZMessage> i
         zMessage.setMsgContent(msg.getMsgContent());
         zMessage.setMsgRouter(msg.getMsgRouter());
         zMessage.setPermissionName(msg.getPermissionName());
+        zMessage.setJoinId(msg.getJoinId());
         zMessage.setCreateTime(LocalDateTime.now());
         save(zMessage);
         // 收信用户列表
@@ -162,8 +163,7 @@ public class ZMessageServiceImpl extends ServiceImpl<ZMessageMapper, ZMessage> i
     @Transactional(rollbackFor = RuntimeException.class)
     public void delete(List<String> idlist) {
         toService.lambdaUpdate().in(ZMessageTo::getMsgId, idlist)
-                .eq(ZMessageTo::getToUserId, CurrentUserUtils.getCurrentUser().getUserId())
-                .remove();
+                .eq(ZMessageTo::getToUserId, CurrentUserUtils.getCurrentUser().getUserId()).remove();
     }
 
     /**
@@ -246,14 +246,20 @@ public class ZMessageServiceImpl extends ServiceImpl<ZMessageMapper, ZMessage> i
 
     @Override
     public MessageCountsDTO counts() {
-        // 查询
+        // 查询当前用户所有消息
         HashMap<String, Object> params = new HashMap<>();
         params.put("userId", CurrentUserUtils.getCurrentUser().getUserId());
         List<ZMessageDTO> list = mapper.messageList(null, null, params);
-        // 结果
+        // 定义返回值对象
         MessageCountsDTO result = new MessageCountsDTO();
+        // 总数
         result.setCount(list.size());
+        // 未读数
         result.setUnreadCount(list.stream().filter(d -> d.getMsgStatus().equals("0")).count());
+        // 各模块未读数，例如：｛key:'permissionName',value:未读数｝
+        result.setPermissionUnreadJson(JSONUtil.toJsonStr(list.stream()
+                .filter(d -> d.getMsgStatus().equals("0"))
+                .collect(Collectors.groupingBy(ZMessageDTO::getPermissionName, Collectors.counting()))));
         return result;
     }
 }
