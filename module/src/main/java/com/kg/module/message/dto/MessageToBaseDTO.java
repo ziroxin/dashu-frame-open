@@ -29,6 +29,9 @@ public class MessageToBaseDTO implements java.io.Serializable {
     @ApiModelProperty("所属模块/菜单，用于菜单显示未读消息数")
     private String permissionName;
 
+    @ApiModelProperty("关联id(在模块内标记已读可用)")
+    private String joinId;
+
     @ApiModelProperty("发送至类型:user=用户;org=组织机构;role=角色")
     private String toType;
 
