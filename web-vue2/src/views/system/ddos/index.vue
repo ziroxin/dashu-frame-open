@@ -10,6 +10,11 @@
                  icon="el-icon-search" @click="searchBtnHandle">查询</el-button>
 			<el-button v-waves class="filter-item" type="info" size="small"
                  icon="el-icon-refresh" @click="resetTableList">显示全部</el-button>
+      <div style="float: right;">
+        <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
+                   v-permission="'ddos-zDdos-delete'">删除
+        </el-button>
+      </div>
 		</div>
 		<!-- ddos用户请求记录-列表 -->
 		<el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange" v-loading="isLoading">
