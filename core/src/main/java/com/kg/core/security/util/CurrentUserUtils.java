@@ -1,6 +1,11 @@
 package com.kg.core.security.util;
 
 import cn.hutool.json.JSONUtil;
+import com.kg.component.jwt.JwtUtils;
+import com.kg.component.redis.RedisUtils;
+import com.kg.core.common.constant.CacheConstant;
+import com.kg.core.exception.BaseException;
+import com.kg.core.exception.enums.BaseErrorCode;
 import com.kg.core.security.entity.SecurityUserDetailEntity;
 import com.kg.core.zorg.entity.ZOrganization;
 import com.kg.core.zorg.service.ZOrganizationService;
@@ -9,6 +14,7 @@ import com.kg.core.zuser.entity.ZUser;
 import com.kg.core.zuser.service.IZUserRoleService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -25,14 +31,18 @@ public class CurrentUserUtils {
     private ZOrganizationService zOrganizationService;
     @Resource
     private IZUserRoleService zUserRoleService;
+    @Resource
+    private RedisUtils redisUtils;
 
     private static ZOrganizationService staticZOrganizationService;
     private static IZUserRoleService staticZUserRoleService;
+    private static RedisUtils staticRedisUtils;
 
     @PostConstruct
     public void init() {
         staticZOrganizationService = zOrganizationService;
         staticZUserRoleService = zUserRoleService;
+        staticRedisUtils = redisUtils;
     }
 
     /**
@@ -41,7 +51,11 @@ public class CurrentUserUtils {
      * @return {@link ZUser }
      */
     public static ZUser getCurrentUser() {
-        return getSecurityUserDetailEntity().getZUser();
+        SecurityUserDetailEntity entity = getSecurityUserDetailEntity();
+        if (entity != null) {
+            return entity.getZUser();
+        }
+        return null;
     }
 
     /**
@@ -63,6 +77,35 @@ public class CurrentUserUtils {
             return result;
         }
         return null;
+    }
+
+    /**
+     * 获取当前用户信息（ZUser） - 根据jwtToken获取
+     *
+     * @param token jwtToken值
+     * @return 当前用户信息
+     */
+    public static ZUser getCurrentUserByToken(String token) throws BaseException {
+        // 解析token
+        Object userId;
+        try {
+            userId = JwtUtils.parseToken(token);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID);
+        }
+        if (ObjectUtils.isEmpty(userId)) {
+            throw new BaseException(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID);
+        }
+        // 从redis中读取用户信息
+        SecurityUserDetailEntity userDetailEntity = (SecurityUserDetailEntity)
+                staticRedisUtils.get(CacheConstant.LOGIN_INFO_REDIS_PRE + userId);
+        if (ObjectUtils.isEmpty(userDetailEntity)) {
+            throw new BaseException(BaseErrorCode.LOGIN_ERROR_TOKEN_INVALID);
+        } else {
+            // 读取成功
+            return userDetailEntity.getZUser();
+        }
     }
 
     /**
