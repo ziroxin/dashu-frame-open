@@ -185,6 +185,15 @@ com.kg:
     port: 5672
     username: xxxx
     password: xxxx
+  #DDoS防护配置
+  ddos:
+    #是否启用
+    enable: false
+    #下面2个配置，结合使用（例如：5分钟内，限制200次请求）
+    #限制时间（单位：分钟）
+    time: 5
+    #限制时间内请求限制次数
+    limit: 200
 
 #输出日志配置（日志级别：trace/debug/info/warn/error）
 logging.level:
