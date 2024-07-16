@@ -99,23 +99,24 @@ public class ZOrganizationServiceImpl extends ServiceImpl<ZOrganizationMapper, Z
 
     @Override
     public List<ZOrganizationDTO> tree(String orgName, String parentId) {
-        // 根据条件查询
+        // 根据名称模糊查询
         QueryWrapper<ZOrganization> wrapper = new QueryWrapper<>();
         if (StringUtils.hasText(orgName)) {
-            wrapper.lambda().eq(ZOrganization::getOrgName, orgName);
+            wrapper.lambda().like(ZOrganization::getOrgName, orgName);
         }
         // 排序
         wrapper.lambda().orderByAsc(ZOrganization::getOrgLevel).orderByAsc(ZOrganization::getOrderIndex);
         // 查询
         List<ZOrganization> list = list(wrapper);
         List<ZOrganizationDTO> result = new ArrayList<>();
-        // 根据parentId查询
         if (StringUtils.hasText(parentId)) {
-            // 取当前节点
-            Optional<ZOrganization> first = list.stream().filter(org -> org.getOrgId().equals(parentId)).findFirst();
+            // 取当前节点及其子节点
+            Optional<ZOrganization> first = list.stream()
+                    .filter(org -> org.getOrgId().equals(parentId)).findFirst();
             if (first.isPresent()) {
                 ZOrganizationDTO top = organizationConvert.entityToDto(first.get());
-                if (list.stream().filter(org -> org.getOrgParentId() != null && org.getOrgParentId().equals(parentId)).count() > 0) {
+                if (list.stream().filter(org -> org.getOrgParentId() != null
+                        && org.getOrgParentId().equals(parentId)).count() > 0) {
                     // 有子节点，迭代添加
                     top.setChildren(getOrgChildren(list, parentId));
                 }
@@ -124,8 +125,18 @@ public class ZOrganizationServiceImpl extends ServiceImpl<ZOrganizationMapper, Z
             }
             return null;
         } else {
-            // 取所有组织机构
-            return getOrgChildren(list, "-1");
+            if (list.size() > 0) {
+                // 从list中level最小值（最顶级）开始迭代
+                Integer topLevel = list.stream().map(o -> o.getOrgLevel()).distinct().sorted().findFirst().get();
+                return list.stream()
+                        .filter(org -> org.getOrgLevel().equals(topLevel))
+                        .map(org -> {
+                            ZOrganizationDTO dto = organizationConvert.entityToDto(org);
+                            dto.setChildren(getOrgChildren(list, dto.getOrgId()));
+                            return dto;
+                        }).collect(Collectors.toList());
+            }
+            return null;
         }
     }
 
