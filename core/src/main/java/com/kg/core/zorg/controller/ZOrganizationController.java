@@ -51,14 +51,12 @@ public class ZOrganizationController {
 
     @ApiOperation(value = "/zorg/zOrganization/tree", notes = "组织机构树", httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "orgName", value = "名称模糊查询", paramType = "query", required = false, dataType = "String"),
-            @ApiImplicitParam(name = "parentId", value = "父级ID", paramType = "query", required = false, dataType = "String")
+            @ApiImplicitParam(name = "orgName", value = "名称模糊查询", paramType = "query", required = false, dataType = "String")
     })
     @GetMapping("/tree")
     @PreAuthorize("hasAuthority('zorg:zOrganization:tree')")
-    public List<ZOrganizationDTO> tree(@RequestParam(value = "orgName", required = false) String orgName,
-                                       @RequestParam(value = "parentId", required = false) String parentId) {
-        return zOrganizationService.tree(orgName, parentId);
+    public List<ZOrganizationDTO> tree(@RequestParam(value = "orgName", required = false) String orgName) {
+        return zOrganizationService.tree(orgName, null);
     }
 
     @ApiOperation(value = "/zorg/zOrganization/treeForSelect", notes = "下拉选择框组织机构树", httpMethod = "GET")

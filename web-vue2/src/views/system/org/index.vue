@@ -123,7 +123,7 @@ export default {
     },
     // 加载表格
     loadTableList() {
-      const params = {params: JSON.stringify(this.searchData)};
+      const params = {...this.searchData};
       request({
         url: '/zorg/zOrganization/tree', method: 'get', params
       }).then((response) => {
