@@ -7,6 +7,7 @@
         <el-radio-button label="chunk">分片上传</el-radio-button>
         <el-radio-button label="chunkResume">断点续传</el-radio-button>
         <el-radio-button label="second">秒传</el-radio-button>
+        <el-radio-button label="oss">OSS上传（阿里云）</el-radio-button>
       </el-radio-group>
     </div>
 
@@ -21,6 +22,12 @@
           <el-button type="primary" icon="el-icon-upload2" size="small">点击选择文件上传</el-button>
         </el-upload>
       </div>
+      <div style="text-align: center;margin-top: 30px;">
+        <a href="http://docs.java119.cn/use/comm-fileupload.html"
+           target="_blank">
+          <el-button type="danger" icon="el-icon-question" plain>使用帮助</el-button>
+        </a>
+      </div>
     </div>
 
     <!-- 文件分片上传 -->
@@ -31,6 +38,12 @@
                         max-file-size="300mb" chunk-size="10mb"
                         :mime-types="[{title: 'Zip files', extensions: 'zip'}]"
                         key="chunk"></plupload-chunk>
+      </div>
+      <div style="text-align: center;margin-top: 30px;">
+        <a href="http://docs.java119.cn/use/comm-fileupload2.html"
+           target="_blank">
+          <el-button type="danger" icon="el-icon-question" plain>使用帮助</el-button>
+        </a>
       </div>
     </div>
 
@@ -45,6 +58,12 @@
                            mime-types=".zip,.rar"
                            :max-file-size="300*1024*1024" :chunk-size="10*1024*1024"
                            key="chunkResume"></file-chunk-resume>
+      </div>
+      <div style="text-align: center;margin-top: 30px;">
+        <a href="http://docs.java119.cn/use/comm-fileupload2.html#_2-%E6%96%87%E4%BB%B6%E6%96%AD%E7%82%B9%E7%BB%AD%E4%BC%A0"
+           target="_blank">
+          <el-button type="danger" icon="el-icon-question" plain>使用帮助</el-button>
+        </a>
       </div>
     </div>
 
@@ -77,6 +96,60 @@
                        :max-file-size="300*1024*1024" :chunk-size="10*1024*1024"
                        :is-copy="isCopy"></file-second>
         </div>
+        <div style="text-align: center;margin-top: 30px;">
+          <a href="http://docs.java119.cn/use/comm-fileupload3.html"
+             target="_blank">
+            <el-button type="danger" icon="el-icon-question" plain>使用帮助</el-button>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- OSS上传（阿里云） -->
+    <el-divider content-position="center" v-if="uploadType==='oss'">OSS上传（阿里云）</el-divider>
+    <div class="content" v-if="uploadType==='oss'">
+      <div style="font-size: 12px;color: #dd1f29;border-bottom: 1px dashed #eeeeee;margin-bottom: 15px;">
+        上传说明：Oss直传（从后台获取上传凭证，前端直接上传到oss，文件不经过服务器）
+      </div>
+      <div class="uploadPanel">
+        <file-oss-upload v-model="ossFileIds" oss-folder="demoFolder" :limit="2"
+                         accept=".jpg,.png,.mp4"></file-oss-upload>
+        <el-divider></el-divider>
+        <div style="font-size: 12px;margin-top: 10px;color: #666;">
+          已上传的fileId：{{ ossFileIds }}
+        </div>
+      </div>
+      <div style="font-size: 12px;color: #dd1f29;border-bottom: 1px dashed #eeeeee;margin-bottom: 15px;">
+        下载说明：下载Oss文件分2种：1一种是配置公共读，可以直接下载（一定要配置防盗链）；2另一种使用STS临时凭证下载，下方示例为STS临时凭证下载。
+      </div>
+      <div class="uploadPanel">
+        <div style="font-size: 12px;margin-top: 10px;color: #666;">
+          oss存储文件夹+文件名：
+          <el-input v-model="ossDemoFileName" style="width: 50%;" size="small"/>
+          <el-button type="primary" size="small" style="margin-left: 10px;"
+                     @click="openStsFile">获取STS临时凭证
+          </el-button>
+          <template v-if="ossDemoStsUrl">
+            <img :src="ossDemoStsUrl" v-if="ossDemoStsType==='img'" style="max-width: 300px;"/>
+            <video :src="ossDemoStsUrl" controls v-else-if="ossDemoStsType==='video'" style="max-width: 300px;"></video>
+            <a :href="ossDemoStsUrl" v-else target="_blank">点击下载</a>
+          </template>
+        </div>
+      </div>
+      <el-divider></el-divider>
+      <div style="font-size: 12px;color:#666666;border-bottom: 1px dashed #eeeeee;margin-bottom: 15px;">
+        文件上传oss成功后，会回调后台，后台将上传信息存入redis，20分钟有效期，key是fileId。
+        <br/>
+        表单保存时，后台可调用【OssFileCacheUtils.get(fileId)或getBean(fileId,clazz)】方法，得到已上传oss的文件信息，并保存到数据库。
+        <br/>
+        文件信息DEMO：
+        <json-viewer :value="demoJson"></json-viewer>
+      </div>
+      <div style="text-align: center;margin-top: 30px;">
+        <a href="#"
+           target="_blank">
+          <el-button type="danger" icon="el-icon-question" plain>使用帮助</el-button>
+        </a>
       </div>
     </div>
 
@@ -86,15 +159,37 @@
 import PluploadChunk from "@/components/Upload/PluploadChunk.vue";
 import FileChunkResume from "@/components/Upload/FileChunkResume.vue";
 import FileSecond from "@/components/Upload/FileSecond.vue";
+import FileOssUpload from "@/components/Upload/FileOssUpload.vue";
+import JsonViewer from 'vue-json-viewer'
 
 export default {
-  components: {FileSecond, FileChunkResume, PluploadChunk},
+  components: {FileOssUpload, FileSecond, FileChunkResume, PluploadChunk, JsonViewer},
   data() {
     return {
-      // 上传类型：normal=普通上传;chunk=分片上传;chunkResume=断点续传;second=秒传
-      uploadType: 'normal',
+      // 上传类型：normal=普通上传;chunk=分片上传;chunkResume=断点续传;second=秒传;oss=OSS上传（阿里云）
+      uploadType: 'oss',
       // 是否拷贝：文件秒传
       isCopy: true,
+      // oss上传的文件id
+      ossFileIds: [],
+      demoJson: {
+        "fileName": "demo/xxx.jpg",
+        "fileSize": "1024",
+        "fileOldName": "xx.jpg",
+        "md5": "xxx",
+        "fileId": "xxx",
+        "fileUrl": "https://xxx.oss-xxx.aliyuncs.com/demo/xxx.jpg",
+        "fileExtend": "jpg"
+      },
+      ossDemoFileName: '',
+      ossDemoStsUrl: '',
+      ossDemoStsType: 'other'
+    }
+  },
+  watch: {
+    ossDemoFileName(val) {
+      this.ossDemoStsUrl = '';
+      this.ossDemoStsType = val.endsWith('.jpg') || val.endsWith('.png') ? 'img' : (val.endsWith('.mp4') ? 'video' : 'other');
     }
   },
   methods: {
@@ -106,6 +201,14 @@ export default {
         this.$message({type: 'error', message: response.message})
       }
     },
+    openStsFile() {
+      const params = {fileName: this.ossDemoFileName}
+      this.$request({
+        url: '/oss/file/read/sts/url', method: 'get', params
+      }).then(({data}) => {
+        this.ossDemoStsUrl = data;
+      })
+    }
   }
 }
 </script>
