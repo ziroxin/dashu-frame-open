@@ -46,7 +46,7 @@ public class ZLoginController implements BaseController {
     @Value("${com.kg.login.is-yzm}")
     private boolean IS_YZM;
 
-    @ApiOperation(value = "登录", notes = "登录接口", httpMethod = "POST")
+    @ApiOperation(value = "/login/login", notes = "登录接口", httpMethod = "POST")
     @PostMapping("login")
     public LoginSuccessDTO login(@RequestBody LoginFormDTO loginForm) throws BaseException {
         // 验证码
@@ -66,7 +66,7 @@ public class ZLoginController implements BaseController {
         return zLoginService.login(loginForm);
     }
 
-    @ApiOperation(value = "登出", notes = "退出接口", httpMethod = "POST")
+    @ApiOperation(value = "/login/logout", notes = "退出接口", httpMethod = "POST")
     @GetMapping("logout")
     public void logout(HttpServletRequest request) {
         String jwtToken = request.getHeader(LoginConstant.LOGIN_JWT_TOKEN_KEY);// header中的token
