@@ -49,6 +49,9 @@ mybatis-plus:
 
 #自定义配置
 com.kg:
+  #配置本项目api接口地址
+  apiBaseUrl: http://58.57.95.202:18124/
+  #  apiBaseUrl: http://localhost:8124/
   #文件上传配置
   file:
     #允许上传的文件格式（防止攻击类脚本文件上传，以|结尾）
@@ -115,9 +118,9 @@ com.kg:
       clientId: dev
       clientSecret: qwer@123
       #回调地址
-      redirectUri: http://localhost:8124/oauth2/client/login/code
+      redirectUri: ${com.kg.apiBaseUrl}/oauth2/client/login/code
       #第三方Oauth2服务端地址
-      oauthServerUri: http://localhost:8124/
+      oauthServerUri: ${com.kg.apiBaseUrl}/
       #回调登录错误时，跳转前端错误页
       errorRouter: http://localhost:9532/#/oauth2/error
       #回调登录成功时，跳转前端成功页（处理本系统登录逻辑）
@@ -149,8 +152,8 @@ com.kg:
       certPath: pems/apiclient_cert.pem
       #私钥pem地址(v3时需要)
       keyPath: pems/apiclient_key.pem
-      #支付结果通知地址（后台接口地址：http://www.xxxx.com/api/）
-      notifyUrl: http://www.xxxx.com/api/pay/wechat/payNotify
+      #支付结果通知地址
+      notifyUrl: ${com.kg.apiBaseUrl}/pay/wechat/payNotify
   #支付宝支付配置
   alipay:
     #应用id
@@ -159,10 +162,10 @@ com.kg:
     privateKey: xxxxx
     #支付宝的公钥（注意：非应用公钥）
     aliPayPublicKey: xxxxx
-    #支付结果通知地址（后台接口地址：http://www.xxxx.com/api/）
-    notifyUrl: http://www.xxxx.com/api/pay/alipay/payNotify
+    #支付结果通知地址
+    notifyUrl: ${com.kg.apiBaseUrl}/pay/alipay/payNotify
     #支付返回地址
-    returnUrl: http://www.xxxx.com/api/pay/alipay/returnUrl
+    returnUrl: ${com.kg.apiBaseUrl}/pay/alipay/returnUrl
   #百度OCR配置
   baidu:
     host: https://aip.baidubce.com/oauth/2.0/token
@@ -194,6 +197,23 @@ com.kg:
     time: 5
     #限制时间内请求限制次数
     limit: 200
+  oss:
+    aliyun:
+      #阿里云子账号AccessKey和Secret(至少要有oss权限和sts权限）
+      accessKeyId: xxxxx
+      accessKeySecret: xxxxx
+      endpoint: oss-cn-shanghai.aliyuncs.com
+      bucket: xxxxx
+      #上传地址，格式：https://bucketname.endpoint
+      host: https://xxxxx.oss-cn-shanghai.aliyuncs.com
+      #单次上传凭证的有效期，单位：秒
+      uploadTokenExpire: 300
+      #回调地址（oss上传成功后，回调到本系统的地址）
+      callbackUrl: ${com.kg.apiBaseUrl}/oss/client/upload/callback
+      #访问域名（默认和上传域名相同，若单独配置了域名，需在此处修改）
+      domain: ${com.kg.oss.aliyun.host}
+      #临时访问凭证有效期，单位：秒
+      stsExpire: 300
 
 #输出日志配置（日志级别：trace/debug/info/warn/error）
 logging.level:

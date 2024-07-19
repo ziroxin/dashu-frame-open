@@ -1,0 +1,132 @@
+<template>
+  <el-upload
+      class="upload-oss"
+      :action="ossTokenData.host"
+      :data="ossTokenData"
+      :before-upload="beforeUpload"
+      :on-success="handleSuccess"
+      :on-error="handleError"
+      :on-remove="handleRemove"
+      :multiple="multiple"
+      :limit="limit"
+      :accept="accept"
+      :show-file-list="showFileList"
+      :on-exceed="handleExceed"
+      :file-list="fileList">
+    <el-button size="small" type="primary">点击上传</el-button>
+    <div slot="tip" class="el-upload__tip" v-if="showTip">
+      只能上传【{{ accept.split(',').join('、').replaceAll('.', '') }}】文件，且不超过{{ maxSize }}
+    </div>
+  </el-upload>
+</template>
+
+<script>
+export default {
+  name: "FileOssUpload",
+  props: {
+    // oss上传文件夹
+    ossFolder: {type: String, default: '', required: true},
+    // 限制上传文件数量，0表示不限制
+    limit: {type: Number, default: 0, required: false},
+    // 上传文件列表（已上传的文件列表，回显时需传入）
+    fileList: {type: Array, default: () => [], required: false},
+    // 是否多选
+    multiple: {type: Boolean, default: true, required: false},
+    // 是否显示已上传文件列表
+    showFileList: {type: Boolean, default: true, required: false},
+    // 文件类型
+    accept: {type: String, default: '.jpg,.jpeg,.png', required: false},
+    // 文件大小
+    maxSize: {type: String, default: '1Mb', required: false},
+    // 是否显示提示文字
+    showTip: {type: Boolean, default: true, required: false}
+  },
+  data() {
+    return {
+      // oss上传token数据
+      ossTokenData: {
+        host: '',
+      },
+      // 上传文件id列表
+      fileIds: []
+    }
+  },
+  methods: {
+    beforeUpload(file) {
+      if (!this.accept.toLowerCase().split(',')
+          .includes(file.name.substring(file.name.lastIndexOf('.')).toLowerCase())) {
+        this.$message.error('只能上传' + this.accept + '格式的文件!');
+        return false
+      }
+      const max = this.getMaxFileSize()
+      if (max < file.size) {
+        this.$message.error('上传文件大小不能超过' + this.maxSize + '!')
+        return false
+      }
+      // 上传前的钩子函数，调用api获取oss上传token
+      return new Promise((resolve, reject) => {
+        let params = {path: this.ossFolder, oldFileName: file.name, maxSize: max}
+        this.$request({
+          url: '/oss/client/upload/token', method: 'get', params
+        }).then((response) => {
+          this.ossTokenData = {
+            ...response.data,
+            ...response.data.callbackVar
+          }
+          resolve(true)
+        }).catch((error) => {
+          reject(error)
+        })
+      })
+    },
+    handleSuccess(res, file, fileList) {
+      if (res.data.success) {
+        this.$message({type: 'success', message: res.data.msg})
+        this.fileIds.push({fid: res.data.id, uid: file.uid})
+        this.$emit('input', this.fileIds.map(o => o.fid));
+      } else {
+        this.$message({type: 'error', message: res.data.msg})
+        this.fileList.splice(fileList.indexOf(file), 1)
+      }
+    },
+    handleRemove(file, fileList) {
+      // 尝试删除oss文件
+      let params = {fileId: this.fileIds.find(o => o.uid === file.uid).fid}
+      this.$request({
+        url: '/oss/client/upload/deleteFromCache', method: 'delete', params
+      }).then((response) => {
+        console.log(response)
+      })
+      // 移除fileId
+      this.fileIds = this.fileIds.filter(o => o.uid !== file.uid)
+      this.$emit('input', this.fileIds.map(o => o.fid));
+    },
+    handleError(error) {
+      console.log(error)
+      this.$message({type: 'error', message: '上传失败，请重试！'})
+    },
+    handleExceed() {
+      if (this.limit > 0) {
+        // 超过限制的钩子函数
+        this.$message.error(`最多只能上传 ${this.limit} 个文件`)
+      }
+    },
+    getMaxFileSize() {
+      const units = {
+        'b': 1,
+        'kb': 1024,
+        'mb': 1024 * 1024,
+        'gb': 1024 * 1024 * 1024,
+        'tb': 1024 * 1024 * 1024 * 1024
+      };
+      const maxSizeStr = this.maxSize.toLowerCase();
+      const unit = maxSizeStr.match(/[a-z]+$/)[0];
+      const value = parseInt(maxSizeStr.replace(unit, ''));
+      return value * units[unit];
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+
+</style>

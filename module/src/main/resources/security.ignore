@@ -41,3 +41,5 @@
 # 支付宝支付通知接口
 /pay/alipay/payNotify
 /pay/alipay/returnUrl
+# 阿里云OSS回调接口
+/oss/client/upload/callback
