@@ -26,6 +26,10 @@
                          :show-file-list="false" :auto-upload="true">
                 <el-button type="primary" icon="el-icon-upload2" size="small">点击选择文件上传，获取文件头</el-button>
               </el-upload>
+              <a href="http://docs.java119.cn/use/comm-fileupload.html#_4-%E6%96%87%E4%BB%B6%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%B5%8B"
+                 target="_blank" class="help">
+                <el-button type="danger" size="mini" icon="el-icon-question" plain>使用帮助</el-button>
+              </a>
             </div>
             <div class="info">
               <p v-if="currentHeaderHash">
@@ -137,6 +141,14 @@ export default {
       .title {
         text-align: center;
         margin: 0px auto 10px auto;
+
+        .help {
+          margin: 0px;
+          padding: 0px;
+          position: absolute;
+          top: 0;
+          right: 0;
+        }
       }
 
       .info {
