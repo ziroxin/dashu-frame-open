@@ -13,7 +13,7 @@
         <div class="bullshit__info">请检查您输入的网址是否正确！<br/>或点击 ↓↓↓↓ 下方按钮返回主页</div>
         <a @click="$router.go(-1)" class="bullshit__return-home"
            style="border:1px solid #1482f0;color:#1482f0;background:#fff;">返回上一页</a>
-        <a href="" class="bullshit__return-home">去主页</a>
+        <a @click="$router.push('/')" class="bullshit__return-home">去主页</a>
       </div>
     </div>
   </div>
