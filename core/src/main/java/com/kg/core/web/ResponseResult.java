@@ -1,5 +1,6 @@
 package com.kg.core.web;
 
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
@@ -111,10 +112,7 @@ public class ResponseResult<T> {
     }
 
     public String toString() {
-        return "ResponseResult(code=" + this.code
-                + ", message=" + this.message
-                + ", timestamp=" + this.timestamp
-                + ", data=" + this.code + ")";
+        return JSONUtil.toJsonStr(this);
     }
 
     /**

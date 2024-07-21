@@ -3,10 +3,12 @@ package com.kg.core.ddos.filter;
 
 import com.kg.component.redis.RedisUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.component.utils.ResponseWriteUtils;
 import com.kg.component.utils.TimeUtils;
 import com.kg.core.ddos.entity.ZDdos;
 import com.kg.core.ddos.service.ZDdosService;
 import com.kg.core.security.util.CurrentUserUtils;
+import com.kg.core.web.ResponseResult;
 import com.kg.core.zuser.entity.ZUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -67,9 +69,6 @@ public class DDOSFilter implements Filter {
         redisUtils.set(key, requestTimeList, limitMinites * 60l);
         // 判断请求次数是否超过限制
         if (requestTimeList.size() > limitCount) {
-            httpResponse.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
-            httpResponse.setContentType("text/html;charset=UTF-8");
-            httpResponse.getWriter().write("您的请求次数过多，请稍后再试。");
             // 记录日志
             ZDdos entity = new ZDdos();
             entity.setDdosId(GuidUtils.getUuid());
@@ -82,6 +81,12 @@ public class DDOSFilter implements Filter {
             }
             entity.setCreateTime(LocalDateTime.now());
             ddosService.save(entity);
+            // 响应
+            ResponseResult<Object> result = ResponseResult.builder()
+                    .code(HttpStatus.TOO_MANY_REQUESTS.value() + "")
+                    .message("您的请求次数过多，请稍后再试。")
+                    .build();
+            ResponseWriteUtils.writeJson200(httpResponse, result.toString());
             return;
         }
         // 执行请求
