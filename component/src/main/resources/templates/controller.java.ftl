@@ -151,7 +151,7 @@ public class ${table.controllerName} {
             ${table.serviceName?uncap_first}.importExcel(request);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new BaseException("导入Excel失败，请重试！");
+            throw new BaseException(e.getMessage() != null ? e.getMessage() : "导入Excel失败，请重试！");
         }
     }
 }
