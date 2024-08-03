@@ -84,7 +84,7 @@ export default {
       this.$emit('input', this.html)
     },
     value() {
-      this.html = this.value
+      this.html = this.value ? this.value : '' // 防止value为空时报错
     }
   },
   beforeDestroy() {
