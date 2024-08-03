@@ -66,7 +66,7 @@
 		/>
 		<!-- 添加修改弹窗 -->
 		<el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-				   :visible.sync="dialogFormVisible" @close="resetTemp" width="600px" :key="'myDialog'+dialogIndex">
+				   :visible.sync="dialogFormVisible" @close="closeDialog" width="600px" :key="'myDialog'+dialogIndex">
 <#if templateHtml??>
 			${templateHtml}
 <#else>
@@ -159,7 +159,7 @@ export default {
       // 弹窗显示隐藏
       dialogFormVisible: false,
       // 表单临时数据
-      temp: {},
+      temp: {orderIndex: 0},
       isLoading: false,
       dialogIndex: 0,
 <#if jsData??>
@@ -169,7 +169,6 @@ export default {
   },
   created() {
     this.loadTableList()
-    this.resetTemp()
 <#if jsCreated??>
     ${jsCreated}
 </#if>
@@ -214,8 +213,9 @@ export default {
       this.loadTableList()
 	},
     // 清空表单temp数据
-    resetTemp() {
-      this.temp = {orderIndex: 0}
+    closeDialog() {
+      this.temp = this.$options.data().temp
+      this.$refs.dataForm.resetFields()
       this.dialogIndex++
 <#if childTableList??>
 	<#list childTableList as child>
@@ -228,7 +228,6 @@ export default {
     },
     // 打开添加窗口
     openAdd() {
-      this.resetTemp()
       this.dialogFormVisible = true
       this.dialogType = 'add'
       this.$nextTick(() => {
