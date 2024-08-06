@@ -65,3 +65,21 @@ services:
    - dashu-net
   sysctls:
     net.core.somaxconn: 1024
+#****************************rabbitmq容器****************************
+# 集群部署，参考：https://kailashyogeshwar.medium.com/rabbitmq-cluster-using-docker-compose-7397ea378d73
+# rabbitmq:
+#  container_name: rabbitmq
+#  image: rabbitmq:3-management
+#  volumes:
+#   - /etc/localtime:/etc/localtime:ro
+#   - /etc/timezone:/etc/timezone:ro
+#   - ./rabbitmq/plugins:/plugins
+#   - ./rabbitmq/database:/var/lib/rabbitmq
+#   - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+#   - ./rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
+#  ports:
+#   - 5672:5672
+#   - 15672:15672
+#  restart: always
+#  networks:
+#   - dashu-net
