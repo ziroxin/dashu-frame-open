@@ -40,16 +40,6 @@ public class RabbitBinding {
      * 绑定队列到direct交换机
      *
      * @param exchange   交换机名称
-     * @param routingKey 路由（路由 = 队列名）
-     */
-    public void bindDirect(String exchange, String routingKey) {
-        bindDirect(exchange, routingKey, routingKey);
-    }
-
-    /**
-     * 绑定队列到direct交换机
-     *
-     * @param exchange   交换机名称
      * @param routingKey 路由（路由 ≠ 队列名）
      * @param queue      队列名称
      */
@@ -65,13 +55,22 @@ public class RabbitBinding {
     }
 
     /**
-     * 绑定队列到topic交换机
+     * 绑定队列到delay交换机
      *
      * @param exchange   交换机名称
-     * @param routingKey 路由（路由 = 队列名）
+     * @param routingKey 路由（路由 ≠ 队列名）
+     * @param queue      队列名称
      */
-    public void bindTopic(String exchange, String routingKey) {
-        bindTopic(exchange, routingKey, routingKey);
+    public void bindDelay(String exchange, String routingKey, String queue) {
+        // 创建 delay exchange
+        DirectExchange delayExchange = ExchangeBuilder
+                .directExchange(exchange).delayed().durable(true).build();
+        // 创建队列
+        Queue queueObj = new Queue(queue);
+        // 绑定队列到交换机
+        rabbitAdmin.declareExchange(delayExchange);
+        rabbitAdmin.declareQueue(queueObj);
+        rabbitAdmin.declareBinding(BindingBuilder.bind(queueObj).to(delayExchange).with(routingKey));
     }
 
     /**
