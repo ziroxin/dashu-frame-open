@@ -33,13 +33,21 @@ public class UploadImageUtils {
      *
      * @param base64Data base64数据
      * @param dirName    自定义路径
+     * @param extend     扩展名（如果以data:image开头，则自动获取扩展名）
      * @return 存储文件实体
      */
-    public static FileDTO base64ToJpg(String base64Data, String dirName) {
+    public static FileDTO base64ToImage(String base64Data, String dirName, String extend) {
+        if (base64Data.startsWith("data:image")) {
+            // 取扩展名png
+            extend = base64Data.substring(base64Data.indexOf("/") + 1, base64Data.indexOf(";"));
+            extend = extend.equalsIgnoreCase("jpeg") ? "jpg" : extend;
+            // 去除data:image/png;base64,
+            base64Data = base64Data.substring(base64Data.indexOf(",") + 1);
+        }
         // 把base64文件，解析成bytes
         byte[] buffer = Base64Utils.decodeFromString(base64Data);
         // 然后保存
-        return UploadFileUtils.bufferToFile(buffer, dirName, "jpg");
+        return UploadFileUtils.bufferToFile(buffer, dirName, extend);
     }
 
     /**
