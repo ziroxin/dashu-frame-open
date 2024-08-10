@@ -55,7 +55,7 @@ public class ZUploadSecondController implements BaseController {
                                    @RequestParam(value = "path", required = false) String path,
                                    @RequestParam(value = "isCopy", required = true, defaultValue = "false") Boolean isCopy) {
         String dirName = StringUtils.hasText(path) ? path : "seconds";
-        Optional<ZFiles> files = zFilesService.lambdaQuery().eq(ZFiles::getFileMd5, secondMd5).oneOpt();
+        Optional<ZFiles> files = zFilesService.lambdaQuery().eq(ZFiles::getFileMd5, secondMd5).last("LIMIT 1").oneOpt();
         if (files.isPresent()) {
             try {
                 // 文件已存在，跳过上传

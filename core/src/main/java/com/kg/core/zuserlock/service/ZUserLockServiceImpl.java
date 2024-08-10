@@ -54,7 +54,7 @@ public class ZUserLockServiceImpl extends ServiceImpl<ZUserLockMapper, ZUserLock
             return JSONUtil.toBean(redisUtils.get(CacheConstant.USER_LOCK_REDIS_PRE + userName).toString(), ZUserLock.class);
         }
         // 查询数据库中是否有锁定信息
-        Optional<ZUserLock> lockUser = lambdaQuery().eq(ZUserLock::getUserName, userName).oneOpt();
+        Optional<ZUserLock> lockUser = lambdaQuery().eq(ZUserLock::getUserName, userName).last("LIMIT 1").oneOpt();
         if (lockUser.isPresent()) {
             return lockUser.get();
         }
