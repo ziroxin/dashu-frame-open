@@ -35,7 +35,7 @@ public class SecurityUserDetailServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 查询用户信息
-        Optional<ZUser> zUser = userService.lambdaQuery().eq(ZUser::getUserName, username).oneOpt();
+        Optional<ZUser> zUser = userService.lambdaQuery().eq(ZUser::getUserName, username).last("LIMIT 1").oneOpt();
         // 没查询到，用户名错误
         if (!zUser.isPresent()) {
             throw new BaseException(BaseErrorCode.LOGIN_ERROR_USERNAME_OR_PASSWORD_WRONG);

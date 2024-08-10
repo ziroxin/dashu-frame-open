@@ -29,7 +29,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -103,8 +102,7 @@ public class ZDictTypeServiceImpl extends ServiceImpl<ZDictTypeMapper, ZDictType
     @Transactional(rollbackFor = RuntimeException.class)
     public void add(ZDictTypeDTO zDictTypeDTO) throws BaseException {
         // 查重
-        Optional<ZDictType> optional = lambdaQuery().eq(ZDictType::getTypeCode, zDictTypeDTO.getTypeCode()).oneOpt();
-        if (optional.isPresent()) {
+        if (lambdaQuery().eq(ZDictType::getTypeCode, zDictTypeDTO.getTypeCode()).count() > 0) {
             throw new BaseException("字典Code 已存在，请修改！");
         }
         ZDictType zDictType = zDictTypeConvert.dtoToEntity(zDictTypeDTO);
@@ -122,9 +120,8 @@ public class ZDictTypeServiceImpl extends ServiceImpl<ZDictTypeMapper, ZDictType
     @Transactional(rollbackFor = RuntimeException.class)
     public void update(ZDictTypeDTO zDictTypeDTO) throws BaseException {
         // 查重
-        Optional<ZDictType> optional = lambdaQuery().eq(ZDictType::getTypeCode, zDictTypeDTO.getTypeCode())
-                .ne(ZDictType::getTypeId, zDictTypeDTO.getTypeId()).oneOpt();
-        if (optional.isPresent()) {
+        if (lambdaQuery().eq(ZDictType::getTypeCode, zDictTypeDTO.getTypeCode())
+                .ne(ZDictType::getTypeId, zDictTypeDTO.getTypeId()).count() > 0) {
             throw new BaseException("字典Code 已存在，请修改！");
         }
         ZDictType zDictType = zDictTypeConvert.dtoToEntity(zDictTypeDTO);

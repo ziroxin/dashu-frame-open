@@ -50,7 +50,7 @@ public class ZUserThemeController {
         try {
             ZUser currentUser = CurrentUserUtils.getCurrentUser();
             Optional<ZUserTheme> userTheme = zUserThemeService
-                    .lambdaQuery().eq(ZUserTheme::getUserId, currentUser.getUserId()).oneOpt();
+                    .lambdaQuery().eq(ZUserTheme::getUserId, currentUser.getUserId()).last("LIMIT 1").oneOpt();
             if (userTheme.isPresent()) {
                 return userTheme.get().getThemeJson();
             }
@@ -67,7 +67,7 @@ public class ZUserThemeController {
         try {
             ZUser currentUser = CurrentUserUtils.getCurrentUser();
             Optional<ZUserTheme> zUserTheme = zUserThemeService
-                    .lambdaQuery().eq(ZUserTheme::getUserId, currentUser.getUserId()).oneOpt();
+                    .lambdaQuery().eq(ZUserTheme::getUserId, currentUser.getUserId()).last("LIMIT 1").oneOpt();
             if (zUserTheme.isPresent()) {
                 // 存在，更新
                 ZUserTheme theme = zUserTheme.get();
