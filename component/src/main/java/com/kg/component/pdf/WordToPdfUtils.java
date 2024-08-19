@@ -1,9 +1,11 @@
 package com.kg.component.pdf;
 
+import cn.hutool.core.io.FileUtil;
 import com.aspose.words.Document;
 import com.aspose.words.SaveFormat;
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.file.dto.FileDTO;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 
@@ -19,30 +21,35 @@ public class WordToPdfUtils {
     /**
      * word转pdf
      *
-     * @param filePath word文件路径
+     * @param fileUrl word文件路径
      * @return pdf文件DTO
      * @throws Exception word转pdf异常
      */
-    public static FileDTO toPdf(String filePath) throws Exception {
-        FileDTO fileDTO = new FileDTO();
-        fileDTO.setFileUrl(filePath);
-        return toPdf(fileDTO);
+    public static FileDTO toPdf(String fileUrl) throws Exception {
+        return toPdf(fileUrl, null);
     }
 
     /**
      * word转pdf
      *
-     * @param fileDTO word文件DTO
+     * @param fileUrl word文件路径
+     * @param outFolder 输出文件夹（为空时默认与word文件同目录）
      * @return pdf文件DTO
      * @throws Exception word转pdf异常
      */
-    public static FileDTO toPdf(FileDTO fileDTO) throws Exception {
+    public static FileDTO toPdf(String fileUrl, String outFolder) throws Exception {
         // 读取word
-        String savePath = FilePathConfig.switchSavePath(fileDTO.getFileUrl());
+        String savePath = FilePathConfig.switchSavePath(fileUrl);
         Document document = new Document(savePath);
         // 保存pdf
-        String pdfSavePath = savePath.substring(0, savePath.lastIndexOf(".")) + ".pdf";
+        String docxName = savePath.substring(savePath.lastIndexOf("/"));
+        String pdfSavePath = StringUtils.hasText(outFolder)
+                ? FilePathConfig.SAVE_PATH + "/" + outFolder + "/" + docxName.substring(0, docxName.lastIndexOf(".")) + ".pdf"
+                : savePath.substring(0, savePath.lastIndexOf(".")) + ".pdf";
+        pdfSavePath = pdfSavePath.replaceAll("//", "/");
+        FileUtil.mkParentDirs(pdfSavePath);
         document.save(pdfSavePath, SaveFormat.PDF);
+        FileDTO fileDTO = new FileDTO();
         // 切换url
         fileDTO.setFileUrl(FilePathConfig.switchUrl(pdfSavePath));
         // 文件扩展名
@@ -50,7 +57,7 @@ public class WordToPdfUtils {
         // 计算文件大小
         fileDTO.setFileSize(new File(pdfSavePath).length());
         // 文件名
-        fileDTO.setFileName(pdfSavePath.substring(pdfSavePath.lastIndexOf(File.separator) + 1));
+        fileDTO.setFileName(pdfSavePath.substring(pdfSavePath.lastIndexOf("/") + 1));
         return fileDTO;
     }
 }

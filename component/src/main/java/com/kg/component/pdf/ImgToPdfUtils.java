@@ -3,11 +3,13 @@ package com.kg.component.pdf;
 import cn.hutool.core.io.FileUtil;
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.file.dto.FileDTO;
+import com.kg.component.utils.GuidUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.springframework.util.StringUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -26,122 +28,129 @@ public class ImgToPdfUtils {
     /**
      * 一张图片转PDF
      *
-     * @param imgPath 图片路径
+     * @param imgUrl 图片路径
      */
-    public static FileDTO toPdf(String imgPath) throws IOException {
-        return toPdf(imgPath, null, null);
+    public static FileDTO toPdf(String imgUrl) throws IOException {
+        return toPdf(imgUrl, null, null, null);
     }
 
     /**
      * 一张图片转PDF
      *
-     * @param imgPath 图片路径
-     * @param width   pdf页面宽度
-     * @param height  pdf页面高度
+     * @param imgUrl 图片路径
+     * @param width  pdf页面宽度
+     * @param height pdf页面高度
      */
-    public static FileDTO toPdf(String imgPath, Integer width, Integer height) throws IOException {
-        String s = FilePathConfig.switchSavePath(imgPath);
-        return toPdf(s, s.substring(0, s.lastIndexOf(".")) + ".pdf", width, height);
+    public static FileDTO toPdf(String imgUrl, Integer width, Integer height) throws IOException {
+        return toPdf(imgUrl, null, width, height);
     }
 
 
     /**
      * 一张图片转PDF
      *
-     * @param imgPath     图片路径
-     * @param pdfSavePath PDF保存路径
+     * @param imgUrl    图片路径
+     * @param outFolder PDF保存文件夹（为空时，默认保存到源文件同目录）
      */
-    public static FileDTO toPdf(String imgPath, String pdfSavePath) throws IOException {
-        return toPdf(imgPath, pdfSavePath, null, null);
+    public static FileDTO toPdf(String imgUrl, String outFolder) throws IOException {
+        return toPdf(imgUrl, outFolder, null, null);
     }
 
     /**
      * 一张图片转PDF
      *
-     * @param imgPath     图片路径
-     * @param pdfSavePath PDF保存路径
-     * @param width       pdf页面宽度
-     * @param height      pdf页面高度
+     * @param imgUrl    图片路径
+     * @param outFolder PDF保存文件夹（为空时，默认保存到源文件同目录）
+     * @param width     pdf页面宽度
+     * @param height    pdf页面高度
      */
-    public static FileDTO toPdf(String imgPath, String pdfSavePath, Integer width, Integer height)
+    public static FileDTO toPdf(String imgUrl, String outFolder, Integer width, Integer height)
             throws IOException {
         // 读取图片文件，生成文档对象
         PDDocument document = new PDDocument();
-        write(document, imgPath, width, height);
+        String savePath = FilePathConfig.switchSavePath(imgUrl);
+        write(document, savePath, width, height);
         // 保存PDF文件
+        String imgName = savePath.substring(savePath.lastIndexOf("/"));
+        String pdfSavePath = StringUtils.hasText(outFolder)
+                ? FilePathConfig.SAVE_PATH + "/" + outFolder + "/" + imgName.substring(0, imgName.lastIndexOf(".")) + ".pdf"
+                : savePath.substring(0, savePath.lastIndexOf(".")) + ".pdf";
+        pdfSavePath = pdfSavePath.replaceAll("//", "/");
         FileUtil.mkParentDirs(pdfSavePath);
         document.save(pdfSavePath);
         document.close();
         // 返回文件信息
         FileDTO fileDTO = new FileDTO();
         fileDTO.setFileUrl(FilePathConfig.switchUrl(pdfSavePath));
-        fileDTO.setFileName(pdfSavePath.substring(pdfSavePath.lastIndexOf(File.separator) + 1));
+        fileDTO.setFileName(pdfSavePath.substring(pdfSavePath.lastIndexOf("/") + 1));
         fileDTO.setFileSize(new File(pdfSavePath).length());
         fileDTO.setFileExtend("pdf");
-        fileDTO.setFileOldName(imgPath.substring(imgPath.lastIndexOf(File.separator) + 1));
         return fileDTO;
     }
 
     /**
      * 多张图片转PDF
      *
-     * @param imgPaths    图片路径数组
-     * @param pdfSavePath PDF保存路径
+     * @param imgUrls   图片路径数组
+     * @param outFolder PDF保存文件夹
      */
-    public static FileDTO listToPdf(String[] imgPaths, String pdfSavePath) throws IOException {
-        return listToPdf(imgPaths, pdfSavePath, null, null);
+    public static FileDTO listToPdf(String[] imgUrls, String outFolder) throws IOException {
+        return listToPdf(Arrays.asList(imgUrls), outFolder, null, null);
     }
 
     /**
      * 多张图片转PDF
      *
-     * @param imgPaths    图片路径数组
-     * @param pdfSavePath PDF保存路径
-     * @param width       pdf页面宽度
-     * @param height      pdf页面高度
+     * @param imgUrls   图片路径数组
+     * @param outFolder PDF保存文件夹
+     * @param width     pdf页面宽度
+     * @param height    pdf页面高度
      */
-    public static FileDTO listToPdf(String[] imgPaths, String pdfSavePath, Integer width, Integer height)
+    public static FileDTO listToPdf(String[] imgUrls, String outFolder, Integer width, Integer height)
             throws IOException {
-        return listToPdf(Arrays.asList(imgPaths), pdfSavePath, width, height);
+        return listToPdf(Arrays.asList(imgUrls), outFolder, width, height);
     }
 
     /**
      * 多张图片转PDF
      *
-     * @param imgPathList 图片路径列表
-     * @param pdfSavePath PDF保存路径
+     * @param imgUrlList 图片路径列表
+     * @param outFolder  PDF保存文件夹
+     * @param outFolder  PDF保存文件夹
      */
-    public static FileDTO listToPdf(List<String> imgPathList, String pdfSavePath) throws IOException {
-        return listToPdf(imgPathList, pdfSavePath, null, null);
+    public static FileDTO listToPdf(List<String> imgUrlList, String outFolder) throws IOException {
+        return listToPdf(imgUrlList, outFolder, null, null);
     }
 
     /**
      * 多张图片转PDF
      *
-     * @param imgPathList 图片路径列表
-     * @param pdfSavePath PDF保存路径
-     * @param width       pdf页面宽度
-     * @param height      pdf页面高度
+     * @param imgUrlList 图片路径列表
+     * @param outFolder  PDF保存路径
+     * @param width      pdf页面宽度
+     * @param height     pdf页面高度
      */
-    public static FileDTO listToPdf(List<String> imgPathList, String pdfSavePath, Integer width, Integer height)
+    public static FileDTO listToPdf(List<String> imgUrlList, String outFolder, Integer width, Integer height)
             throws IOException {
         // 读取图片文件，生成文档对象
         PDDocument document = new PDDocument();
-        for (String imgPath : imgPathList) {
+        for (String imgUrl : imgUrlList) {
+            // 写入图片到PDF文档
+            String imgPath = FilePathConfig.switchSavePath(imgUrl);
             write(document, imgPath, width, height);
         }
         // 保存PDF文件
+        String pdfSavePath = FilePathConfig.SAVE_PATH + "/" + outFolder + "/" + GuidUtils.getUuid32() + ".pdf";
+        pdfSavePath = pdfSavePath.replaceAll("//", "/");
         FileUtil.mkParentDirs(pdfSavePath);
         document.save(pdfSavePath);
         document.close();
         // 返回文件信息
         FileDTO fileDTO = new FileDTO();
         fileDTO.setFileUrl(FilePathConfig.switchUrl(pdfSavePath));
-        String fileName = pdfSavePath.substring(pdfSavePath.lastIndexOf(File.separator) + 1);
-        fileDTO.setFileName(fileName);
-        fileDTO.setFileSize(new File(pdfSavePath).length());
         fileDTO.setFileExtend("pdf");
-        fileDTO.setFileOldName(fileName);
+        fileDTO.setFileSize(new File(pdfSavePath).length());
+        fileDTO.setFileName(pdfSavePath.substring(pdfSavePath.lastIndexOf("/") + 1));
         return fileDTO;
     }
 
