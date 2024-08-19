@@ -163,25 +163,32 @@ public class Test2 {
     @Test
     public void test2() {
         try {
+            // word转pdf
             String path = System.getProperty("user.dir") + officeFolder + "hello.docx";
-            FileDTO fileDTO = WordToPdfUtils.toPdf(path);
+            String outFolder = "kkk";
+            FileDTO fileDTO = WordToPdfUtils.toPdf(path, outFolder);
             System.out.println(JSONUtil.toJsonStr(fileDTO));
 
+            // excel转pdf
             String path1 = System.getProperty("user.dir") + officeFolder + "test.xlsx";
 //            FileDTO fileDTO1 = ExcelToPdfUtils.toPdf(path1);
-            FileDTO fileDTO1 = ExcelToPdfUtils.toPdf(path1, 0);
+            FileDTO fileDTO1 = ExcelToPdfUtils.toPdf(path1, outFolder, 0);
             System.out.println(JSONUtil.toJsonStr(fileDTO1));
 
+            // 图片转pdf
             String path2 = System.getProperty("user.dir") + officeFolder + "1.jpg";
 //            ImgToPdfUtils.toPdf(path2);
-            ImgToPdfUtils.toPdf(path2, 500, 500);
+            FileDTO pdf = ImgToPdfUtils.toPdf(path2, outFolder, 500, 500);
+            System.out.println(JSONUtil.toJsonStr(pdf));
+
+            // 图片列表转pdf
             String[] paths = new String[]{
                     System.getProperty("user.dir") + officeFolder + "0.jpg",
                     System.getProperty("user.dir") + officeFolder + "1.jpg"
             };
 //            ImgToPdfUtils.listToPdf(paths, System.getProperty("user.dir") + officeFolder + "img.pdf");
-            ImgToPdfUtils.listToPdf(paths,
-                    System.getProperty("user.dir") + officeFolder + "img.pdf", 500, 500);
+            FileDTO fileDTO2 = ImgToPdfUtils.listToPdf(paths, outFolder, 500, 500);
+            System.out.println(JSONUtil.toJsonStr(fileDTO2));
 
         } catch (Exception e) {
             e.printStackTrace();
