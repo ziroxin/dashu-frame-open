@@ -6,7 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -43,8 +42,9 @@ public class ExcelReadUtils {
             List<T> dataList = reader.read(headerRowIndex, startRowIndex, clazz);
             //返回集合
             return dataList;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("读取Excel失败！请检查文件格式是否正确，只允许xls或xlsx格式！");
         }
     }
 
@@ -72,8 +72,9 @@ public class ExcelReadUtils {
             List<Map<String, Object>> dataList = reader.read(headerRowIndex, startRowIndex, Integer.MAX_VALUE);
             //返回集合
             return dataList;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("读取Excel失败！请检查文件格式是否正确，只允许xls或xlsx格式！");
         }
     }
 }
