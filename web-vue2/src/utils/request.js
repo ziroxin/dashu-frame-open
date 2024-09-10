@@ -4,7 +4,6 @@ import store from '@/store'
 import {getToken, getTokenValidTime, getTokenRefreshInterval} from '@/utils/auth'
 import qs from 'qs'
 import {isWhiteList} from '@/router/white-list'
-import cache from '@/utils/cache'
 
 // 创建axios
 const service = axios.create({
@@ -63,27 +62,25 @@ function requestCheckRepeatSubmit(config) {
   const skipRepeatSubmitCheck = (config.headers || {}).skipRepeatSubmitCheck
   if (!skipRepeatSubmitCheck) {
     // 间隔时间(ms)，小于此时间视为重复提交
-    const repeatSubmitInterval = 1000
-    const requestObj = {
+    const repeatSubmitTime = 1000
+    // 本次请求对象
+    const reqObj = {
       url: config.url,
       data: typeof config.data === 'object' ? JSON.stringify(config.data) : config.data,
       time: new Date().getTime()
     }
-    const sessionObj = cache.session.getJSON('sessionObj')
-    if (sessionObj === undefined || sessionObj === null || sessionObj === '') {
-      cache.session.setJSON('sessionObj', requestObj)
-    } else {
-      const s_url = sessionObj.url // 请求地址
-      const s_data = sessionObj.data // 请求数据
-      const s_time = sessionObj.time // 请求时间
-      if (s_data === requestObj.data && s_url === requestObj.url && (requestObj.time - s_time) < repeatSubmitInterval) {
-        const message = '数据正在处理，请勿重复提交'
-        console.warn(`[${s_url}]: ` + message)
-        return Promise.reject(new Error(message))
-      } else {
-        cache.session.setJSON('sessionObj', requestObj)
+    // 处理重复提交逻辑
+    try {
+      // 1.尝试从sessionStorage中取出上一次请求对象
+      const o1 = JSON.parse(sessionStorage.getItem('oldReqObj'))
+      // 2.同一请求，且间隔时间小于 repeatSubmitTime 则视为重复提交
+      if (o1.data === reqObj.data && o1.url === reqObj.url && (reqObj.time - o1.time) < repeatSubmitTime) {
+        return Promise.reject(new Error('数据正在处理，请勿重复提交'))
       }
+    } catch (e) {
     }
+    // 保存本次请求对象到sessionStorage
+    sessionStorage.setItem('oldReqObj', JSON.stringify(reqObj))
   }
 }
 
@@ -102,45 +99,41 @@ service.interceptors.response.use(
     } else {
       if (res.code === '40001' || res.code === '40002' || res.code === '40003' || res.code === '40004' || res.code === '401') {
         // 自定义异常1：未正常登录！40001=用户名或者密码错误;40002=无效的TOKEN;40003=用户未登录;40004=用户已禁用;401=无权限;
-        MessageBox.confirm(res.message, '登录错误', {
-          confirmButtonText: '刷新',
-          cancelButtonText: '取消',
-          type: 'error',
-          center: true
-        }).then(() => {
+        MessageBox.confirm(res.message, '登录错误',
+          {confirmButtonText: '刷新', cancelButtonText: '取消', type: 'error', center: true}
+        ).then(() => {
           store.dispatch('user/resetToken').then(() => {
             location.reload()
           })
         })
-      } else if (res.code === '500') {
-        // 自定义异常2：服务器端异常（一般是bug）
-        console.log('服务端出错(' + res.code + ')：' + res.message);
-        Message({message: res.message, type: 'error', duration: 3 * 1000})
-        return Promise.reject(new Error(res.message || '服务器端出错'))
-      } else if (res.code === '400' || res.code === '403' || res.code === '405') {
-        // 自定义异常3：客户端异常（一般是bug）
-        console.log('客户端出错(' + res.code + ')：' + res.message);
-        Message({message: res.message, type: 'error', duration: 3 * 1000})
-        return Promise.reject(new Error(res.message || '客户端出错'))
-      } else if (res.code === '429') {
-        console.log('请求过于频繁，疑似恶意请求(' + res.code + ')：' + res.message);
-        Message({message: res.message, type: 'error', duration: 3 * 1000})
-        return Promise.reject(new Error(res.message || '请求过于频繁'))
       } else {
-        // 未知异常
-        console.log('未知异常(' + res.code + ')：' + res.message);
-        Message({message: res.message, type: 'error', duration: 3 * 1000})
-        return Promise.reject(new Error(res.message || '未知异常'))
+        let errMsg, logErr;
+        if (res.code === '500') {
+          // 自定义异常2：服务器端异常（一般是bug）
+          errMsg = res.message || '服务器端出错';
+          logErr = '服务端出错';
+        } else if (res.code === '400' || res.code === '403' || res.code === '405') {
+          // 自定义异常3：客户端异常（一般是bug）
+          errMsg = res.message || '客户端出错';
+          logErr = '客户端出错';
+        } else if (res.code === '429') {
+          // 请求过于频繁或恶意攻击
+          errMsg = res.message || '请求过于频繁';
+          logErr = '请求过于频繁，疑似恶意请求';
+        } else {
+          // 未知异常
+          errMsg = res.message || '未知异常';
+          logErr = '未知异常';
+        }
+        console.log(logErr + '(' + res.code + ')：' + errMsg);
+        Message({message: errMsg, type: 'error', duration: 3 * 1000})
+        return Promise.reject(new Error(errMsg))
       }
     }
   }, error => {
     // 请求出错时操作
     console.log('err' + error)
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
+    Message({message: error.message, type: 'error', duration: 5 * 1000})
     return Promise.reject(error)
   }
 )
