@@ -81,8 +81,8 @@ public class ZRoleController {
         }
     }
 
-    @ApiOperation(value = "role/delete", notes = "批量删除角色", httpMethod = "DELETE")
-    @DeleteMapping("delete")
+    @ApiOperation(value = "role/delete", notes = "批量删除角色", httpMethod = "POST")
+    @PostMapping("delete")
     @PreAuthorize("hasAuthority('role:delete')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/role/delete", logMsg = "删除角色")

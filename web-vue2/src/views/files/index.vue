@@ -217,7 +217,7 @@ export default {
           let data = {...this.temp}
           if (this.dialogType === 'update') {
             request({
-              url: '/files/zFiles/update', method: 'put', data
+              url: '/files/zFiles/update', method: 'post', data
             }).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
               this.loadTableList()
@@ -250,7 +250,7 @@ export default {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.fileId)
           request({
-            url: '/files/zFiles/delete', method: 'delete', data
+            url: '/files/zFiles/delete', method: 'post', data
           }).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()

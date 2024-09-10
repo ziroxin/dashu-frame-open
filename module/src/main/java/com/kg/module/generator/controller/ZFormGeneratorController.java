@@ -75,9 +75,9 @@ public class ZFormGeneratorController {
         }
     }
 
-    @ApiOperation(value = "/generator/zFormGenerator/update", notes = "修改-代码生成器表单", httpMethod = "PUT")
+    @ApiOperation(value = "/generator/zFormGenerator/update", notes = "修改-代码生成器表单", httpMethod = "POST")
     @ApiImplicitParams({})
-    @PutMapping("/update")
+    @PostMapping("/update")
     @PreAuthorize("hasAuthority('generator:zFormGenerator:update')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/generator/zFormGenerator/update", logMsg = "修改-代码生成器表单")
@@ -90,11 +90,11 @@ public class ZFormGeneratorController {
         }
     }
 
-    @ApiOperation(value = "/generator/zFormGenerator/delete", notes = "删除-代码生成器表单", httpMethod = "DELETE")
+    @ApiOperation(value = "/generator/zFormGenerator/delete", notes = "删除-代码生成器表单", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "formIds", value = "待删除id列表", paramType = "body", required = true, allowMultiple = true, dataType = "String")
     })
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @PreAuthorize("hasAuthority('generator:zFormGenerator:delete')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/generator/zFormGenerator/delete", logMsg = "删除-代码生成器表单")

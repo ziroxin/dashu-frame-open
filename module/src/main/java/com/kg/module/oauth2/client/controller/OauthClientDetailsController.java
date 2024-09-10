@@ -77,9 +77,9 @@ public class OauthClientDetailsController {
         }
     }
 
-    @ApiOperation(value = "/oauth2.client/oauthClientDetails/update", notes = "修改-Oauth2客户端信息表", httpMethod = "PUT")
+    @ApiOperation(value = "/oauth2.client/oauthClientDetails/update", notes = "修改-Oauth2客户端信息表", httpMethod = "POST")
     @ApiImplicitParams({})
-    @PutMapping("/update")
+    @PostMapping("/update")
     @PreAuthorize("hasAuthority('oauth2.client:oauthClientDetails:update')")
     @NoRepeatSubmit
     public void update(@RequestBody OauthClientDetailsDTO oauthClientDetailsDTO) throws BaseException {
@@ -91,11 +91,11 @@ public class OauthClientDetailsController {
         }
     }
 
-    @ApiOperation(value = "/oauth2.client/oauthClientDetails/delete", notes = "删除-Oauth2客户端信息表", httpMethod = "DELETE")
+    @ApiOperation(value = "/oauth2.client/oauthClientDetails/delete", notes = "删除-Oauth2客户端信息表", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "clientIds", value = "待删除id列表", paramType = "body", required = true, allowMultiple = true, dataType = "String")
     })
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @PreAuthorize("hasAuthority('oauth2.client:oauthClientDetails:delete')")
     @NoRepeatSubmit
     public void delete(@RequestBody String[] clientIds) throws BaseException {

@@ -26,7 +26,7 @@ export function addRole(data) {
 export function deleteRoles(data) {
   return request({
     url: '/role/delete',
-    method: 'delete',
+    method: 'post',
     data
   })
 }

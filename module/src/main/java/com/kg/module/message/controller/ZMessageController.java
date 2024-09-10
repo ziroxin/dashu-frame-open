@@ -75,11 +75,11 @@ public class ZMessageController {
         return messageService.pagelist(page, limit, params);
     }
 
-    @ApiOperation(value = "/message/zMessage/delete", notes = "删除-消息中心", httpMethod = "DELETE")
+    @ApiOperation(value = "/message/zMessage/delete", notes = "删除-消息中心", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "msgIds", value = "待删除id列表", paramType = "body", required = true, allowMultiple = true, dataType = "String")
     })
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/message/zMessage/delete", logMsg = "删除-消息中心")
     public void delete(@RequestBody String[] msgIds) throws BaseException {

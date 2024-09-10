@@ -73,9 +73,9 @@ public class BusTradeRefundController {
         }
     }
 
-    @ApiOperation(value = "/tradeRefund/busTradeRefund/update", notes = "修改-退款 - 支付demo", httpMethod = "PUT")
+    @ApiOperation(value = "/tradeRefund/busTradeRefund/update", notes = "修改-退款 - 支付demo", httpMethod = "POST")
     @ApiImplicitParams({})
-    @PutMapping("/update")
+    @PostMapping("/update")
     @PreAuthorize("hasAuthority('tradeRefund:busTradeRefund:update')")
     @NoRepeatSubmit
     public void update(@RequestBody BusTradeRefundDTO busTradeRefundDTO) throws BaseException {
@@ -87,11 +87,11 @@ public class BusTradeRefundController {
         }
     }
 
-    @ApiOperation(value = "/tradeRefund/busTradeRefund/delete", notes = "删除-退款 - 支付demo", httpMethod = "DELETE")
+    @ApiOperation(value = "/tradeRefund/busTradeRefund/delete", notes = "删除-退款 - 支付demo", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "refundIds", value = "待删除id列表", paramType = "body", required = true, allowMultiple = true, dataType = "String")
     })
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @PreAuthorize("hasAuthority('tradeRefund:busTradeRefund:delete')")
     @NoRepeatSubmit
     public void delete(@RequestBody String[] refundIds) throws BaseException {

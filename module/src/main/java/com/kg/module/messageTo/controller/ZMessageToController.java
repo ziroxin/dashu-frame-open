@@ -70,8 +70,8 @@ public class ZMessageToController {
         }
     }
 
-    @ApiOperation(value = "/messageTo/zMessageTo/update", notes = "修改-消息发送至", httpMethod = "PUT")
-    @PutMapping("/update")
+    @ApiOperation(value = "/messageTo/zMessageTo/update", notes = "修改-消息发送至", httpMethod = "POST")
+    @PostMapping("/update")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/messageTo/zMessageTo/update", logMsg = "修改-消息发送至")
     public void update(@RequestBody ZMessageToDTO zMessageToDTO) throws BaseException {
@@ -83,11 +83,11 @@ public class ZMessageToController {
         }
     }
 
-    @ApiOperation(value = "/messageTo/zMessageTo/delete", notes = "删除-消息发送至", httpMethod = "DELETE")
+    @ApiOperation(value = "/messageTo/zMessageTo/delete", notes = "删除-消息发送至", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "toIds", value = "待删除id列表", paramType = "body", required = true, allowMultiple = true, dataType = "String")
     })
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/messageTo/zMessageTo/delete", logMsg = "删除-消息发送至")
     public void delete(@RequestBody String[] toIds) throws BaseException {

@@ -281,7 +281,7 @@ export default {
           let data = {...this.temp}
           if (this.dialogType === 'update') {
             request({
-              url: '${controllerMapping}/update', method: 'put', data
+              url: '${controllerMapping}/update', method: 'post', data
             }).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
               this.loadTableList()
@@ -314,7 +314,7 @@ export default {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.${entityKeyName})
           request({
-            url: '${controllerMapping}/delete', method: 'delete', data
+            url: '${controllerMapping}/delete', method: 'post', data
           }).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()

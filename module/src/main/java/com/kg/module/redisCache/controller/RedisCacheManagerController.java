@@ -39,7 +39,7 @@ public class RedisCacheManagerController {
                 }).collect(Collectors.toList());
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public void delete(@RequestBody String key) {
         redisUtils.delete(key);
         // 更新缓存列表（判断无效的key删除）

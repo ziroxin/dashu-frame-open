@@ -75,9 +75,9 @@ public class DemoSmsController {
         }
     }
 
-    @ApiOperation(value = "/sms/demoSms/update", notes = "修改-短信 - demo", httpMethod = "PUT")
+    @ApiOperation(value = "/sms/demoSms/update", notes = "修改-短信 - demo", httpMethod = "POST")
     @ApiImplicitParams({})
-    @PutMapping("/update")
+    @PostMapping("/update")
     @PreAuthorize("hasAuthority('sms:demoSms:update')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/sms/demoSms/update", logMsg = "修改-短信 - demo")
@@ -90,11 +90,11 @@ public class DemoSmsController {
         }
     }
 
-    @ApiOperation(value = "/sms/demoSms/delete", notes = "删除-短信 - demo", httpMethod = "DELETE")
+    @ApiOperation(value = "/sms/demoSms/delete", notes = "删除-短信 - demo", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "smsIds", value = "待删除id列表", paramType = "body", required = true, allowMultiple = true, dataType = "String")
     })
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @PreAuthorize("hasAuthority('sms:demoSms:delete')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/sms/demoSms/delete", logMsg = "删除-短信 - demo")

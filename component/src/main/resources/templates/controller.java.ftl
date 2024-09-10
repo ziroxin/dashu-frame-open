@@ -92,9 +92,9 @@ public class ${table.controllerName} {
         }
     }
 
-    @ApiOperation(value = "${controllerMapping}/update", notes = "修改-${table.comment!}", httpMethod = "PUT")
+    @ApiOperation(value = "${controllerMapping}/update", notes = "修改-${table.comment!}", httpMethod = "POST")
     @ApiImplicitParams({})
-    @PutMapping("/update")
+    @PostMapping("/update")
     @PreAuthorize("hasAuthority('${controllerAuthorizePre}update')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "${controllerMapping}/update", logMsg = "修改-${table.comment!}")
@@ -107,11 +107,11 @@ public class ${table.controllerName} {
         }
     }
 
-    @ApiOperation(value = "${controllerMapping}/delete", notes = "删除-${table.comment!}", httpMethod = "DELETE")
+    @ApiOperation(value = "${controllerMapping}/delete", notes = "删除-${table.comment!}", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "${entityKeyName}s", value = "待删除id列表", paramType = "body", required = true, allowMultiple = true, dataType = "String")
     })
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @PreAuthorize("hasAuthority('${controllerAuthorizePre}delete')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "${controllerMapping}/delete", logMsg = "删除-${table.comment!}")

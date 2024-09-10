@@ -251,7 +251,7 @@ export default {
           data.typeCode = this.currentDictType.typeCode
           if (this.dialogType === 'update') {
             request({
-              url: '/dictData/zDictData/update', method: 'put', data
+              url: '/dictData/zDictData/update', method: 'post', data
             }).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
               // 更新当前字典缓存
@@ -288,7 +288,7 @@ export default {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.dictId)
           request({
-            url: '/dictData/zDictData/delete', method: 'delete', data
+            url: '/dictData/zDictData/delete', method: 'post', data
           }).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             // 更新当前字典缓存

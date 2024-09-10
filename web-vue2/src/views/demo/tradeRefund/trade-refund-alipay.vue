@@ -302,7 +302,7 @@ export default {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.refundId)
           request({
-            url: '/tradeRefund/busTradeRefund/delete', method: 'delete', data
+            url: '/tradeRefund/busTradeRefund/delete', method: 'post', data
           }).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()

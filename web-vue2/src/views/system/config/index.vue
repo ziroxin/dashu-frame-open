@@ -223,7 +223,7 @@ export default {
           let data = {...this.temp}
           if (this.dialogType === 'update') {
             request({
-              url: '/config/zConfig/update', method: 'put', data
+              url: '/config/zConfig/update', method: 'post', data
             }).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
               this.loadTableList()
@@ -256,7 +256,7 @@ export default {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.cfgId)
           request({
-            url: '/config/zConfig/delete', method: 'delete', data
+            url: '/config/zConfig/delete', method: 'post', data
           }).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()
