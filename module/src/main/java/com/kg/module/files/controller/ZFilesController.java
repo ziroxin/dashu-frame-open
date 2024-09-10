@@ -73,9 +73,9 @@ public class ZFilesController {
         }
     }
 
-    @ApiOperation(value = "/files/zFiles/update", notes = "修改-文件记录表", httpMethod = "PUT")
+    @ApiOperation(value = "/files/zFiles/update", notes = "修改-文件记录表", httpMethod = "POST")
     @ApiImplicitParams({})
-    @PutMapping("/update")
+    @PostMapping("/update")
     @PreAuthorize("hasAuthority('files:zFiles:update')")
     @NoRepeatSubmit
     public void update(@RequestBody ZFilesDTO zFilesDTO) throws BaseException {
@@ -87,11 +87,11 @@ public class ZFilesController {
         }
     }
 
-    @ApiOperation(value = "/files/zFiles/delete", notes = "删除-文件记录表", httpMethod = "DELETE")
+    @ApiOperation(value = "/files/zFiles/delete", notes = "删除-文件记录表", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "fileIds", value = "待删除id列表", paramType = "body", required = true, allowMultiple = true, dataType = "String")
     })
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @PreAuthorize("hasAuthority('files:zFiles:delete')")
     @NoRepeatSubmit
     public void delete(@RequestBody String[] fileIds) throws BaseException {

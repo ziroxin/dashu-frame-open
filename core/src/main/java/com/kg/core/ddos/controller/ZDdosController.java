@@ -75,9 +75,9 @@ public class ZDdosController {
         }
     }
 
-    @ApiOperation(value = "/ddos/zDdos/update", notes = "修改-ddos用户请求记录", httpMethod = "PUT")
+    @ApiOperation(value = "/ddos/zDdos/update", notes = "修改-ddos用户请求记录", httpMethod = "POST")
     @ApiImplicitParams({})
-    @PutMapping("/update")
+    @PostMapping("/update")
     @PreAuthorize("hasAuthority('ddos:zDdos:update')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/ddos/zDdos/update", logMsg = "修改-ddos用户请求记录")
@@ -90,11 +90,11 @@ public class ZDdosController {
         }
     }
 
-    @ApiOperation(value = "/ddos/zDdos/delete", notes = "删除-ddos用户请求记录", httpMethod = "DELETE")
+    @ApiOperation(value = "/ddos/zDdos/delete", notes = "删除-ddos用户请求记录", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "ddosIds", value = "待删除id列表", paramType = "body", required = true, allowMultiple = true, dataType = "String")
     })
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @PreAuthorize("hasAuthority('ddos:zDdos:delete')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/ddos/zDdos/delete", logMsg = "删除-ddos用户请求记录")

@@ -73,9 +73,9 @@ public class BusTradeController {
         }
     }
 
-    @ApiOperation(value = "/trade/busTrade/update", notes = "修改-交易 - 支付demo", httpMethod = "PUT")
+    @ApiOperation(value = "/trade/busTrade/update", notes = "修改-交易 - 支付demo", httpMethod = "POST")
     @ApiImplicitParams({})
-    @PutMapping("/update")
+    @PostMapping("/update")
     @PreAuthorize("hasAuthority('trade:busTrade:update')")
     @NoRepeatSubmit
     public void update(@RequestBody BusTradeDTO busTradeDTO) throws BaseException {
@@ -87,11 +87,11 @@ public class BusTradeController {
         }
     }
 
-    @ApiOperation(value = "/trade/busTrade/delete", notes = "删除-交易 - 支付demo", httpMethod = "DELETE")
+    @ApiOperation(value = "/trade/busTrade/delete", notes = "删除-交易 - 支付demo", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "tradeIds", value = "待删除id列表", paramType = "body", required = true, allowMultiple = true, dataType = "String")
     })
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @PreAuthorize("hasAuthority('trade:busTrade:delete')")
     @NoRepeatSubmit
     public void delete(@RequestBody String[] tradeIds) throws BaseException {

@@ -38,7 +38,7 @@ export function groupUpdate(data) {
 export function groupDelete(data) {
   return request({
     url: '/group/delete',
-    method: 'delete',
+    method: 'post',
     data
   })
 }

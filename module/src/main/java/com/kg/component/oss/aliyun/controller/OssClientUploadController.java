@@ -95,11 +95,11 @@ public class OssClientUploadController {
         return null;
     }
 
-    @ApiOperation(value = "/oss/client/upload/deleteFromCache", notes = "OSS删除缓存文件接口", httpMethod = "DELETE")
+    @ApiOperation(value = "/oss/client/upload/deleteFromCache", notes = "OSS删除缓存文件接口", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "fileId", value = "文件ID", paramType = "query", required = true, dataType = "String")
     })
-    @DeleteMapping("/deleteFromCache")
+    @PostMapping("/deleteFromCache")
     public boolean deleteFromCache(String fileId) {
         if (redisUtils.hasKey(fileId)) {
             JSONObject file = (JSONObject) redisUtils.get(fileId);
@@ -113,11 +113,11 @@ public class OssClientUploadController {
         return false;
     }
 
-    @ApiOperation(value = "/oss/client/upload/delete", notes = "OSS删除文件接口", httpMethod = "DELETE")
+    @ApiOperation(value = "/oss/client/upload/delete", notes = "OSS删除文件接口", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "fileName", value = "Oss存储名（文件夹名+文件名）", paramType = "query", required = true, dataType = "String")
     })
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public void delete(String fileName) throws BaseException {
         // 删除文件
         OSSClient ossClient = new OSSClient(config.getEndpoint(), config.getAccessKeyId(), config.getAccessKeySecret());

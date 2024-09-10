@@ -93,7 +93,7 @@ export default {
       // 尝试删除oss文件
       let params = {fileId: this.fileIds.find(o => o.uid === file.uid).fid}
       this.$request({
-        url: '/oss/client/upload/deleteFromCache', method: 'delete', params
+        url: '/oss/client/upload/deleteFromCache', method: 'post', params
       }).then((response) => {
         console.log(response)
       })

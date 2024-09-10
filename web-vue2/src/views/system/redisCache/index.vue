@@ -96,7 +96,7 @@ export default {
         const data = this.cacheForm.key
         console.log(data)
         this.$request({
-          url: '/redis/cache/delete', method: 'delete', data
+          url: '/redis/cache/delete', method: 'post', data
         }).then((response) => {
           this.$message({type: 'success', message: '删除成功!'})
           this.loadRedisCacheList()

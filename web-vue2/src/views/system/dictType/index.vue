@@ -242,7 +242,7 @@ export default {
           var data = {...this.temp}
           if (this.dialogType === 'update') {
             request({
-              url: '/dictType/zDictType/update', method: 'put', data
+              url: '/dictType/zDictType/update', method: 'post', data
             }).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
               this.loadTableList()
@@ -275,7 +275,7 @@ export default {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.typeId)
           request({
-            url: '/dictType/zDictType/delete', method: 'delete', data
+            url: '/dictType/zDictType/delete', method: 'post', data
           }).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()

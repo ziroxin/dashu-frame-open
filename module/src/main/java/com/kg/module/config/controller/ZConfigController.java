@@ -75,9 +75,9 @@ public class ZConfigController {
         }
     }
 
-    @ApiOperation(value = "/config/zConfig/update", notes = "修改-参数参数配置", httpMethod = "PUT")
+    @ApiOperation(value = "/config/zConfig/update", notes = "修改-参数参数配置", httpMethod = "POST")
     @ApiImplicitParams({})
-    @PutMapping("/update")
+    @PostMapping("/update")
     @PreAuthorize("hasAuthority('config:zConfig:update')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/config/zConfig/update", logMsg = "修改-参数参数配置")
@@ -90,11 +90,11 @@ public class ZConfigController {
         }
     }
 
-    @ApiOperation(value = "/config/zConfig/delete", notes = "删除-参数参数配置", httpMethod = "DELETE")
+    @ApiOperation(value = "/config/zConfig/delete", notes = "删除-参数参数配置", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "cfgIds", value = "待删除id列表", paramType = "body", required = true, allowMultiple = true, dataType = "String")
     })
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @PreAuthorize("hasAuthority('config:zConfig:delete')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/config/zConfig/delete", logMsg = "删除-参数参数配置")

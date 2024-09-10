@@ -133,9 +133,9 @@ public class ZUserThemeController {
         }
     }
 
-    @ApiOperation(value = "/userTheme/zUserTheme/update", notes = "修改-用户主题配置", httpMethod = "PUT")
+    @ApiOperation(value = "/userTheme/zUserTheme/update", notes = "修改-用户主题配置", httpMethod = "POST")
     @ApiImplicitParams({})
-    @PutMapping("/update")
+    @PostMapping("/update")
     @PreAuthorize("hasAuthority('userTheme:zUserTheme:update')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/userTheme/zUserTheme/update", logMsg = "修改-用户主题配置")
@@ -148,11 +148,11 @@ public class ZUserThemeController {
         }
     }
 
-    @ApiOperation(value = "/userTheme/zUserTheme/delete", notes = "删除-用户主题配置", httpMethod = "DELETE")
+    @ApiOperation(value = "/userTheme/zUserTheme/delete", notes = "删除-用户主题配置", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "themeIds", value = "待删除id列表", paramType = "body", required = true, allowMultiple = true, dataType = "String")
     })
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @PreAuthorize("hasAuthority('userTheme:zUserTheme:delete')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/userTheme/zUserTheme/delete", logMsg = "删除-用户主题配置")

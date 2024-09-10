@@ -236,7 +236,7 @@ export default {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.smsId)
           request({
-            url: '/sms/demoSms/delete', method: 'delete', data
+            url: '/sms/demoSms/delete', method: 'post', data
           }).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()

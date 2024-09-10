@@ -88,9 +88,9 @@ public class ZDictDataController {
         }
     }
 
-    @ApiOperation(value = "/dictData/zDictData/update", notes = "修改-字典数据", httpMethod = "PUT")
+    @ApiOperation(value = "/dictData/zDictData/update", notes = "修改-字典数据", httpMethod = "POST")
     @ApiImplicitParams({})
-    @PutMapping("/update")
+    @PostMapping("/update")
     @PreAuthorize("hasAuthority('dictData:zDictData:update')")
     @NoRepeatSubmit
     public void update(@RequestBody ZDictDataDTO zDictDataDTO) throws BaseException {
@@ -102,11 +102,11 @@ public class ZDictDataController {
         }
     }
 
-    @ApiOperation(value = "/dictData/zDictData/delete", notes = "删除-字典数据", httpMethod = "DELETE")
+    @ApiOperation(value = "/dictData/zDictData/delete", notes = "删除-字典数据", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "dictIds", value = "待删除id列表", paramType = "body", required = true, allowMultiple = true, dataType = "String")
     })
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @PreAuthorize("hasAuthority('dictData:zDictData:delete')")
     @NoRepeatSubmit
     public void delete(@RequestBody String[] dictIds) throws BaseException {

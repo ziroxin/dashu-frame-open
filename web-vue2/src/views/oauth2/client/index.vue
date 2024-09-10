@@ -279,7 +279,7 @@ export default {
           data.authorizedGrantTypes = this.temp.authorizedGrantTypesArr.join(',')
           if (this.dialogType === 'update' || this.dialogType === 'resetSecret') {
             request({
-              url: '/oauth2.client/oauthClientDetails/update', method: 'put', data
+              url: '/oauth2.client/oauthClientDetails/update', method: 'post', data
             }).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
               this.loadTableList()
@@ -312,7 +312,7 @@ export default {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.clientId)
           request({
-            url: '/oauth2.client/oauthClientDetails/delete', method: 'delete', data
+            url: '/oauth2.client/oauthClientDetails/delete', method: 'post', data
           }).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()

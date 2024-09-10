@@ -105,10 +105,10 @@ public class ZPermissionController {
         return false;
     }
 
-    @ApiOperation(value = "permission/delete", notes = "删除资源（菜单，按钮等）", httpMethod = "DELETE")
+    @ApiOperation(value = "permission/delete", notes = "删除资源（菜单，按钮等）", httpMethod = "POST")
     @ApiImplicitParams({
     })
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @PreAuthorize("hasAuthority('permission:delete')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/permission/delete", logMsg = "删除资源（菜单，按钮等）")

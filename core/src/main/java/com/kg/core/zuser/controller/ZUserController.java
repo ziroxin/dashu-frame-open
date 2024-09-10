@@ -109,8 +109,8 @@ public class ZUserController {
         }
     }
 
-    @ApiOperation(value = "/user/delete", notes = "批量删除用户", httpMethod = "DELETE")
-    @DeleteMapping("delete")
+    @ApiOperation(value = "/user/delete", notes = "批量删除用户", httpMethod = "POST")
+    @PostMapping("delete")
     @PreAuthorize("hasAuthority('user:delete')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/user/delete", logMsg = "删除用户")

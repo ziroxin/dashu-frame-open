@@ -245,7 +245,7 @@ export default {
         }).then(() => {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.tradeId)
-          request({url: '/trade/busTrade/delete', method: 'delete', data})
+          request({url: '/trade/busTrade/delete', method: 'post', data})
             .then(response => {
               this.$message({type: 'success', message: '删除成功！'})
               this.loadTableList()
