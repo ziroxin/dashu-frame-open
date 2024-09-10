@@ -275,10 +275,10 @@ export default {
         let skip = 0
         if (forceFlush) {
           // 强制刷新（换一批）
-          Cookies.remove('loginBgData')
-          skip = parseInt(Cookies.get('loginBgDataSkip')) + 1 || 0
+          localStorage.removeItem('loginBgData')
+          skip = parseInt(localStorage.getItem('loginBgDataSkip')) + 1 || 0
         }
-        let loginBgData = Cookies.get('loginBgData')
+        let loginBgData = localStorage.getItem('loginBgData')
         if (loginBgData) {
           this.loginBg = JSON.parse(loginBgData)
         } else {
@@ -289,8 +289,8 @@ export default {
               for (let i = 0; i < imgs.length; i++) {
                 this.loginBg.push(imgs[i].img)
               }
-              Cookies.set('loginBgData', JSON.stringify(this.loginBg))
-              Cookies.set('loginBgDataSkip', skip)
+              localStorage.setItem('loginBgData', JSON.stringify(this.loginBg))
+              localStorage.setItem('loginBgDataSkip', skip)
             }
           })
         }
