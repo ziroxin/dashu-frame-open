@@ -3,7 +3,6 @@ package ${package.ServiceImpl};
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import ${superServiceImplClassPackage};
 import com.kg.component.file.FilePathConfig;
@@ -29,8 +28,10 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -51,6 +52,8 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
 
     @Resource
     private ${dtoconvertName} ${dtoconvertName?uncap_first};
+    @Resource
+    private ${table.mapperName} ${table.mapperName?uncap_first};
 
 <#if childTableList??>
     <#list childTableList as child>
@@ -69,50 +72,34 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
      */
     @Override
     public Page<${dtoName}> pagelist(Integer page, Integer limit, String params) {
-        Page<${entity}> pager = new Page<>(page, limit);
-        // 根据条件查询
-        QueryWrapper<${entity}> wrapper = new QueryWrapper<>();
+        // 解析查询参数
+        JSONObject paramObj = new JSONObject();
         if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
-        <#list table.fields as field>
-            if (paramObj.containsKey("${field.propertyName}")) {
-                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("${field.propertyName}")), ${entity}::get${field.propertyName?cap_first}, paramObj.getStr("${field.propertyName}"));
-            }
-        </#list>
+            paramObj = JSONUtil.parseObj(params);
         }
-        <#list table.fields as field>
-            <#if field.propertyName=="orderIndex">
-        // 默认排序
-        wrapper.lambda().orderByAsc(${entity}::getOrderIndex);
-            </#if>
-        </#list>
-        //返回数据
-        Page<${entity}> pageEntity = page(pager, wrapper);
-        if (pageEntity.getTotal() == 0) {
-            return new Page<>();
-        }
+        // 计算分页偏移量
+        Integer offset = (page - 1) * limit;
+        paramObj.set("limit", limit);
+        paramObj.set("offset", offset);
+        // 查询列表
+        List<${dtoName}> list = ${table.mapperName?uncap_first}.list(paramObj);
 <#if childTableList??>
         // 查询所有附件列表
     <#list childTableList as child>
         List<${child?cap_first}> all${child?cap_first}List = ${child}Service.lambdaQuery().in(${child?cap_first}::get${entity}Id,
                 pageEntity.getRecords().stream().map(${entity}::get${entityKeyName?cap_first}).collect(Collectors.toList())).list();
     </#list>
+        // 过滤附件列表，放入实体中
+        list.stream().forEach(dto -> {
+    <#list childTableList as child>
+            dto.set${child?lower_case?cap_first}List(all${child?cap_first}List.stream()
+                    .filter(f -> f.get${entity}Id().equals(dto.get${entityKeyName?cap_first}())).collect(Collectors.toList()));
+    </#list>
+        });
 </#if>
         Page<${dtoName}> result = new Page<>();
-        result.setRecords(pageEntity.getRecords().stream()
-                .map(m -> {
-                    ${dtoName} ${dtoName?uncap_first} = ${dtoconvertName?uncap_first}.entityToDto(m);
-<#if childTableList??>
-                    // 过滤附件列表，放入实体中
-    <#list childTableList as child>
-                    ${dtoName?uncap_first}.set${child?lower_case?cap_first}List(all${child?cap_first}List.stream()
-                            .filter(f -> f.get${entity}Id().equals(m.get${entityKeyName?cap_first}())).collect(Collectors.toList()));
-    </#list>
-</#if>
-                    return ${dtoName?uncap_first};
-                })
-                .collect(Collectors.toList()));
-        result.setTotal(pageEntity.getTotal());
+        result.setRecords(list);
+        result.setTotal(${table.mapperName?uncap_first}.count(paramObj));// 查询总数
         return result;
     }
 
@@ -216,16 +203,12 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
                     + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
 
             // 查询待导出的数据
-            QueryWrapper<${entity}> wrapper = new QueryWrapper<>();
+            JSONObject paramObj = new JSONObject();
             if (StringUtils.hasText(params)) {
-                JSONObject paramObj = JSONUtil.parseObj(params);
-<#list table.fields as field>
-                if (paramObj.containsKey("${field.propertyName}")) {
-                    wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("${field.propertyName}")), ${entity}::get${field.propertyName?cap_first}, paramObj.getStr("${field.propertyName}"));
-                }
-</#list>
+                paramObj = JSONUtil.parseObj(params);
             }
-            List<${entity}> list = list(wrapper);
+
+            List<${dtoName}> list = ${table.mapperName?uncap_first}.list(paramObj);
             // 转换成导出excel实体
             List<${entity}ExcelOutDTO> dataList = list.stream()
                     .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d), ${entity}ExcelOutDTO.class))
@@ -253,18 +236,66 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
      */
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public void importExcel(HttpServletRequest request) {
-        // 读取导入数据
+    public String importExcel(HttpServletRequest request) {
+        // 1. 读取导入数据
+        int startRowIdx = 2;
         List<${entity}> importData =
-                ExcelReadUtils.read(request, 1, 2, ${entity}.class, ${entity}ExcelConstant.IMPORT_EXCEL_COLUMN);
-        // 处理数据
+                ExcelReadUtils.read(request, 1, startRowIdx, ${entity}.class, ${entity}ExcelConstant.IMPORT_EXCEL_COLUMN);
+        if (importData == null || importData.isEmpty()) {
+            return "Excel文件中没有数据！";
+        }
+        // 2. 必填字段校验
+        String errorMsg = "";
+        int currentRowIdx = startRowIdx;
+        if (${entity}ExcelConstant.IMPORT_REQUIRED_COLUMN.size() > 0) {
+            for (${entity} entity : importData) {
+                currentRowIdx++;
+                JSONObject rowData = JSONUtil.parseObj(entity);
+                List<String> emptyColName = new ArrayList<>();
+                for (Map.Entry<String, String> col : ${entity}ExcelConstant.IMPORT_REQUIRED_COLUMN.entrySet()) {
+                    if (!StringUtils.hasText(rowData.getStr(col.getKey()))) {
+                        emptyColName.add(col.getValue());
+                    }
+                }
+                if (emptyColName.size() > 0) {
+                    errorMsg += "第" + currentRowIdx + "行，必填字段[" + String.join(",", emptyColName) + "]不能为空！<br/>";
+                }
+            }
+        }
+        if (StringUtils.hasText(errorMsg)) {
+            return errorMsg;
+        }
+        // 3. 保存
         List<${entity}> saveData = importData.stream().map(o -> {
             o.set${entityKeyName?cap_first}(GuidUtils.getUuid());
             o.setCreateTime(LocalDateTime.now());
             return o;
         }).collect(Collectors.toList());
-        // 保存
-        saveBatch(saveData);
+        ${table.mapperName?uncap_first}.saveList(saveData);
+        return "";// 导入成功，返回空字符串
+    }
+
+    /**
+     * 下载导入模板
+     *
+     * @return 模板文件url
+     */
+    @Override
+    public String downloadTemplate() {
+        try {
+            // 拼接下载Excel模板，保存的临时路径
+            String path = FilePathConfig.SAVE_PATH + "/importTemp/excel/"
+                    + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
+            // 第一行标题
+            String title = "${table.comment!}-导入模板";
+            // 写入模板字段行
+            ExcelWriteUtils.writeTemplate(path, title, ${entity}ExcelConstant.IMPORT_EXCEL_COLUMN);
+            // 生成模板成功，返回模板地址
+            return FilePathConfig.switchUrl(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "error";
     }
 
 }

@@ -34,10 +34,8 @@ public class ExcelWriteUtils {
             if (file.exists()) {
                 file.delete();
             }
-
             // 创建writer
             writer = ExcelUtil.getWriter(path);
-
             // 设置标题行样式
             CellStyle cellStyle = writer.getStyleSet().getHeadCellStyle();
             Font font = writer.createFont();
@@ -56,6 +54,56 @@ public class ExcelWriteUtils {
             writer.setHeaderAlias(columnMap);
             // 写入内容
             writer.write(dataList, true);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 生成导入模板
+     *
+     * @param path      文件生成路径
+     * @param title     第一行标题（大标题）
+     * @param columnMap 字段-标题
+     * @return 是否生成成功
+     */
+    public static boolean writeTemplate(String path, String title, LinkedHashMap<String, String> columnMap) {
+        ExcelWriter writer = null;
+        try {
+            // 创建目标文件对象
+            File file = new File(path);
+            // 判断目标是否存在
+            if (file.exists()) {
+                file.delete();
+            }
+            // 创建writer
+            writer = ExcelUtil.getWriter(path);
+            // 设置标题行样式
+            CellStyle cellStyle = writer.getStyleSet().getHeadCellStyle();
+            Font font = writer.createFont();
+            font.setBold(true);
+            font.setFontHeight((short) 300);
+            font.setFontName("宋体");
+            cellStyle.setFont(font);// 字体
+            // 设置整体行高
+            writer.setDefaultRowHeight(25);
+            // 设置整体列宽
+            writer.setColumnWidth(-1, 30);
+
+            // 写入第一行标题（合并单元格）
+            writer.merge(columnMap.size() - 1, title);
+            // 写入标题行
+            writer.writeHeadRow(columnMap.keySet());
             return true;
         } catch (Exception e) {
             e.printStackTrace();
