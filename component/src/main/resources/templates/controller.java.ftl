@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kg.core.annotation.AutoOperateLog;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
+import com.kg.core.web.ResponseResult;
 import ${package.DTO}.${dtoName};
 import ${package.Convert}.${dtoconvertName};
 import ${package.Service}.${service};
@@ -12,6 +13,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 <#if !restControllerStyle>
 	import org.springframework.stereotype.Controller;
@@ -146,13 +148,29 @@ public class ${table.controllerName} {
     @PreAuthorize("hasAuthority('${controllerAuthorizePre}import:excel')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "${controllerMapping}/import/excel", logMsg = "导入excel-${table.comment!}")
-    public void importExcel(HttpServletRequest request) throws BaseException {
+    public ResponseResult importExcel(HttpServletRequest request) throws BaseException {
         try {
-            ${table.serviceName?uncap_first}.importExcel(request);
+            String result = ${table.serviceName?uncap_first}.importExcel(request);
+            if (StringUtils.hasText(result)) {
+                // 导入失败，返回错误提示信息
+                return ResponseResult.builder().code("200").message(result).build();
+            } else {
+                return ResponseResult.success();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException(e.getMessage() != null ? e.getMessage() : "导入Excel失败，请重试！");
         }
+    }
+
+    @ApiOperation(value = "${controllerMapping}/import/downloadTemplate", notes = "下载导入模板-${table.comment!}", httpMethod = "GET")
+    @GetMapping("/import/downloadTemplate")
+    public String downloadTemplate() throws BaseException {
+        String result = ${table.serviceName?uncap_first}.downloadTemplate();
+        if ("error".equals(result)) {
+            throw new BaseException("下载导入模板失败，请重试！");
+        }
+        return result;
     }
 }
 </#if>

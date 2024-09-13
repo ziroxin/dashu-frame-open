@@ -3,15 +3,17 @@
 		<!-- ${table.comment!}-管理按钮 -->
 		<div style="margin-bottom: 10px;">
 <#list table.fields as field>
-	<#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
+    <#if field.propertyName!=entityKeyName && field.propertyName!='orderIndex' && field.propertyName!='createTime' && field.propertyName!='updateTime'>
+	    <#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
 			<el-date-picker v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
 							type="date" class="filter-item" placeholder="请选择${field.comment}查询"/>
-	<#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
+	    <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
 			<el-date-picker v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
 							type="datetime" class="filter-item" placeholder="请选择${field.comment}查询"/>
-	<#else>
+	    <#else>
 			<el-input v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
 					  		class="filter-item" placeholder="请输入${field.comment}查询"/>
+	    </#if>
 	</#if>
 </#list>
 			<el-button v-waves class="filter-item" type="primary" size="small"
@@ -28,12 +30,9 @@
 				<el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                    v-permission="'${buttonNamePre}delete'">删除
 				</el-button>
-				<el-upload v-permission="'${buttonNamePre}importExcel'" style="display: inline-block;margin: 0px 10px;"
-						   :action="$baseServer+'${controllerMapping}/import/excel'" :headers="$store.getters.headerToken"
-						   :on-success="importExcelSuccess" accept=".xls,.xlsx"
-						   :show-file-list="false" :auto-upload="true">
-					<el-button v-waves type="warning" icon="el-icon-upload2" size="small">导入Excel</el-button>
-				</el-upload>
+                <el-button v-waves v-permission="'${buttonNamePre}importExcel'" @click="dialogImportVisible=true"
+                           type="primary" icon="el-icon-upload2" size="small">导入Excel
+                </el-button>
 				<el-button v-waves type="success" icon="el-icon-printer" @click="exportExcel" size="small"
 						   v-permission="'${buttonNamePre}exportExcel'">导出Excel
 				</el-button>
@@ -43,7 +42,9 @@
 		<el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange" v-loading="isLoading">
 			<el-table-column type="selection" width="50" align="center" header-align="center"/>
 <#list table.fields as field>
+    <#if field.propertyName!=entityKeyName && field.propertyName!='updateTime'>
 			<el-table-column label="${field.comment}" prop="${field.propertyName}" align="center"/>
+    </#if>
 </#list>
 			<el-table-column fixed="right" label="操作" width="120" align="center">
 				<template v-slot="scope">
@@ -77,7 +78,7 @@
                       :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]">
 					<el-input-number v-model="temp.orderIndex" :min="0"/>
 				</el-form-item>
-	<#elseif field.propertyName!='createTime' && field.propertyName!='updateTime'>
+	<#elseif field.propertyName!='createTime' && field.propertyName!='updateTime' && field.propertyName!=entityKeyName>
 		<#--判断是否为null的规则-->
 		<#assign rules1=field.metaInfo.nullable?string("","{required: true, message: '" + field.comment + "不能为空'}")>
 		<#if field.propertyType=='String'>
@@ -126,7 +127,38 @@
 				<el-button v-waves @click="dialogFormVisible=false">取消</el-button>
 			</div>
 		</el-dialog>
+        <!-- 批量导入弹窗 -->
+        <el-dialog title="批量导入" :close-on-click-modal="false" :visible.sync="dialogImportVisible"
+                   @close="dialogIndex++" width="600px" :key="'importDialog'+dialogIndex">
+            <el-form ref="importForm" label-width="120px" v-loading="isImportLoading">
+                <el-form-item label="下载模板：">
+                    <el-button v-waves type="success" plain @click="downloadExcelTemplate"
+                               icon="el-icon-download" size="small">下载Excel模板
+                    </el-button>
+                </el-form-item>
+                <el-divider></el-divider>
+                <el-form-item label="导入：">
+                    <el-upload v-permission="'${buttonNamePre}importExcel'"
+                               :action="$baseServer+'${controllerMapping}/import/excel'" :headers="$store.getters.headerToken"
+                               :before-upload="beforeImportUpload" :on-error="importExcelError"
+                               :on-success="importExcelSuccess" accept=".xls,.xlsx"
+                               :show-file-list="false" :auto-upload="true">
+                        <el-button v-waves type="primary" plain icon="el-icon-upload2" size="small">点击上传Excel并导入</el-button>
+                    </el-upload>
+                    <el-tag type="info" size="small">
+                        说明：点击上方按钮上传Excel文件，上传成功后会自动开始导入！
+                    </el-tag>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button v-waves @click="dialogImportVisible=false">关闭</el-button>
+            </div>
+        </el-dialog>
 	</div>
+
+
+
+
 </template>
 
 <script>
@@ -162,6 +194,9 @@ export default {
       temp: {orderIndex: 0},
       isLoading: false,
       dialogIndex: 0,
+      // 导入弹窗
+      dialogImportVisible: false,
+      isImportLoading: false,
 <#if jsData??>
       ${jsData}
 </#if>
@@ -215,7 +250,6 @@ export default {
     // 清空表单temp数据
     closeDialog() {
       this.temp = this.$options.data().temp
-      this.$refs.dataForm.resetFields()
       this.dialogIndex++
 <#if childTableList??>
 	<#list childTableList as child>
@@ -327,14 +361,28 @@ export default {
       const params = {params: JSON.stringify(this.searchData)}
       downloadUtil.download('${controllerMapping}/export/excel', params, '${table.comment!}.xlsx')
     },
-    // 导入Excel成功，提示
+    // 导入Excel之前，显示loading
+    beforeImportUpload(file) {
+      this.isImportLoading = true
+    },
+    // 导入Excel成功
     importExcelSuccess(response) {
-      if (response.code === '200') {
+      this.isImportLoading = false
+      if (response.message === "Success") {
         this.$message({type: 'success', message: '导入成功！'})
+        this.dialogImportVisible = false
         this.loadTableList()
       } else {
-        this.$message({type: 'error', message: response.message})
+        this.$alert(response.message, "提示", {confirmButtonText: "确定", dangerouslyUseHTMLString: true});
       }
+    },
+    // 导入Excel失败，取消loading状态
+    importExcelError() {
+      this.isImportLoading = false
+    },
+    // 下载模板
+    downloadExcelTemplate() {
+      downloadUtil.download('${controllerMapping}/import/downloadTemplate', {}, '${table.comment!}-导入模板.xlsx')
     },
 <#if jsMethods??>
     ${jsMethods}

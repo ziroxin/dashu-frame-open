@@ -1,8 +1,6 @@
 package ${package.ExcelConstant};
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Excel使用常量 - ${table.comment!}
@@ -18,16 +16,30 @@ public class ${entity}ExcelConstant {
     /**
      * 导入所需字段信息
      */
-    public static Map<String, String> IMPORT_EXCEL_COLUMN = new HashMap<>();
+    public static LinkedHashMap<String, String> IMPORT_EXCEL_COLUMN = new LinkedHashMap<>();
+    /**
+     * 导入必填字段信息
+     */
+    public static LinkedHashMap<String, String> IMPORT_REQUIRED_COLUMN = new LinkedHashMap<>();
 
     static {
         // 初始化导出字段
 <#list table.fields as field>
+    <#if field.propertyName!=entityKeyName>
         EXPORT_EXCEL_COLUMN.put("${field.propertyName}", "${field.comment}");
+    </#if>
 </#list>
         // 初始化导入字段
 <#list table.fields as field>
+    <#if field.propertyName!=entityKeyName && field.propertyName!='createTime' && field.propertyName!='updateTime'>
         IMPORT_EXCEL_COLUMN.put("${field.comment}", "${field.propertyName}");
+    </#if>
+</#list>
+        // 初始化导入必填字段
+<#list table.fields as field>
+    <#if field.propertyName!=entityKeyName && field.propertyName!='createTime' && field.propertyName!='updateTime' && !field.metaInfo.nullable>
+        IMPORT_REQUIRED_COLUMN.put("${field.propertyName}", "${field.comment}");
+    </#if>
 </#list>
     }
 

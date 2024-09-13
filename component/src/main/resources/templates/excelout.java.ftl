@@ -23,7 +23,7 @@ public class ${entity}ExcelOutDTO implements BaseDTO {
     private static final long serialVersionUID = 1L;
 
 <#list table.fields as field>
-
+  <#if field.propertyName!=entityKeyName>
     /**
      * ${field.comment}
      */
@@ -34,6 +34,7 @@ public class ${entity}ExcelOutDTO implements BaseDTO {
     @JsonFormat(pattern = "yyyy/MM/dd", timezone = "GMT+8")
 	</#if>
     private ${field.propertyType} ${field.propertyName};
+  </#if>
 </#list>
 
 }

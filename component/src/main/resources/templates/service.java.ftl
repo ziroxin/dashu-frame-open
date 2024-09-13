@@ -65,6 +65,13 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
      *
      * @param request 请求文件
      */
-    void importExcel(HttpServletRequest request);
+    String importExcel(HttpServletRequest request);
+
+    /**
+     * 下载导入模板
+     *
+     * @return 模板文件url
+     */
+    String downloadTemplate();
 }
 </#if>
