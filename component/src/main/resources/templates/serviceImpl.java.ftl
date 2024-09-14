@@ -84,18 +84,20 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         // 查询列表
         List<${dtoName}> list = ${table.mapperName?uncap_first}.list(paramObj);
 <#if childTableList??>
-        // 查询所有附件列表
+        if (list != null && !list.isEmpty()) {
+            // 查询所有附件列表
     <#list childTableList as child>
-        List<${child?cap_first}> all${child?cap_first}List = ${child}Service.lambdaQuery().in(${child?cap_first}::get${entity}Id,
-                pageEntity.getRecords().stream().map(${entity}::get${entityKeyName?cap_first}).collect(Collectors.toList())).list();
+            List<${child?cap_first}> all${child?cap_first}List = ${child}Service.lambdaQuery().in(${child?cap_first}::get${entity}Id,
+                    list.stream().map(${dtoName}::get${entityKeyName?cap_first}).collect(Collectors.toList())).list();
     </#list>
-        // 过滤附件列表，放入实体中
-        list.stream().forEach(dto -> {
+            // 过滤附件列表，放入实体中
+            list.stream().forEach(dto -> {
     <#list childTableList as child>
-            dto.set${child?lower_case?cap_first}List(all${child?cap_first}List.stream()
-                    .filter(f -> f.get${entity}Id().equals(dto.get${entityKeyName?cap_first}())).collect(Collectors.toList()));
+                dto.set${child?lower_case?cap_first}List(all${child?cap_first}List.stream()
+                        .filter(f -> f.get${entity}Id().equals(dto.get${entityKeyName?cap_first}())).collect(Collectors.toList()));
     </#list>
-        });
+            });
+        }
 </#if>
         Page<${dtoName}> result = new Page<>();
         result.setRecords(list);
