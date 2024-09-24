@@ -19,7 +19,8 @@
       <settings/>
     </right-panel>
     <!--修改密码弹窗-->
-    <user-edit-password v-model="editPassword" :info="editPasswordInfo"/>
+    <user-edit-password v-model="editPasswordVisible" :info="editPasswordInfo"
+                        :is-default-password="isDefaultPassword"/>
   </div>
 
   <!-- ==================================综合布局================================== -->
@@ -43,7 +44,8 @@
       <settings/>
     </right-panel>
     <!--修改密码弹窗-->
-    <user-edit-password v-model="editPassword" :info="editPasswordInfo"/>
+    <user-edit-password v-model="editPasswordVisible" :info="editPasswordInfo"
+                        :is-default-password="isDefaultPassword"/>
   </div>
 
   <!-- ==================================左侧菜单布局（手机端默认会调整为左侧菜单布局）================================== -->
@@ -69,7 +71,8 @@
       <settings/>
     </right-panel>
     <!--修改密码弹窗-->
-    <user-edit-password v-model="editPassword" :info="editPasswordInfo"/>
+    <user-edit-password v-model="editPasswordVisible" :info="editPasswordInfo"
+                        :is-default-password="isDefaultPassword"/>
   </div>
 </template>
 
@@ -100,22 +103,24 @@ export default {
   mixins: [ResizeMixin],
   data() {
     return {
-      // 是否默认密码
-      editPassword: false,
+      // 修改密码弹窗
+      editPasswordVisible: false,
       // 修改密码提示信息
       editPasswordInfo: '',
+      isDefaultPassword: false,
       // 综合布局时，左侧菜单内容
-      permissionRoutes: []
+      permissionRoutes: [],
     }
   },
   mounted() {
-    this.editPassword = false
+    this.editPasswordVisible = false
     if (Cookies.get('isDefaultPassword') === 'true') {
-      this.editPassword = true
+      this.editPasswordVisible = true
+      this.isDefaultPassword = true
       this.editPasswordInfo = '检测到您当前的密码，是系统默认密码，请及时修改！！！'
     }
     if (Cookies.get('isInvalidPassword') === 'true') {
-      this.editPassword = true
+      this.editPasswordVisible = true
       this.editPasswordInfo = '检测到您的密码已失效，请修改！！！'
     }
   },

@@ -131,12 +131,17 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void editPassword(ZUserEditPasswordDTO passwordDTO) throws BaseException {
+        // 判断密码规则
+        ZSafety safety = safetyService.getSafety();
+        // 默认密码，前端无需输入旧密码
+        if (passwordDTO.getIsDefaultPassword()) {
+            passwordDTO.setOldPassword(safety.getDefaultPassword());
+        }
+        // 密码判断
         ZUser user = getById(passwordDTO.getUserId());
         if (!passwordEncoder.matches(passwordDTO.getOldPassword(), user.getPassword())) {
             throw new BaseException("旧密码不正确！");
         }
-        // 判断密码规则
-        ZSafety safety = safetyService.getSafety();
         // 长度
         if (!PasswordRegexUtils.judgeLength(safety.getStartLength(), safety.getEndLength(), passwordDTO.getPassword())) {
             throw new BaseException(safety.getPrompt());

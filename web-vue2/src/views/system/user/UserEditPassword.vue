@@ -5,7 +5,7 @@
  -->
 <template>
   <!--修改密码-->
-  <el-dialog title="修改密码" :visible.sync="innerVisible"
+  <el-dialog title="修改密码" :visible.sync="innerVisible" width="600px"
              :close-on-click-modal="false" :show-close="showCloseBtn"
              :close-on-press-escape="false">
     <div v-if="info.length>0" style="text-align: center;font-size: 1em;color: red;margin: -10px auto 20px auto;">
@@ -14,7 +14,7 @@
     <div class="password-container">
       <el-form ref="editPassword" :model="temp"
                :rules="passwordRules" class="login-form">
-        <el-tooltip v-model="capsTooltip1" content="大写已打开" placement="right" manual>
+        <el-tooltip v-model="capsTooltip1" content="大写已打开" placement="right" manual v-if="!isDefaultPassword">
           <el-form-item prop="oldPassword">
             <span class="svg-container"><svg-icon icon-class="password"/></span>
             <el-input :type="oldPasswordType" ref="oldPassword" name="oldPassword" v-model="temp.oldPassword"
@@ -73,6 +73,8 @@ export default {
     userId: {type: String, default: ''},
     // 是否显示关闭按钮
     showCloseBtn: {type: Boolean, default: false},
+    // 是否是默认密码（默认密码无需输入旧密码）
+    isDefaultPassword: {type: Boolean, default: false}
   },
   data() {
     return {
@@ -126,13 +128,13 @@ export default {
       this.$refs.editPassword.validate(valid => {
         if (valid) {
           if (this.temp.pwd1 === this.temp.pwd2) {
-            if (this.temp.pwd1 === this.temp.oldPassword) {
+            if (this.temp.pwd1 === this.temp.oldPassword && !this.isDefaultPassword) {
               this.$message({type: 'error', message: '新密码不能和旧密码一样！'})
               return;
             }
             this.temp.userId = this.userId
             this.temp.password = this.temp.pwd1
-            const data = this.temp
+            const data = {...this.temp, isDefaultPassword: this.isDefaultPassword}
             request({
               url: '/user/edit/password', method: 'post', data
             }).then(response => {
