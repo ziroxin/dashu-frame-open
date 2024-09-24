@@ -69,7 +69,7 @@ services:
 # 集群部署，参考：https://kailashyogeshwar.medium.com/rabbitmq-cluster-using-docker-compose-7397ea378d73
 # rabbitmq:
 #  container_name: rabbitmq
-#  image: rabbitmq:3-management
+#  image: registry.cn-beijing.aliyuncs.com/dashu_pub/rabbitmq:3-management
 #  volumes:
 #   - /etc/localtime:/etc/localtime:ro
 #   - /etc/timezone:/etc/timezone:ro
