@@ -21,8 +21,8 @@ public class LoginSuccessDTO implements Serializable {
     private String accessToken;
     // Token有效期
     private Date accessTokenValidTime;
-    // 是否默认密码
+    // 是否默认密码（true：默认密码，false：非默认密码）
     private boolean isDefaultPassword;
-    // 密码是否已过期失效
+    // 密码是否已过期失效（true：已过期，false：未过期）
     private boolean isInvalidPassword;
 }

@@ -27,4 +27,8 @@ public class ZUserEditPasswordDTO implements Serializable {
      * 新密码
      */
     private String password;
+    /**
+     * 是否默认密码
+     */
+    private Boolean isDefaultPassword;
 }
