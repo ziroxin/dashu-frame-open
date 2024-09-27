@@ -49,6 +49,8 @@ mybatis-plus:
 
 #自定义配置
 com.kg:
+  #配置本项目api接口地址
+  apiBaseUrl: http://localhost:8123/dashuserver/
   #文件上传配置
   file:
     #允许上传的文件格式（防止攻击类脚本文件上传，以|结尾）
@@ -89,6 +91,10 @@ com.kg:
     font-size: 20
     #0正常、1加粗、2斜体
     font-style: 0
+    #字体颜色（如：FFFFFF  允许为空，颜色随机）
+    font-color:
+    #背景色（如：FFFFFF  允许为空，透明图无背景色；注意：闪图不支持透明背景色）
+    bg-color:
   #swagger相关配置
   swagger:
     enable: false
@@ -108,15 +114,22 @@ com.kg:
     client:
       clientId: dev
       clientSecret: qwer@123
-      redirectUri: http://localhost:8123/oauth2/client/login/code
-      #本地相关路径配置
-      oauthServerUri: http://localhost:8123/
-      errorRouter: http://localhost:9527/#/oauth2/error
-      successRouter: http://localhost:9527/#/oauth2/success
+      #回调地址
+      redirectUri: ${com.kg.apiBaseUrl}/oauth2/client/login/code
+      #第三方Oauth2服务端地址
+      oauthServerUri: ${com.kg.apiBaseUrl}/
+      #回调登录错误时，跳转前端错误页
+      errorRouter: http://localhost:9532/#/oauth2/error
+      #回调登录成功时，跳转前端成功页（处理本系统登录逻辑）
+      successRouter: http://localhost:9532/#/oauth2/success
+      #回调登录成功，但首次登录时，跳转到绑定用户界面
+      userBindRouter: http://localhost:9532/#/oauth2/bind
   #微信配置
   weixin:
-    appid: xxxxx
-    secret: xxxxx
+    #小程序配置(其中accessTokenUrl、jsCodeUrl、qrCodeUrl如需自定义，在此处配置即可覆盖默认值)
+    applet:
+      appid: xxxxx
+      secret: xxxxx
     #微信支付（商户号）配置（WxPayConfig.java）
     pay:
       #微信绑定的公众号appId
@@ -152,12 +165,54 @@ com.kg:
     returnUrl: http://www.xxxx.com/api/pay/alipay/returnUrl
   #百度OCR配置
   baidu:
+    host: https://aip.baidubce.com/oauth/2.0/token
     client-id: xxxxx
     client-secret: xxxxx
     grant-type: xxxxx
+  #短信通知相关配置
+  sms:
+    aliyun:
+      accessKeyId: xxxxx
+      accessKeySecret: xxxxx
+      endpoint: dysmsapi.aliyuncs.com
+      sign: 短信签名xxxxx
+  #rabbitmq配置
+  rabbitmq:
+    #是否启用
+    enable: false
+    #连接信息
+    host: xxx.xxx.xxx.xxx
+    port: 5672
+    username: xxxx
+    password: xxxx
+  #DDoS防护配置
+  ddos:
+    #是否启用
+    enable: false
+    #下面2个配置，结合使用（例如：5分钟内，限制200次请求）
+    #限制时间（单位：分钟）
+    time: 5
+    #限制时间内请求限制次数
+    limit: 200
+  oss:
+    aliyun:
+      #阿里云子账号AccessKey和Secret(至少要有oss权限和sts权限）
+      accessKeyId: xxxxx
+      accessKeySecret: xxxxx
+      endpoint: oss-cn-shanghai.aliyuncs.com
+      bucket: xxxxx
+      #上传地址，格式：https://bucketname.endpoint
+      host: https://xxxxx.oss-cn-shanghai.aliyuncs.com
+      #单次上传凭证的有效期，单位：秒
+      uploadTokenExpire: 300
+      #回调地址（oss上传成功后，回调到本系统的地址）
+      callbackUrl: ${com.kg.apiBaseUrl}/oss/client/upload/callback
+      #访问域名（默认和上传域名相同，若单独配置了域名，需在此处修改）
+      domain: ${com.kg.oss.aliyun.host}
+      #临时访问凭证有效期，单位：秒
+      stsExpire: 300
 
 #输出日志配置（日志级别：trace/debug/info/warn/error）
 logging.level:
   root: warn
-  com:
-    kg: warn
+  com.kg: warn
