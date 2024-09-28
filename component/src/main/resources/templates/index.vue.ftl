@@ -3,7 +3,9 @@
 		<!-- ${table.comment!}-管理按钮 -->
 		<div style="margin-bottom: 10px;">
 <#list table.fields as field>
-    <#if field.propertyName!=entityKeyName && field.propertyName!='orderIndex' && field.propertyName!='createTime' && field.propertyName!='updateTime'>
+    <#if field.propertyName!=entityKeyName && field.propertyName!='orderIndex'
+            && field.propertyName!='createUserId' && field.propertyName!='updateUserId'
+            && field.propertyName!='createTime' && field.propertyName!='updateTime'>
 	    <#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
 			<el-date-picker v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
 							type="date" class="filter-item" placeholder="请选择${field.comment}查询"/>
@@ -42,7 +44,8 @@
 		<el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange" v-loading="isLoading">
 			<el-table-column type="selection" width="50" align="center" header-align="center"/>
 <#list table.fields as field>
-    <#if field.propertyName!=entityKeyName && field.propertyName!='updateTime'>
+    <#if field.propertyName!=entityKeyName && field.propertyName!='updateTime'
+            && field.propertyName!='createUserId' && field.propertyName!='updateUserId'>
 			<el-table-column label="${field.comment}" prop="${field.propertyName}" align="center"/>
     </#if>
 </#list>
@@ -78,7 +81,9 @@
                       :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]">
 					<el-input-number v-model="temp.orderIndex" :min="0"/>
 				</el-form-item>
-	<#elseif field.propertyName!='createTime' && field.propertyName!='updateTime' && field.propertyName!=entityKeyName>
+	<#elseif field.propertyName!='createTime' && field.propertyName!='updateTime'
+                && field.propertyName!='createUserId' && field.propertyName!='updateUserId'
+                && field.propertyName!=entityKeyName>
 		<#--判断是否为null的规则-->
 		<#assign rules1=field.metaInfo.nullable?string("","{required: true, message: '" + field.comment + "不能为空'}")>
 		<#if field.propertyType=='String'>

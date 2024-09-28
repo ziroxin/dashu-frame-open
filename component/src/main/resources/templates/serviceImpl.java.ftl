@@ -9,6 +9,18 @@ import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelReadUtils;
 import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
+<#if (table.fields?exists) && (table.fields?size > 0)>
+    <#assign hasCreateOrUpdateUserId = false>
+    <#list table.fields as field>
+        <#if field.propertyName == "createUserId" || field.propertyName == "updateUserId">
+            <#assign hasCreateOrUpdateUserId = true>
+            <#break>
+        </#if>
+    </#list>
+    <#if hasCreateOrUpdateUserId>
+import com.kg.core.security.util.CurrentUserUtils;
+    </#if>
+</#if>
 <#if childTableList??>
     <#list childTableList as child>
 import ${packageBaseParent}.${child}.entity.${child?cap_first};
@@ -121,6 +133,9 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             <#if field.propertyName=="createTime">
         ${entity?uncap_first}.setCreateTime(LocalDateTime.now());
             </#if>
+            <#if field.propertyName=="createUserId">
+        ${entity?uncap_first}.setCreateUserId(CurrentUserUtils.getCurrentUser().getUserId());
+            </#if>
         </#list>
         save(${entity?uncap_first});
 <#if childTableList??>
@@ -151,6 +166,9 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         <#list table.fields as field>
             <#if field.propertyName=="updateTime">
         ${entity?uncap_first}.setUpdateTime(LocalDateTime.now());
+            </#if>
+            <#if field.propertyName=="updateUserId">
+        ${entity?uncap_first}.setUpdateUserId(CurrentUserUtils.getCurrentUser().getUserId());
             </#if>
         </#list>
         updateById(${entity?uncap_first});
@@ -270,7 +288,14 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         // 3. 保存
         List<${entity}> saveData = importData.stream().map(o -> {
             o.set${entityKeyName?cap_first}(GuidUtils.getUuid());
+<#list table.fields as field>
+    <#if field.propertyName=="createTime">
             o.setCreateTime(LocalDateTime.now());
+    </#if>
+    <#if field.propertyName=="createUserId">
+            o.setCreateUserId(CurrentUserUtils.getCurrentUser().getUserId());
+    </#if>
+</#list>
             return o;
         }).collect(Collectors.toList());
         ${table.mapperName?uncap_first}.saveList(saveData);

@@ -49,9 +49,9 @@ mybatis-plus:
 
 #自定义配置
 com.kg:
-  #配置本项目api接口地址
-  apiBaseUrl: http://58.57.95.202:18124/
-  #  apiBaseUrl: http://localhost:8124/
+  #配置本项目 页面地址 和 api接口地址
+  vueBaseUrl: http://localhost:9527
+  apiBaseUrl: ${com.kg.vueBaseUrl}/dashuserver
   #文件上传配置
   file:
     #允许上传的文件格式（防止攻击类脚本文件上传，以|结尾）
@@ -60,8 +60,8 @@ com.kg:
     image-extend: jpg|jpeg|png|gif|bpm|
     #图片自动压缩，压缩比率（0-1之间的小数，例如：0.6表示压缩为60%）
     image-quality: 0.6
-    #文件上传物理路径（文件保存的物理绝对路径;不要使用\；若使用docker部署，要配置容器内部路径，一般是/usr/local/springboot/））
-    save-path: e:/IdeaProjects/fwwbsyb/dashu-frame-open/component/target/myupload/files
+    #文件上传物理路径（文件保存的物理绝对路径;不要使用\；若使用docker部署，要配置容器内部路径，一般是/usr/local/springboot/）
+    save-path: E:/IdeaProjects/dashu/dashu-frame-open/module/target/myupload/files
     #文件路径映射（对外访问的路径，通过spring映射到物理路径;不要使用\;要在security.ignore放开）
     url-pre: /upload
   #登录常量配置
@@ -122,11 +122,11 @@ com.kg:
       #第三方Oauth2服务端地址
       oauthServerUri: ${com.kg.apiBaseUrl}/
       #回调登录错误时，跳转前端错误页
-      errorRouter: http://localhost:9532/#/oauth2/error
+      errorRouter: ${com.kg.vueBaseUrl}/#/oauth2/error
       #回调登录成功时，跳转前端成功页（处理本系统登录逻辑）
-      successRouter: http://localhost:9532/#/oauth2/success
+      successRouter: ${com.kg.vueBaseUrl}/#/oauth2/success
       #回调登录成功，但首次登录时，跳转到绑定用户界面
-      userBindRouter: http://localhost:9532/#/oauth2/bind
+      userBindRouter: ${com.kg.vueBaseUrl}/#/oauth2/bind
   #微信配置
   weixin:
     #小程序配置(其中accessTokenUrl、jsCodeUrl、qrCodeUrl如需自定义，在此处配置即可覆盖默认值)
