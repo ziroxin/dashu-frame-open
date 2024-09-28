@@ -31,13 +31,17 @@ public class ${entity}ExcelConstant {
 </#list>
         // 初始化导入字段
 <#list table.fields as field>
-    <#if field.propertyName!=entityKeyName && field.propertyName!='createTime' && field.propertyName!='updateTime'>
+    <#if field.propertyName!=entityKeyName
+        && field.propertyName!='createUserId' && field.propertyName!='updateUserId'
+        && field.propertyName!='createTime' && field.propertyName!='updateTime'>
         IMPORT_EXCEL_COLUMN.put("${field.comment}", "${field.propertyName}");
     </#if>
 </#list>
         // 初始化导入必填字段
 <#list table.fields as field>
-    <#if field.propertyName!=entityKeyName && field.propertyName!='createTime' && field.propertyName!='updateTime' && !field.metaInfo.nullable>
+    <#if field.propertyName!=entityKeyName && !field.metaInfo.nullable
+        && field.propertyName!='createUserId' && field.propertyName!='updateUserId'
+        && field.propertyName!='createTime' && field.propertyName!='updateTime'>
         IMPORT_REQUIRED_COLUMN.put("${field.propertyName}", "${field.comment}");
     </#if>
 </#list>
