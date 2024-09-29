@@ -49,8 +49,9 @@ mybatis-plus:
 
 #自定义配置
 com.kg:
-  #配置本项目api接口地址
-  apiBaseUrl: http://localhost:8123/dashuserver/
+  #配置本项目 页面地址 和 api接口地址
+  vueBaseUrl: http://localhost:9527
+  apiBaseUrl: ${com.kg.vueBaseUrl}/dashuserver
   #文件上传配置
   file:
     #允许上传的文件格式（防止攻击类脚本文件上传，以|结尾）
@@ -119,11 +120,11 @@ com.kg:
       #第三方Oauth2服务端地址
       oauthServerUri: ${com.kg.apiBaseUrl}/
       #回调登录错误时，跳转前端错误页
-      errorRouter: http://localhost:9532/#/oauth2/error
+      errorRouter: ${com.kg.vueBaseUrl}/#/oauth2/error
       #回调登录成功时，跳转前端成功页（处理本系统登录逻辑）
-      successRouter: http://localhost:9532/#/oauth2/success
+      successRouter: ${com.kg.vueBaseUrl}/#/oauth2/success
       #回调登录成功，但首次登录时，跳转到绑定用户界面
-      userBindRouter: http://localhost:9532/#/oauth2/bind
+      userBindRouter: ${com.kg.vueBaseUrl}/#/oauth2/bind
   #微信配置
   weixin:
     #小程序配置(其中accessTokenUrl、jsCodeUrl、qrCodeUrl如需自定义，在此处配置即可覆盖默认值)
@@ -149,8 +150,8 @@ com.kg:
       certPath: pems/apiclient_cert.pem
       #私钥pem地址(v3时需要)
       keyPath: pems/apiclient_key.pem
-      #支付结果通知地址（后台接口地址：http://www.xxxx.com/api/）
-      notifyUrl: http://www.xxxx.com/api/pay/wechat/payNotify
+      #支付结果通知地址
+      notifyUrl: ${com.kg.apiBaseUrl}/pay/wechat/payNotify
   #支付宝支付配置
   alipay:
     #应用id
@@ -159,10 +160,10 @@ com.kg:
     privateKey: xxxxx
     #支付宝的公钥（注意：非应用公钥）
     aliPayPublicKey: xxxxx
-    #支付结果通知地址（后台接口地址：http://www.xxxx.com/api/）
-    notifyUrl: http://www.xxxx.com/api/pay/alipay/payNotify
+    #支付结果通知地址
+    notifyUrl: ${com.kg.apiBaseUrl}/pay/alipay/payNotify
     #支付返回地址
-    returnUrl: http://www.xxxx.com/api/pay/alipay/returnUrl
+    returnUrl: ${com.kg.apiBaseUrl}/pay/alipay/returnUrl
   #百度OCR配置
   baidu:
     host: https://aip.baidubce.com/oauth/2.0/token
