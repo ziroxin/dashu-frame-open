@@ -93,10 +93,9 @@ export default {
       this.$confirm('此操作将永久删除该缓存, 是否继续?', '提示', {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
-        const data = this.cacheForm.key
-        console.log(data)
+        const params = {key: this.cacheForm.key}
         this.$request({
-          url: '/redis/cache/delete', method: 'post', data
+          url: '/redis/cache/delete', method: 'get', params
         }).then((response) => {
           this.$message({type: 'success', message: '删除成功!'})
           this.loadRedisCacheList()
