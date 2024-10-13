@@ -304,6 +304,14 @@ export default {
     // 打开查看窗口
     openView(row) {
       this.temp = Object.assign({}, row)
+<#if childTableList??>
+    <#list childTableList as child>
+      this.load${child}FileList()
+    </#list>
+</#if>
+<#if jsMethods??>
+      this.loadChkStr2Arr()
+</#if>
       this.dialogType = 'view'
       this.dialogFormVisible = true
       this.$nextTick(() => {
