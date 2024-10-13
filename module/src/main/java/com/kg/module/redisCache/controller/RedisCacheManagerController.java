@@ -3,7 +3,9 @@ package com.kg.module.redisCache.controller;
 import cn.hutool.json.JSONUtil;
 import com.kg.component.redis.RedisUtils;
 import com.kg.module.redisCache.dto.RedisCacheManagerDTO;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -39,8 +41,9 @@ public class RedisCacheManagerController {
                 }).collect(Collectors.toList());
     }
 
-    @PostMapping("/delete")
-    public void delete(@RequestBody String key) {
+    @GetMapping("/delete")
+    public void delete(String key) {
+        redisUtils.setExpire(key, 1l);
         redisUtils.delete(key);
         // 更新缓存列表（判断无效的key删除）
         redisUtils.updateSaveKeysList(null);
