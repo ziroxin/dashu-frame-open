@@ -67,9 +67,8 @@ public class TimeUtils {
      * 设置要操作的时间（默认字符串格式：yyyy-MM-dd HH:mm:ss）
      *
      * @param dateStr 时间字符串
-     * @throws ParseException 格式转换异常
      */
-    public static TimeUtils setTime(String dateStr) throws ParseException {
+    public static TimeUtils setTime(String dateStr) {
         return setTime(dateStr, "yyyy-MM-dd HH:mm:ss");
     }
 
@@ -78,7 +77,6 @@ public class TimeUtils {
      *
      * @param dateStr   时间字符串
      * @param formatStr 格式（如：yyyy-MM-dd HH:mm:ss 或者 yyyy-MM-dd'T'HH:mm:ss.SSS'Z'）
-     * @throws ParseException 格式转换异常
      */
     public static TimeUtils setTime(String dateStr, String formatStr) {
         try {
