@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -47,6 +48,15 @@ public class TimeUtils {
     /**
      * 设置要操作的时间
      *
+     * @param localDate 时间
+     */
+    public static TimeUtils setTime(LocalDate localDate) {
+        return setTime(localDate.atStartOfDay());
+    }
+
+    /**
+     * 设置要操作的时间
+     *
      * @param localDateTime 时间
      */
     public static TimeUtils setTime(LocalDateTime localDateTime) {
@@ -71,8 +81,12 @@ public class TimeUtils {
      * @throws ParseException 格式转换异常
      */
     public static TimeUtils setTime(String dateStr, String formatStr) throws ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat(formatStr);
-        return new TimeUtils(formatter.parse(dateStr).getTime());
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat(formatStr);
+            return new TimeUtils(formatter.parse(dateStr).getTime());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -165,7 +179,14 @@ public class TimeUtils {
     }
 
     /**
-     * 输出LocalDateTime格式日期
+     * 输出LocalDate格式日期
+     */
+    public LocalDate toLocalDate() {
+        return toLocalDateTime().toLocalDate();
+    }
+
+    /**
+     * 输出LocalDateTime格式时间
      */
     public LocalDateTime toLocalDateTime() {
         Instant instant = Instant.ofEpochMilli(this.timestamp);
