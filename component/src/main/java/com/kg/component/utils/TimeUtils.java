@@ -80,7 +80,7 @@ public class TimeUtils {
      * @param formatStr 格式（如：yyyy-MM-dd HH:mm:ss 或者 yyyy-MM-dd'T'HH:mm:ss.SSS'Z'）
      * @throws ParseException 格式转换异常
      */
-    public static TimeUtils setTime(String dateStr, String formatStr) throws ParseException {
+    public static TimeUtils setTime(String dateStr, String formatStr) {
         try {
             SimpleDateFormat formatter = new SimpleDateFormat(formatStr);
             return new TimeUtils(formatter.parse(dateStr).getTime());
