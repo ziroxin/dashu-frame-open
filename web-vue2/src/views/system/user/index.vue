@@ -73,7 +73,7 @@
           <el-table-column align="center" prop="introduce" label="简介" min-width="10%"/>
           <el-table-column fixed="right" align="center" label="操作" width="120px">
             <template v-slot="scope">
-              <el-button v-permission="'trade-busTrade-update'"
+              <el-button v-permission="'user-update'"
                          type="text" size="mini" @click="userUpdate(scope.row)"
               >修改
               </el-button>
@@ -92,7 +92,7 @@
                          type="text" size="mini" @click="changeStatus(0, scope.row)"
               >禁用
               </el-button>
-              <el-button v-permission="'trade-busTrade-delete'" style="color: #ff6d6d;"
+              <el-button v-permission="'user-delete'" style="color: #ff6d6d;"
                          type="text" size="mini" @click="userDelete(scope.row)"
               >删除
               </el-button>
