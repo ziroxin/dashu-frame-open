@@ -26,7 +26,6 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -84,13 +83,9 @@ public class DemoSmsServiceImpl extends ServiceImpl<DemoSmsMapper, DemoSms> impl
             }
             if (paramObj.containsKey("createTime")) {
                 if (StringUtils.hasText(paramObj.getStr("createTime"))) {
-                    try {
-                        String start = TimeUtils.setTime(paramObj.getStr("createTime"), "yyyy-MM-dd").toFormat("yyyy-MM-dd 00:00:00");
-                        String end = TimeUtils.setTime(paramObj.getStr("createTime"), "yyyy-MM-dd").toFormat("yyyy-MM-dd 23:59:59");
-                        wrapper.lambda().between(DemoSms::getCreateTime, start, end);
-                    } catch (ParseException e) {
-                        throw new BaseException("createTime时间格式不正确！");
-                    }
+                    String start = TimeUtils.setTime(paramObj.getStr("createTime"), "yyyy-MM-dd").toFormat("yyyy-MM-dd 00:00:00");
+                    String end = TimeUtils.setTime(paramObj.getStr("createTime"), "yyyy-MM-dd").toFormat("yyyy-MM-dd 23:59:59");
+                    wrapper.lambda().between(DemoSms::getCreateTime, start, end);
                 }
             }
         }
