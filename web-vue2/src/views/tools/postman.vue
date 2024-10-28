@@ -327,7 +327,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .el-checkbox__inner {
   width: 28px !important;
   height: 28px !important;
