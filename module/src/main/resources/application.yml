@@ -46,6 +46,10 @@ spring:
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
   type-aliases-package: com.kg.**.entity
+#mybatis热加载xml配置（注意：正式上线建议关闭，enabled: false）
+mybatis-xml-reload:
+  enabled: true
+  mapper-locations: classpath*:/mapper/**/*.xml
 
 #自定义配置
 com.kg:
