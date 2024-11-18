@@ -1,61 +1,71 @@
 <template>
-	<div class="app-container">
-		<!-- 用户主题配置-管理按钮 -->
-		<div style="margin-bottom: 10px;">
-			<el-input v-model="searchData.userId" size="small" style="width: 150px;margin-right: 10px;"
-					  		class="filter-item" placeholder="请输入用户id查询"/>
-			<el-button v-waves class="filter-item" type="primary" size="small"
-                 icon="el-icon-search" @click="searchBtnHandle">查询</el-button>
-			<el-button v-waves class="filter-item" type="info" size="small"
-                 icon="el-icon-refresh" @click="resetTableList">显示全部</el-button>
-			<div style="float: right;">
-				<el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
+  <div class="app-container">
+    <!-- 用户主题配置-管理按钮 -->
+    <div style="margin-bottom: 10px;">
+      <el-input v-model="searchData.userId" size="small" style="width: 150px;margin-right: 10px;"
+                class="filter-item" placeholder="请输入用户id查询"/>
+      <el-input v-model="searchData.userName" size="small" style="width: 150px;margin-right: 10px;"
+                class="filter-item" placeholder="请输入用户名查询"/>
+      <el-button v-waves class="filter-item" type="primary" size="small"
+                 icon="el-icon-search" @click="searchBtnHandle">查询
+      </el-button>
+      <el-button v-waves class="filter-item" type="info" size="small"
+                 icon="el-icon-refresh" @click="resetTableList">显示全部
+      </el-button>
+      <div style="float: right;">
+        <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                    v-permission="'userTheme-zUserTheme-delete'">删除
-				</el-button>
-			</div>
-		</div>
-		<!-- 用户主题配置-列表 -->
-		<el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange" v-loading="isLoading">
-			<el-table-column type="selection" width="50" align="center" header-align="center"/>
-			<el-table-column label="用户id" prop="userId" align="center"/>
-			<el-table-column label="主题内容json" prop="themeJson" align="center" show-overflow-tooltip/>
-			<el-table-column label="添加时间" prop="createTime" align="center"/>
-			<el-table-column label="修改时间" prop="updateTime" align="center"/>
-			<el-table-column fixed="right" label="操作" width="120" align="center">
-				<template v-slot="scope">
-					<el-button type="text" style="color: #13ce66;"
-							   size="small" @click="openView(scope.row)">详情</el-button>
-					<el-button v-permission="'userTheme-zUserTheme-delete'" style="color: #ff6d6d;"
-							   type="text" size="small" @click="deleteByIds(scope.row)">删除
-					</el-button>
-				</template>
-			</el-table-column>
-		</el-table>
-		<!-- 用户主题配置-分页 -->
-		<el-pagination style="text-align: center;margin-top:10px;" layout="total,prev,pager,next,sizes,jumper"
+        </el-button>
+      </div>
+    </div>
+    <!-- 用户主题配置-列表 -->
+    <el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange"
+              v-loading="isLoading">
+      <el-table-column type="selection" width="50" align="center" header-align="center"/>
+      <el-table-column label="用户名" prop="userName" align="center"/>
+      <el-table-column label="姓名" prop="name" align="center"/>
+      <el-table-column label="手机号" prop="phone" align="center"/>
+      <el-table-column label="昵称" prop="nickName" align="center"/>
+      <el-table-column label="主题内容json" prop="themeJson" align="center" show-overflow-tooltip/>
+      <el-table-column label="添加时间" prop="createTime" align="center"/>
+      <el-table-column label="修改时间" prop="updateTime" align="center"/>
+      <el-table-column fixed="right" label="操作" width="120" align="center">
+        <template v-slot="scope">
+          <el-button type="text" style="color: #13ce66;"
+                     size="small" @click="openView(scope.row)">详情
+          </el-button>
+          <el-button v-permission="'userTheme-zUserTheme-delete'" style="color: #ff6d6d;"
+                     type="text" size="small" @click="deleteByIds(scope.row)">删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 用户主题配置-分页 -->
+    <el-pagination style="text-align: center;margin-top:10px;" layout="total,prev,pager,next,sizes,jumper"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
                    @size-change="handleSizeChange"
-		/>
-		<!-- 添加修改弹窗 -->
-		<el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-				   :visible.sync="dialogFormVisible" @close="resetTemp" width="600px">
-			<el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
-				<el-form-item label="用户id" prop="userId"
+    />
+    <!-- 添加修改弹窗 -->
+    <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
+               :visible.sync="dialogFormVisible" @close="resetTemp" width="600px">
+      <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
+        <el-form-item label="用户id" prop="userId"
                       :rules="[{required: true, message: '用户id不能为空'}]">
-					<el-input v-model="temp.userId" placeholder="请输入用户id"/>
-				</el-form-item>
-				<el-form-item label="主题内容json" prop="themeJson">
-					<el-input v-model="temp.themeJson" :rules="[{required: true, message: '主题内容json不能为空'}]" type="textarea"
+          <el-input v-model="temp.userId" placeholder="请输入用户id"/>
+        </el-form-item>
+        <el-form-item label="主题内容json" prop="themeJson">
+          <el-input v-model="temp.themeJson" :rules="[{required: true, message: '主题内容json不能为空'}]"
+                    type="textarea"
                     placeholder="请输入主题内容json" autosize/>
-				</el-form-item>
-			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-				<el-button v-waves @click="dialogFormVisible=false">取消</el-button>
-			</div>
-		</el-dialog>
-	</div>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+        <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -124,11 +134,11 @@ export default {
       this.pager.page = page
       this.loadTableList()
     },
-	// 分页条数改变
-	handleSizeChange(size) {
+    // 分页条数改变
+    handleSizeChange(size) {
       this.pager.limit = size
       this.loadTableList()
-	},
+    },
     // 清空表单temp数据
     resetTemp() {
       this.temp = {orderIndex: 0}

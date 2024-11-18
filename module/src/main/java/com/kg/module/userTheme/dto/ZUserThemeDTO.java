@@ -1,13 +1,13 @@
 package com.kg.module.userTheme.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import com.kg.core.base.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 
 /**
@@ -30,6 +30,18 @@ public class ZUserThemeDTO implements BaseDTO {
 
     @ApiModelProperty("用户id")
     private String userId;
+
+    @ApiModelProperty("用户名")
+    private String userName;
+
+    @ApiModelProperty("姓名")
+    private String name;
+
+    @ApiModelProperty("手机号")
+    private String phone;
+
+    @ApiModelProperty("昵称")
+    private String nickName;
 
     @ApiModelProperty("主题内容json")
     private String themeJson;

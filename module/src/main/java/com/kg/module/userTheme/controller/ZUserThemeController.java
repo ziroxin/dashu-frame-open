@@ -1,7 +1,5 @@
 package com.kg.module.userTheme.controller;
 
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kg.component.utils.GuidUtils;
 import com.kg.core.annotation.AutoOperateLog;
@@ -60,33 +58,18 @@ public class ZUserThemeController {
         return null;
     }
 
-    //updateByUser
     @ApiOperation(value = "/userTheme/zUserTheme/updateByUser", notes = "新增-用户主题配置", httpMethod = "POST")
     @PostMapping("/updateByUser")
     public void updateByUser(@RequestBody ZUserThemeDTO zUserThemeDTO) throws BaseException {
         try {
             ZUser currentUser = CurrentUserUtils.getCurrentUser();
-            Optional<ZUserTheme> zUserTheme = zUserThemeService
-                    .lambdaQuery().eq(ZUserTheme::getUserId, currentUser.getUserId()).last("LIMIT 1").oneOpt();
-            if (zUserTheme.isPresent()) {
-                // 存在，更新
-                ZUserTheme theme = zUserTheme.get();
-                JSONObject oldJson = JSONUtil.parseObj(theme.getThemeJson());
-                JSONObject newJson = JSONUtil.parseObj(zUserThemeDTO.getThemeJson());
-                // 遍历newJson所有key，更新oldJson
-                for (String key : newJson.keySet()) {
-                    oldJson.set(key, newJson.get(key));
-                }
-                theme.setThemeJson(oldJson.toString());
-                theme.setUpdateTime(LocalDateTime.now());
-                zUserThemeService.updateById(theme);
-            } else {
-                // 不存在，新增
-                zUserThemeDTO.setThemeId(GuidUtils.getUuid());
-                zUserThemeDTO.setUserId(currentUser.getUserId());
-                zUserThemeDTO.setCreateTime(LocalDateTime.now());
-                zUserThemeService.add(zUserThemeDTO);
-            }
+            // 先删除
+            zUserThemeService.lambdaUpdate().eq(ZUserTheme::getUserId, currentUser.getUserId()).remove();
+            // 再新增
+            zUserThemeDTO.setThemeId(GuidUtils.getUuid());
+            zUserThemeDTO.setUserId(currentUser.getUserId());
+            zUserThemeDTO.setCreateTime(LocalDateTime.now());
+            zUserThemeService.add(zUserThemeDTO);
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException(e.getMessage() != null ? e.getMessage() : "新增失败！请重试");
