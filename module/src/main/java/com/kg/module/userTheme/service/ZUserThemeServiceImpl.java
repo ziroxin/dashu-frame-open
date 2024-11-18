@@ -10,6 +10,8 @@ import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelReadUtils;
 import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.core.zuser.entity.ZUser;
+import com.kg.core.zuser.service.IZUserService;
 import com.kg.module.userTheme.dto.ZUserThemeDTO;
 import com.kg.module.userTheme.dto.convert.ZUserThemeConvert;
 import com.kg.module.userTheme.entity.ZUserTheme;
@@ -25,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -40,6 +43,8 @@ public class ZUserThemeServiceImpl extends ServiceImpl<ZUserThemeMapper, ZUserTh
 
     @Resource
     private ZUserThemeConvert zUserThemeConvert;
+    @Resource
+    private IZUserService userService;
 
     /**
      * 分页列表
@@ -62,6 +67,16 @@ public class ZUserThemeServiceImpl extends ServiceImpl<ZUserThemeMapper, ZUserTh
             if (paramObj.containsKey("userId")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("userId")), ZUserTheme::getUserId, paramObj.getStr("userId"));
             }
+            if (paramObj.containsKey("userName")) {
+                List<ZUser> userList = userService.lambdaQuery()
+                        .like(ZUser::getUserName, paramObj.getStr("userName")).list();
+                if (userList != null && userList.size() > 0) {
+                    wrapper.lambda().in(ZUserTheme::getUserId,
+                            userList.stream().map(ZUser::getUserId).collect(Collectors.toList()));
+                } else {
+                    wrapper.lambda().eq(ZUserTheme::getUserId, "-0-");
+                }
+            }
             if (paramObj.containsKey("themeJson")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("themeJson")), ZUserTheme::getThemeJson, paramObj.getStr("themeJson"));
             }
@@ -75,8 +90,23 @@ public class ZUserThemeServiceImpl extends ServiceImpl<ZUserThemeMapper, ZUserTh
         //返回数据
         Page<ZUserTheme> pageEntity = page(pager, wrapper);
         Page<ZUserThemeDTO> result = new Page<>();
-        result.setRecords(
-                pageEntity.getRecords().stream().map(m -> zUserThemeConvert.entityToDto(m)).collect(Collectors.toList()));
+        if (pageEntity.getRecords() != null && pageEntity.getRecords().size() > 0) {
+            List<ZUser> userList = userService.lambdaQuery()
+                    .in(ZUser::getUserId, pageEntity.getRecords().stream().map(ZUserTheme::getUserId).collect(Collectors.toList()))
+                    .list();
+            result.setRecords(
+                    pageEntity.getRecords().stream().map(m -> {
+                        ZUserThemeDTO dto = zUserThemeConvert.entityToDto(m);
+                        Optional<ZUser> first = userList.stream().filter(u -> u.getUserId().equals(m.getUserId())).findFirst();
+                        if (first.isPresent()) {
+                            dto.setUserName(first.get().getUserName());
+                            dto.setName(first.get().getName());
+                            dto.setPhone(first.get().getPhone());
+                            dto.setNickName(first.get().getNickName());
+                        }
+                        return dto;
+                    }).collect(Collectors.toList()));
+        }
         result.setTotal(pageEntity.getTotal());
         return result;
     }
