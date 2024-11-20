@@ -135,7 +135,7 @@ com.kg:
   weixin:
     #小程序配置(其中accessTokenUrl、jsCodeUrl、qrCodeUrl如需自定义，在此处配置即可覆盖默认值)
     applet:
-      appid: xxxxx
+      appId: xxxxx
       secret: xxxxx
     #微信支付（商户号）配置（WxPayConfig.java）
     pay:
