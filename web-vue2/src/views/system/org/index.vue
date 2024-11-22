@@ -118,7 +118,7 @@ export default {
   methods: {
     // 显示全部
     resetTableList() {
-      this.searchData = {}
+      this.searchData = this.$options.data().searchData
       this.loadTableList()
     },
     // 加载表格

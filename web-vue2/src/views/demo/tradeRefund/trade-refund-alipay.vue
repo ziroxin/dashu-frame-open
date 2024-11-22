@@ -173,7 +173,7 @@ export default {
     // 显示全部
     resetTableList() {
       this.pager.page = 1
-      this.searchData = {}
+      this.searchData = this.$options.data().searchData
       this.loadTableList()
     },
     // 加载表格
