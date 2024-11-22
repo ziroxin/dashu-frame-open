@@ -250,7 +250,7 @@ export default {
     // 显示全部
     resetTableList() {
       this.pager.page = 1
-      this.searchData = {}
+      this.searchData = this.$options.data().searchData
       this.getUserList()
     },
     //查询用户列表
