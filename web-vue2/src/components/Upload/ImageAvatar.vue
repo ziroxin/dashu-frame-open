@@ -5,19 +5,18 @@
  -->
 <template>
   <div>
-    <el-upload ref="imageAvatar"
-               class="avatar-uploader"
-               :data="{'path':path}"
+    <el-upload ref="imageAvatar" class="avatar-uploader"
+               :headers="$store.getters.headerToken"
+               :data="{'path':folder}"
                :name="name"
                :action="action===''?$baseServer+'/upload/images':action"
                :show-file-list="false"
                :multiple="false"
                :before-upload="imgBeforeUpload"
                :on-success="imgUploadSuccess"
-               accept="image/*"
-    >
+               accept="image/*">
       <img v-if="dialogImageUrl" :src="dialogImageUrl" class="avatar">
-      <i v-else class="el-icon-plus avatar-uploader-icon" />
+      <i v-else class="el-icon-plus avatar-uploader-icon"/>
     </el-upload>
   </div>
 </template>
@@ -33,7 +32,7 @@ export default {
     // 上传接口地址
     action: {type: String, default: ''},
     // 上传文件路径，可为空
-    path: {type: String, default: ''},
+    folder: {type: String, default: ''},
     // 上传文件大小限制，单位：kb（默认1mb）
     limitSize: {type: Number, default: 1024}
   },

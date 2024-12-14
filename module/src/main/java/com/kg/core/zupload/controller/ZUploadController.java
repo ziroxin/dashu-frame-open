@@ -32,10 +32,10 @@ import java.util.List;
  */
 @Api(tags = "ZUploadController", value = "普通文件上传控制器", description = "普通文件上传控制器")
 @RestController
-@RequestMapping("upload")
+@RequestMapping("/upload")
 public class ZUploadController implements BaseController {
 
-    @ApiOperation(value = "upload/images", notes = "上传图片", httpMethod = "POST")
+    @ApiOperation(value = "/upload/images", notes = "上传图片", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "request", value = "请求", paramType = "query", required = false, dataType = "String"),
             @ApiImplicitParam(name = "path", value = "路径", paramType = "query", required = false, dataType = "String")
@@ -52,7 +52,7 @@ public class ZUploadController implements BaseController {
         }
     }
 
-    @ApiOperation(value = "upload/files", notes = "上传文件", httpMethod = "POST")
+    @ApiOperation(value = "/upload/files", notes = "上传文件", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "request", value = "请求", paramType = "query", required = false, dataType = "String"),
             @ApiImplicitParam(name = "path", value = "路径", paramType = "query", required = false, dataType = "String")
@@ -69,7 +69,7 @@ public class ZUploadController implements BaseController {
         }
     }
 
-    @ApiOperation(value = "upload/deleteFile", notes = "删除文件接口", httpMethod = "GET")
+    @ApiOperation(value = "/upload/deleteFile", notes = "删除文件接口", httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "fileUrl", value = "文件地址", paramType = "query", required = true, dataType = "String")
     })
@@ -78,7 +78,7 @@ public class ZUploadController implements BaseController {
         RemoveFileUtils.remove(fileUrl);
     }
 
-    @ApiOperation(value = "upload/preview", notes = "预览文件接口", httpMethod = "GET")
+    @ApiOperation(value = "/upload/preview", notes = "预览文件接口", httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "fileUrl", value = "文件地址", paramType = "query", required = true, dataType = "String")
     })

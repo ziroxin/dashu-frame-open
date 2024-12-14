@@ -28,6 +28,21 @@
           <el-button type="danger" icon="el-icon-question" plain>使用帮助</el-button>
         </a>
       </div>
+
+      <div style="margin-top: 100px;">
+        <el-divider><span style="color:red;">文件普通上传 - 使用自定义下载组件的DEMO</span></el-divider>
+        <div style="width: 600px;border:1px dashed #ccc;border-radius: 10px;padding: 10px;margin:20px auto;">
+          <file-upload v-model="uploadFileList"></file-upload>
+        </div>
+        <div style="display: flex;border:1px dashed #ccc;border-radius: 10px;padding: 10px;">
+          <el-button type="primary" plain style="margin-right: 10px;width:100px;">文件List</el-button>
+          <div style="display: flex;flex-direction: column;">
+            <div v-for="item in uploadFileList" type="info" style="font-size: 12px;color: #666;line-height: 20px;">
+              【文件名：{{ item.fileOldName }}】 - 【大小：{{ item.fileSize }}】 - 【地址：{{ item.fileUrl }}】
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- 文件分片上传 -->
@@ -152,7 +167,6 @@
         </a>
       </div>
     </div>
-
   </div>
 </template>
 <script>
@@ -161,13 +175,14 @@ import FileChunkResume from "@/components/Upload/FileChunkResume.vue";
 import FileSecond from "@/components/Upload/FileSecond.vue";
 import FileOssUpload from "@/components/Upload/FileOssUpload.vue";
 import JsonViewer from 'vue-json-viewer'
+import FileUpload from "@/components/Upload/FileUpload.vue";
 
 export default {
-  components: {FileOssUpload, FileSecond, FileChunkResume, PluploadChunk, JsonViewer},
+  components: {FileUpload, FileOssUpload, FileSecond, FileChunkResume, PluploadChunk, JsonViewer},
   data() {
     return {
       // 上传类型：normal=普通上传;chunk=分片上传;chunkResume=断点续传;second=秒传;oss=OSS上传（阿里云）
-      uploadType: 'oss',
+      uploadType: 'normal',
       // 是否拷贝：文件秒传
       isCopy: true,
       // oss上传的文件id
@@ -183,7 +198,29 @@ export default {
       },
       ossDemoFileName: '',
       ossDemoStsUrl: '',
-      ossDemoStsType: 'other'
+      ossDemoStsType: 'other',
+      // 文件上传列表（测试回显数据）
+      uploadFileList: [
+        {
+          "fileUrl": "/upload/files/20241214/2d0e2c8b4eee4250a53df3c9340041d0.jpg",
+          "fileOldName": "111.jpg",
+          "fileName": "2d0e2c8b4eee4250a53df3c9340041d0.jpg",
+          "fileExtend": "jpg",
+          "fileSize": 148522
+        }, {
+          "fileUrl": "/upload/files/20241214/2d0e2c8b4eee4250a53df3c9340041d0.jpg",
+          "fileOldName": "222.jpg",
+          "fileName": "2d0e2c8b4eee4250a53df3c9340041d0.jpg",
+          "fileExtend": "jpg",
+          "fileSize": 148522
+        }, {
+          "fileUrl": "/upload/files/20241214/2d0e2c8b4eee4250a53df3c9340041d0.jpg",
+          "fileOldName": "333.jpg",
+          "fileName": "2d0e2c8b4eee4250a53df3c9340041d0.jpg",
+          "fileExtend": "jpg",
+          "fileSize": 148522
+        },
+      ]
     }
   },
   watch: {
