@@ -7,9 +7,10 @@ import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
 import com.kg.core.security.entity.SecurityUserDetailEntity;
 import com.kg.core.security.util.CurrentUserUtils;
-import com.kg.core.zorg.entity.ZOrganization;
 import com.kg.core.zorg.service.ZOrganizationService;
+import com.kg.core.zrole.entity.ZRole;
 import com.kg.core.zuser.dto.MyUserDTO;
+import com.kg.core.zuser.dto.ZUserAllDTO;
 import com.kg.core.zuser.dto.ZUserRoleSaveDTO;
 import com.kg.core.zuser.entity.ZUser;
 import com.kg.core.zuser.service.IZUserService;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 用户个人中心接口
@@ -48,14 +49,14 @@ public class ZUserCurrentController {
     @GetMapping("user/getCurrentUser")
     public MyUserDTO getCurrentUser() {
         try {
+            ZUserAllDTO currentUser = CurrentUserUtils.getCurrentUserAll();
             // 用户基本资料
-            ZUserRoleSaveDTO user = userService.getUserById(CurrentUserUtils.getCurrentUser().getUserId());
+            ZUserRoleSaveDTO user = userService.getUserById(currentUser.getUserId());
             MyUserDTO myUserDTO = JSONUtil.toBean(JSONUtil.parseObj(user), MyUserDTO.class);
+            // 角色IDs
+            myUserDTO.setRoleId(currentUser.getRoleList().stream().map(ZRole::getRoleId).collect(Collectors.toList()));
             // 单位名称
-            Optional<ZOrganization> oneOpt = orgService.lambdaQuery().eq(ZOrganization::getOrgId, myUserDTO.getOrgId()).oneOpt();
-            if (oneOpt.isPresent()) {
-                myUserDTO.setOrgName(oneOpt.get().getOrgName());
-            }
+            myUserDTO.setOrgName(currentUser.getOrgName());
             // 是否绑定Oauth2的openId
             Long count = userBindService.lambdaQuery().eq(OauthClientUser::getUserId, myUserDTO.getUserId()).count();
             myUserDTO.setBind(count > 0 ? true : false);
