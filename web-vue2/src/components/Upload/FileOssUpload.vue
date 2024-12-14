@@ -1,18 +1,23 @@
+<!--
+ * Oss上传组件
+ * @Author: ziro
+ * @Date: 2024/12/14 16:00:40
+ -->
 <template>
-  <el-upload
-      class="upload-oss"
-      :action="ossTokenData.host"
-      :data="ossTokenData"
-      :before-upload="beforeUpload"
-      :on-success="handleSuccess"
-      :on-error="handleError"
-      :on-remove="handleRemove"
-      :multiple="multiple"
-      :limit="limit"
-      :accept="accept"
-      :show-file-list="showFileList"
-      :on-exceed="handleExceed"
-      :file-list="fileList">
+  <el-upload class="upload-oss"
+             :headers="$store.getters.headerToken"
+             :data="ossTokenData"
+             :action="ossTokenData.host"
+             :before-upload="beforeUpload"
+             :on-success="handleSuccess"
+             :on-error="handleError"
+             :on-remove="handleRemove"
+             :multiple="multiple"
+             :limit="limit"
+             :accept="accept"
+             :show-file-list="showFileList"
+             :on-exceed="handleExceed"
+             :file-list="fileList">
     <el-button size="small" type="primary">点击上传</el-button>
     <div slot="tip" class="el-upload__tip" v-if="showTip">
       只能上传【{{ accept.split(',').join('、').replaceAll('.', '') }}】文件，且不超过{{ maxSize }}

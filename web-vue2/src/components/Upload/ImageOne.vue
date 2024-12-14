@@ -13,7 +13,8 @@
     </el-dialog>
     <!-- 图片上传 -->
     <el-upload ref="imageOne"
-               :data="{'path':path}"
+               :headers="$store.getters.headerToken"
+               :data="{'path':folder}"
                :name="name"
                :action="action===''?$baseServer+'/upload/images':action"
                :file-list.sync="imgList"
@@ -24,8 +25,7 @@
                :on-remove="imgRemove"
                :class="value!==''?'hidden-btn':''"
                list-type="picture-card"
-               accept="image/*"
-    >
+               accept="image/*">
       <i class="el-icon-plus"/>
     </el-upload>
   </div>
@@ -42,7 +42,7 @@ export default {
     // 上传接口地址
     action: {type: String, default: ''},
     // 上传文件路径，可为空
-    path: {type: String, default: ''},
+    folder: {type: String, default: ''},
     // 上传文件大小限制，单位：kb（默认1mb）
     limitSize: {type: Number, default: 1024}
   },
@@ -127,11 +127,15 @@ export default {
 
   .img-text-info {
     position: absolute;
-    top: 24px;
+    bottom: 10%;
     left: 50%;
     transform: translateX(-50%);
-    color: rgba(255, 255, 255, 0.70);
-    font-size: 16px;
+    color: #ccc;
+    font-size: 14px;
+    background-color: #00000080;
+    padding: 10px 30px;
+    border-radius: 40px;
+    cursor: pointer;
   }
 }
 </style>
