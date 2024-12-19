@@ -56,20 +56,22 @@
                     <img class="yzmImg" :src="loginForm.codeBaseImage" @click="loadCaptcha">
                   </el-form-item>
 
-                  <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;"
-                             @click.native.prevent="handleLogin"
-                  >登 录
+                  <div class="remember-me">
+                    <el-checkbox v-model="loginForm.rememberMe" label="记住密码">记住密码</el-checkbox>
+                    <div><a href="#!" class="forgot-password-link">忘记密码？</a></div>
+                  </div>
+
+                  <el-button :loading="loading" type="primary" style="width:100%;"
+                             @click.native.prevent="handleLogin">登 录
                   </el-button>
                 </el-form>
 
-                <a href="#!" class="forgot-password-link">忘记密码?</a>
-                <a href="#!" class="forgot-password-link thirdparty-button" @click="showDialog=true">其他登录</a>
                 <p class="login-card-footer-text">
                   <template v-if="isRegisterOpen">
-                    还没有账号?
+                    <span style="color: #666;">还没有账号？</span>
                     <router-link to="register" class="text-reset">立即注册</router-link>
                   </template>
-                  <template v-else>&nbsp;</template>
+                  <a href="#!" class="forgot-password-link thirdparty-button" @click="showDialog=true">其他登录</a>
                 </p>
               </div>
             </div>
@@ -146,6 +148,12 @@ export default {
     }
   },
   mounted() {
+    if (localStorage.getItem('currentLoginUserData')) {
+      const userData = JSON.parse(localStorage.getItem('currentLoginUserData'))
+      this.loginForm.userName = userData.userName || ''
+      this.loginForm.password = userData.password || ''
+      this.loginForm.rememberMe = true
+    }
     if (this.loginForm.userName === '') {
       this.$refs.userName.focus()
     } else if (this.loginForm.password === '') {
@@ -204,47 +212,53 @@ export default {
           data.isEncrypt = true
           data.userName = encryptRSA(this.loginForm.userName)
           data.password = encryptRSA(this.loginForm.password)
-          this.$store.dispatch('user/login', data)
-              .then(() => {
-                const routerMode = this.$router.mode;
-                if (defaultSettings.showSettings) {
-                  // 登录成功，加载用户主题配置
-                  this.$request({
-                    url: '/userTheme/zUserTheme/getByUser', method: 'get'
-                  }).then((response) => {
-                    // 跳转
-                    if (routerMode === 'history') {
-                      location.href = location.href.split('/login')[0] + (this.redirect || '/') +
-                          (Object.keys(this.otherQuery).length === 0 ? '' : '?' + new URLSearchParams(this.otherQuery).toString())
-                    } else {
-                      location.hash = (this.redirect || '/') +
-                          (Object.keys(this.otherQuery).length === 0 ? '' : '?' + new URLSearchParams(this.otherQuery).toString())
-                    }
-                    this.loading = false
-                    // 刷新页面样式
-                    const {data} = response
-                    if (data) {
-                      Cookies.set('settings', data, {expires: new Date('9999-12-31T23:59:59')})
-                      if (routerMode !== 'history') location.reload()
-                    }
-                  })
+          this.$store.dispatch('user/login', data).then(() => {
+            if (this.loginForm.rememberMe) {
+              localStorage.setItem('currentLoginUserData', JSON.stringify({
+                userName: this.loginForm.userName,
+                password: this.loginForm.password
+              }))
+            } else {
+              localStorage.removeItem('currentLoginUserData')
+            }
+            const routerMode = this.$router.mode;
+            if (defaultSettings.showSettings) {
+              // 登录成功，加载用户主题配置
+              this.$request({
+                url: '/userTheme/zUserTheme/getByUser', method: 'get'
+              }).then((response) => {
+                // 跳转
+                if (routerMode === 'history') {
+                  location.href = location.href.split('/login')[0] + (this.redirect || '/') +
+                      (Object.keys(this.otherQuery).length === 0 ? '' : '?' + new URLSearchParams(this.otherQuery).toString())
                 } else {
-                  // 主题设置已禁用，直接跳转
-                  if (routerMode === 'history') {
-                    location.href = location.href.split('/login')[0] + (this.redirect || '/') +
-                        (Object.keys(this.otherQuery).length === 0 ? '' : '?' + new URLSearchParams(this.otherQuery).toString())
-                  } else {
-                    location.hash = (this.redirect || '/') +
-                        (Object.keys(this.otherQuery).length === 0 ? '' : '?' + new URLSearchParams(this.otherQuery).toString())
-                  }
-                  this.loading = false
+                  location.hash = (this.redirect || '/') +
+                      (Object.keys(this.otherQuery).length === 0 ? '' : '?' + new URLSearchParams(this.otherQuery).toString())
+                }
+                this.loading = false
+                // 刷新页面样式
+                const {data} = response
+                if (data) {
+                  Cookies.set('settings', data, {expires: new Date('9999-12-31T23:59:59')})
+                  if (routerMode !== 'history') location.reload()
                 }
               })
-              .catch(() => {
-                console.log('login error!')
-                this.loadCaptcha()
-                this.loading = false
-              })
+            } else {
+              // 主题设置已禁用，直接跳转
+              if (routerMode === 'history') {
+                location.href = location.href.split('/login')[0] + (this.redirect || '/') +
+                    (Object.keys(this.otherQuery).length === 0 ? '' : '?' + new URLSearchParams(this.otherQuery).toString())
+              } else {
+                location.hash = (this.redirect || '/') +
+                    (Object.keys(this.otherQuery).length === 0 ? '' : '?' + new URLSearchParams(this.otherQuery).toString())
+              }
+              this.loading = false
+            }
+          }).catch(() => {
+            console.log('login error!')
+            this.loadCaptcha()
+            this.loading = false
+          })
         } else {
           console.log('error submit!!')
           return false
@@ -349,6 +363,13 @@ a:hover {
     float: right;
     cursor: pointer;
     border-left: 1px solid #d5dae2;
+  }
+
+  .remember-me {
+    margin: 0 5px 15px 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .thirdparty-button {
