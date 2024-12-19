@@ -38,6 +38,7 @@ export default {
 <style lang="scss" scoped>
 .social-signup-container {
   margin: 20px 0;
+  text-align: center;
 
   .sign-btn {
     display: inline-block;

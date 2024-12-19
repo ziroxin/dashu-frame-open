@@ -100,6 +100,11 @@
                   </el-button>
                 </el-form>
                 <p class="login-card-footer-text">
+                  <span style="color: #666;">注册即代表同意</span>
+                  <a target="_blank" href="/protocol.html">《用户协议》</a>
+                  <a target="_blank" href="/protocol.html">《隐私协议》</a>
+                </p>
+                <p class="login-card-footer-text">
                   <router-link to="login" class="text-reset">返回登录</router-link>
                 </p>
               </div>
