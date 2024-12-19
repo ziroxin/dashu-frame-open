@@ -46,13 +46,28 @@
           绑定 Oauth2 信息
         </div>
       </el-divider>
-      <div v-if="this.temp.bind" style="width: 500px;text-align: center;margin: 50px auto;">
+      <div v-if="this.temp.oauthBind" style="width: 500px;text-align: center;margin: 50px auto;">
         <span style="color: #00a226;margin-right: 20px;">已绑定</span>
         <el-button type="danger" icon="el-icon-delete" @click="unBindOauthUser">解绑</el-button>
       </div>
       <div v-else style="width: 500px;text-align: center;color: #D7000F;margin: 50px auto;">
-        抱歉！您还没有绑定其他 “ Oauth2平台 ” 账号！
+        抱歉！您还没有绑定其他 “Oauth2平台” 账号！
       </div>
+    </div>
+
+    <!-- 绑定微信账号信息 -->
+    <div style="margin-top:60px;">
+      <el-divider>
+        <div class="title">
+          <el-icon class="el-icon-mobile"></el-icon>
+          绑定微信账号信息
+        </div>
+      </el-divider>
+      <div v-if="this.temp.wechatBind" style="width: 500px;text-align: center;margin: 50px auto;">
+        <span style="color: #00a226;margin-right: 20px;">已绑定</span>
+        <el-button type="danger" icon="el-icon-delete" @click="unBindWechat">解绑</el-button>
+      </div>
+      <div v-else style="width: 500px;text-align: center;color: #D7000F;margin: 50px auto;">未绑定</div>
     </div>
 
 
@@ -65,8 +80,7 @@
         </div>
       </el-divider>
       <el-button type="danger" icon="el-icon-setting" style="margin-top: 10px;"
-                 @click="showSettings=true">
-        显示主题设置
+                 @click="showSettings=true">显示主题设置
       </el-button>
     </div>
   </div>
@@ -142,10 +156,6 @@ export default {
         }
       })
     },
-    // 显示设置按钮
-    updateSettingsStatus() {
-
-    },
     // 解绑
     unBindOauthUser() {
       this.$confirm('确定要解绑【Oauth2平台】账号吗?', '取消绑定确认', {
@@ -155,9 +165,21 @@ export default {
         this.$request({
           url: '/oauth2/client/login/userUnbind', method: 'get'
         }).then((response) => {
-          this.$message({type: 'success', message: '用户解绑成功！'})
+          this.$message({type: 'success', message: '解绑成功！'})
           this.loadCurrentUser()
-          this.isEdit = false
+        })
+      })
+    },
+    unBindWechat() {
+      this.$confirm('确定要解绑微信吗?', '取消绑定确认', {
+        confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+      }).then(() => {
+        this.isLoading = true
+        this.$request({
+          url: '/applet/wechat2user/zUserWechat/userUnbind', method: 'get'
+        }).then((response) => {
+          this.$message({type: 'success', message: '解绑成功！'})
+          this.loadCurrentUser()
         })
       })
     }

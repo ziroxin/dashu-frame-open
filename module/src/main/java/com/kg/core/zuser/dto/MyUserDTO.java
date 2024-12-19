@@ -12,12 +12,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MyUserDTO extends ZUserRoleSaveDTO {
-    /**
-     * 用户部门
-     */
+    private static final long serialVersionUID = 1L;
+
+    /** 用户部门 */
     private String orgName;
-    /**
-     * 是否绑定Oauth2的openId
-     */
-    private boolean isBind;
+    /** 是否绑定Oauth2的openId */
+    private boolean isOauthBind;
+    /** 是否绑定微信openid */
+    private boolean isWechatBind;
 }

@@ -21,7 +21,7 @@
       </el-button>
     </div>
     <div style="margin-bottom: 10px;">
-      <el-tag size="small" style="width: 250px;margin-right: 10px;height: 33px;line-height: 33px;">
+      <el-tag size="small" style="min-width: 150px;margin-right: 10px;height: 33px;line-height: 33px;">
         {{ '当前字典：' + currentDictType.typeName }}
       </el-tag>
       <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"

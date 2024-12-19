@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kg.module.applet.wechat2user.mapper.ZUserWechatMapper">
+    <!-- 批量保存 -->
+    <insert id="saveList">
+        INSERT INTO z_user_wechat VALUES
+        <foreach collection="list" item="row" separator=",">
+            (
+            #{row.openid},
+            #{row.userId}
+            )
+        </foreach>
+    </insert>
+    <!-- 根据条件查询列表 -->
+    <select id="list" resultType="com.kg.module.applet.wechat2user.dto.ZUserWechatDTO">
+        SELECT * FROM z_user_wechat
+        WHERE 1=1
+        <if test="userId!= null and userId!= ''">
+            AND user_id = #{userId}
+        </if>
+        <if test="offset != null and limit != null">
+            LIMIT #{offset}, #{limit}
+        </if>
+    </select>
+    <!-- 根据条件查询总数 -->
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM z_user_wechat
+        WHERE 1=1
+        <if test="userId!= null and userId!= ''">
+            AND user_id = #{userId}
+        </if>
+    </select>
+</mapper>
