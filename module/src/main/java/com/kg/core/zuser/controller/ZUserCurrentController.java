@@ -7,13 +7,14 @@ import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
 import com.kg.core.security.entity.SecurityUserDetailEntity;
 import com.kg.core.security.util.CurrentUserUtils;
-import com.kg.core.zorg.service.ZOrganizationService;
 import com.kg.core.zrole.entity.ZRole;
 import com.kg.core.zuser.dto.MyUserDTO;
 import com.kg.core.zuser.dto.ZUserAllDTO;
 import com.kg.core.zuser.dto.ZUserRoleSaveDTO;
 import com.kg.core.zuser.entity.ZUser;
 import com.kg.core.zuser.service.IZUserService;
+import com.kg.module.applet.wechat2user.entity.ZUserWechat;
+import com.kg.module.applet.wechat2user.service.ZUserWechatService;
 import com.kg.module.oauth2.user.entity.OauthClientUser;
 import com.kg.module.oauth2.user.service.OauthClientUserService;
 import org.springframework.beans.BeanUtils;
@@ -37,16 +38,16 @@ public class ZUserCurrentController {
     @Resource
     private IZUserService userService;
     @Resource
-    private ZOrganizationService orgService;
+    private OauthClientUserService oauthClientUserService;
     @Resource
-    private OauthClientUserService userBindService;
+    private ZUserWechatService userWechatService;
     @Resource
     private RedisUtils redisUtils;
 
     /**
      * 获取当前用户个人信息
      */
-    @GetMapping("user/getCurrentUser")
+    @GetMapping("/user/getCurrentUser")
     public MyUserDTO getCurrentUser() {
         try {
             ZUserAllDTO currentUser = CurrentUserUtils.getCurrentUserAll();
@@ -58,8 +59,11 @@ public class ZUserCurrentController {
             // 单位名称
             myUserDTO.setOrgName(currentUser.getOrgName());
             // 是否绑定Oauth2的openId
-            Long count = userBindService.lambdaQuery().eq(OauthClientUser::getUserId, myUserDTO.getUserId()).count();
-            myUserDTO.setBind(count > 0 ? true : false);
+            Long count = oauthClientUserService.lambdaQuery().eq(OauthClientUser::getUserId, myUserDTO.getUserId()).count();
+            myUserDTO.setOauthBind(count > 0 ? true : false);
+            // 是否绑定微信
+            Long count_wechat = userWechatService.lambdaQuery().eq(ZUserWechat::getUserId, myUserDTO.getUserId()).count();
+            myUserDTO.setWechatBind(count_wechat > 0 ? true : false);
             return myUserDTO;
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,8 +74,7 @@ public class ZUserCurrentController {
     /**
      * 保存当前用户个人信息
      */
-
-    @PostMapping("user/saveCurrentUser")
+    @PostMapping("/user/saveCurrentUser")
     public void saveCurrentUser(@RequestBody ZUserRoleSaveDTO zUserRoleSaveDTO) throws BaseException {
         try {
             if (CurrentUserUtils.getCurrentUser().getUserId().equals(zUserRoleSaveDTO.getUserId())) {
