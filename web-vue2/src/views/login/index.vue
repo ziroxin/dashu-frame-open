@@ -67,11 +67,16 @@
                 </el-form>
 
                 <p class="login-card-footer-text">
+                  <span style="color: #666;">登录即代表同意</span>
+                  <a target="_blank" href="/protocol.html">《用户协议》</a>
+                  <a target="_blank" href="/protocol.html">《隐私协议》</a>
+                </p>
+                <p class="login-card-footer-text">
                   <template v-if="isRegisterOpen">
                     <span style="color: #666;">还没有账号？</span>
                     <router-link to="register" class="text-reset">立即注册</router-link>
                   </template>
-                  <a href="#!" class="forgot-password-link thirdparty-button" @click="showDialog=true">其他登录</a>
+                  <a class="forgot-password-link thirdparty-button" @click="showDialog=true">其他方式登录</a>
                 </p>
               </div>
             </div>
