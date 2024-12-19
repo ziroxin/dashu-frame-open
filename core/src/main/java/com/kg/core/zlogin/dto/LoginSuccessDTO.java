@@ -1,5 +1,6 @@
 package com.kg.core.zlogin.dto;
 
+import cn.hutool.json.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +15,7 @@ import java.util.Date;
 @Setter
 public class LoginSuccessDTO implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     // 登录成功信息
     private String successMsg;
     // 登录获得的Token
@@ -25,4 +26,6 @@ public class LoginSuccessDTO implements Serializable {
     private boolean isDefaultPassword;
     // 密码是否已过期失效（true：已过期，false：未过期）
     private boolean isInvalidPassword;
+    // 登录用户信息（默认不返回，根据需要自行返回）
+    private JSONObject userData;
 }
