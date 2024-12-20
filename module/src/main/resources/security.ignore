@@ -22,6 +22,7 @@
 /swagger-resources/**
 
 # 静态资源映射路径（上传文件）
+/upload/**
 /favicon.ico
 
 # Oauth2 统一认证登录页
