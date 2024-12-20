@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 /**
@@ -55,7 +56,11 @@ public class ZUserCurrentController {
             ZUserRoleSaveDTO user = userService.getUserById(currentUser.getUserId());
             MyUserDTO myUserDTO = JSONUtil.toBean(JSONUtil.parseObj(user), MyUserDTO.class);
             // 角色IDs
-            myUserDTO.setRoleId(currentUser.getRoleList().stream().map(ZRole::getRoleId).collect(Collectors.toList()));
+            if (LoginConstant.isDeveloper(currentUser.getUserId())) {
+                myUserDTO.setRoleId(Arrays.asList("isDeveloper"));
+            } else {
+                myUserDTO.setRoleId(currentUser.getRoleList().stream().map(ZRole::getRoleId).collect(Collectors.toList()));
+            }
             // 单位名称
             myUserDTO.setOrgName(currentUser.getOrgName());
             // 是否绑定Oauth2的openId
