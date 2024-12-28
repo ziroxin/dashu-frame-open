@@ -29,7 +29,8 @@ module.exports = {
     },
     proxy: {
       '/dashuserver': {
-        target: 'http://localhost:8124',
+        target: 'http://localhost:8125',
+        // target: 'https://yanshi.java119.cn/dashuserver',
         changeOrigin: true,
         pathRewrite: {"^/dashuserver": ""}
       }

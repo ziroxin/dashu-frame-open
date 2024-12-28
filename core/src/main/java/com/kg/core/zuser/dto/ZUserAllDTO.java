@@ -24,4 +24,19 @@ public class ZUserAllDTO extends ZUserDTO {
      * 所在部门
      */
     private String orgName;
+
+    /**
+     * 部门父级ID
+     */
+    private String orgParentId;
+
+    /**
+     * 部门路径ID
+     */
+    private String orgPath;
+
+    /**
+     * 部门层级
+     */
+    private Integer orgLevel;
 }

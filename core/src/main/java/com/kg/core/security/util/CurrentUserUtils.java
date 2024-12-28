@@ -71,6 +71,9 @@ public class CurrentUserUtils {
             ZOrganization org = staticZOrganizationService.getById(user.getOrgId());
             if (org != null) {
                 result.setOrgName(org.getOrgName());
+                result.setOrgParentId(org.getOrgParentId());
+                result.setOrgPath(org.getOrgPath());
+                result.setOrgLevel(org.getOrgLevel());
             }
             // 查询角色列表
             result.setRoleList(staticZUserRoleService.getRoleListByUserId(user.getUserId()));

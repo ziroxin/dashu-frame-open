@@ -1,6 +1,6 @@
 #端口
 server:
-  port: 8124
+  port: 8125
   servlet:
     #上下文
     context-path: /
@@ -30,7 +30,7 @@ spring:
     host: localhost
     port: 6379
     password:
-    database: 7
+    database: 0
   mvc:
     # 解决swagger2冲突，导致启动报错问题(@See：https://blog.csdn.net/mapboo/article/details/121568519)
     pathmatch.matching-strategy: ant_path_matcher
@@ -82,6 +82,8 @@ com.kg:
   cors-enable: false
   #默认操作日志，保存天数，默认：180天（定时任务自动删除旧日志）
   auto-operate-log: 180
+  #组织机构最大层级（-1表示无限级）
+  max-org-level: 3
   #验证码配置
   captcha:
     #类型枚举 ARITHMETIC-算数；CHINESE-中文；CHINESE_GIF-中文闪图；GIF-闪图；SPEC-常规

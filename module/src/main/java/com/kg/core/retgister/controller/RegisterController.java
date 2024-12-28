@@ -87,7 +87,7 @@ public class RegisterController {
     @ApiOperation(value = "/register/org/list", notes = "获取组织列表", httpMethod = "GET")
     @GetMapping("/org/list")
     public List<ZOrganizationTreeSelectDTO> listOrg() {
-        return orgService.treeForSelect(null);
+        return orgService.treeForSelect();
     }
 
     @ApiOperation(value = "/register/config/reg", notes = "获取注册开关", httpMethod = "GET")
