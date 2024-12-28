@@ -36,8 +36,8 @@
             <el-button v-permission="'zorg-zOrganization-update'" type="text" icon="el-icon-edit"
                        size="mini" @click="openUpdate(scope.row)">修改
             </el-button>
-            <el-button v-permission="'zorg-zOrganization-add'" type="text"
-                       size="mini" @click="openAdd(scope.row)">添加下级
+            <el-button v-permission="'zorg-zOrganization-add'" v-if="maxLevel===-1 || scope.row.orgLevel<maxLevel"
+                       type="text" size="mini" @click="openAdd(scope.row)">添加下级
             </el-button>
           </div>
         </template>
@@ -48,21 +48,20 @@
     </el-table>
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px"
-               style="width: 500px; margin-left: 50px;" :disabled="dialogType==='view'"
-      >
+      <el-form ref="dataForm" :model="temp" label-position="right" label-width="120px"
+               style="width: 600px;" :disabled="dialogType==='view'">
         <el-form-item label="组织机构名称" prop="orgName"
-                      :rules="[]"
-        >
+                      :rules="[{required: true, message: '组织机构名称不能为空'}]">
           <el-input v-model="temp.orgName" placeholder="请输入组织机构名称"/>
         </el-form-item>
-        <el-form-item label="父级ID" prop="orgParentId"
-                      :rules="[]"
-        >
-          <select-tree v-model="temp.orgParentId" empty-text="请选择" empty-value="-1"
-                       :props="{children: 'children', label: 'label'}"
-                       :data="treeSelectData" style="width: 400px;"
-          />
+        <el-form-item label="上级部门" prop="orgParentId" v-if="this.temp.orgId!==this.currentOrgId"
+                      :rules="[{required: true, message: '上级部门不能为空'}]">
+          <el-cascader v-model="temp.orgParentId" placeholder="请选择上级" style="width: 100%;"
+                       :options="treeSelectData" filterable
+                       :props="{value:'orgId',label:'orgName',checkStrictly:true,emitPath:false}"/>
+        </el-form-item>
+        <el-form-item label="上级部门" v-else>
+          <el-tag type="info">不能修改自己的上级部门</el-tag>
         </el-form-item>
         <el-form-item label="顺序" prop="orderIndex"
                       :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]"
@@ -108,14 +107,25 @@ export default {
       // 表单临时数据
       temp: {},
       // 下拉树-组织机构
-      treeSelectData: []
+      treeSelectData: [],
+      // 最大层级
+      maxLevel: 0,
+      // 当前用户的OrgId
+      currentOrgId: '',
     }
   },
   created() {
     this.loadTableList()
     this.resetTemp()
+    this.loadMaxLevel()
   },
   methods: {
+    loadMaxLevel() {
+      this.$request({url: '/zorg/zOrganization/getMaxLevel', method: 'get'}).then((response) => {
+        this.maxLevel = response.data.maxLevel
+        this.currentOrgId = response.data.currentOrgId
+      })
+    },
     // 显示全部
     resetTableList() {
       this.searchData = this.$options.data().searchData
@@ -131,12 +141,12 @@ export default {
       })
     },
     // 加载下拉选择框组织机构树
-    loadOrgTreeForSelect(parentId) {
-      let params = parentId === undefined ? {} : {parentId: parentId}
-      request({
-        url: '/zorg/zOrganization/treeForSelect', method: 'get', params
-      }).then((response) => {
+    loadParentTree() {
+      request({url: '/zorg/zOrganization/parentTree', method: 'get'}).then((response) => {
         this.treeSelectData = response.data
+        this.treeSelectData.forEach(item => {
+          if (item.orgId === '-1') item.orgName = '顶级部门'
+        })
       })
     },
     // 监听选中行
@@ -161,7 +171,7 @@ export default {
       this.dialogType = 'add'
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
-        this.loadOrgTreeForSelect()
+        this.loadParentTree()
       })
     },
     // 打开修改窗口
@@ -181,7 +191,7 @@ export default {
         this.dialogFormVisible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
-          this.loadOrgTreeForSelect()
+          this.loadParentTree()
         })
       }
     },

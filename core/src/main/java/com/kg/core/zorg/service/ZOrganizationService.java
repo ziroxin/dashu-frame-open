@@ -1,8 +1,8 @@
 package com.kg.core.zorg.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.kg.core.zorg.dto.ZOrganizationTreeSelectDTO;
 import com.kg.core.zorg.dto.ZOrganizationDTO;
+import com.kg.core.zorg.dto.ZOrganizationTreeSelectDTO;
 import com.kg.core.zorg.entity.ZOrganization;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
  * </p>
  *
  * @author ziro
- * @since 2023-01-11
+ * @since 2023-01-111
  */
 public interface ZOrganizationService extends IService<ZOrganization> {
 
@@ -36,9 +36,16 @@ public interface ZOrganizationService extends IService<ZOrganization> {
 
     /**
      * 下拉选择框组织机构树
-     *
-     * @param parentId 父级ID
-     * @return 下拉选择框组织机构树
      */
-    List<ZOrganizationTreeSelectDTO> treeForSelect(String parentId);
+    List<ZOrganizationTreeSelectDTO> treeForSelect();
+
+    /**
+     * 查询父级组织机构树
+     */
+    List<ZOrganizationDTO> parentTree();
+
+    /**
+     * 获取最大层级
+     */
+    Integer getMaxLevel();
 }

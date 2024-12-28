@@ -8,13 +8,16 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
-import com.kg.core.zorg.dto.ZOrganizationTreeSelectDTO;
+import com.kg.core.security.util.CurrentUserUtils;
 import com.kg.core.zorg.dto.ZOrganizationDTO;
+import com.kg.core.zorg.dto.ZOrganizationTreeSelectDTO;
 import com.kg.core.zorg.dto.convert.ZOrganizationConvert;
 import com.kg.core.zorg.entity.ZOrganization;
 import com.kg.core.zorg.excels.ZOrganizationExcelConstant;
 import com.kg.core.zorg.excels.ZOrganizationExcelOutDTO;
 import com.kg.core.zorg.mapper.ZOrganizationMapper;
+import com.kg.core.zuser.dto.ZUserAllDTO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -37,6 +40,10 @@ import java.util.stream.Collectors;
 public class ZOrganizationServiceImpl extends ServiceImpl<ZOrganizationMapper, ZOrganization> implements ZOrganizationService {
     @Resource
     private ZOrganizationConvert organizationConvert;
+
+    /** 组织机构最最大层级（-1表示无限制） */
+    @Value("${com.kg.max-org-level:-1}")
+    private Integer maxOrgLevel;
 
     /**
      * 导出Excel
@@ -140,35 +147,6 @@ public class ZOrganizationServiceImpl extends ServiceImpl<ZOrganizationMapper, Z
         }
     }
 
-    @Override
-    public List<ZOrganizationTreeSelectDTO> treeForSelect(String parentId) {
-        // 查询
-        List<ZOrganization> list = lambdaQuery()
-                .orderByAsc(ZOrganization::getOrgLevel)
-                .orderByAsc(ZOrganization::getOrderIndex).list();
-        List<ZOrganizationTreeSelectDTO> result = new ArrayList<>();
-        // 根据parentId查询
-        if (StringUtils.hasText(parentId)) {
-            // 取当前节点
-            Optional<ZOrganization> first = list.stream().filter(org -> org.getOrgId().equals(parentId)).findFirst();
-            if (first.isPresent()) {
-                ZOrganizationTreeSelectDTO cascaderDTO = new ZOrganizationTreeSelectDTO();
-                cascaderDTO.setValue(first.get().getOrgId());
-                cascaderDTO.setLabel(first.get().getOrgName());
-                if (list.stream().filter(org -> org.getOrgParentId() != null && org.getOrgParentId().equals(parentId)).count() > 0) {
-                    // 有子节点，迭代添加
-                    cascaderDTO.setChildren(getOrgChildrenForTreeSelect(list, parentId));
-                }
-                result.add(cascaderDTO);
-                return result;
-            }
-            return null;
-        } else {
-            // 取所有组织机构
-            return getOrgChildrenForTreeSelect(list, "-1");
-        }
-    }
-
     /**
      * 迭代处理组织机构树
      *
@@ -187,6 +165,37 @@ public class ZOrganizationServiceImpl extends ServiceImpl<ZOrganizationMapper, Z
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ZOrganizationTreeSelectDTO> treeForSelect() {
+        ZUserAllDTO user = CurrentUserUtils.getCurrentUserAll();
+        // 查询
+        List<ZOrganization> list = lambdaQuery().orderByAsc(ZOrganization::getOrgLevel)
+                .orderByAsc(ZOrganization::getOrderIndex).list();
+        List<ZOrganizationTreeSelectDTO> result = new ArrayList<>();
+        // 判断
+        if (user == null || !StringUtils.hasText(user.getOrgId())
+                || user.getOrgId().equals("-1") || user.getOrgLevel() <= 1) {
+            // 未登录，或当前用户为总管理员（当前用户的orgId=-1或者当前用户的orgLevel<=1代表总管理员），获取全部组织机构
+            return getOrgChildrenForTreeSelect(list, "-1");
+        } else {
+            // 登录，且非总管理员，获取当前部门及下级部门
+            String parentId = user.getOrgId();
+            Optional<ZOrganization> first = list.stream().filter(org -> org.getOrgId().equals(parentId)).findFirst();
+            if (first.isPresent()) {
+                ZOrganizationTreeSelectDTO cascaderDTO = new ZOrganizationTreeSelectDTO();
+                cascaderDTO.setValue(first.get().getOrgId());
+                cascaderDTO.setLabel(first.get().getOrgName());
+                if (list.stream().filter(org -> org.getOrgParentId() != null && org.getOrgParentId().equals(parentId)).count() > 0) {
+                    // 有子节点，迭代添加
+                    cascaderDTO.setChildren(getOrgChildrenForTreeSelect(list, parentId));
+                }
+                result.add(cascaderDTO);
+                return result;
+            }
+            return null;
+        }
     }
 
     /**
@@ -209,6 +218,70 @@ public class ZOrganizationServiceImpl extends ServiceImpl<ZOrganizationMapper, Z
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+
+
+    /**
+     * 查询父级组织机构树
+     */
+    @Override
+    public List<ZOrganizationDTO> parentTree() {
+        ZUserAllDTO user = CurrentUserUtils.getCurrentUserAll();
+        if (user == null) {
+            return null;
+        }
+        List<ZOrganization> allList = lambdaQuery().orderByAsc(ZOrganization::getOrgLevel)
+                .orderByAsc(ZOrganization::getOrderIndex).list();
+        if (user.getOrgId().equals("-1") || user.getOrgLevel() <= 1) {
+            // 总管理员（当前用户的orgId=-1或者当前用户的orgLevel<=1代表总管理员），获取全部父级
+            List<ZOrganizationDTO> result = parentTreeGetChildren(allList, "-1");
+            ZOrganizationDTO top = new ZOrganizationDTO();
+            top.setOrgId("-1");
+            top.setOrgName("顶级");
+            result.add(0, top);
+            return result;
+        } else {
+            // 非总管理员，获取当前部门及下级部门
+            List<ZOrganizationDTO> result = new ArrayList<>();
+            String parentId = user.getOrgId();
+            // 取当前节点
+            Optional<ZOrganization> first = allList.stream().filter(org -> org.getOrgId().equals(parentId)).findFirst();
+            if (first.isPresent()) {
+                ZOrganizationDTO orgDto = organizationConvert.entityToDto(first.get());
+                if (allList.stream().filter(org -> StringUtils.hasText(org.getOrgParentId())
+                        && org.getOrgParentId().equals(parentId)).count() > 0) {
+                    // 有子节点，迭代添加
+                    if (maxOrgLevel == -1 || orgDto.getOrgLevel() < (maxOrgLevel - 1)) {
+                        orgDto.setChildren(parentTreeGetChildren(allList, parentId));
+                    }
+                }
+                result.add(orgDto);
+                return result;
+            }
+
+        }
+        return null;
+    }
+
+    private List<ZOrganizationDTO> parentTreeGetChildren(List<ZOrganization> list, String parentId) {
+        return list.stream()
+                .filter(org -> org.getOrgParentId() != null && org.getOrgParentId().equals(parentId))
+                .map(org -> {
+                    ZOrganizationDTO dto = organizationConvert.entityToDto(org);
+                    if (list.stream().filter(o -> o.getOrgParentId() != null && o.getOrgParentId().equals(dto.getOrgId())).count() > 0) {
+                        // 有子节点，迭代添加
+                        if (maxOrgLevel == -1 || org.getOrgLevel() < (maxOrgLevel - 1)) {
+                            dto.setChildren(parentTreeGetChildren(list, dto.getOrgId()));
+                        }
+                    }
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Integer getMaxLevel() {
+        return maxOrgLevel;
     }
 
 }

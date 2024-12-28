@@ -8,6 +8,7 @@ import com.kg.component.utils.GuidUtils;
 import com.kg.component.utils.PasswordRegexUtils;
 import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
+import com.kg.core.security.util.CurrentUserUtils;
 import com.kg.core.zorg.entity.ZOrganization;
 import com.kg.core.zorg.service.ZOrganizationService;
 import com.kg.core.zsafety.entity.ZSafety;
@@ -29,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -67,6 +69,16 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
         paramObj.set("limit", limit);
         // 用户管理，排除开发管理员
         paramObj.set("developer", LoginConstant.DEVELOPER_USER_IDS.split(","));
+        // 未传orgId，默认取当前用户所在的部门及下级部门用户
+        if (!paramObj.containsKey("orgId") || !StringUtils.hasText(paramObj.getStr("orgId"))) {
+            ZUserAllDTO user = CurrentUserUtils.getCurrentUserAll();
+            if (user.getOrgId().equals("-1") || user.getOrgLevel() <= 1) {
+                // 总管理员（当前用户的orgId=-1或者当前用户的orgLevel<=1代表总管理员），获取全部组织机构
+            } else {
+                paramObj.set("orgId", CurrentUserUtils.getCurrentUser().getOrgId());
+                paramObj.set("isSelf", "self");
+            }
+        }
         result.setRecords(zUserMapper.getUserRoleList(paramObj));
         result.setTotal(zUserMapper.getUserRoleCount(paramObj));
         return result;

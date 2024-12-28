@@ -8,11 +8,12 @@ import com.kg.component.utils.GuidUtils;
 import com.kg.core.annotation.AutoOperateLog;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
+import com.kg.core.security.util.CurrentUserUtils;
 import com.kg.core.zorg.dto.ZOrganizationDTO;
-import com.kg.core.zorg.dto.ZOrganizationTreeSelectDTO;
 import com.kg.core.zorg.dto.convert.ZOrganizationConvert;
 import com.kg.core.zorg.entity.ZOrganization;
 import com.kg.core.zorg.service.ZOrganizationService;
+import com.kg.core.zuser.dto.ZUserAllDTO;
 import com.kg.core.zuser.entity.ZUser;
 import com.kg.core.zuser.service.IZUserService;
 import io.swagger.annotations.Api;
@@ -49,6 +50,16 @@ public class ZOrganizationController {
     @Resource
     private IZUserService userService;
 
+    @ApiOperation(value = "/zorg/zOrganization/getMaxLevel", notes = "获取最大层级", httpMethod = "GET")
+    @ApiImplicitParams({})
+    @GetMapping("/getMaxLevel")
+    public JSONObject getMaxLevel() {
+        JSONObject result = new JSONObject();
+        result.set("maxLevel", zOrganizationService.getMaxLevel());
+        result.set("currentOrgId", CurrentUserUtils.getCurrentUserAll().getOrgId());
+        return result;
+    }
+
     @ApiOperation(value = "/zorg/zOrganization/tree", notes = "组织机构树", httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "orgName", value = "名称模糊查询", paramType = "query", required = false, dataType = "String")
@@ -56,17 +67,25 @@ public class ZOrganizationController {
     @GetMapping("/tree")
     @PreAuthorize("hasAuthority('zorg:zOrganization:tree')")
     public List<ZOrganizationDTO> tree(@RequestParam(value = "orgName", required = false) String orgName) {
-        return zOrganizationService.tree(orgName, null);
+        ZUserAllDTO user = CurrentUserUtils.getCurrentUserAll();
+        if (user == null || !StringUtils.hasText(user.getOrgId())) {
+            return null;
+        }
+        if (user.getOrgId().equals("-1") || user.getOrgLevel() <= 1) {
+            // 总管理员（当前用户的orgId=-1或者当前用户的orgLevel<=1代表总管理员），获取全部组织机构
+            return zOrganizationService.tree(orgName, null);
+        } else {
+            // 非总管理员，获取当前用户所在组织及其下级组织
+            return zOrganizationService.tree(orgName, user.getOrgId());
+        }
     }
 
-    @ApiOperation(value = "/zorg/zOrganization/treeForSelect", notes = "下拉选择框组织机构树", httpMethod = "GET")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "parentId", value = "父级ID", paramType = "query", required = false, dataType = "String")
-    })
-    @GetMapping("/treeForSelect")
-    @PreAuthorize("hasAuthority('zorg:zOrganization:treeForSelect')")
-    public List<ZOrganizationTreeSelectDTO> treeForSelect(@RequestParam(value = "parentId", required = false) String parentId) {
-        return zOrganizationService.treeForSelect(parentId);
+    @ApiOperation(value = "/zorg/zOrganization/parentTree", notes = "查询父级组织机构树", httpMethod = "GET")
+    @ApiImplicitParams({})
+    @GetMapping("/parentTree")
+    @PreAuthorize("hasAuthority('zorg:zOrganization:parentTree')")
+    public List<ZOrganizationDTO> parentTree() {
+        return zOrganizationService.parentTree();
     }
 
     @ApiOperation(value = "/zorg/zOrganization/getById", notes = "详情-组织机构表", httpMethod = "GET")
