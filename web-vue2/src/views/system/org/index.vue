@@ -126,7 +126,7 @@ export default {
         this.currentOrgId = response.data.currentOrgId
       })
     },
-    // 显示全部
+    // 重置
     resetTableList() {
       this.searchData = this.$options.data().searchData
       this.loadTableList()

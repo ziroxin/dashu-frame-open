@@ -10,7 +10,7 @@
                  icon="el-icon-search" @click="searchBtnHandle">查询
       </el-button>
       <el-button v-waves class="filter-item" type="info" size="small"
-                 icon="el-icon-refresh" @click="resetTableList">显示全部
+                 icon="el-icon-refresh" @click="resetTableList">重置
       </el-button>
       <div style="float: right;">
         <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
@@ -140,7 +140,7 @@ export default {
       this.pager.page = 1
       this.loadTableList()
     },
-    // 显示全部
+    // 重置
     resetTableList() {
       this.pager.page = 1
       this.searchData = this.$options.data().searchData

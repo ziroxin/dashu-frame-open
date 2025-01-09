@@ -151,7 +151,7 @@ export default {
       this.pager.page = 1
       this.loadTableList()
     },
-    // 显示全部
+    // 重置
     resetTableList() {
       this.pager.page = 1
       this.searchData = this.$options.data().searchData
