@@ -82,3 +82,11 @@
 .el-range-separator {
   box-sizing: content-box;
 }
+
+// el-alert-弹窗宽度优化
+.el-message-box__wrapper {
+  .width800 {
+    width: 800px;
+    padding: 10px 10px 15px 10px;
+  }
+}
