@@ -93,6 +93,10 @@
 .el-range-separator {
   box-sizing: content-box; }
 
+.el-message-box__wrapper .width800 {
+  width: 800px;
+  padding: 10px 10px 15px 10px; }
+
 #app .main-container {
   min-height: 100%;
   transition: margin-left .28s;
