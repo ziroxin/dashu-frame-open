@@ -72,6 +72,7 @@ class PathInfoHandler {
         putPathInfo(templateConfig.getDtoconvert(), OutputFile.convert, ConstVal.DTOCONVERT);
         putPathInfo(templateConfig.getExcelConstant(), OutputFile.excelConstant, ConstVal.EXCEL_CONSTANT);
         putPathInfo(templateConfig.getExcelOut(), OutputFile.excelOut, ConstVal.EXCEL_OUT);
+        putPathInfo(templateConfig.getExcelImport(), OutputFile.excelImport, ConstVal.EXCEL_IMPORT);
         putPathInfo(templateConfig.getMapper(), OutputFile.mapper, ConstVal.MAPPER);
         putPathInfo(templateConfig.getXml(), OutputFile.xml, ConstVal.XML);
         putPathInfo(templateConfig.getService(), OutputFile.service, ConstVal.SERVICE);

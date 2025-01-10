@@ -60,7 +60,6 @@ public class ${dtoName} implements Serializable {
 public class ${dtoName} {
 </#if>
 <#if dtoSerialVersionUID>
-
     private static final long serialVersionUID = 1L;
 </#if>
 <#-- ----------  BEGIN 字段循环遍历  ---------->

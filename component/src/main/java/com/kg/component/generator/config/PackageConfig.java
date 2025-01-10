@@ -60,6 +60,7 @@ public class PackageConfig {
      */
     private String excelConstant = "excels";
     private String excelOut = "excels";
+    private String excelImport = "excels";
 
     /**
      * Service包名
@@ -143,6 +144,7 @@ public class PackageConfig {
             packageInfo.put(ConstVal.DTOCONVERT, this.joinPackage(this.getDtoconvert()));
             packageInfo.put(ConstVal.EXCEL_CONSTANT, this.joinPackage(this.getExcelConstant()));
             packageInfo.put(ConstVal.EXCEL_OUT, this.joinPackage(this.getExcelOut()));
+            packageInfo.put(ConstVal.EXCEL_IMPORT, this.joinPackage(this.getExcelImport()));
             packageInfo.put(ConstVal.MAPPER, this.joinPackage(this.getMapper()));
             packageInfo.put(ConstVal.XML, this.joinPackage(this.getXml()));
             packageInfo.put(ConstVal.SERVICE, this.joinPackage(this.getService()));
@@ -186,6 +188,10 @@ public class PackageConfig {
 
     public String getExcelOut() {
         return excelOut;
+    }
+
+    public String getExcelImport() {
+        return excelImport;
     }
 
     public String getService() {
@@ -306,6 +312,17 @@ public class PackageConfig {
          */
         public Builder excelOut(@NotNull String excelOut) {
             this.packageConfig.excelOut = excelOut;
+            return this;
+        }
+
+        /**
+         * 指定Excels包名
+         *
+         * @param excelImport Excels包名
+         * @return this
+         */
+        public Builder excelImport(@NotNull String excelImport) {
+            this.packageConfig.excelImport = excelImport;
             return this;
         }
 

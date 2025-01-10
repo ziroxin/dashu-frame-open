@@ -51,7 +51,6 @@ public class ${entity} implements Serializable {
 public class ${entity} {
 </#if>
 <#if entitySerialVersionUID>
-
     private static final long serialVersionUID = 1L;
 </#if>
 <#-- ----------  BEGIN 字段循环遍历  ---------->
