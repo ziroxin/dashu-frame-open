@@ -51,6 +51,7 @@ public class TemplateConfig {
      */
     private String excelConstant;
     private String excelOut;
+    private String excelImport;
 
     /**
      * 设置控制器模板路径
@@ -102,6 +103,7 @@ public class TemplateConfig {
         this.dtoconvert = ConstVal.TEMPLATE_DTOCONVERT;
         this.excelConstant = ConstVal.TEMPLATE_EXCEL_CONSTANT;
         this.excelOut = ConstVal.TEMPLATE_EXCEL_OUT;
+        this.excelImport = ConstVal.TEMPLATE_EXCEL_IMPORT;
         this.controller = ConstVal.TEMPLATE_CONTROLLER;
         this.indexVue = ConstVal.TEMPLATE_INDEXVUE;
         this.permissionSQL = ConstVal.TEMPLATE_PERMISSION_SQL;
@@ -168,6 +170,9 @@ public class TemplateConfig {
                     case EXCEL_OUT:
                         this.excelOut = null;
                         break;
+                    case EXCEL_IMPORT:
+                        this.excelImport = null;
+                        break;
                     case CONTROLLER:
                         this.controller = null;
                         break;
@@ -232,6 +237,10 @@ public class TemplateConfig {
 
     public String getExcelOut() {
         return excelOut;
+    }
+
+    public String getExcelImport() {
+        return excelImport;
     }
 
     public String getXml() {
@@ -395,6 +404,17 @@ public class TemplateConfig {
          */
         public Builder excelOut(@NotNull String excelOutTemplate) {
             this.templateConfig.excelOut = excelOutTemplate;
+            return this;
+        }
+
+        /**
+         * 设置ExcelImport模板路径
+         *
+         * @param excelImportTemplate excelImport模板路径
+         * @return this
+         */
+        public Builder excelImport(@NotNull String excelImportTemplate) {
+            this.templateConfig.excelImport = excelImportTemplate;
             return this;
         }
 

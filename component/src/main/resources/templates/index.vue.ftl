@@ -386,7 +386,8 @@ export default {
         this.dialogImportVisible = false
         this.loadTableList()
       } else {
-        this.$alert(response.message, "提示", {confirmButtonText: "确定", dangerouslyUseHTMLString: true});
+        this.$alert(response.message, "提示",
+            {confirmButtonText: "确定", dangerouslyUseHTMLString: true, customClass: 'width800'});
       }
     },
     // 导入Excel失败，取消loading状态

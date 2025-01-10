@@ -27,6 +27,7 @@ public enum OutputFile {
     convert,
     excelConstant,
     excelOut,
+    excelImport,
     service,
     serviceImpl,
     mapper,

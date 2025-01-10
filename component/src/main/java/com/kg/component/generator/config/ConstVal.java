@@ -34,6 +34,7 @@ public interface ConstVal {
     String DTOCONVERT = "Convert";
     String EXCEL_CONSTANT = "ExcelConstant";
     String EXCEL_OUT = "ExcelOut";
+    String EXCEL_IMPORT = "ExcelImport";
     String SERVICE = "Service";
     String SERVICE_IMPL = "ServiceImpl";
     String MAPPER = "Mapper";
@@ -80,6 +81,11 @@ public interface ConstVal {
      * Excel Out模板路径
      */
     String TEMPLATE_EXCEL_OUT = "/templates/excelout.java";
+
+    /**
+     * Excel Import模板路径
+     */
+    String TEMPLATE_EXCEL_IMPORT = "/templates/excelimport.java";
 
     /**
      * 控制器模板路径

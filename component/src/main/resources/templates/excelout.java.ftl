@@ -19,14 +19,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ${entity}ExcelOutDTO implements BaseDTO {
-
     private static final long serialVersionUID = 1L;
-
 <#list table.fields as field>
   <#if field.propertyName!=entityKeyName>
-    /**
-     * ${field.comment}
-     */
+
+    /** ${field.comment} */
 	<#if field.propertyType=="LocalDateTime">
     @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
 	</#if>
@@ -36,5 +33,4 @@ public class ${entity}ExcelOutDTO implements BaseDTO {
     private ${field.propertyType} ${field.propertyName};
   </#if>
 </#list>
-
 }

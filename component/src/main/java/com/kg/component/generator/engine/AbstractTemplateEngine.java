@@ -151,6 +151,14 @@ public abstract class AbstractTemplateEngine {
                 outputFile(new File(excelOutFile), objectMap, out, getConfigBuilder().getStrategyConfig().excels().isFileOverride());
             });
         }
+        // ExcelImport.java
+        String excelImportPath = getPathInfo(OutputFile.excelImport);
+        if (StringUtils.isNotBlank(excelImportPath)) {
+            getTemplateFilePath(TemplateConfig::getExcelImport).ifPresent(importer -> {
+                String excelImportFile = excelImportPath + File.separator + entityName + "ExcelImportDTO" + suffixJavaOrKt();
+                outputFile(new File(excelImportFile), objectMap, importer, getConfigBuilder().getStrategyConfig().excels().isFileOverride());
+            });
+        }
     }
 
     /**

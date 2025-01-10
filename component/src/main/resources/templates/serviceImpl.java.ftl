@@ -9,6 +9,7 @@ import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelReadUtils;
 import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.component.utils.StrTypeCheckUtils;
 <#if (table.fields?exists) && (table.fields?size > 0)>
     <#assign hasCreateOrUpdateUserId = false>
     <#list table.fields as field>
@@ -32,6 +33,7 @@ import ${package.Convert}.${dtoconvertName};
 import ${package.Entity}.${entity};
 import ${package.ExcelConstant}.${entity}ExcelConstant;
 import ${package.ExcelOut}.${entity}ExcelOutDTO;
+import ${package.ExcelImport}.${entity}ExcelImportDTO;
 import ${package.Mapper}.${table.mapperName};
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -259,8 +261,8 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     public String importExcel(HttpServletRequest request) {
         // 1. 读取导入数据
         int startRowIdx = 2;
-        List<${entity}> importData =
-                ExcelReadUtils.read(request, 1, startRowIdx, ${entity}.class, ${entity}ExcelConstant.IMPORT_EXCEL_COLUMN);
+        List<${entity}ExcelImportDTO> importData =
+                ExcelReadUtils.read(request, 1, startRowIdx, ${entity}ExcelImportDTO.class, ${entity}ExcelConstant.IMPORT_EXCEL_COLUMN);
         if (importData == null || importData.isEmpty()) {
             return "Excel文件中没有数据！";
         }
@@ -268,7 +270,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         String errorMsg = "";
         int currentRowIdx = startRowIdx;
         if (${entity}ExcelConstant.IMPORT_REQUIRED_COLUMN.size() > 0) {
-            for (${entity} entity : importData) {
+            for (${entity}ExcelImportDTO entity : importData) {
                 currentRowIdx++;
                 JSONObject rowData = JSONUtil.parseObj(entity);
                 List<String> emptyColName = new ArrayList<>();
@@ -280,13 +282,22 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
                 if (emptyColName.size() > 0) {
                     errorMsg += "第" + currentRowIdx + "行，必填字段[" + String.join(",", emptyColName) + "]不能为空！<br/>";
                 }
+<#list table.fields as field>
+    <#if field.propertyName=='orderIndex'>
+                // 检测数字格式
+                if (StringUtils.hasText(entity.getOrderIndex()) && !StrTypeCheckUtils.isNumeric(entity.getOrderIndex())) {
+                    errorMsg += "第" + currentRowIdx + "行，${field.comment}必须是数字！<br/>";
+                }
+    </#if>
+</#list>
             }
         }
         if (StringUtils.hasText(errorMsg)) {
             return errorMsg;
         }
         // 3. 保存
-        List<${entity}> saveData = importData.stream().map(o -> {
+        List<${entity}> saveData = importData.stream().map(obj -> {
+            ${entity} o = JSONUtil.toBean(JSONUtil.parseObj(obj), ${entity}.class);
             o.set${entityKeyName?cap_first}(GuidUtils.getUuid());
 <#list table.fields as field>
     <#if field.propertyName=="createTime">
