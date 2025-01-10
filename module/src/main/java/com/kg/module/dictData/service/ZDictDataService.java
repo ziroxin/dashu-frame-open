@@ -62,7 +62,7 @@ public interface ZDictDataService extends IService<ZDictData> {
      *
      * @param request 请求文件
      */
-    void importExcel(HttpServletRequest request);
+    String importExcel(HttpServletRequest request);
 
     /**
      * 获取全部字典（缓存redis）
@@ -73,4 +73,11 @@ public interface ZDictDataService extends IService<ZDictData> {
      * 清空数据字典缓存数据
      */
     void clearCache(String typeCode);
+
+    /**
+     * 下载导入模板
+     *
+     * @return 模板文件url
+     */
+    String downloadTemplate();
 }
