@@ -11,11 +11,13 @@ import com.kg.component.office.ExcelReadUtils;
 import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.redis.RedisUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.component.utils.StrTypeCheckUtils;
 import com.kg.core.common.constant.CacheConstant;
 import com.kg.module.dictData.dto.ZDictDataDTO;
 import com.kg.module.dictData.dto.convert.ZDictDataConvert;
 import com.kg.module.dictData.entity.ZDictData;
 import com.kg.module.dictData.excels.ZDictDataExcelConstant;
+import com.kg.module.dictData.excels.ZDictDataExcelImportDTO;
 import com.kg.module.dictData.excels.ZDictDataExcelOutDTO;
 import com.kg.module.dictData.mapper.ZDictDataMapper;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -69,8 +72,8 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
             }
             if (paramObj.containsKey("dictLabel")) {
                 wrapper.lambda().and(wr -> {
-                    wr.eq(StringUtils.hasText(paramObj.getStr("dictLabel")), ZDictData::getDictLabel, paramObj.getStr("dictLabel"))
-                            .or().eq(StringUtils.hasText(paramObj.getStr("dictLabel")), ZDictData::getDictValue, paramObj.getStr("dictLabel"));
+                    wr.like(StringUtils.hasText(paramObj.getStr("dictLabel")), ZDictData::getDictLabel, paramObj.getStr("dictLabel"))
+                            .or().like(StringUtils.hasText(paramObj.getStr("dictLabel")), ZDictData::getDictValue, paramObj.getStr("dictLabel"));
                 });
             }
             if (paramObj.containsKey("dictValue")) {
@@ -229,20 +232,88 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
      */
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public void importExcel(HttpServletRequest request) {
+    public String importExcel(HttpServletRequest request) {
         String typeCode = request.getParameter("typeCode");
         // 读取导入数据
-        List<ZDictData> importData =
-                ExcelReadUtils.read(request, 1, 2, ZDictData.class, ZDictDataExcelConstant.IMPORT_EXCEL_COLUMN);
-        // 处理数据
+        int startRowIdx = 2;
+        List<ZDictDataExcelImportDTO> importData =
+                ExcelReadUtils.read(request, 1, startRowIdx, ZDictDataExcelImportDTO.class, ZDictDataExcelConstant.IMPORT_EXCEL_COLUMN);
+        if (importData == null || importData.isEmpty()) {
+            return "Excel文件中没有数据！";
+        }
+        // 2. 必填字段校验
+        String errorMsg = "";
+        int currentRowIdx = startRowIdx;
+        if (ZDictDataExcelConstant.IMPORT_REQUIRED_COLUMN.size() > 0) {
+            for (ZDictDataExcelImportDTO entity : importData) {
+                currentRowIdx++;
+                JSONObject rowData = JSONUtil.parseObj(entity);
+                List<String> emptyColName = new ArrayList<>();
+                for (Map.Entry<String, String> col : ZDictDataExcelConstant.IMPORT_REQUIRED_COLUMN.entrySet()) {
+                    if (!StringUtils.hasText(rowData.getStr(col.getKey()))) {
+                        emptyColName.add(col.getValue());
+                    }
+                }
+                if (emptyColName.size() > 0) {
+                    errorMsg += "第" + currentRowIdx + "行，必填字段[" + String.join(",", emptyColName) + "]不能为空！<br/>";
+                }
+                // 检测数字格式
+                if (StringUtils.hasText(entity.getOrderIndex()) && !StrTypeCheckUtils.isNumeric(entity.getOrderIndex())) {
+                    errorMsg += "第" + currentRowIdx + "行，顺序必须是数字！<br/>";
+                }
+            }
+        }
+        if (StringUtils.hasText(errorMsg)) {
+            return errorMsg;
+        }
+
+        // 3. Excel表内查重
+        Map<String, Long> labelCountMap = importData.stream().map(ZDictDataExcelImportDTO::getDictLabel)
+                .collect(Collectors.groupingBy(e -> e, Collectors.counting()));
+        Map<String, Long> valueCountMap = importData.stream().map(ZDictDataExcelImportDTO::getDictValue)
+                .collect(Collectors.groupingBy(e -> e, Collectors.counting()));
+        currentRowIdx = startRowIdx;
+        for (ZDictDataExcelImportDTO entity : importData) {
+            currentRowIdx++;
+            if (labelCountMap.get(entity.getDictLabel()) != null && labelCountMap.get(entity.getDictLabel()) > 1) {
+                errorMsg += "第" + currentRowIdx + "行，数据标签[" + entity.getDictLabel() + "]在Excel表内重复！<br/>";
+            }
+            if (valueCountMap.get(entity.getDictValue()) != null && valueCountMap.get(entity.getDictValue()) > 1) {
+                errorMsg += "第" + currentRowIdx + "行，数据值[" + entity.getDictValue() + "]在Excel表内重复！<br/>";
+            }
+        }
+        if (StringUtils.hasText(errorMsg)) {
+            return errorMsg;
+        }
+
+        // 4. 数据库查重
+        List<ZDictData> list = lambdaQuery().eq(ZDictData::getTypeCode, typeCode).list();
+        currentRowIdx = startRowIdx;
+        for (ZDictDataExcelImportDTO entity : importData) {
+            currentRowIdx++;
+            if (list.stream().anyMatch(d -> d.getDictValue().equals(entity.getDictLabel()))) {
+                errorMsg += "第" + currentRowIdx + "行，数据标签已存在！<br/>";
+            }
+            if (list.stream().anyMatch(d -> d.getDictLabel().equals(entity.getDictValue()))) {
+                errorMsg += "第" + currentRowIdx + "行，数据值已存在！<br/>";
+            }
+        }
+        if (StringUtils.hasText(errorMsg)) {
+            return errorMsg;
+        }
+
+        // 5. 保存数据
         List<ZDictData> saveData = importData.stream().map(o -> {
-            o.setDictId(GuidUtils.getUuid());
-            o.setTypeCode(typeCode);
-            o.setCreateTime(LocalDateTime.now());
-            return o;
+            ZDictData entity = JSONUtil.toBean(JSONUtil.parseObj(JSONUtil.toJsonStr(o)), ZDictData.class);
+            entity.setDictId(GuidUtils.getUuid());
+            entity.setTypeCode(typeCode);
+            entity.setStatus("1");// 默认正常（0：停用，1：正常）
+            entity.setCreateTime(LocalDateTime.now());
+            return entity;
         }).collect(Collectors.toList());
         // 保存
         saveBatch(saveData);
+        return "";
     }
 
 
@@ -280,6 +351,29 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
                 });
             }
         }
+    }
+
+    /**
+     * 下载导入模板
+     *
+     * @return 模板文件url
+     */
+    @Override
+    public String downloadTemplate() {
+        try {
+            // 拼接下载Excel模板，保存的临时路径
+            String path = FilePathConfig.SAVE_PATH + "/importTemp/excel/"
+                    + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
+            // 第一行标题
+            String title = "数据字典-导入模板";
+            // 写入模板字段行
+            ExcelWriteUtils.writeTemplate(path, title, ZDictDataExcelConstant.IMPORT_EXCEL_COLUMN);
+            // 生成模板成功，返回模板地址
+            return FilePathConfig.switchUrl(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "error";
     }
 
 }

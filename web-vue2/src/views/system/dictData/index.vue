@@ -21,7 +21,7 @@
       </el-button>
     </div>
     <div style="margin-bottom: 10px;">
-      <el-tag size="small" style="min-width: 150px;margin-right: 10px;height: 33px;line-height: 33px;">
+      <el-tag size="small" style="min-width: 160px;margin-right: 10px;height: 33px;line-height: 33px;">
         {{ '当前字典：' + currentDictType.typeName }}
       </el-tag>
       <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
@@ -34,13 +34,9 @@
                  v-permission="'dictData-zDictData-delete'">删除
       </el-button>
       <div style="float: right;">
-        <el-upload v-permission="'dictData-zDictData-importExcel'" style="display: inline-block;margin: 0px 10px;"
-                   :action="$baseServer+'/dictData/zDictData/import/excel'"
-                   :headers="$store.getters.headerToken" :data="{typeCode:currentDictType.typeCode}"
-                   :on-success="importExcelSuccess" accept=".xls,.xlsx"
-                   :show-file-list="false" :auto-upload="true">
-          <el-button v-waves type="warning" icon="el-icon-upload2" size="small">导入</el-button>
-        </el-upload>
+        <el-button v-waves v-permission="'dictData-zDictData-importExcel'" @click="dialogImportVisible=true"
+                   type="primary" size="small" icon="el-icon-upload2">导入
+        </el-button>
         <el-button v-waves type="success" icon="el-icon-printer" @click="exportExcel" size="small"
                    v-permission="'dictData-zDictData-exportExcel'">导出
         </el-button>
@@ -50,27 +46,26 @@
     <el-table ref="dataTable" :data="tableData" stripe border :height="this.$windowHeight-270" v-loading="isLoading"
               @selection-change="handleTableSelectChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
-      <el-table-column label="字典code" prop="typeCode" align="center"/>
       <el-table-column label="数据标签" prop="dictLabel" align="center"/>
-      <el-table-column label="数据值" prop="dictValue" align="center"/>
-      <el-table-column label="状态" prop="status" align="center">
+      <el-table-column label="数据值" prop="dictValue" align="center" show-overflow-tooltip/>
+      <el-table-column label="状态" prop="status" align="center" width="60">
         <template v-slot="scope">
-          <el-tag :type="scope.row.status === '1' ? 'success' : 'danger'">
+          <el-tag :type="scope.row.status === '1' ? 'success' : 'danger'" size="mini">
             {{ scope.row.status === '1' ? '正常' : '停用' }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="顺序" prop="orderIndex" align="center"/>
+      <el-table-column label="顺序" prop="orderIndex" align="center" width="60"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template v-slot="scope">
           <el-button type="text" style="color: #13ce66;"
-                     size="small" @click="openView(scope.row)">详情
+                     size="mini" @click="openView(scope.row)">详情
           </el-button>
           <el-button v-permission="'dictData-zDictData-update'"
-                     type="text" size="small" @click="openUpdate(scope.row)">修改
+                     type="text" size="mini" @click="openUpdate(scope.row)">修改
           </el-button>
           <el-button v-permission="'dictData-zDictData-delete'" style="color: #ff6d6d;"
-                     type="text" size="small" @click="deleteByIds(scope.row)">删除
+                     type="text" size="mini" @click="deleteByIds(scope.row)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -116,6 +111,35 @@
         <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
       </div>
     </el-dialog>
+
+    <!-- 批量导入弹窗 -->
+    <el-dialog title="批量导入" :close-on-click-modal="false" :visible.sync="dialogImportVisible"
+               @close="dialogIndex++" width="600px" :key="'importDialog'+dialogIndex">
+      <el-form ref="importForm" label-width="120px" v-loading="isImportLoading">
+        <el-form-item label="下载模板：">
+          <el-button v-waves type="success" plain @click="downloadExcelTemplate"
+                     icon="el-icon-download" size="small">下载Excel模板
+          </el-button>
+        </el-form-item>
+        <el-divider></el-divider>
+        <el-form-item label="导入：">
+          <el-upload v-permission="'dictData-zDictData-importExcel'"
+                     :action="$baseServer+'/dictData/zDictData/import/excel'"
+                     :headers="$store.getters.headerToken" :data="{typeCode:currentDictType.typeCode}"
+                     :before-upload="beforeImportUpload" :on-error="importExcelError"
+                     :on-success="importExcelSuccess" accept=".xls,.xlsx"
+                     :show-file-list="false" :auto-upload="true">
+            <el-button v-waves type="primary" plain icon="el-icon-upload2" size="small">点击上传Excel并导入</el-button>
+          </el-upload>
+          <el-tag type="info" size="small">
+            说明：点击上方按钮上传Excel文件，上传成功后会自动开始导入！
+          </el-tag>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button v-waves @click="dialogImportVisible=false">关闭</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -123,6 +147,7 @@
 import waves from '@/directive/waves'
 import request from '@/utils/request'
 import {clearDictCache} from "@/api/dicts";
+import downloadUtil from '@/utils/download-util';
 
 export default {
   name: 'DictData',
@@ -146,7 +171,11 @@ export default {
       dialogFormVisible: false,
       // 表单临时数据
       temp: {},
-      isLoading: false
+      isLoading: false,
+      dialogIndex: 0,
+      // 导入弹窗
+      dialogImportVisible: false,
+      isImportLoading: false,
     }
   },
   created() {
@@ -177,9 +206,7 @@ export default {
       this.isLoading = true
       this.searchData.typeCode = this.currentDictType.typeCode
       const params = {...this.pager, params: JSON.stringify(this.searchData)};
-      request({
-        url: '/dictData/zDictData/list', method: 'get', params
-      }).then((response) => {
+      request({url: '/dictData/zDictData/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
         this.tableData = data.records
@@ -318,12 +345,27 @@ export default {
     },
     // 导入Excel成功，提示
     importExcelSuccess(response) {
-      if (response.code === '200') {
+      this.isImportLoading = false
+      if (response.message === 'Success') {
         this.$message({type: 'success', message: '导入成功！'})
+        this.dialogImportVisible = false
         this.loadTableList()
       } else {
-        this.$message({type: 'error', message: response.message})
+        this.$alert(response.message, "提示",
+            {confirmButtonText: "确定", dangerouslyUseHTMLString: true, customClass: 'width800'});
       }
+    },
+    // 导入Excel之前，显示loading
+    beforeImportUpload(file) {
+      this.isImportLoading = true
+    },
+    // 导入Excel失败，取消loading状态
+    importExcelError() {
+      this.isImportLoading = false
+    },
+    // 下载模板
+    downloadExcelTemplate() {
+      downloadUtil.download('/dictData/zDictData/import/downloadTemplate', {}, '字典数据-导入模板.xlsx')
     },
   }
 }

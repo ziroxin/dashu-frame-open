@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kg.core.annotation.AutoOperateLog;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
+import com.kg.core.web.ResponseResult;
 import com.kg.module.dictData.dto.ZDictDataDTO;
 import com.kg.module.dictData.dto.convert.ZDictDataConvert;
 import com.kg.module.dictData.entity.ZDictData;
@@ -13,6 +14,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -140,12 +142,28 @@ public class ZDictDataController {
     @PreAuthorize("hasAuthority('dictData:zDictData:import:excel')")
     @NoRepeatSubmit
     @AutoOperateLog(logMethod = "/dictData/zDictData/import/excel", logMsg = "导入数据字典")
-    public void importExcel(HttpServletRequest request) throws BaseException {
+    public ResponseResult importExcel(HttpServletRequest request) throws BaseException {
         try {
-            zDictDataService.importExcel(request);
+            String result = zDictDataService.importExcel(request);
+            if (StringUtils.hasText(result)) {
+                // 导入失败，返回错误提示信息
+                return ResponseResult.builder().code("200").message(result).build();
+            } else {
+                return ResponseResult.success();
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new BaseException("导入Excel失败，请重试！");
+            throw new BaseException(e.getMessage() != null ? e.getMessage() : "导入Excel失败，请重试！");
         }
+    }
+
+    @ApiOperation(value = "/dictData/zDictData/import/downloadTemplate", notes = "下载导入模板-字典数据", httpMethod = "GET")
+    @GetMapping("/import/downloadTemplate")
+    public String downloadTemplate() throws BaseException {
+        String result = zDictDataService.downloadTemplate();
+        if ("error".equals(result)) {
+            throw new BaseException("下载导入模板失败，请重试！");
+        }
+        return result;
     }
 }
