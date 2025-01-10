@@ -16,7 +16,7 @@
       <el-button v-waves class="filter-item" type="info" size="small"
                  icon="el-icon-refresh" @click="resetTableList">重置
       </el-button>
-      <el-button v-waves class="filter-item" type="danger" size="small" style="float: right;"
+      <el-button v-waves class="filter-item" type="danger" size="small" style="float: right;width: 156px;"
                  @click="clearDictCache(currentDictType.typeCode)" icon="el-icon-refresh-right">更新当前字典缓存
       </el-button>
     </div>
