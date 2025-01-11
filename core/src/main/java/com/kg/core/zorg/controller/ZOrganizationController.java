@@ -4,11 +4,11 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.kg.component.utils.GuidUtils;
 import com.kg.core.annotation.AutoOperateLog;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.core.security.util.CurrentUserUtils;
+import com.kg.core.web.ResponseResult;
 import com.kg.core.zorg.dto.ZOrganizationDTO;
 import com.kg.core.zorg.dto.convert.ZOrganizationConvert;
 import com.kg.core.zorg.entity.ZOrganization;
@@ -25,10 +25,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * <p>
@@ -158,33 +157,10 @@ public class ZOrganizationController {
                     .eq(ZOrganization::getOrgName, zOrganizationDTO.getOrgName()).exists()) {
                 throw new BaseException("新增失败！组织机构名称重复，请重试");
             }
-            // 保存
-            ZOrganization zOrganization = zOrganizationConvert.dtoToEntity(zOrganizationDTO);
-            zOrganization.setOrgId(GuidUtils.getUuid32());
-            if (StringUtils.hasText(zOrganization.getOrgParentId()) && !"-1".equals(zOrganization.getOrgParentId())) {
-                // 有父级，取父级路径
-                Optional<ZOrganization> oneOpt = zOrganizationService.lambdaQuery().eq(ZOrganization::getOrgId, zOrganization.getOrgParentId()).oneOpt();
-                if (oneOpt.isPresent()) {
-                    ZOrganization parent = oneOpt.get();
-                    String parentPath = StringUtils.hasText(parent.getOrgPath()) ? parent.getOrgPath() + "." : "";
-                    zOrganization.setOrgPath(parentPath + zOrganization.getOrgId());
-                } else {
-                    throw new BaseException("新增失败！您选择的父级不正确，请重试");
-                }
-            } else {
-                zOrganization.setOrgParentId("-1");
-                zOrganization.setOrgPath(zOrganization.getOrgId());
-            }
-            int pathLevel = StringUtils.hasText(zOrganization.getOrgPath()) ? zOrganization.getOrgPath().split("\\.").length : 0;
-            zOrganization.setOrgLevel(pathLevel);
-            zOrganization.setCreateTime(LocalDateTime.now());
-            zOrganizationService.save(zOrganization);
-        } catch (BaseException e) {
-            e.printStackTrace();
-            throw new BaseException(e.getMessage());
+            zOrganizationService.add(zOrganizationDTO);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new BaseException("新增失败！请重试");
+            throw new BaseException(StringUtils.hasText(e.getMessage()) ? e.getMessage() : "新增失败！请重试");
         }
     }
 
@@ -201,32 +177,10 @@ public class ZOrganizationController {
                     .ne(ZOrganization::getOrgId, zOrganizationDTO.getOrgId()).exists()) {
                 throw new BaseException("修改失败！组织机构名称重复，请重试");
             }
-            // 保存
-            ZOrganization zOrganization = zOrganizationConvert.dtoToEntity(zOrganizationDTO);
-            if (StringUtils.hasText(zOrganization.getOrgParentId()) && !"-1".equals(zOrganization.getOrgParentId())) {
-                // 有父级，取父级路径
-                Optional<ZOrganization> oneOpt = zOrganizationService.lambdaQuery().eq(ZOrganization::getOrgId, zOrganization.getOrgParentId()).oneOpt();
-                if (oneOpt.isPresent()) {
-                    ZOrganization parent = oneOpt.get();
-                    String parentPath = StringUtils.hasText(parent.getOrgPath()) ? parent.getOrgPath() + "." : "";
-                    zOrganization.setOrgPath(parentPath + zOrganization.getOrgId());
-                } else {
-                    throw new BaseException("新增失败！您选择的父级不正确，请重试");
-                }
-            } else {
-                zOrganization.setOrgParentId("-1");
-                zOrganization.setOrgPath(zOrganization.getOrgId());
-            }
-            int pathLevel = StringUtils.hasText(zOrganization.getOrgPath()) ? zOrganization.getOrgPath().split("\\.").length : 0;
-            zOrganization.setOrgLevel(pathLevel);
-            zOrganization.setUpdateTime(LocalDateTime.now());
-            zOrganizationService.updateById(zOrganization);
-        } catch (BaseException e) {
-            e.printStackTrace();
-            throw new BaseException(e.getMessage());
+            zOrganizationService.update(zOrganizationDTO);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new BaseException("修改失败！请重试");
+            throw new BaseException(StringUtils.hasText(e.getMessage()) ? e.getMessage() : "修改失败！请重试");
         }
     }
 
@@ -264,6 +218,39 @@ public class ZOrganizationController {
         String result = zOrganizationService.exportExcel(params);
         if ("error".equals(result)) {
             throw new BaseException("导出Excel失败，请重试！");
+        }
+        return result;
+    }
+
+    @ApiOperation(value = "/zorg/zOrganization/import/excel", notes = "导入excel-组织机构表", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "request", value = "请求", paramType = "query", required = false, dataType = "HttpServletRequest")
+    })
+    @PostMapping("/import/excel")
+    @PreAuthorize("hasAuthority('zorg:zOrganization:import:excel')")
+    @NoRepeatSubmit
+    @AutoOperateLog(logMethod = "/zorg/zOrganization/import/excel", logMsg = "导入组织机构")
+    public ResponseResult importExcel(HttpServletRequest request) throws BaseException {
+        try {
+            String result = zOrganizationService.importExcel(request);
+            if (StringUtils.hasText(result)) {
+                // 导入失败，返回错误提示信息
+                return ResponseResult.builder().code("200").message(result).build();
+            } else {
+                return ResponseResult.success();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BaseException(e.getMessage() != null ? e.getMessage() : "导入Excel失败，请重试！");
+        }
+    }
+
+    @ApiOperation(value = "/zorg/zOrganization/import/downloadTemplate", notes = "下载导入模板-组织机构表", httpMethod = "GET")
+    @GetMapping("/import/downloadTemplate")
+    public String downloadTemplate() throws BaseException {
+        String result = zOrganizationService.downloadTemplate();
+        if ("error".equals(result)) {
+            throw new BaseException("下载导入模板失败，请重试！");
         }
         return result;
     }
