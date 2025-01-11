@@ -1,37 +1,40 @@
 <template>
-	<div class="app-container">
-		<!-- ddos用户请求记录-管理按钮 -->
-		<div style="margin-bottom: 10px;">
-			<el-input v-model="searchData.userIp" size="small" style="width: 100px;margin-right: 10px;"
-					  		class="filter-item" placeholder="用户IP"/>
-			<el-input v-model="searchData.requestCount" size="small" style="width: 200px;margin-right: 10px;"
-					  		class="filter-item" placeholder="请求次数超过多少的"/>
-			<el-button v-waves class="filter-item" type="primary" size="small"
-                 icon="el-icon-search" @click="searchBtnHandle">查询</el-button>
-			<el-button v-waves class="filter-item" type="info" size="small"
-                 icon="el-icon-refresh" @click="resetTableList">重置</el-button>
+  <div class="app-container">
+    <!-- ddos用户请求记录-管理按钮 -->
+    <div style="margin-bottom: 10px;">
+      <el-input v-model="searchData.userIp" size="small" style="width: 100px;margin-right: 10px;"
+                class="filter-item" placeholder="用户IP"/>
+      <el-input v-model="searchData.requestCount" size="small" style="width: 200px;margin-right: 10px;"
+                class="filter-item" placeholder="请求次数超过多少的"/>
+      <el-button v-waves class="filter-item" type="primary" size="small"
+                 icon="el-icon-search" @click="searchBtnHandle">查询
+      </el-button>
+      <el-button v-waves class="filter-item" type="info" size="small"
+                 icon="el-icon-refresh" @click="resetTableList">重置
+      </el-button>
       <div style="float: right;">
         <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                    v-permission="'ddos-zDdos-delete'">删除
         </el-button>
       </div>
-		</div>
-		<!-- ddos用户请求记录-列表 -->
-		<el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange" v-loading="isLoading">
-			<el-table-column type="selection" width="50" align="center" header-align="center"/>
-			<el-table-column label="用户IP" prop="userIp" align="center"/>
-			<el-table-column label="请求次数" prop="requestCount" align="center"/>
-			<el-table-column label="限制配置" prop="limitJson" align="center"/>
-			<el-table-column label="userId" prop="userId" align="center"/>
-			<el-table-column label="记录时间" prop="createTime" align="center"/>
-		</el-table>
-		<!-- ddos用户请求记录-分页 -->
-		<el-pagination style="text-align: center;margin-top:10px;" layout="total,prev,pager,next,sizes,jumper"
+    </div>
+    <!-- ddos用户请求记录-列表 -->
+    <el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange"
+              v-loading="isLoading">
+      <el-table-column type="selection" width="50" align="center" header-align="center"/>
+      <el-table-column label="用户IP" prop="userIp" align="center"/>
+      <el-table-column label="请求次数" prop="requestCount" align="center"/>
+      <el-table-column label="限制配置" prop="limitJson" align="center"/>
+      <el-table-column label="userId" prop="userId" align="center"/>
+      <el-table-column label="记录时间" prop="createTime" align="center"/>
+    </el-table>
+    <!-- ddos用户请求记录-分页 -->
+    <el-pagination style="text-align: center;margin-top:10px;" layout="total,prev,pager,next,sizes,jumper"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
                    @size-change="handleSizeChange"
-		/>
-	</div>
+    />
+  </div>
 </template>
 
 <script>
@@ -83,9 +86,7 @@ export default {
     loadTableList() {
       this.isLoading = true
       const params = {...this.pager, params: JSON.stringify(this.searchData)};
-      request({
-        url: '/ddos/zDdos/list', method: 'get', params
-      }).then((response) => {
+      request({url: '/ddos/zDdos/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
         this.tableData = data.records
@@ -101,11 +102,11 @@ export default {
       this.pager.page = page
       this.loadTableList()
     },
-	// 分页条数改变
-	handleSizeChange(size) {
+    // 分页条数改变
+    handleSizeChange(size) {
       this.pager.limit = size
       this.loadTableList()
-	},
+    },
     // 清空表单temp数据
     resetTemp() {
       this.temp = {orderIndex: 0}
@@ -155,17 +156,13 @@ export default {
         if (valid) {
           let data = {...this.temp}
           if (this.dialogType === 'update') {
-            request({
-              url: '/ddos/zDdos/update', method: 'post', data
-            }).then(response => {
+            request({url: '/ddos/zDdos/update', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
               this.loadTableList()
               this.dialogFormVisible = false
             })
           } else {
-            request({
-              url: '/ddos/zDdos/add', method: 'post', data
-            }).then(response => {
+            request({url: '/ddos/zDdos/add', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '添加成功！'})
               this.loadTableList()
               this.dialogFormVisible = false
@@ -188,9 +185,7 @@ export default {
         }).then(() => {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.ddosId)
-          request({
-            url: '/ddos/zDdos/delete', method: 'post', data
-          }).then(response => {
+          request({url: '/ddos/zDdos/delete', method: 'post', data}).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()
           })

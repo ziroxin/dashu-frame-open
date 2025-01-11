@@ -94,9 +94,7 @@ export default {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
         const params = {key: this.cacheForm.key}
-        this.$request({
-          url: '/redis/cache/delete', method: 'get', params
-        }).then((response) => {
+        this.$request({url: '/redis/cache/delete', method: 'get', params}).then((response) => {
           this.$message({type: 'success', message: '删除成功!'})
           this.loadRedisCacheList()
         })

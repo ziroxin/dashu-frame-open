@@ -38,9 +38,7 @@ export default {
           confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
         }).then(() => {
           // 三次确认，重启项目
-          this.$request({
-            url: '/security/ignore/restart', method: 'get'
-          }).then((response) => {
+          this.$request({url: '/security/ignore/restart', method: 'get'}).then((response) => {
             this.$message({
               type: 'success',
               message: '重启成功！需要几分钟才能重启成功，重启期间无法正确获取数据，请耐心等待！'
@@ -57,9 +55,7 @@ export default {
         this.isLoading = true
         console.log('Ctrl + S 被按下');
         const data = this.ignoreContent.split('\n')
-        this.$request({
-          url: '/security/ignore/write', method: 'post', data
-        }).then((response) => {
+        this.$request({url: '/security/ignore/write', method: 'post', data}).then((response) => {
           this.isLoading = false
           this.$message({type: 'success', message: '保存成功！（只用于生产环境，需要重启服务才能生效）'})
         })
@@ -68,9 +64,7 @@ export default {
     // 读取忽略名单
     readSecurityIgnoreList() {
       this.isLoading = true
-      this.$request({
-        url: '/security/ignore/read', method: 'get'
-      }).then((response) => {
+      this.$request({url: '/security/ignore/read', method: 'get'}).then((response) => {
         this.isLoading = false
         const {data} = response
         this.ignoreContent = [...data].join('\n')

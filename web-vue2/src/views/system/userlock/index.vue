@@ -75,9 +75,7 @@ export default {
     }
   },
   created() {
-    request({
-      url: '/zsafety/zSafety/getSafety', method: 'get'
-    }).then((response) => {
+    request({url: '/zsafety/zSafety/getSafety', method: 'get'}).then((response) => {
       const {data} = response
       if (data.lockTime > 0) {
         // 临时锁定
@@ -111,18 +109,14 @@ export default {
     // 加载表格
     loadTableList() {
       const params = {...this.pager, params: JSON.stringify(this.searchData)};
-      request({
-        url: '/zuserlock/zUserLock/list', method: 'get', params
-      }).then((response) => {
+      request({url: '/zuserlock/zUserLock/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
         this.tableData = data.records
       })
     },
     loadTable2List() {
-      request({
-        url: '/zuserlock/zUserLock/cacheList', method: 'get'
-      }).then((response) => {
+      request({url: '/zuserlock/zUserLock/cacheList', method: 'get'}).then((response) => {
         const {data} = response
         this.tableData2 = data
       })
@@ -151,9 +145,7 @@ export default {
         }).then(() => {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.userName)
-          request({
-            url: '/zuserlock/zUserLock/unlock', method: 'post', data
-          }).then(response => {
+          request({url: '/zuserlock/zUserLock/unlock', method: 'post', data}).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()
             this.loadTable2List()

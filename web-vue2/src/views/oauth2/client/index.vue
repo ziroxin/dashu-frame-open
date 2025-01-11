@@ -190,9 +190,7 @@ export default {
     loadTableList() {
       this.isLoading = true
       const params = {...this.pager, params: JSON.stringify(this.searchData)};
-      request({
-        url: '/oauth2.client/oauthClientDetails/list', method: 'get', params
-      }).then((response) => {
+      request({url: '/oauth2.client/oauthClientDetails/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
         this.tableData = data.records
@@ -278,17 +276,13 @@ export default {
           let data = {...this.temp, scope: 'read,write'}
           data.authorizedGrantTypes = this.temp.authorizedGrantTypesArr.join(',')
           if (this.dialogType === 'update' || this.dialogType === 'resetSecret') {
-            request({
-              url: '/oauth2.client/oauthClientDetails/update', method: 'post', data
-            }).then(response => {
+            request({url: '/oauth2.client/oauthClientDetails/update', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
               this.loadTableList()
               this.dialogFormVisible = false
             })
           } else {
-            request({
-              url: '/oauth2.client/oauthClientDetails/add', method: 'post', data
-            }).then(response => {
+            request({url: '/oauth2.client/oauthClientDetails/add', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '添加成功！'})
               this.loadTableList()
               this.dialogFormVisible = false
@@ -311,9 +305,7 @@ export default {
         }).then(() => {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.clientId)
-          request({
-            url: '/oauth2.client/oauthClientDetails/delete', method: 'post', data
-          }).then(response => {
+          request({url: '/oauth2.client/oauthClientDetails/delete', method: 'post', data}).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()
           })

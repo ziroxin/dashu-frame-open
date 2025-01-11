@@ -152,18 +152,18 @@ export default {
       this.isLoading = true
       const params = {refundId: row.refundId}
       this.$request({url: '/pay/alipay/queryRefund', method: 'get', params})
-        .then((resp) => {
-          if (resp.data.refundStatus === 1) {
-            this.$message({type: 'success', message: '退款成功'})
-            this.currentTradeInfo.refundTotalFee = this.currentTradeInfo.refundTotalFee + row.refundFee
-            this.dialogFormVisible = false
-          } else if (resp.data.refundStatus === 2) {
-            this.$message({type: 'error', message: '退款异常'})
-            this.dialogFormVisible = false
-          }
-          this.loadTableList()
-          this.isLoading = false
-        })
+          .then((resp) => {
+            if (resp.data.refundStatus === 1) {
+              this.$message({type: 'success', message: '退款成功'})
+              this.currentTradeInfo.refundTotalFee = this.currentTradeInfo.refundTotalFee + row.refundFee
+              this.dialogFormVisible = false
+            } else if (resp.data.refundStatus === 2) {
+              this.$message({type: 'error', message: '退款异常'})
+              this.dialogFormVisible = false
+            }
+            this.loadTableList()
+            this.isLoading = false
+          })
     },
     // 查询按钮
     searchBtnHandle() {
@@ -180,9 +180,7 @@ export default {
     loadTableList() {
       this.searchData = {...this.searchData, tradeId: this.currentTradeInfo.tradeId}
       const params = {...this.pager, params: JSON.stringify(this.searchData)};
-      request({
-        url: '/tradeRefund/busTradeRefund/list', method: 'get', params
-      }).then((response) => {
+      request({url: '/tradeRefund/busTradeRefund/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
         this.tableData = data.records
@@ -264,26 +262,26 @@ export default {
           var data = {...this.temp}
           // 提交退款
           request({url: '/pay/alipay/refund', method: 'post', data})
-            .then(response => {
-              if (response.data.refundStatus === 0) {
-                this.isLoading = true
-                this.intervalIndex = setInterval(() => {
-                  // 查询退款状态
-                  const params = {refundId: response.data.refundId}
-                  this.$request({url: '/pay/alipay/queryRefund', method: 'get', params})
-                    .then((resp) => {
-                      if (resp.data.refundStatus === 1) {
-                        this.$message({type: 'success', message: '退款成功'})
-                        this.currentTradeInfo.refundTotalFee = this.currentTradeInfo.refundTotalFee + this.temp.refundFee
-                        this.dialogFormVisible = false
-                      } else if (resp.data.refundStatus === 2) {
-                        this.$message({type: 'error', message: '退款异常'})
-                        this.dialogFormVisible = false
-                      }
-                    })
-                }, 1500)
-              }
-            })
+              .then(response => {
+                if (response.data.refundStatus === 0) {
+                  this.isLoading = true
+                  this.intervalIndex = setInterval(() => {
+                    // 查询退款状态
+                    const params = {refundId: response.data.refundId}
+                    this.$request({url: '/pay/alipay/queryRefund', method: 'get', params})
+                        .then((resp) => {
+                          if (resp.data.refundStatus === 1) {
+                            this.$message({type: 'success', message: '退款成功'})
+                            this.currentTradeInfo.refundTotalFee = this.currentTradeInfo.refundTotalFee + this.temp.refundFee
+                            this.dialogFormVisible = false
+                          } else if (resp.data.refundStatus === 2) {
+                            this.$message({type: 'error', message: '退款异常'})
+                            this.dialogFormVisible = false
+                          }
+                        })
+                  }, 1500)
+                }
+              })
         }
       })
     },
@@ -301,9 +299,7 @@ export default {
         }).then(() => {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.refundId)
-          request({
-            url: '/tradeRefund/busTradeRefund/delete', method: 'post', data
-          }).then(response => {
+          request({url: '/tradeRefund/busTradeRefund/delete', method: 'post', data}).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()
           })
@@ -313,9 +309,7 @@ export default {
     // 导出Excel文件
     exportExcel() {
       const params = {params: JSON.stringify(this.searchData)};
-      request({
-        url: '/tradeRefund/busTradeRefund/export/excel', method: 'get', params
-      }).then(response => {
+      request({url: '/tradeRefund/busTradeRefund/export/excel', method: 'get', params}).then(response => {
         // 创建a标签
         const link = document.createElement('a');
         // 组装下载地址

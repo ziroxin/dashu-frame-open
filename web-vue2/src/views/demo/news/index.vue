@@ -39,7 +39,8 @@
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template v-slot="scope">
           <el-button type="text" size="mini" style="color: #4dd219;"
-                     @click="openView(scope.row)">详情</el-button>
+                     @click="openView(scope.row)">详情
+          </el-button>
           <el-button v-permission="'news-news-update'" size="mini"
                      type="text" @click="openUpdate(scope.row)">修改
           </el-button>
@@ -157,9 +158,7 @@ export default {
     // 加载表格
     loadTableList() {
       const params = {...this.pager, params: JSON.stringify(this.searchData)};
-      request({
-        url: '/news/news/list', method: 'get', params
-      }).then((response) => {
+      request({url: '/news/news/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
         this.tableData = data.records
@@ -229,9 +228,7 @@ export default {
         if (valid) {
           let data = {...this.temp};
           if (this.dialogType === 'update') {
-            request({
-              url: '/news/news/update', method: 'post', data
-            }).then(response => {
+            request({url: '/news/news/update', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
               this.loadTableList()
               this.dialogFormVisible = false
@@ -250,9 +247,7 @@ export default {
               }
             }
             // 添加信息时，增加通知用户字段
-            request({
-              url: '/news/news/add', method: 'post', data
-            }).then(response => {
+            request({url: '/news/news/add', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '添加成功！'})
               this.loadTableList()
               this.dialogFormVisible = false
@@ -275,9 +270,7 @@ export default {
         }).then(() => {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.newsId)
-          request({
-            url: '/news/news/delete', method: 'post', data
-          }).then(response => {
+          request({url: '/news/news/delete', method: 'post', data}).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()
           })
@@ -285,11 +278,9 @@ export default {
       }
     },
     // 标记消息已读
-    messageRead(row){
+    messageRead(row) {
       const params = {msgId: row.msgId}
-      this.$request({
-        url: '/message/zMessage/read', method: 'get', params
-      }).then((response) => {
+      this.$request({url: '/message/zMessage/read', method: 'get', params}).then((response) => {
         this.$store.dispatch('message/refreshMessageCount');
         this.loadTableList()
       })
@@ -297,9 +288,7 @@ export default {
     // 导出Excel文件
     exportExcel() {
       const params = {params: JSON.stringify(this.searchData)};
-      request({
-        url: '/news/news/export/excel', method: 'get', params
-      }).then(response => {
+      request({url: '/news/news/export/excel', method: 'get', params}).then(response => {
         // 创建a标签
         const link = document.createElement('a');
         // 组装下载地址

@@ -5,10 +5,10 @@
         <!--  操作按钮  -->
         <div style="margin-bottom: 10px;">
           <el-button v-permission="'system-menu-add'" size="small" type="primary"
-                     @click="permissionAdd" icon="el-icon-plus">新增一级菜单
+                     @click="permissionAdd" icon="el-icon-plus">新增顶级菜单
           </el-button>
           <el-button v-permission="'system-menu-delete'" size="small" type="danger"
-                     @click="permissionDelete" icon="el-icon-delete">批量删除
+                     @click="permissionDelete(null)" icon="el-icon-delete">批量删除
           </el-button>
           <el-button size="small" @click="toggleTableOprate"
                      :icon="isExpand?'el-icon-arrow-up':'el-icon-arrow-down'">
@@ -21,25 +21,28 @@
                   :default-expand-all="isExpand" highlight-current-row
                   @selection-change="selectionChangeHandlerOrder">
           <el-table-column type="selection" width="50" header-align="center" align="center"/>
-          <el-table-column prop="permissionTitle" label="菜单名称" min-width="40%">
+          <el-table-column prop="permissionTitle" label="菜单名称" min-width="35%">
             <template v-slot="{row}">
               <li class="menu-item">
                 <item :icon="row.permissionIcon" :title="row.permissionTitle"/>
-                <el-tag v-if="row.permissionType === '0'" disable-transitions size="mini">路由</el-tag>
-                <el-tag v-if="row.permissionType === '2'" disable-transitions type="success" size="mini">外链</el-tag>
-                <el-tag v-if="!row.permissionIsShow" disable-transitions type="danger" size="mini">隐藏</el-tag>
-                <el-tag v-if="!row.permissionIsEnabled" disable-transitions type="danger" size="mini">禁用</el-tag>
+                <el-tag v-if="row.permissionType === '0'" size="mini">路由</el-tag>
+                <el-tag v-if="row.permissionType === '2'" type="success" size="mini">外链</el-tag>
+                <el-tag v-if="!row.permissionIsShow" type="danger" size="mini">隐藏</el-tag>
+                <el-tag v-if="!row.permissionIsEnabled" type="danger" size="mini">禁用</el-tag>
                 <el-tag type="info" size="mini" style="float: right;">{{ row.permissionOrder }}</el-tag>
               </li>
             </template>
           </el-table-column>
-          <el-table-column prop="permissionName" label="菜单标识" min-width="15%" v-if="!buttonTableVisible">
+          <el-table-column prop="permissionName" label="菜单标识" min-width="20%" v-if="!buttonTableVisible">
             <template v-slot="{row}">
-              <el-button v-permission="'system-menu-update-parent'" style="color: #f56c6c;"
+              <el-button v-permission="'system-menu-update-parent'" style="color: #52c41a;"
                          type="text" size="mini" @click="permissionUpdateParent(row)">调整上下级
               </el-button>
               <el-button v-permission="'system-menu-update'" type="text" size="mini"
                          @click="permissionUpdate(row)">修改
+              </el-button>
+              <el-button v-permission="'system-menu-delete'" type="text" size="mini" style="color: #f56c6c;"
+                         @click="permissionDelete(row)">删除
               </el-button>
               <el-button v-if="row.permissionType === '0'" type="text" size="mini"
                          @click="subordinatesAdd(row)">添加下级
@@ -72,17 +75,17 @@
               >{{ row.permissionRouter }}</a>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作" width="100" header-align="center" align="center">
+          <el-table-column fixed="right" label="操作" width="86" header-align="center">
             <template slot-scope="{row}">
               <div>
-                <el-button v-if="row.permissionIsEnabled" type="text" plain size="mini"
-                           @click="changeIsEnabled(row, 0)"
-                >禁用
+                <el-button v-if="row.permissionIsEnabled" type="text" size="mini" style="color: #f56c6c;"
+                           @click="changeIsEnabled(row, 0)">禁用
                 </el-button>
-                <el-button v-else type="text" plain size="mini" @click="changeIsEnabled(row, 1)">启用</el-button>
+                <el-button v-else type="text" size="mini" style="color: #52c41a;"
+                           @click="changeIsEnabled(row, 1)">启用
+                </el-button>
                 <el-button v-if="row.permissionType !== '2'" type="text" plain size="mini"
-                           @click="openButtonTable(row)"
-                >按钮
+                           @click="openButtonTable(row)">按钮
                 </el-button>
               </div>
             </template>
@@ -344,16 +347,10 @@ export default {
           permissionAdd(this.temp).then(response => {
             this.dialogFormVisible = false
             if (response.data) {
-              this.$message({
-                type: 'success',
-                message: '添加成功！'
-              });
+              this.$message({type: 'success', message: '添加成功！'});
               this.getPermissionTreeList()
             } else {
-              this.$message({
-                type: 'error',
-                message: '添加失败！'
-              });
+              this.$message({type: 'error', message: '添加失败！'});
             }
           })
         }
@@ -366,15 +363,9 @@ export default {
         this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.changeData.length <= 0) {
-        this.$message({
-          message: '请选择一条数据进行修改！',
-          type: 'warning'
-        });
+        this.$message({message: '请选择一条数据进行修改！', type: 'warning'});
       } else if (this.changeData.length > 1) {
-        this.$message({
-          message: '修改时只允许选择一条数据！',
-          type: 'warning'
-        });
+        this.$message({message: '修改时只允许选择一条数据！', type: 'warning'});
       } else {
         // Object.assign：把changeData[0]的值复制到集合{}
         this.temp = Object.assign({}, this.changeData[0])
@@ -395,15 +386,9 @@ export default {
         this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.changeData.length <= 0) {
-        this.$message({
-          message: '请选择一条数据进行修改！',
-          type: 'warning'
-        });
+        this.$message({message: '请选择一条数据进行修改！', type: 'warning'});
       } else if (this.changeData.length > 1) {
-        this.$message({
-          message: '修改时只允许选择一条数据！',
-          type: 'warning'
-        });
+        this.$message({message: '修改时只允许选择一条数据！', type: 'warning'});
       } else {
         const changeData = this.changeData
         // Object.assign：把changeData[0]的值复制到集合{}
@@ -426,23 +411,21 @@ export default {
           permissionUpdate(this.temp).then(response => {
             this.dialogFormVisible = false
             if (response.data) {
-              this.$message({
-                type: 'success',
-                message: '修改成功！'
-              });
+              this.$message({type: 'success', message: '修改成功！'});
               this.getPermissionTreeList()
             } else {
-              this.$message({
-                type: 'error',
-                message: '修改失败！'
-              });
+              this.$message({type: 'error', message: '修改失败！'});
             }
           })
         }
       })
     },
     // 数据删除
-    permissionDelete() {
+    permissionDelete(row) {
+      if (row) {
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
+      }
       if (this.changeData.length <= 0) {
         this.$message({message: '请选择一条数据进行删除！', type: 'warning'});
       } else {
@@ -458,16 +441,10 @@ export default {
             }
             permissionDelete(this.permissionIds).then(response => {
               if (response.data) {
-                this.$message({
-                  type: 'success',
-                  message: '删除成功！'
-                });
+                this.$message({type: 'success', message: '删除成功！'});
                 this.getPermissionTreeList()
               } else {
-                this.$message({
-                  type: 'error',
-                  message: '删除失败！'
-                });
+                this.$message({type: 'error', message: '删除失败！'});
               }
             })
           })
@@ -477,10 +454,7 @@ export default {
     // 添加下级
     subordinatesAdd(row) {
       if (row.permissionType === '1') {
-        this.$message({
-          message: '按钮无法添加下级！',
-          type: 'warning'
-        })
+        this.$message({message: '按钮无法添加下级！', type: 'warning'})
       } else {
         this.resetTemp()
         this.temp = {
@@ -498,12 +472,14 @@ export default {
     },
     // 启用/禁用
     changeIsEnabled(row, isEnabled) {
-      let data = {permissionId: row.permissionId, permissionIsEnabled: isEnabled}
-      request({
-        url: '/permission/changeIsEnabled', method: 'post', data
-      }).then((response) => {
-        this.$message({type: 'success', message: isEnabled ? '启用菜单成功！' : '禁用菜单成功！'})
-        this.getPermissionTreeList()
+      this.$confirm('确定要' + (isEnabled ? '启用' : '禁用') + '该菜单吗?', '提示', {
+        confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+      }).then(() => {
+        let data = {permissionId: row.permissionId, permissionIsEnabled: isEnabled}
+        request({url: '/permission/changeIsEnabled', method: 'post', data}).then((response) => {
+          this.$message({type: 'success', message: isEnabled ? '启用菜单成功！' : '禁用菜单成功！'})
+          this.getPermissionTreeList()
+        })
       })
     },
     // 保存菜单
@@ -555,16 +531,10 @@ export default {
       updateParentId(this.temp2).then(response => {
         this.parentDialogVisible = false
         if (response.data) {
-          this.$message({
-            type: 'success',
-            message: '修改成功！'
-          });
+          this.$message({type: 'success', message: '修改成功！'});
           this.getPermissionTreeList()
         } else {
-          this.$message({
-            type: 'error',
-            message: '修改失败！'
-          });
+          this.$message({type: 'error', message: '修改失败！'});
         }
       })
     },

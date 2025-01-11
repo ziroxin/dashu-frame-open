@@ -229,9 +229,7 @@ export default {
             const routerMode = this.$router.mode;
             if (defaultSettings.showSettings) {
               // 登录成功，加载用户主题配置
-              this.$request({
-                url: '/userTheme/zUserTheme/getByUser', method: 'get'
-              }).then((response) => {
+              this.$request({url: '/userTheme/zUserTheme/getByUser', method: 'get'}).then((response) => {
                 // 跳转
                 if (routerMode === 'history') {
                   location.href = location.href.split('/login')[0] + (this.redirect || '/') +
@@ -280,9 +278,7 @@ export default {
     },
     //验证码
     loadCaptcha() {
-      request({
-        url: '/captcha/get', method: 'get'
-      }).then((response) => {
+      request({url: '/captcha/get', method: 'get'}).then((response) => {
         const {data} = response
         this.loginForm.codeUuid = data.codeUuid;
         this.loginForm.codeBaseImage = data.codeBaseImage;

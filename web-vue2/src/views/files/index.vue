@@ -164,9 +164,7 @@ export default {
     loadTableList() {
       this.isLoading = true
       const params = {...this.pager, params: JSON.stringify(this.searchData)};
-      request({
-        url: '/files/zFiles/list', method: 'get', params
-      }).then((response) => {
+      request({url: '/files/zFiles/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
         this.tableData = data.records
@@ -216,17 +214,13 @@ export default {
         if (valid) {
           let data = {...this.temp}
           if (this.dialogType === 'update') {
-            request({
-              url: '/files/zFiles/update', method: 'post', data
-            }).then(response => {
+            request({url: '/files/zFiles/update', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
               this.loadTableList()
               this.dialogFormVisible = false
             })
           } else {
-            request({
-              url: '/files/zFiles/add', method: 'post', data
-            }).then(response => {
+            request({url: '/files/zFiles/add', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '添加成功！'})
               this.loadTableList()
               this.dialogFormVisible = false
@@ -249,9 +243,7 @@ export default {
         }).then(() => {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.fileId)
-          request({
-            url: '/files/zFiles/delete', method: 'post', data
-          }).then(response => {
+          request({url: '/files/zFiles/delete', method: 'post', data}).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()
           })

@@ -165,9 +165,7 @@ export default {
     loadTableList() {
       this.isLoading = true
       const params = {...this.pager, params: JSON.stringify(this.searchData)};
-      request({
-        url: '/sms/demoSms/list', method: 'get', params
-      }).then((response) => {
+      request({url: '/sms/demoSms/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
         this.tableData = data.records
@@ -208,9 +206,7 @@ export default {
         if (valid) {
           let data = {...this.temp, sendJson: JSON.stringify(this.temp.sendJson)}
           console.log(data)
-          request({
-            url: '/sms/demoSms/add', method: 'post', data
-          }).then(response => {
+          request({url: '/sms/demoSms/add', method: 'post', data}).then(response => {
             this.$message({type: 'success', message: '短信发送成功！'})
             this.loadTableList()
             this.dialogFormVisible = false
@@ -235,9 +231,7 @@ export default {
         }).then(() => {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.smsId)
-          request({
-            url: '/sms/demoSms/delete', method: 'post', data
-          }).then(response => {
+          request({url: '/sms/demoSms/delete', method: 'post', data}).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()
           })

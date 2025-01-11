@@ -24,8 +24,7 @@
             </el-table-column>
             <el-table-column label="操作" width="70px" align="center">
               <template #default="{row}">
-                <el-button type="text" size="small" @click.native.prevent="setMyApi(row.permissionId)">
-                  设置API
+                <el-button type="text" size="small" @click.native.prevent="setMyApi(row.permissionId)">设置API
                 </el-button>
               </template>
             </el-table-column>
@@ -74,9 +73,8 @@
                           <br>请求方式：{{ api2.apiRequestMethod }}
                           <br>描述：{{ api2.apiDescription }}
                         </div>
-                        <el-checkbox :key="api2.apiId" :label="api2.apiId" border
-                                     style="margin-left: 0px!important;height: 50px;"
-                        >
+                        <el-checkbox :key="api2.apiId" :label="api2.apiId" border ref="apiCheckboxList"
+                                     style="margin-left: 0px!important;height: 50px;">
                           {{ api2.apiName }}<br>{{ api2.apiRequestUrl }}
                         </el-checkbox>
                       </el-tooltip>
@@ -229,14 +227,18 @@ export default {
     // 设置api
     setMyApi(permissionId) {
       this.listLoading2 = true
-      getApiListByPermissionId({'permissionId': permissionId})
-          .then((response) => {
-            const {data} = response
-            this.selectPermissionApiList = data ? [...new Set(data)] : []
-            this.currentPermissionId = permissionId
-            this.isSaveBtn = false
-            this.listLoading2 = false
-          })
+      getApiListByPermissionId({'permissionId': permissionId}).then((response) => {
+        const {data} = response
+        this.selectPermissionApiList = data ? [...new Set(data)] : []
+        this.currentPermissionId = permissionId
+        this.isSaveBtn = false
+        this.listLoading2 = false
+        let toApiId = data && data.length > 0 ? data[0] : this.tableData2[0].apiClass[0].apiList[0].apiId || ''
+        const chkBox = this.$refs.apiCheckboxList.find(ref => ref.label === toApiId)
+        if (chkBox) {
+          chkBox.$el.scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'})
+        }
+      })
     },
     // 保存关联API
     savePermissionApi() {
@@ -245,14 +247,15 @@ export default {
         return
       }
       this.listLoading2 = true
-      savePermissionApi({'permissionId': this.currentPermissionId, 'apiIds': this.selectPermissionApiList})
-          .then((response) => {
-            const {code} = response
-            if (code === '200') {
-              this.$notify({title: '保存成功', message: '保存关联API成功！', type: 'success'})
-              this.listLoading2 = false
-            }
-          })
+      savePermissionApi({
+        'permissionId': this.currentPermissionId, 'apiIds': this.selectPermissionApiList
+      }).then((response) => {
+        const {code} = response
+        if (code === '200') {
+          this.$notify({title: '保存成功', message: '保存关联API成功！', type: 'success'})
+          this.listLoading2 = false
+        }
+      })
     },
     // 保存分组
     openGroupDialog() {
@@ -261,10 +264,9 @@ export default {
         return;
       }
       // 加载分组下拉框
-      request({url: '/api/group/list', method: 'get'})
-          .then((response) => {
-            this.groupList = response.data
-          })
+      request({url: '/api/group/list', method: 'get'}).then((response) => {
+        this.groupList = response.data
+      })
       // 打开窗口
       this.groupDialogShow = true
     },
@@ -301,23 +303,19 @@ export default {
       this.$confirm('确定要删除该分组吗?', '提醒', {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
-        deleteApiGroup({'apiGroupId': apiGroupId})
-            .then((response) => {
-              const {code} = response
-              if (code === '200') {
-                this.$notify({
-                  title: '删除成功',
-                  message: '删除API分组成功！',
-                  type: 'success'
-                });
-                this.getApiList()
-              }
-            })
+        deleteApiGroup({'apiGroupId': apiGroupId}).then((response) => {
+          const {code} = response
+          if (code === '200') {
+            this.$notify({title: '删除成功', message: '删除API分组成功！', type: 'success'});
+            this.getApiList()
+          }
+        })
       })
     }
   }
 }
 </script>
+
 <style lang="scss" scoped>
 ::v-deep .el-collapse-item {
   .el-collapse-item__header {

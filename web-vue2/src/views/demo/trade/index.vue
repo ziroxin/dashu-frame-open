@@ -179,17 +179,17 @@ export default {
       } else if (this.openPayType === 2) {
         // 支付宝PC网站支付
         location.href = this.$baseServer + '/pay/alipay/toPcPay' +
-          '?UserJwtToken=' + getToken() +
-          '&productId=' + this.payData.productId +
-          '&productName=' + this.payData.productName +
-          '&totalFee=' + this.payData.totalFee;
+            '?UserJwtToken=' + getToken() +
+            '&productId=' + this.payData.productId +
+            '&productName=' + this.payData.productName +
+            '&totalFee=' + this.payData.totalFee;
       } else if (this.openPayType === 3) {
         // 支付宝移动网站支付
         location.href = this.$baseServer + '/pay/alipay/toWapPay' +
-          '?UserJwtToken=' + getToken() +
-          '&productId=' + this.payData.productId +
-          '&productName=' + this.payData.productName +
-          '&totalFee=' + this.payData.totalFee;
+            '?UserJwtToken=' + getToken() +
+            '&productId=' + this.payData.productId +
+            '&productName=' + this.payData.productName +
+            '&totalFee=' + this.payData.totalFee;
       } else if (this.openPayType === 4) {
         // 支付宝扫码支付
         this.$router.replace('/demo/trade/AlipayScanPay')
@@ -209,9 +209,7 @@ export default {
     // 加载表格
     loadTableList() {
       const params = {...this.pager, params: JSON.stringify(this.searchData)};
-      request({
-        url: '/trade/busTrade/list', method: 'get', params
-      }).then((response) => {
+      request({url: '/trade/busTrade/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
         this.tableData = data.records
@@ -246,10 +244,10 @@ export default {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.tradeId)
           request({url: '/trade/busTrade/delete', method: 'post', data})
-            .then(response => {
-              this.$message({type: 'success', message: '删除成功！'})
-              this.loadTableList()
-            })
+              .then(response => {
+                this.$message({type: 'success', message: '删除成功！'})
+                this.loadTableList()
+              })
         })
       }
     },

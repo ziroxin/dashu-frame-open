@@ -250,17 +250,13 @@ export default {
         if (valid) {
           var data = this.temp;
           if (this.dialogType === 'update') {
-            request({
-              url: '/zorg/zOrganization/update', method: 'post', data
-            }).then(response => {
+            request({url: '/zorg/zOrganization/update', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
               this.loadTableList()
               this.dialogFormVisible = false
             })
           } else {
-            request({
-              url: '/zorg/zOrganization/add', method: 'post', data
-            }).then(response => {
+            request({url: '/zorg/zOrganization/add', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '添加成功！'})
               this.loadTableList()
               this.dialogFormVisible = false
@@ -293,9 +289,7 @@ export default {
     // 导出Excel文件
     exportExcel() {
       const params = {params: JSON.stringify(this.searchData)};
-      request({
-        url: '/zorg/zOrganization/export/excel', method: 'get', params
-      }).then(response => {
+      request({url: '/zorg/zOrganization/export/excel', method: 'get', params}).then(response => {
         // 创建a标签
         const link = document.createElement('a');
         // 组装下载地址

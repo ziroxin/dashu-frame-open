@@ -240,9 +240,7 @@ export default {
     },
     openStsFile() {
       const params = {fileName: this.ossDemoFileName}
-      this.$request({
-        url: '/oss/file/read/sts/url', method: 'get', params
-      }).then(({data}) => {
+      this.$request({url: '/oss/file/read/sts/url', method: 'get', params}).then(({data}) => {
         this.ossDemoStsUrl = data;
       })
     }
