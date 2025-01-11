@@ -314,9 +314,7 @@ export default {
         }).then(() => {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.dictId)
-          request({
-            url: '/dictData/zDictData/delete', method: 'post', data
-          }).then(response => {
+          request({url: '/dictData/zDictData/delete', method: 'post', data}).then(() => {
             this.$message({type: 'success', message: '删除成功！'})
             // 更新当前字典缓存
             this.clearDictCache(this.currentDictType.typeCode)

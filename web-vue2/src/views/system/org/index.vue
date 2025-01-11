@@ -15,34 +15,36 @@
         <el-button v-waves v-permission="'zorg-zOrganization-add'" type="primary"
                    @click="openAdd(null)" size="small" icon="el-icon-plus">新增
         </el-button>
-        <el-button v-waves v-permission="'zorg-zOrganization-update'" type="success"
-                   @click="openUpdate(null)" size="small" icon="el-icon-edit">修改
+        <el-button v-waves v-permission="'zorg-zOrganization-importExcel'" @click="dialogImportVisible=true"
+                   type="primary" size="small" icon="el-icon-upload2">批量导入
         </el-button>
         <el-button v-waves v-permission="'zorg-zOrganization-delete'" type="danger"
-                   @click="deleteByIds" size="small" icon="el-icon-delete">删除
+                   @click="deleteByIds(null)" size="small" icon="el-icon-delete">删除
         </el-button>
       </div>
     </div>
     <!-- 组织机构表-列表 -->
     <el-table ref="dataTable" :data="tableData" :tree-props="{children: 'children'}"
-              row-key="orgId" :height="this.$windowHeight-197"
-              default-expand-all border stripe @selection-change="handleTableSelectChange"
-    >
+              row-key="orgId" :height="this.$windowHeight-197" v-loading="isLoading"
+              default-expand-all border stripe @selection-change="handleTableSelectChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
-      <el-table-column label="组织机构名称" prop="orgName" min-width="30%">
+      <el-table-column label="组织机构名称" prop="orgName" min-width="40%">
         <template v-slot="scope">
           <span>{{ scope.row.orgName }}</span>
           <div style="float: right;">
-            <el-button v-permission="'zorg-zOrganization-update'" type="text" icon="el-icon-edit"
-                       size="mini" @click="openUpdate(scope.row)">修改
-            </el-button>
             <el-button v-permission="'zorg-zOrganization-add'" v-if="maxLevel===-1 || scope.row.orgLevel<maxLevel"
                        type="text" size="mini" @click="openAdd(scope.row)">添加下级
+            </el-button>
+            <el-button v-permission="'zorg-zOrganization-update'" type="text" size="mini"
+                       @click="openUpdate(scope.row)">修改
+            </el-button>
+            <el-button v-permission="'zorg-zOrganization-delete'" style="color: #f56c6c;"
+                       type="text" size="mini" @click="deleteByIds(scope.row)">删除
             </el-button>
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="备注" prop="remarks" align="center" min-width="40%"/>
+      <el-table-column label="备注" prop="remarks" align="center" min-width="30%"/>
       <el-table-column label="层级" prop="orgLevel" align="center" width="100"/>
       <el-table-column label="顺序" prop="orderIndex" align="center" width="100"/>
     </el-table>
@@ -79,6 +81,37 @@
         <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
       </div>
     </el-dialog>
+
+    <!-- 批量导入弹窗 -->
+    <el-dialog title="批量导入" :close-on-click-modal="false" :visible.sync="dialogImportVisible"
+               @close="dialogIndex++" width="600px" :key="'importDialog'+dialogIndex">
+      <el-form ref="importForm" label-width="120px" v-loading="isImportLoading">
+        <el-form-item label="下载模板：">
+          <el-button v-waves type="success" plain @click="downloadExcelTemplate"
+                     icon="el-icon-download" size="small">下载Excel模板
+          </el-button>
+          <el-tag type="danger">
+            说明：[上级部门]字段，填写上级部门名称，若是最高一级部门，请填写“顶级”
+          </el-tag>
+        </el-form-item>
+        <el-divider></el-divider>
+        <el-form-item label="导入：">
+          <el-upload v-permission="'zorg-zOrganization-importExcel'"
+                     :action="$baseServer+'/zorg/zOrganization/import/excel'" :headers="$store.getters.headerToken"
+                     :before-upload="beforeImportUpload" :on-error="importExcelError"
+                     :on-success="importExcelSuccess" accept=".xls,.xlsx"
+                     :show-file-list="false" :auto-upload="true">
+            <el-button v-waves type="primary" plain icon="el-icon-upload2" size="small">点击上传Excel并导入</el-button>
+          </el-upload>
+          <el-tag type="info" size="small">
+            说明：点击上方按钮上传Excel文件，上传成功后会自动开始导入！
+          </el-tag>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button v-waves @click="dialogImportVisible=false">关闭</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -86,6 +119,7 @@
 import waves from '@/directive/waves'
 import request from '@/utils/request'
 import SelectTree from '@/components/SelectTree';
+import downloadUtil from '@/utils/download-util';
 
 export default {
   components: {SelectTree},
@@ -112,6 +146,11 @@ export default {
       maxLevel: 0,
       // 当前用户的OrgId
       currentOrgId: '',
+      isLoading: false,
+      dialogIndex: 0,
+      // 导入弹窗
+      dialogImportVisible: false,
+      isImportLoading: false,
     }
   },
   created() {
@@ -133,11 +172,11 @@ export default {
     },
     // 加载表格
     loadTableList() {
+      this.isLoading = true
       const params = {...this.searchData};
-      request({
-        url: '/zorg/zOrganization/tree', method: 'get', params
-      }).then((response) => {
+      request({url: '/zorg/zOrganization/tree', method: 'get', params}).then((response) => {
         this.tableData = response.data
+        this.isLoading = false
       })
     },
     // 加载下拉选择框组织机构树
@@ -230,7 +269,11 @@ export default {
       })
     },
     // 删除
-    deleteByIds() {
+    deleteByIds(row) {
+      if (row) {
+        this.$refs.dataTable.clearSelection()
+        this.$refs.dataTable.toggleRowSelection(row, true)
+      }
       if (this.tableSelectRows.length <= 0) {
         this.$message({message: '请选择一条数据删除！', type: 'warning'})
       } else {
@@ -239,9 +282,7 @@ export default {
         }).then(() => {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.orgId)
-          request({
-            url: '/zorg/zOrganization/delete', method: 'post', data
-          }).then(response => {
+          request({url: '/zorg/zOrganization/delete', method: 'post', data}).then(() => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()
           })
@@ -265,7 +306,31 @@ export default {
         document.body.appendChild(link);
         link.click();
       })
-    }
+    },
+    // 导入Excel成功，提示
+    importExcelSuccess(response) {
+      this.isImportLoading = false
+      if (response.message === 'Success') {
+        this.$message({type: 'success', message: '导入成功！'})
+        this.dialogImportVisible = false
+        this.loadTableList()
+      } else {
+        this.$alert(response.message, "提示",
+            {confirmButtonText: "确定", dangerouslyUseHTMLString: true, customClass: 'width800'});
+      }
+    },
+    // 导入Excel之前，显示loading
+    beforeImportUpload(file) {
+      this.isImportLoading = true
+    },
+    // 导入Excel失败，取消loading状态
+    importExcelError() {
+      this.isImportLoading = false
+    },
+    // 下载模板
+    downloadExcelTemplate() {
+      downloadUtil.download('/zorg/zOrganization/import/downloadTemplate', {}, '组织机构-导入模板.xlsx')
+    },
   }
 }
 </script>

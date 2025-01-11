@@ -37,22 +37,25 @@
             <el-button type="primary" :disabled="isSaveBtn" icon="el-icon-check"
                        size="small" @click="savePermissionApi()">保存关联API
             </el-button>
-            <el-button type="primary" size="small" @click="openGroupDialog()">设置分组</el-button>
-            <el-button type="danger" size="small" @click="scanApi()">自动扫描API（增量）</el-button>
-            <el-button type="info" size="small" @click="clearApi()">清除无效API</el-button>
+            <div style="float: right;">
+              <el-button type="primary" size="small" @click="openGroupDialog()">设置分组</el-button>
+              <el-button type="danger" size="small" @click="scanApi()">自动扫描API（增量）</el-button>
+              <el-button type="info" size="small" @click="clearApi()">清除无效API</el-button>
+            </div>
           </div>
           <div :style="'height:' + ( this.$windowHeight - 200 ) + 'px;overflow-y: auto;'">
             <el-collapse v-model="activeNames" style="padding-top: 5px;">
               <el-collapse-item v-for="group2 in tableData2" :key="group2.apiGroupId"
-                                :name="group2.apiGroupId"
-              >
+                                :name="group2.apiGroupId">
                 <template slot="title">
                   <div class="collapse-title">
-                    分组：{{ group2.groupName }}
-                    <el-button v-if="group2.apiGroupId!=='no_group_api'" type="danger"
-                               icon="el-icon-delete" size="mini" circle
-                               @click.stop="deleteGroup(group2.apiGroupId)"
-                    />
+                    <div>分组：{{ group2.groupName }}</div>
+                    <div style="margin-left: 10px;">
+                      <el-tooltip content="点击删除分组" placement="right">
+                        <i class="el-icon-delete" style="color: #D7000F;font-size: 16px;"
+                           v-if="group2.apiGroupId!=='no_group_api'" @click.stop="deleteGroup(group2.apiGroupId)"/>
+                      </el-tooltip>
+                    </div>
                   </div>
                 </template>
                 <el-checkbox-group v-model="selectPermissionApiList" style="line-height: 50px;">
@@ -316,33 +319,35 @@ export default {
 <style lang="scss" scoped>
 ::v-deep .el-collapse-item {
   .el-collapse-item__header {
-    background-color: #4e5969 !important;
-    border-radius: 20px;
-    color: white;
+    background-color: #4080ff01 !important;
+    border: 1px solid #4080ff;
+    border-radius: 10px;
+    margin: 5px;
+    color: #4080ff !important;
 
     &.is-active {
       color: #828282;
       background-color: #FFFFFF !important;
-      border-radius: 20px;
-      border-top: 5px solid #4e5969;
-
-      .collapse-title {
-        color: red;
-      }
+      border-radius: 10px;
+      border: 0px;
+      border-top: 1px solid #4080ff;
     }
 
     .collapse-title {
-      color: white;
+      color: #4080ff;
       font-weight: bold;
       text-align: center;
       width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 
   .el-collapse-item__wrap {
     margin: 10px auto;
-    border-bottom: 2px solid #4e5969;
-    border-radius: 20px;
+    border-bottom: 1px solid #4080ff;
+    border-radius: 10px;
   }
 }
 

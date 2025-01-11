@@ -24,9 +24,9 @@ public class ZDictDataExcelConstant {
 
     static {
         // 初始化导出字段
-        EXPORT_EXCEL_COLUMN.put("dictLabel", "字典标签");
-        EXPORT_EXCEL_COLUMN.put("dictValue", "字典值");
-        EXPORT_EXCEL_COLUMN.put("status", "状态0停用1正常");
+        EXPORT_EXCEL_COLUMN.put("dictLabel", "数据标签");
+        EXPORT_EXCEL_COLUMN.put("dictValue", "数据值");
+        EXPORT_EXCEL_COLUMN.put("status", "状态");
         EXPORT_EXCEL_COLUMN.put("orderIndex", "顺序");
         // 初始化导入字段
         IMPORT_EXCEL_COLUMN.put("数据标签", "dictLabel");

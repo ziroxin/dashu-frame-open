@@ -207,14 +207,18 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
             List<ZDictData> list = list(wrapper);
             // 转换成导出excel实体
             List<ZDictDataExcelOutDTO> dataList = list.stream()
-                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d), ZDictDataExcelOutDTO.class))
+                    .map(d -> {
+                        ZDictDataExcelOutDTO b = JSONUtil.toBean(JSONUtil.parseObj(d), ZDictDataExcelOutDTO.class);
+                        b.setStatus("0".equals(d.getStatus()) ? "停用" : "正常");
+                        return b;
+                    })
                     .collect(Collectors.toList());
             if (dataList == null || dataList.size() <= 0) {
                 // 未查到数据时，模拟一行空数据
                 dataList.add(new ZDictDataExcelOutDTO());
             }
             // 第一行标题
-            String title = "字典数据表格";
+            String title = "数据字典";
             // 写入导出excel文件
             ExcelWriteUtils.write(path, title, dataList, ZDictDataExcelConstant.EXPORT_EXCEL_COLUMN);
             // 导出成功，返回导出地址

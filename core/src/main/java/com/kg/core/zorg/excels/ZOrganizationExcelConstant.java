@@ -1,7 +1,5 @@
 package com.kg.core.zorg.excels;
 
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.LinkedHashMap;
 
 /**
@@ -15,6 +13,15 @@ public class ZOrganizationExcelConstant {
      * 导出所需的字段信息
      */
     public static LinkedHashMap<String, String> EXPORT_EXCEL_COLUMN = new LinkedHashMap<>();
+    /**
+     * 导入所需字段信息
+     */
+    public static LinkedHashMap<String, String> IMPORT_EXCEL_COLUMN = new LinkedHashMap<>();
+    /**
+     * 导入必填字段信息
+     */
+    public static LinkedHashMap<String, String> IMPORT_REQUIRED_COLUMN = new LinkedHashMap<>();
+
 
     static {
         // 初始化导出字段
@@ -27,6 +34,15 @@ public class ZOrganizationExcelConstant {
         EXPORT_EXCEL_COLUMN.put("orderIndex", "顺序");
         EXPORT_EXCEL_COLUMN.put("createTime", "添加时间");
         EXPORT_EXCEL_COLUMN.put("updateTime", "修改时间");
+        // 初始化导入字段
+        IMPORT_EXCEL_COLUMN.put("组织机构名称", "orgName");
+        IMPORT_EXCEL_COLUMN.put("上级部门", "orgParentId");
+        IMPORT_EXCEL_COLUMN.put("顺序", "orderIndex");
+        IMPORT_EXCEL_COLUMN.put("备注", "remarks");
+        // 初始化导入必填字段
+        IMPORT_REQUIRED_COLUMN.put("orgName", "组织机构名称");
+        IMPORT_REQUIRED_COLUMN.put("orgParentId", "上级部门");
+        IMPORT_REQUIRED_COLUMN.put("orderIndex", "顺序");
     }
 
 }
