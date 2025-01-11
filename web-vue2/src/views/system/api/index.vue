@@ -4,7 +4,9 @@
       <el-col :span="9">
         <!-- 资源表格 -->
         <div style="margin-bottom: 10px;">
-          <el-button @click="toggleTableOprate">全部{{ isExpand ? '收起' : '展开' }}</el-button>
+          <el-button @click="toggleTableOprate" :icon="isExpand?'el-icon-arrow-up':'el-icon-arrow-down'"
+                     size="small">全部{{ isExpand ? '收起' : '展开' }}
+          </el-button>
         </div>
         <div class="grid-content bg-purple">
           <el-table ref="permissionTable" v-loading="listLoading" :default-expand-all="isExpand"

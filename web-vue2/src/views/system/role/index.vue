@@ -16,10 +16,8 @@
           ></el-button>
         </div>
         <!-- 角色管理表格 -->
-        <el-table ref="roleTable" :data="tableData" stripe border
-                  :height="this.$windowHeight-230" style="width: 95%"
-                  @selection-change="handleTableSelectChange"
-        >
+        <el-table ref="roleTable" :data="tableData" stripe border :height="this.$windowHeight-230" style="width: 95%"
+                  @selection-change="handleTableSelectChange" v-loading="isLoading2">
           <el-table-column type="selection" width="50" align="center" header-align="center"/>
           <el-table-column label="角色" align="center">
             <template slot-scope="scope">
@@ -42,13 +40,12 @@
         <!-- 分页 -->
         <el-pagination style="text-align: center;margin-top: 10px;" layout="total,prev,pager,next"
                        :page-size="pager.limit" :current-page="pager.page"
-                       :total="totalCount" @current-change="handleCurrentChange"
-        />
+                       :total="totalCount" @current-change="handleCurrentChange"/>
         <!-- 添加修改弹窗 -->
-        <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible">
+        <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
+                   :visible.sync="dialogFormVisible" width="650px" @close="resetTemp">
           <el-form ref="roleDateForm" :model="temp" label-position="left" label-width="100px"
-                   style="width: 500px; margin-left: 50px;"
-          >
+                   style="width: 500px; margin-left: 50px;">
             <el-form-item label="角色名称" prop="roleName" :rules="{required: true, message: '角色名称不能为空'}">
               <el-input v-model="temp.roleName"/>
             </el-form-item>
@@ -56,8 +53,7 @@
               <el-input v-model="temp.roleDescription" type="textarea"/>
             </el-form-item>
             <el-form-item label="角色顺序" prop="roleOrder"
-                          :rules="[{required: true, message: '角色顺序不能为空'},{type: 'number', message: '必须为数字'}]"
-            >
+                          :rules="[{required: true, message: '角色顺序不能为空'},{type: 'number', message: '必须为数字'}]">
               <el-input v-model.number="temp.roleOrder"/>
             </el-form-item>
           </el-form>
@@ -147,7 +143,8 @@ export default {
       // 菜单-权限idList
       selectPermissionApiList2: [],
       isSaveBtn: false,
-      isLoading: false
+      isLoading: false,
+      isLoading2: false
     }
   },
   created() {
@@ -158,12 +155,13 @@ export default {
   methods: {
     //加载角色列表
     loadRoleList() {
-      getRoleList(this.pager)
-        .then((response) => {
-          const {data} = response
-          this.totalCount = data.total
-          this.tableData = data.records
-        })
+      this.isLoading2 = true
+      getRoleList(this.pager).then((response) => {
+        this.isLoading2 = false
+        const {data} = response
+        this.totalCount = data.total
+        this.tableData = data.records
+      })
     },
     //选中行
     handleTableSelectChange(rows) {
@@ -214,6 +212,7 @@ export default {
         this.$confirm('确定要删除吗?', '删除提醒', {
           confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
         }).then(() => {
+          this.isLoading2 = true
           // 执行删除
           const roleIds = this.tableSelectRows.map(r => r.roleId)
           deleteRoles(roleIds).then(response => {
@@ -222,6 +221,7 @@ export default {
               this.$message({type: 'success', message: '删除成功！'})
               this.loadRoleList()
             } else {
+              this.isLoading2 = false
               this.$message({type: 'error', message: '删除失败！'})
             }
           })
@@ -233,6 +233,7 @@ export default {
       if (this.tableSelectRows.length !== 1) {
         this.$message({message: '请选择一个角色进行复制！', type: 'error'})
       } else {
+        this.isLoading2 = true
         let params = {'roleId': this.tableSelectRows[0].roleId};
         copyRole(params).then(response => {
           this.$message({type: 'success', message: '复制角色成功！'})
@@ -278,11 +279,7 @@ export default {
     },
     //展开和收起
     toggleTableOprate() {
-      if (this.isExpand) {
-        this.isExpand = false
-      } else {
-        this.isExpand = true
-      }
+      this.isExpand = !this.isExpand
       this.toggleRowExpansionAll(this.tableData2, this.isExpand)
     },
     toggleRowExpansionAll(data, isExpansion) {
