@@ -44,7 +44,7 @@
                    :total="pager.totalCount" @current-change="handleCurrentChange"
                    @size-change="handleSizeChange"/>
     <!-- 添加修改弹窗 -->
-    <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible" width="680px">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px"
                style="width: 500px; margin-left: 50px" :disabled="dialogType === 'view'">
         <el-form-item label="操作日志id" prop="logId"

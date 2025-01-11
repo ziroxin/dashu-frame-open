@@ -74,7 +74,8 @@
                    @size-change="handleSizeChange"
     />
     <!-- 添加修改弹窗 -->
-    <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
+               :visible.sync="dialogFormVisible" width="660px" @close="resetTemp">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px"
                style="width: 500px; margin-left: 50px;" :disabled="dialogType==='view'"
       >

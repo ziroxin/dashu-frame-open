@@ -49,7 +49,8 @@
       <el-table-column label="顺序" prop="orderIndex" align="center" width="100"/>
     </el-table>
     <!-- 添加修改弹窗 -->
-    <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
+               :visible.sync="dialogFormVisible" width="680px" @close="resetTemp">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="120px"
                style="width: 600px;" :disabled="dialogType==='view'">
         <el-form-item label="组织机构名称" prop="orgName"

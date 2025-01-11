@@ -10,14 +10,18 @@
           <el-button v-permission="'system-menu-delete'" size="small" type="danger"
                      @click="permissionDelete" icon="el-icon-delete">批量删除
           </el-button>
+          <el-button size="small" @click="toggleTableOprate"
+                     :icon="isExpand?'el-icon-arrow-up':'el-icon-arrow-down'">
+            全部{{ isExpand ? '收起' : '展开' }}
+          </el-button>
         </div>
         <!-- 表格部分 -->
         <el-table ref="dataTable" :data="tableData" row-key="permissionId" :height="this.$windowHeight-200"
-                  border :tree-props="{children: 'children'}" :default-expand-all="true"
-                  highlight-current-row @selection-change="selectionChangeHandlerOrder"
-        >
+                  border :tree-props="{children: 'children'}" class="data-table-permission"
+                  :default-expand-all="isExpand" highlight-current-row
+                  @selection-change="selectionChangeHandlerOrder">
           <el-table-column type="selection" width="50" header-align="center" align="center"/>
-          <el-table-column prop="permissionTitle" label="菜单名称" min-width="60%">
+          <el-table-column prop="permissionTitle" label="菜单名称" min-width="40%">
             <template v-slot="{row}">
               <li class="menu-item">
                 <item :icon="row.permissionIcon" :title="row.permissionTitle"/>
@@ -25,26 +29,24 @@
                 <el-tag v-if="row.permissionType === '2'" disable-transitions type="success" size="mini">外链</el-tag>
                 <el-tag v-if="!row.permissionIsShow" disable-transitions type="danger" size="mini">隐藏</el-tag>
                 <el-tag v-if="!row.permissionIsEnabled" disable-transitions type="danger" size="mini">禁用</el-tag>
-                <div v-if="!buttonTableVisible" style="display: inline-block;margin-left: 10px;">
-                  <el-button v-permission="'system-menu-update-parent'" type="text" plain
-                             icon="el-icon-sort" size="mini" @click="permissionUpdateParent(row)"
-                  />
-                  <el-button v-permission="'system-menu-update'" type="text" plain size="mini"
-                             @click="permissionUpdate(row)"
-                  >修改
-                  </el-button>
-                  <el-button v-if="row.permissionType === '0'" type="text" plain size="mini"
-                             @click="subordinatesAdd(row)"
-                  >添加下级
-                  </el-button>
-                </div>
-                <div v-if="!buttonTableVisible" style="float: right;">
-                  <el-tag type="info" size="mini">{{ row.permissionOrder }}</el-tag>
-                </div>
+                <el-tag type="info" size="mini" style="float: right;">{{ row.permissionOrder }}</el-tag>
               </li>
             </template>
           </el-table-column>
-          <el-table-column prop="permissionRouter" label="菜单详情" width="200">
+          <el-table-column prop="permissionName" label="菜单标识" min-width="15%" v-if="!buttonTableVisible">
+            <template v-slot="{row}">
+              <el-button v-permission="'system-menu-update-parent'" style="color: #f56c6c;"
+                         type="text" size="mini" @click="permissionUpdateParent(row)">调整上下级
+              </el-button>
+              <el-button v-permission="'system-menu-update'" type="text" size="mini"
+                         @click="permissionUpdate(row)">修改
+              </el-button>
+              <el-button v-if="row.permissionType === '0'" type="text" size="mini"
+                         @click="subordinatesAdd(row)">添加下级
+              </el-button>
+            </template>
+          </el-table-column>
+          <el-table-column prop="permissionRouter" label="菜单详情" min-width="20%">
             <template v-slot="{row}">
               <el-tooltip v-if="row.permissionType === '0'" class="item" effect="dark" placement="left">
                 <div slot="content" :key="'tipcontent'+row.permissionId" style="line-height: 40px;">
@@ -83,13 +85,6 @@
                 >按钮
                 </el-button>
               </div>
-              <!--              <div v-if="row.permissionType === '2'">-->
-              <!--                <el-button v-if="row.permissionIsEnabled" type="text" plain size="mini"-->
-              <!--                           @click="changeIsEnabled(row, false)"-->
-              <!--                >禁用-->
-              <!--                </el-button>-->
-              <!--                <el-button v-else type="text" plain size="mini" @click="changeIsEnabled(row, true)">启用</el-button>-->
-              <!--              </div>-->
             </template>
           </el-table-column>
         </el-table>
@@ -101,11 +96,9 @@
 
     <!--    添加和修改菜单窗口-->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="700px"
-               :close-on-click-modal="false"
-    >
+               :close-on-click-modal="false">
       <el-form ref="dataForm" :model="temp" :rules="rules" label-position="right" label-width="110px"
-               style="width: 600px; margin-left: 30px;"
-      >
+               style="width: 600px; margin-left: 30px;">
         <el-form-item label="菜单类型：" prop="permissionType">
           <el-radio v-model="temp.permissionType" label="0" @change="routerShow=true">路由</el-radio>
           <el-radio v-model="temp.permissionType" label="2" @change="routerShow=false">外链</el-radio>
@@ -182,22 +175,28 @@
         <el-button @click="dialogFormVisible=false">取消</el-button>
       </div>
     </el-dialog>
-    <!--    修改上下级菜单-->
-    <el-dialog title="修改上下级" :visible.sync="parentDialogVisible" width="400px">
+
+    <!-- 修改上下级菜单 -->
+    <el-dialog title="修改上下级关系" :visible.sync="parentDialogVisible" width="500px" top="50px">
       <el-form ref="parentDataForm" :model="temp2">
-        <el-button v-if="temp2.parentId==='-1'" type="danger">已选择顶级</el-button>
-        <el-button v-else @click="handleNodeClick('-1')">顶级</el-button>
+        <el-form-item label="顶级菜单：">
+          <el-button v-if="temp2.parentId==='-1'" type="primary" icon="el-icon-check">顶级菜单</el-button>
+          <el-button v-else @click="handleNodeClick('-1')">顶级菜单</el-button>
+        </el-form-item>
         <el-divider content-position="center">请选择父级菜单</el-divider>
-        <el-tree ref="parentTree" :key="temp2.permissionId" :data="tableData"
-                 :props="{children: 'children',label: 'permissionTitle'}" :highlight-current="true"
-                 :default-expand-all="true"
-                 :expand-on-click-node="false" node-key="permissionId" :current-node-key.sync="temp2.parentId"
-                 @node-click="handleNodeClick"
-        />
+        <el-tree ref="parentTree" :key="temp2.permissionId" :data="tableData" class="parentDataTree"
+                 :props="{children: 'children',label: 'permissionTitle'}"
+                 :highlight-current="true" :default-expand-all="true"
+                 :expand-on-click-node="false" node-key="permissionId"
+                 :current-node-key.sync="temp2.parentId" @node-click="handleNodeClick"/>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitPermissionParent">保存</el-button>
-        <el-button @click="parentDialogVisible=false">取消</el-button>
+      <div class="parentDataDialogFooter">
+        <el-tag v-if="temp2.parentId==='-1'">设为顶级菜单</el-tag>
+        <el-tag v-else>已选上级：{{ currentParentName }}</el-tag>
+        <el-button type="primary" @click="submitPermissionParent" style="margin-left: 10px;"
+                   size="small" icon="el-icon-check">保存
+        </el-button>
+        <el-button @click="parentDialogVisible=false" size="small" icon="el-icon-close">取消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -227,6 +226,7 @@ export default {
     return {
       // 表格数据
       tableData: [],
+      isExpand: true,
       // 查询数据条数
       total: 0,
       // 分页属性
@@ -261,7 +261,8 @@ export default {
       routerShow: true,
       // 修改上下级关系表单
       temp2: {},
-      parentDialogVisible: false
+      parentDialogVisible: false,
+      currentParentName: '',
     }
   },
   computed: {
@@ -274,15 +275,25 @@ export default {
     this.resetTemp();
   },
   methods: {
-    toggleRouterShow(val) {
-      this.routerShow = val === '0'
-    },
     //查询下拉树
     async getPermissionTreeList() {
       this.listLoading = true
       const {data} = await permissionTreeList()
       this.tableData = data
       this.listLoading = false
+    },
+    //展开和收起
+    toggleTableOprate() {
+      this.isExpand = !this.isExpand
+      this.toggleRowExpansionAll(this.tableData, this.isExpand)
+    },
+    toggleRowExpansionAll(data, isExpansion) {
+      data.forEach((item) => {
+        this.$refs.dataTable.toggleRowExpansion(item, isExpansion)
+        if (item.children !== undefined && item.children !== null) {
+          this.toggleRowExpansionAll(item.children, isExpansion)
+        }
+      })
     },
     resetTemp() {
       this.temp = {
@@ -304,13 +315,6 @@ export default {
         permissionOrder: 0
       }
       this.routerShow = true
-    },
-    // 查询表格数据
-    getList() {
-      permissionTreeList().then(response => {
-        this.tableData = response.data
-        this.total = response.data.length
-      })
     },
     // 表格勾选
     selectionChangeHandlerOrder(val) {
@@ -404,6 +408,7 @@ export default {
         const changeData = this.changeData
         // Object.assign：把changeData[0]的值复制到集合{}
         this.temp2 = Object.assign({}, changeData[0])
+        this.currentParentName = this.getMenuNameFormTree(this.temp2.parentId)
         this.parentDialogVisible = true
         this.$nextTick(() => {
           // 清除表单验证
@@ -411,7 +416,7 @@ export default {
         })
       }
     },
-    //  提交修改数据
+    // 提交修改数据
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
@@ -525,9 +530,25 @@ export default {
       if (node === '-1') {
         this.temp2.parentId = '-1'
         this.$refs.parentTree.setCurrentKey(null)
+        this.currentParentName = ''
       } else {
         this.temp2.parentId = node.permissionId
+        this.currentParentName = this.getMenuNameFormTree(this.temp2.parentId)
       }
+    },
+    // 获取菜单名称
+    getMenuNameFormTree(permissionId, treeData = [...this.tableData]) {
+      for (const item of treeData) {
+        if (item.permissionId === permissionId) {
+          return item.permissionTitle
+        } else if (item.children) {
+          const result = this.getMenuNameFormTree(permissionId, item.children)
+          if (result) {
+            return result
+          }
+        }
+      }
+      return ''
     },
     // 保存上下级关系
     submitPermissionParent() {
@@ -556,13 +577,42 @@ export default {
   }
 }
 </script>
-<style>
-.menu-item {
-  list-style: none;
-  display: inline;
-}
+<style lang="scss" scoped>
+.app-container {
+  .data-table-permission {
+    ::v-deep .menu-item {
+      list-style: none;
+      display: inline;
 
-.menu-item > span {
-  padding: 0px 5px !important;
+      span {
+        padding: 0px 5px !important;
+      }
+    }
+  }
+
+  .parentDataTree {
+    ::v-deep .el-tree-node__content {
+      height: 30px !important;
+    }
+
+    ::v-deep .el-tree-node.is-current > .el-tree-node__content {
+      background-color: #4080ff;
+      color: #fff;
+      border-radius: 5px;
+    }
+  }
+
+  .parentDataDialogFooter {
+    position: fixed;
+    bottom: 0;
+    border-top: 1px solid #4080ff;
+    background-color: #fff;
+    width: 500px;
+    margin-left: -20px;
+    height: 51px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 </style>
