@@ -136,9 +136,7 @@ export default {
       this.$emit('refresh');// 刷新数量
       this.isLoading = true
       const params = {...this.pager, params: JSON.stringify(this.searchData)};
-      request({
-        url: '/message/zMessage/list', method: 'get', params
-      }).then((response) => {
+      request({url: '/message/zMessage/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
         this.tableData = data.records
@@ -198,9 +196,7 @@ export default {
       // 标记已读
       if (row.msgStatus === '0') {
         const params = {msgId: row.msgId, msgStatus: row.msgStatus}
-        this.$request({
-          url: '/message/zMessage/read', method: 'get', params
-        }).then((response) => {
+        this.$request({url: '/message/zMessage/read', method: 'get', params}).then((response) => {
           this.loadTableList();
         })
       }
@@ -218,17 +214,13 @@ export default {
         if (valid) {
           let data = {...this.temp}
           if (this.dialogType === 'update') {
-            request({
-              url: '/message/zMessage/update', method: 'post', data
-            }).then(response => {
+            request({url: '/message/zMessage/update', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
               this.loadTableList()
               this.dialogFormVisible = false
             })
           } else {
-            request({
-              url: '/message/zMessage/add', method: 'post', data
-            }).then(response => {
+            request({url: '/message/zMessage/add', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '添加成功！'})
               this.loadTableList()
               this.dialogFormVisible = false
@@ -251,9 +243,7 @@ export default {
         }).then(() => {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.msgId)
-          request({
-            url: '/message/zMessage/delete', method: 'post', data
-          }).then(response => {
+          request({url: '/message/zMessage/delete', method: 'post', data}).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()
           })
@@ -265,9 +255,7 @@ export default {
       this.$confirm('确定要全部标记为已读吗?', '标记提醒', {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
-        this.$request({
-          url: '/message/zMessage/readAll', method: 'get'
-        }).then((response) => {
+        this.$request({url: '/message/zMessage/readAll', method: 'get'}).then((response) => {
           this.loadTableList();
         })
       })

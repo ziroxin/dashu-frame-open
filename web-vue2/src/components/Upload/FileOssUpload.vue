@@ -71,9 +71,7 @@ export default {
       // 上传前的钩子函数，调用api获取oss上传token
       return new Promise((resolve, reject) => {
         let params = {path: this.ossFolder, oldFileName: file.name, maxSize: max}
-        this.$request({
-          url: '/oss/client/upload/token', method: 'get', params
-        }).then((response) => {
+        this.$request({url: '/oss/client/upload/token', method: 'get', params}).then((response) => {
           this.ossTokenData = {
             ...response.data,
             ...response.data.callbackVar
@@ -97,9 +95,7 @@ export default {
     handleRemove(file, fileList) {
       // 尝试删除oss文件
       let params = {fileId: this.fileIds.find(o => o.uid === file.uid).fid}
-      this.$request({
-        url: '/oss/client/upload/deleteFromCache', method: 'post', params
-      }).then((response) => {
+      this.$request({url: '/oss/client/upload/deleteFromCache', method: 'post', params}).then((response) => {
         console.log(response)
       })
       // 移除fileId

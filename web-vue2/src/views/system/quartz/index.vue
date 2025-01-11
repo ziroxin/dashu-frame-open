@@ -161,9 +161,7 @@ export default {
     // 加载表格
     loadTableList() {
       const params = {...this.pager, params: JSON.stringify(this.searchData)};
-      request({
-        url: '/zquartz/zQuartz/list', method: 'get', params
-      }).then((response) => {
+      request({url: '/zquartz/zQuartz/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
         this.tableData = data.records
@@ -232,17 +230,13 @@ export default {
         if (valid) {
           var data = this.temp;
           if (this.dialogType === 'update') {
-            request({
-              url: '/zquartz/zQuartz/update', method: 'post', data
-            }).then(response => {
+            request({url: '/zquartz/zQuartz/update', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
               this.loadTableList()
               this.dialogFormVisible = false
             })
           } else {
-            request({
-              url: '/zquartz/zQuartz/add', method: 'post', data
-            }).then(response => {
+            request({url: '/zquartz/zQuartz/add', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '添加成功！'})
               this.loadTableList()
               this.dialogFormVisible = false
@@ -261,9 +255,7 @@ export default {
         }).then(() => {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.quartzId)
-          request({
-            url: '/zquartz/zQuartz/delete', method: 'post', data
-          }).then(response => {
+          request({url: '/zquartz/zQuartz/delete', method: 'post', data}).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()
           })
@@ -291,9 +283,7 @@ export default {
     updateStatus(row, status) {
       row.status = status
       let data = {...row};
-      request({
-        url: '/zquartz/zQuartz/update', method: 'post', data
-      }).then(response => {
+      request({url: '/zquartz/zQuartz/update', method: 'post', data}).then(response => {
         if (status === '1') {
           this.$message({type: 'success', message: '启用成功！'})
         } else {
@@ -304,9 +294,7 @@ export default {
     },
     // 刷新状态
     refresh() {
-      request({
-        url: '/zquartz/zQuartz/refresh', method: 'get'
-      }).then(response => {
+      request({url: '/zquartz/zQuartz/refresh', method: 'get'}).then(response => {
         this.$message({type: 'success', message: '刷新状态成功！'})
         this.loadTableList()
       })
@@ -314,9 +302,7 @@ export default {
     // 导出Excel文件
     exportExcel() {
       const params = {...this.pager, params: JSON.stringify(this.searchData)};
-      request({
-        url: '/zquartz/zQuartz/export/excel', method: 'get', params
-      }).then(response => {
+      request({url: '/zquartz/zQuartz/export/excel', method: 'get', params}).then(response => {
         // 创建a标签
         const link = document.createElement('a');
         // 组装下载地址

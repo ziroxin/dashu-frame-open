@@ -305,9 +305,7 @@ export default {
     },
     // 加载下拉选择框组织机构树
     loadOrgTreeForSelect() {
-      request({
-        url: '/user/org/tree', method: 'get'
-      }).then((response) => {
+      request({url: '/user/org/tree', method: 'get'}).then((response) => {
         this.orgSelectTreeData = response.data
       })
     },

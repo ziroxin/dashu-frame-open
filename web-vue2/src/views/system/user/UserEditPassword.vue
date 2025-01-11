@@ -135,9 +135,7 @@ export default {
             this.temp.userId = this.userId
             this.temp.password = this.temp.pwd1
             const data = {...this.temp, isDefaultPassword: this.isDefaultPassword}
-            request({
-              url: '/user/edit/password', method: 'post', data
-            }).then(response => {
+            request({url: '/user/edit/password', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '密码修改成功！下次登录请使用新密码'})
               Cookies.set('isDefaultPassword', false)
               Cookies.set('isInvalidPassword', false)

@@ -5,7 +5,7 @@
     >
 
       <div class="tip">
-        <i class="el-icon-set-up" /> 密码复杂度设置
+        <i class="el-icon-set-up"/> 密码复杂度设置
       </div>
 
       <el-form-item label="密码长度" style="width: 440px;">
@@ -49,12 +49,13 @@
       </el-form-item>
 
       <el-form-item label="规则不符提示" prop="prompt">
-        <el-input v-model="temp.prompt" :rules="[{required: true, message: '提示语不能为空'}]" type="textarea" maxlength="255"
+        <el-input v-model="temp.prompt" :rules="[{required: true, message: '提示语不能为空'}]" type="textarea"
+                  maxlength="255"
                   placeholder="请输入提示语"
         />
       </el-form-item>
       <el-form-item label="密码有效期" prop="validTime">
-        <el-switch v-model="validTimeEnable" inactive-text="永不过期" active-text="过期时间" />
+        <el-switch v-model="validTimeEnable" inactive-text="永不过期" active-text="过期时间"/>
         <el-input v-show="validTimeEnable" v-model="temp.validTime"
                   :rules="[{required: true, message: '有效期不能为空，为空请填0'}]"
                   style="width: 150px;margin:0px 20px;" placeholder="请输入有效时间（为空请填0）"
@@ -63,17 +64,17 @@
       </el-form-item>
 
       <div class="tip">
-        <i class="el-icon-warning-outline" /> 登录安全设置
+        <i class="el-icon-warning-outline"/> 登录安全设置
       </div>
 
       <el-form-item label="限制次数">
-        <el-switch v-model="loginFailedTimesEnable" inactive-text="登录错误不锁定" active-text="登录错误几次锁定" />
+        <el-switch v-model="loginFailedTimesEnable" inactive-text="登录错误不锁定" active-text="登录错误几次锁定"/>
         <el-input v-show="loginFailedTimesEnable" v-model="temp.loginFailedTimes" prop="loginFailedTimes"
                   style="width: 150px;margin:0px 20px;" placeholder="请输入登录失败限制次数"
         />
       </el-form-item>
       <el-form-item v-show="loginFailedTimesEnable" label="锁定时间">
-        <el-switch v-model="lockTimeEnable" inactive-text="永久锁定" active-text="限时锁定" />
+        <el-switch v-model="lockTimeEnable" inactive-text="永久锁定" active-text="限时锁定"/>
         <el-input v-show="lockTimeEnable" v-model="temp.lockTime" prop="lockTime"
                   style="width: 150px;margin:0px 20px;" placeholder="请输入锁定时间（单位分钟）"
         />
@@ -87,7 +88,8 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer width600">
-      <el-button v-waves type="primary" style="margin-left: 120px;" @click="saveData" icon="el-icon-check">保存配置</el-button>
+      <el-button v-waves type="primary" style="margin-left: 120px;" @click="saveData" icon="el-icon-check">保存配置
+      </el-button>
     </div>
   </div>
 </template>
@@ -127,9 +129,7 @@ export default {
   methods: {
     // 加载数据
     loadData() {
-      request({
-        url: '/zsafety/zSafety/getSafety', method: 'get'
-      }).then((response) => {
+      request({url: '/zsafety/zSafety/getSafety', method: 'get'}).then((response) => {
         const {data} = response
         this.temp = Object.assign({}, data)
         this.validTimeEnable = this.temp.validTime > 0;
@@ -142,7 +142,6 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           var data = this.temp;
-          console.dir(this.temp.banUsername)
           if (this.validTimeEnable === true && data.validTime <= 0) {
             this.$message({type: 'error', message: '请输入密码有效期限制天数，必须大于0！'})
             return
@@ -155,9 +154,7 @@ export default {
             this.$message({type: 'error', message: '请输入登录错误后锁定时长，必须大于0！'})
             return
           }
-          request({
-            url: '/zsafety/zSafety/update', method: 'post', data
-          }).then(response => {
+          request({url: '/zsafety/zSafety/update', method: 'post', data}).then(response => {
             this.$message({type: 'success', message: '保存成功！'})
             this.loadData()
           })

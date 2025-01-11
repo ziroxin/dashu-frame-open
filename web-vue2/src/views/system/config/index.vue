@@ -25,7 +25,7 @@
       <el-table-column label="参数名称" prop="cfgName" align="center"/>
       <el-table-column label="参数键名" prop="cfgKey" align="center">
         <template v-slot="{row}">
-          <el-tag type="primary" effect="plain">{{row.cfgKey}}</el-tag>
+          <el-tag type="primary" effect="plain">{{ row.cfgKey }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="参数键值" prop="cfgValue" align="center"/>
@@ -82,7 +82,8 @@
             <el-radio-button label="0">否</el-radio-button>
           </el-radio-group>
           <el-tag type="danger" style="margin-left:10px;"
-                v-if="temp.cfgIsSys==='1'">系统参数不能删除</el-tag>
+                  v-if="temp.cfgIsSys==='1'">系统参数不能删除
+          </el-tag>
         </el-form-item>
         <el-form-item label="备注" prop="cfgRemark"
                       :rules="[]">
@@ -150,9 +151,7 @@ export default {
     loadTableList() {
       this.isLoading = true
       const params = {...this.pager, params: JSON.stringify(this.searchData)};
-      request({
-        url: '/config/zConfig/list', method: 'get', params
-      }).then((response) => {
+      request({url: '/config/zConfig/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
         this.tableData = data.records
@@ -222,17 +221,13 @@ export default {
         if (valid) {
           let data = {...this.temp}
           if (this.dialogType === 'update') {
-            request({
-              url: '/config/zConfig/update', method: 'post', data
-            }).then(response => {
+            request({url: '/config/zConfig/update', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
               this.loadTableList()
               this.dialogFormVisible = false
             })
           } else {
-            request({
-              url: '/config/zConfig/add', method: 'post', data
-            }).then(response => {
+            request({url: '/config/zConfig/add', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '添加成功！'})
               this.loadTableList()
               this.dialogFormVisible = false
@@ -255,9 +250,7 @@ export default {
         }).then(() => {
           // 执行删除
           const data = this.tableSelectRows.map(r => r.cfgId)
-          request({
-            url: '/config/zConfig/delete', method: 'post', data
-          }).then(response => {
+          request({url: '/config/zConfig/delete', method: 'post', data}).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.loadTableList()
           })

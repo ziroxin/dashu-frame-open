@@ -88,9 +88,7 @@ export default {
           data.isEncrypt = true
           data.userName = encryptRSA(this.loginForm.userName)
           data.password = encryptRSA(this.loginForm.password)
-          this.$request({
-            url: '/oauth2/client/login/userBind', method: 'post', data
-          }).then(response => {
+          this.$request({url: '/oauth2/client/login/userBind', method: 'post', data}).then(response => {
             const {data} = response
             let errArr = data.successMsg.split('|');
             if (errArr && errArr.length === 2 && errArr[0] === 'error') {

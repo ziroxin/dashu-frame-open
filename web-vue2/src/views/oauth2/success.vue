@@ -12,9 +12,7 @@ export default {
   name: 'oauth2Success',
   created() {
     const params = {loginId: this.$route.query.loginId}
-    this.$request({
-      url: '/oauth2/client/login/check', method: 'get', params
-    }).then((response) => {
+    this.$request({url: '/oauth2/client/login/check', method: 'get', params}).then((response) => {
       const {data} = response
       let errArr = data.successMsg.split('|');
       if (errArr && errArr.length === 2 && errArr[0] === 'error') {

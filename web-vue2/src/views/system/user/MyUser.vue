@@ -129,25 +129,22 @@ export default {
   methods: {
     loadCurrentUser() {
       // 加载个人用户信息
-      this.$request({url: '/user/getCurrentUser', method: 'get'})
-          .then((response) => {
-            const {data} = response
-            if (data) {
-              this.temp = data
-              this.isLoading = false
-            } else {
-              this.$message({type: 'error', message: '获取当前用户信息失败！请刷新或重新登录重试'})
-            }
-          })
+      this.$request({url: '/user/getCurrentUser', method: 'get'}).then((response) => {
+        const {data} = response
+        if (data) {
+          this.temp = data
+          this.isLoading = false
+        } else {
+          this.$message({type: 'error', message: '获取当前用户信息失败！请刷新或重新登录重试'})
+        }
+      })
     },
     // 提交数据
     submitJudgment() {
       // 表单验证
       this.$refs['userDataForm'].validate((valid) => {
         if (valid) {
-          this.$request({
-            url: '/user/saveCurrentUser', method: 'post', data: this.temp
-          }).then((response) => {
+          this.$request({url: '/user/saveCurrentUser', method: 'post', data: this.temp}).then((response) => {
             this.$message({type: 'success', message: '保存个人资料成功！'})
             this.loadCurrentUser()
             // 更新store中的用户资料
@@ -162,9 +159,7 @@ export default {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
         this.isLoading = true
-        this.$request({
-          url: '/oauth2/client/login/userUnbind', method: 'get'
-        }).then((response) => {
+        this.$request({url: '/oauth2/client/login/userUnbind', method: 'get'}).then((response) => {
           this.$message({type: 'success', message: '解绑成功！'})
           this.loadCurrentUser()
         })
@@ -175,9 +170,7 @@ export default {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
         this.isLoading = true
-        this.$request({
-          url: '/applet/wechat2user/zUserWechat/userUnbind', method: 'get'
-        }).then((response) => {
+        this.$request({url: '/applet/wechat2user/zUserWechat/userUnbind', method: 'get'}).then((response) => {
           this.$message({type: 'success', message: '解绑成功！'})
           this.loadCurrentUser()
         })
