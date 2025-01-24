@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kg.module.filesStatic.mapper.ZFilesStaticMapper">
+    <!-- 批量保存 -->
+    <insert id="saveList">
+        INSERT INTO z_files_static VALUES
+        <foreach collection="list" item="row" separator=",">
+            (
+            #{row.fileId},
+            #{row.parentId},
+            #{row.fileMd5},
+            #{row.fileUrl},
+            #{row.fileOldName},
+            #{row.fileName},
+            #{row.fileExtend},
+            #{row.fileSize},
+            #{row.fileType},
+            #{row.createTime},
+            #{row.updateTime}
+            )
+        </foreach>
+    </insert>
+    <!-- 根据条件查询列表 -->
+    <select id="list" resultType="com.kg.module.filesStatic.dto.ZFilesStaticDTO">
+        SELECT * FROM z_files_static
+        WHERE 1=1
+        <if test="parentId!= null and parentId!= ''">
+            AND parent_id = #{parentId}
+        </if>
+        <if test="fileMd5!= null and fileMd5!= ''">
+            AND file_md5 = #{fileMd5}
+        </if>
+        <if test="fileUrl!= null and fileUrl!= ''">
+            AND file_url = #{fileUrl}
+        </if>
+        <if test="fileOldName!= null and fileOldName!= ''">
+            AND file_old_name LIKE CONCAT('%', #{fileOldName}, '%')
+        </if>
+        <if test="fileName!= null and fileName!= ''">
+            AND file_name = #{fileName}
+        </if>
+        <if test="fileExtend!= null and fileExtend!= ''">
+            AND file_extend = #{fileExtend}
+        </if>
+        <if test="fileSize!= null and fileSize!= ''">
+            AND file_size = #{fileSize}
+        </if>
+        <if test="fileType!= null and fileType!= ''">
+            AND file_type = #{fileType}
+        </if>
+        <if test="offset != null and limit != null">
+            LIMIT #{offset}, #{limit}
+        </if>
+    </select>
+    <!-- 根据条件查询总数 -->
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM z_files_static
+        WHERE 1=1
+        <if test="parentId!= null and parentId!= ''">
+            AND parent_id = #{parentId}
+        </if>
+        <if test="fileMd5!= null and fileMd5!= ''">
+            AND file_md5 = #{fileMd5}
+        </if>
+        <if test="fileUrl!= null and fileUrl!= ''">
+            AND file_url = #{fileUrl}
+        </if>
+        <if test="fileOldName!= null and fileOldName!= ''">
+            AND file_old_name LIKE CONCAT('%', #{fileOldName}, '%')
+        </if>
+        <if test="fileName!= null and fileName!= ''">
+            AND file_name = #{fileName}
+        </if>
+        <if test="fileExtend!= null and fileExtend!= ''">
+            AND file_extend = #{fileExtend}
+        </if>
+        <if test="fileSize!= null and fileSize!= ''">
+            AND file_size = #{fileSize}
+        </if>
+        <if test="fileType!= null and fileType!= ''">
+            AND file_type = #{fileType}
+        </if>
+    </select>
+</mapper>
