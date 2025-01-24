@@ -86,6 +86,65 @@ public class UploadFileUtils {
     }
 
     /**
+     * 原文件上传处理（不改变文件名）
+     *
+     * @param request 请求体
+     * @param dirName 自定义文件夹
+     * @return 上传文件列表
+     */
+    public static List<FileDTO> uploadOriginal(HttpServletRequest request, String dirName) throws IOException {
+        List<FileDTO> resultList = new ArrayList<>();
+        // 上传文件请求处理
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        multipartRequest.setCharacterEncoding("UTF-8");
+        Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+        for (Map.Entry<String, MultipartFile> fileInput : fileMap.entrySet()) {
+            // 循环处理待上传列表
+            String fileInputName = fileInput.getKey();
+            List<MultipartFile> fileList = multipartRequest.getFiles(fileInputName);
+            for (MultipartFile multipartFile : fileList) {
+                // 上传文件实体
+                FileDTO file = new FileDTO();
+                String oldFileName = FilePathConfig.removeSpec(multipartFile.getOriginalFilename());
+                if (!StringUtils.hasText(oldFileName)) {
+                    throw new IOException("上传文件名不正确！请检查");
+                }
+                // 旧文件名
+                file.setFileOldName(oldFileName);
+
+                // 获取文件扩展名
+                String extend = FileUtil.extName(oldFileName).toLowerCase();
+                // 根据头判断格式是否正确
+                String extendStr = FileTypeUtils.getFileType(multipartFile.getBytes());
+                if (StringUtils.hasText(extendStr) && extendStr.indexOf(extend) < 0) {
+                    throw new IOException("您上传的文件格式与扩展名不符！请检查");
+                }
+                if (FilePathConfig.UPLOAD_FILE_ALLOW_EXTEND.toLowerCase().indexOf(extend) < 0) {
+                    throw new IOException("您上传的文件格式不被允许！请检查");
+                }
+                file.setFileExtend(extend);
+
+                // 新文件名（不改变文件名）
+                file.setFileName(oldFileName);
+                // 文件大小
+                file.setFileSize(multipartFile.getSize());
+
+                // 准备保存文件
+                String savePath = FilePathConfig.SAVE_PATH
+                        + "/" + dirName
+                        + "/" + file.getFileName();
+                File saveFile = new File(savePath.replaceAll("//", "/"));
+                FileUtil.mkParentDirs(saveFile);
+                FileCopyUtils.copy(multipartFile.getBytes(), saveFile);
+                // 文件访问地址
+                file.setFileUrl(FilePathConfig.switchUrl(savePath));
+                resultList.add(file);
+            }
+        }
+        return resultList;
+    }
+
+    /**
      * byte[]转存文件
      *
      * @param buffer  源文件byte[]
