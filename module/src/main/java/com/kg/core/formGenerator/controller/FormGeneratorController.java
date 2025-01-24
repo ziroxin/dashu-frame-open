@@ -218,10 +218,10 @@ public class FormGeneratorController {
             // 配置文件路径
             Map<OutputFile, String> pathInfo = new HashMap<>();
             // 后台和xml代码，输出到java
-            String javaPath = basePath + "/java/src/main/java";
-            pathInfo.put(OutputFile.xml, basePath + "/java/src/main/resources/mapper");
+            String javaPath = basePath + "/module/src/main/java";
+            pathInfo.put(OutputFile.xml, basePath + "/module/src/main/resources/mapper");
             // 前台代码，输出到vue
-            pathInfo.put(OutputFile.indexVue, basePath + "/vue/src/views");
+            pathInfo.put(OutputFile.indexVue, basePath + "/web-vue2/src/views");
             // 权限脚本，输出到sql
             pathInfo.put(OutputFile.permissionSql, basePath + "/sql");
             // 配置生成器
@@ -242,6 +242,7 @@ public class FormGeneratorController {
                                 .dtoconvert("dto.convert")
                                 .excelConstant("excels")
                                 .excelOut("excels")
+                                .excelImport("excels")
                                 .service("service")
                                 .serviceImpl("service")
                                 .mapper("mapper")
