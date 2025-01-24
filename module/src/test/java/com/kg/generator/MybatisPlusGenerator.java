@@ -87,6 +87,7 @@ public class MybatisPlusGenerator {
                                 .dtoconvert("dto.convert")
                                 .excelConstant("excels")
                                 .excelOut("excels")
+                                .excelImport("excels")
                                 .service("service")
                                 .serviceImpl("service")
                                 .mapper("mapper")
