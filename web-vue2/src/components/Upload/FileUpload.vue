@@ -6,7 +6,7 @@
 <template>
   <el-upload ref="fileUploader" :name="name"
              :headers="$store.getters.headerToken"
-             :data="{'path':folder}"
+             :data="{'path':folder,...paramsData}"
              :action="action===''?$baseServer+'/upload/files':action"
              :show-file-list="showFileList"
              :file-list="fileShowList"
@@ -27,6 +27,8 @@ export default {
   props: {
     // 绑定值
     value: {type: Array, default: []},
+    // 传入参数
+    paramsData: {type: Object, default: {}},
     // file表单名称
     name: {type: String, default: 'filename'},
     // 上传接口地址

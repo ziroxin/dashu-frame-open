@@ -14,7 +14,7 @@
     <!-- 图片上传 -->
     <el-upload ref="imageOne"
                :headers="$store.getters.headerToken"
-               :data="{'path':folder}"
+               :data="{'path':folder,...paramsData}"
                :name="name"
                :action="action===''?$baseServer+'/upload/images':action"
                :file-list.sync="imgList"
@@ -37,6 +37,8 @@ export default {
   props: {
     // 上传图片路径
     value: {type: String, default: ''},
+    // 传入参数
+    paramsData: {type: Object, default: {}},
     // 表单名称
     name: {type: String, default: 'filename'},
     // 上传接口地址
