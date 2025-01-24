@@ -38,7 +38,7 @@ export default {
     // 上传图片路径
     value: {type: String, default: ''},
     // 传入参数
-    paramsData: {type: Object, default: {}},
+    paramsData: {type: Object, default: () => ({})},
     // 表单名称
     name: {type: String, default: 'filename'},
     // 上传接口地址
