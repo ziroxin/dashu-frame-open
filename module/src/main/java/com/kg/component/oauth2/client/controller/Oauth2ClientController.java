@@ -9,7 +9,6 @@ import com.kg.component.oauth2.client.dto.Oauth2ClientUser;
 import com.kg.component.oauth2.client.dto.Oauth2UserBindDTO;
 import com.kg.component.redis.RedisUtils;
 import com.kg.component.utils.GuidUtils;
-import com.kg.component.utils.MyRSAUtils;
 import com.kg.core.common.constant.CacheConstant;
 import com.kg.core.exception.BaseException;
 import com.kg.core.exception.enums.BaseErrorCode;
@@ -24,7 +23,6 @@ import com.kg.core.zuser.entity.ZUser;
 import com.kg.core.zuser.service.IZUserService;
 import com.kg.module.oauth2.user.entity.OauthClientUser;
 import com.kg.module.oauth2.user.service.OauthClientUserService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -56,8 +54,6 @@ public class Oauth2ClientController {
     private Oauth2ClientProperties client;
     @Resource
     private ZCaptchaService captchaService;
-    @Value("${com.kg.login.is-yzm}")
-    private boolean IS_YZM;
 
     /**
      * Oauth2 Client(客户端)回调地址
@@ -158,21 +154,9 @@ public class Oauth2ClientController {
     public LoginSuccessDTO bind(@RequestBody Oauth2UserBindDTO bindUser) {
         try {
             if (StringUtils.hasText(bindUser.getLoginId()) && redisUtils.hasKey(bindUser.getLoginId())) {
+                // 验证验证码
+                captchaService.checkCaptchaByConfig(bindUser.getCodeUuid(), bindUser.getYzm());
                 // 尝试登录
-                // 验证码
-                if (IS_YZM) {
-                    if (!StringUtils.hasText(bindUser.getYzm())) {
-                        throw new BaseException("请输入验证码！");
-                    }
-                    if (!captchaService.checkCaptcha(bindUser.getCodeUuid(), bindUser.getYzm())) {
-                        throw new BaseException("验证码错误！请检查");
-                    }
-                }
-                if (bindUser.getIsEncrypt() != null && bindUser.getIsEncrypt()) {
-                    // 参数解密（前端公钥加密，后端私钥解密）
-                    bindUser.setUserName(MyRSAUtils.decryptPrivate(bindUser.getUserName()));
-                    bindUser.setPassword(MyRSAUtils.decryptPrivate(bindUser.getPassword()));
-                }
                 LoginFormDTO loginForm = JSONUtil.toBean(JSONUtil.parseObj(bindUser), LoginFormDTO.class);
                 LoginSuccessDTO loginSuccess = loginService.login(loginForm);
                 // 登录成功，开始绑定

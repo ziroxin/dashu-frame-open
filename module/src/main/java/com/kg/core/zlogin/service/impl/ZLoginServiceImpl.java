@@ -13,7 +13,6 @@ import com.kg.core.common.constant.LoginConstant;
 import com.kg.core.exception.BaseException;
 import com.kg.core.exception.enums.BaseErrorCode;
 import com.kg.core.security.entity.SecurityUserDetailEntity;
-import com.kg.core.zcaptcha.service.ZCaptchaService;
 import com.kg.core.zlog.entity.ZOperateLog;
 import com.kg.core.zlog.service.ZOperateLogService;
 import com.kg.core.zlogin.dto.LoginFormDTO;
@@ -26,7 +25,6 @@ import com.kg.core.zuserlock.entity.ZUserLock;
 import com.kg.core.zuserlock.service.ZUserLockService;
 import com.kg.core.zuserpassword.entity.ZUserPassword;
 import com.kg.core.zuserpassword.service.ZUserPasswordService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -63,6 +61,11 @@ public class ZLoginServiceImpl implements ZLoginService {
 
     @Override
     public LoginSuccessDTO login(LoginFormDTO loginForm) throws BaseException {
+        // 若参数解密（前端公钥加密，后端私钥解密）
+        if (loginForm.getIsEncrypt() != null && loginForm.getIsEncrypt()) {
+            loginForm.setUserName(MyRSAUtils.decryptPrivate(loginForm.getUserName()));
+            loginForm.setPassword(MyRSAUtils.decryptPrivate(loginForm.getPassword()));
+        }
         // 判断用户是否已锁定
         ZUserLock userLock = lockService.isLocking(loginForm.getUserName());
         if (userLock != null) {
