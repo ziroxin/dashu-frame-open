@@ -3,8 +3,11 @@ package com.kg.core.zcaptcha.service.impl;
 import com.kg.component.captcha.CaptchaResult;
 import com.kg.component.captcha.CaptchaUtils;
 import com.kg.component.redis.RedisUtils;
+import com.kg.core.exception.BaseException;
 import com.kg.core.zcaptcha.service.ZCaptchaService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 
@@ -18,6 +21,8 @@ public class ZCaptchaServiceImpl implements ZCaptchaService {
     private CaptchaUtils captchaUtils;
     @Resource
     private RedisUtils redisUtils;
+    @Value("${com.kg.login.is-yzm}")
+    private boolean IS_YZM;
     // 存入Redis前缀
     private String CAPTCHA_PREFIX = "captcha_redis_pre_";
 
@@ -49,5 +54,23 @@ public class ZCaptchaServiceImpl implements ZCaptchaService {
             }
         }
         return false;
+    }
+
+    /**
+     * 根据配置检查验证码是否正确
+     *
+     * @param codeUuid 验证码唯一id
+     * @param yzm      用户输入的验证码值
+     */
+    @Override
+    public void checkCaptchaByConfig(String codeUuid, String yzm) throws BaseException {
+        if (IS_YZM) {
+            if (!StringUtils.hasText(yzm)) {
+                throw new BaseException("请输入验证码！");
+            }
+            if (!checkCaptcha(codeUuid, yzm)) {
+                throw new BaseException("验证码错误！请检查");
+            }
+        }
     }
 }

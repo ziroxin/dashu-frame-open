@@ -1,7 +1,6 @@
 package com.kg.module.applet.wechat.controller;
 
 import cn.hutool.json.JSONUtil;
-import com.kg.component.utils.MyRSAUtils;
 import com.kg.component.wechat.applet.WechatAppletLoginUtils;
 import com.kg.core.exception.BaseException;
 import com.kg.core.security.util.CurrentUserUtils;
@@ -17,7 +16,6 @@ import com.kg.module.applet.wechat2user.service.ZUserWechatService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,8 +46,6 @@ public class WechatLoginController {
     private WechatAppletLoginUtils wechatAppletLoginUtils;
     @Resource
     private ZCaptchaService captchaService;
-    @Value("${com.kg.login.is-yzm}")
-    private boolean IS_YZM;
 
     @ApiOperation(value = "/applet/wechat/login/loginByCode", notes = "使用微信凭证code登录，无需用户名和密码", httpMethod = "POST")
     @ApiImplicitParams({})
@@ -73,10 +69,10 @@ public class WechatLoginController {
     @ApiImplicitParams({})
     @PostMapping("/login")
     public LoginSuccessDTO login(@RequestBody WechatLoginFormDTO loginForm) throws BaseException {
-        // 1. 先查询是否绑定过
+        // 先查询是否绑定过
         ZUserWechat bind = getBindByCode(loginForm.getCode());
         if (bind != null && StringUtils.hasText(bind.getUserId())) {
-            // 2. 已绑定，尝试登录
+            // 1. 已绑定，尝试自动登录
             ZUser user = userService.getById(bind.getUserId());
             if (user == null) {
                 return null;
@@ -85,32 +81,20 @@ public class WechatLoginController {
             login.setUserName(user.getUserName());
             login.setPassword(user.getPassword());
             return loginService.login(login);
-
         } else {
-            // 3. 若未绑定，则进行绑定
-            if (IS_YZM) {
-                // 验证码
-                if (!StringUtils.hasText(loginForm.getYzm())) {
-                    throw new BaseException("请输入验证码！");
-                }
-                if (!captchaService.checkCaptcha(loginForm.getCodeUuid(), loginForm.getYzm())) {
-                    throw new BaseException("验证码错误！请检查");
-                }
-            }
-            // 若参数解密（前端公钥加密，后端私钥解密）
-            if (loginForm.getIsEncrypt() != null && loginForm.getIsEncrypt()) {
-                loginForm.setUserName(MyRSAUtils.decryptPrivate(loginForm.getUserName()));
-                loginForm.setPassword(MyRSAUtils.decryptPrivate(loginForm.getPassword()));
-            }
-            // 开始登录
+            // 验证码校验
+            captchaService.checkCaptchaByConfig(loginForm.getCodeUuid(), loginForm.getYzm());
+            // 2. 未绑定，开始登录
             LoginFormDTO login = JSONUtil.toBean(JSONUtil.parseObj(loginForm), LoginFormDTO.class);
             LoginSuccessDTO result = loginService.login(login);
-            // 登录成功，绑定openid和当前用户
-            ZUser user = CurrentUserUtils.getCurrentUserByToken(result.getAccessToken());
-            ZUserWechat entity = new ZUserWechat();
-            entity.setOpenid(bind.getOpenid());
-            entity.setUserId(user.getUserId());
-            userWechatService.save(entity);
+            if (loginForm.getBindWechat()) {
+                // 3. 若未绑定，且前端勾选绑定微信，则进行绑定
+                ZUser user = CurrentUserUtils.getCurrentUserByToken(result.getAccessToken());
+                ZUserWechat entity = new ZUserWechat();
+                entity.setOpenid(bind.getOpenid());
+                entity.setUserId(user.getUserId());
+                userWechatService.save(entity);
+            }
             return result;
         }
     }
