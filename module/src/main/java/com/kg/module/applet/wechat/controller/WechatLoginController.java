@@ -87,7 +87,7 @@ public class WechatLoginController {
             // 2. 未绑定，开始登录
             LoginFormDTO login = JSONUtil.toBean(JSONUtil.parseObj(loginForm), LoginFormDTO.class);
             LoginSuccessDTO result = loginService.login(login);
-            if (loginForm.getBindWechat()) {
+            if (loginForm.getBindWechat() != null && loginForm.getBindWechat()) {
                 // 3. 若未绑定，且前端勾选绑定微信，则进行绑定
                 ZUser user = CurrentUserUtils.getCurrentUserByToken(result.getAccessToken());
                 ZUserWechat entity = new ZUserWechat();
