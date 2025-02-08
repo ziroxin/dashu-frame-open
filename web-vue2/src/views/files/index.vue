@@ -117,7 +117,7 @@
 import waves from '@/directive/waves'
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util';
-import FileSecond from "@/components/Upload/FileSecond.vue";
+import FileSecond from "@/views/demo/files/FileSecond.vue";
 
 export default {
   components: {FileSecond},

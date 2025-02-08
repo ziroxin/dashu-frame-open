@@ -32,7 +32,7 @@
       <div style="margin-top: 100px;">
         <el-divider><span style="color:red;">文件普通上传 - 使用自定义下载组件的DEMO</span></el-divider>
         <div style="width: 600px;border:1px dashed #ccc;border-radius: 10px;padding: 10px;margin:20px auto;">
-          <file-upload v-model="uploadFileList"></file-upload>
+          <file-upload v-model="uploadFileList" :limit-count="2"></file-upload>
         </div>
         <div style="display: flex;border:1px dashed #ccc;border-radius: 10px;padding: 10px;">
           <el-button type="primary" plain style="margin-right: 10px;width:100px;">文件List</el-button>
@@ -170,15 +170,15 @@
   </div>
 </template>
 <script>
-import PluploadChunk from "@/components/Upload/PluploadChunk.vue";
-import FileChunkResume from "@/components/Upload/FileChunkResume.vue";
-import FileSecond from "@/components/Upload/FileSecond.vue";
 import FileOssUpload from "@/components/Upload/FileOssUpload.vue";
 import JsonViewer from 'vue-json-viewer'
 import FileUpload from "@/components/Upload/FileUpload.vue";
+import FileSecond from "@/views/demo/files/FileSecond.vue";
+import FileChunkResume from "@/views/demo/files/FileChunkResume.vue";
+import PluploadChunk from "@/views/demo/files/PluploadChunk.vue";
 
 export default {
-  components: {FileUpload, FileOssUpload, FileSecond, FileChunkResume, PluploadChunk, JsonViewer},
+  components: {PluploadChunk, FileChunkResume, FileSecond, FileUpload, FileOssUpload, JsonViewer},
   data() {
     return {
       // 上传类型：normal=普通上传;chunk=分片上传;chunkResume=断点续传;second=秒传;oss=OSS上传（阿里云）
