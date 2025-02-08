@@ -1,3 +1,8 @@
+<!--
+ * 文件断点续传 - DEMO（不建议直接使用该组件）
+ * @Author: ziro
+ * @Date: 2023/9/26 14:19
+-->
 <template>
   <div>
     <div v-if="uploadData">

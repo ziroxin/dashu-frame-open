@@ -1,3 +1,8 @@
+<!--
+ * 文件秒传 - DEMO（不建议直接使用该组件）
+ * @Author: ziro
+ * @Date: 2023/9/27 17:15
+-->
 <template>
   <div>
     <div v-if="uploadData">
