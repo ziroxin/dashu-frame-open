@@ -1,7 +1,7 @@
 <!--
  * 上传多文件组件
  * 参数说明：
-       value: 可选，上传图片路径（通过v-model双向绑定），默认为空，传入正确路径可回显
+       value: 可选，上传文件路径（通过v-model双向绑定），默认为空，传入正确路径可回显
        paramsData: 可选，调用上传接口时传入后台的参数（JSON格式）
        name: 可选，file表单的name属性，默认：filename
        action: 可选，上传接口地址，默认：/upload/files
@@ -15,6 +15,7 @@
        folder: 可选，服务端存储文件夹，默认空
        limitSize: 可选，上传文件大小限制，单位：kb（默认1mb）
        limitCount: 可选，上传个数限制（0表示不限制），默认：0
+
  * @Author: ziro
  * @Date: 2024/12/14 11:20:52
  -->
