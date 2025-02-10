@@ -1,11 +1,13 @@
 package com.kg.module.filesStatic.service;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
+import com.kg.component.file.utils.RemoveFileUtils;
 import com.kg.component.office.ExcelReadUtils;
 import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
@@ -22,6 +24,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -113,7 +116,24 @@ public class ZFilesStaticServiceImpl extends ServiceImpl<ZFilesStaticMapper, ZFi
         ZFilesStatic zFilesStatic = zFilesStaticConvert.dtoToEntity(zFilesStaticDTO);
         zFilesStatic.setUpdateTime(LocalDateTime.now());
         if (zFilesStatic.getFileType().equals("0")) {
-            zFilesStatic.setFileUrl("/upload/" + zFilesStatic.getFileOldName() + "/");
+            String newFolderUrl = "/upload/" + zFilesStatic.getFileOldName() + "/";
+            // 判断文件夹内是否有文件
+            List<ZFilesStatic> fileList = lambdaQuery().eq(ZFilesStatic::getParentId, zFilesStatic.getFileId()).list();
+            if (fileList.size() > 0) {
+                ZFilesStatic oldEntity = getById(zFilesStatic.getFileId());
+                String oldFolderUrl = oldEntity.getFileUrl();
+                // 若文件夹内有文件，则物理修改文件夹名，并更新所有文件url
+                FileUtil.rename(new File(FilePathConfig.switchSavePath(oldFolderUrl)),
+                        zFilesStatic.getFileOldName(), true);
+                fileList.forEach(f -> {
+                    String oldUrl = f.getFileUrl();
+                    String newUrl = oldUrl.replace(oldFolderUrl, newFolderUrl);
+                    f.setFileUrl(newUrl);
+                });
+                updateBatchById(fileList);
+            }
+            // 更新文件夹名
+            zFilesStatic.setFileUrl(newFolderUrl);
         }
         updateById(zFilesStatic);
     }
@@ -126,6 +146,13 @@ public class ZFilesStaticServiceImpl extends ServiceImpl<ZFilesStaticMapper, ZFi
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public void delete(List<String> idlist) {
+        List<ZFilesStatic> list = lambdaQuery().in(ZFilesStatic::getFileId, idlist).list();
+        for (ZFilesStatic file : list) {
+            if (file.getFileType().equals("1")) {
+                // 删除文件时，物理删除文件
+                RemoveFileUtils.remove(file.getFileUrl());
+            }
+        }
         removeBatchByIds(idlist);
     }
 

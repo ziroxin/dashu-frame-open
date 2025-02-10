@@ -1,11 +1,8 @@
 package com.kg.module.filesStatic.controller;
 
-import cn.hutool.core.util.ZipUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.kg.component.file.FilePathConfig;
 import com.kg.component.file.dto.FileDTO;
-import com.kg.component.file.utils.RemoveFileUtils;
 import com.kg.component.file.utils.UploadFileUtils;
 import com.kg.component.utils.GuidUtils;
 import com.kg.core.annotation.AutoOperateLog;
@@ -23,15 +20,15 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.zip.ZipFile;
 
 /**
  * <p>
@@ -83,6 +80,10 @@ public class ZFilesStaticController {
     @AutoOperateLog(logMethod = "/filesStatic/zFilesStatic/add", logMsg = "新增-静态资源文件表")
     public void add(@RequestBody ZFilesStaticDTO zFilesStaticDTO) throws BaseException {
         try {
+            if (zFilesStaticService.lambdaQuery()
+                    .eq(ZFilesStatic::getFileOldName, zFilesStaticDTO.getFileOldName()).count() > 0) {
+                throw new BaseException("文件夹名已存在！请修改");
+            }
             zFilesStaticService.add(zFilesStaticDTO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,6 +99,10 @@ public class ZFilesStaticController {
     @AutoOperateLog(logMethod = "/filesStatic/zFilesStatic/update", logMsg = "修改-静态资源文件表")
     public void update(@RequestBody ZFilesStaticDTO zFilesStaticDTO) throws BaseException {
         try {
+            if (zFilesStaticService.lambdaQuery().ne(ZFilesStatic::getFileId, zFilesStaticDTO.getFileId())
+                    .eq(ZFilesStatic::getFileOldName, zFilesStaticDTO.getFileOldName()).count() > 0) {
+                throw new BaseException("文件夹名已存在！请修改");
+            }
             zFilesStaticService.update(zFilesStaticDTO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,7 +120,11 @@ public class ZFilesStaticController {
     @AutoOperateLog(logMethod = "/filesStatic/zFilesStatic/delete", logMsg = "删除-静态资源文件表")
     public void delete(@RequestBody String[] fileIds) throws BaseException {
         try {
-            zFilesStaticService.delete(Arrays.asList(fileIds));
+            List<String> delIdList = Arrays.asList(fileIds);
+            if (zFilesStaticService.lambdaQuery().in(ZFilesStatic::getParentId, delIdList).count() > 0) {
+                throw new BaseException("删除失败！文件夹中已有文件，请先删除文件");
+            }
+            zFilesStaticService.delete(delIdList);
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException(e.getMessage() != null ? e.getMessage() : "删除失败！请重试");
@@ -172,51 +181,43 @@ public class ZFilesStaticController {
     @ApiOperation(value = "/filesStatic/zFilesStatic/upload", notes = "上传文件", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "request", value = "请求", paramType = "query", required = false, dataType = "String"),
-            @ApiImplicitParam(name = "autoUnzip", value = "是否自动解压", paramType = "query", required = false, dataType = "boolean"),
             @ApiImplicitParam(name = "parentId", value = "所属文件夹id", paramType = "query", required = false, dataType = "String")
     })
     @PostMapping("upload")
-    public void upload(HttpServletRequest request, boolean autoUnzip, String parentId) throws BaseException {
+    public List<FileDTO> upload(HttpServletRequest request, String parentId) throws BaseException {
         try {
-            ZFilesStatic entity = zFilesStaticService.getById(parentId);
-            // 普通文件上传
-            List<FileDTO> fileDTOS = UploadFileUtils.uploadOriginal(request, entity.getFileOldName());
-            // 自动解压处理
-            if (autoUnzip && fileDTOS != null && fileDTOS.size() > 0 && fileDTOS.get(0).getFileExtend().equals("zip")) {
-                // 自动解压文件
-                String savePath = FilePathConfig.switchSavePath(fileDTOS.get(0).getFileUrl());
-                ZipUtil.unzip(savePath);
-                // 解压后的文件保存到数据库
-                List<String> list = ZipUtil.listFileNames(new ZipFile(savePath), null);
-                String parentPath = FilePathConfig.SAVE_PATH + "/" + entity.getFileOldName() + "/";
-                List<ZFilesStatic> saveList = new ArrayList<>();
-                for (String fileName : list) {
-                    ZFilesStatic bean = new ZFilesStatic();
-                    bean.setFileId(GuidUtils.getUuid());
-                    bean.setParentId(parentId);
-                    bean.setFileType("1");// 文件类型：1文件
-                    bean.setFileOldName(fileName);
-                    bean.setFileName(fileName);
-                    bean.setFileExtend(fileName.substring(fileName.lastIndexOf(".") + 1));
-                    bean.setFileUrl(FilePathConfig.switchUrl(parentPath + fileName));
-                    bean.setCreateTime(LocalDateTime.now());
-                    saveList.add(bean);
+            // 查重
+            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+            Iterator<String> fileNamesIterator = multipartRequest.getFileNames();
+            int count = 0;
+            while (fileNamesIterator.hasNext()) {
+                // 获取文件的实际名称
+                String fileOriginalName = multipartRequest.getFile(fileNamesIterator.next()).getOriginalFilename();
+                // 检查是否有同名文件已经存在
+                if (zFilesStaticService.lambdaQuery().eq(ZFilesStatic::getParentId, parentId)
+                        .eq(ZFilesStatic::getFileOldName, fileOriginalName).count() > 0) {
+                    throw new BaseException("上传失败！同名文件已存在: " + fileOriginalName);
                 }
-                zFilesStaticService.saveBatch(saveList);
-                // 删除压缩包
-                RemoveFileUtils.remove(fileDTOS.get(0).getFileUrl());
-            } else {
-                // 保存当前这一个文件
-                List<ZFilesStatic> saveList = fileDTOS.stream().map(dto -> {
-                    ZFilesStatic bean = JSONUtil.toBean(JSONUtil.toJsonStr(dto), ZFilesStatic.class);
-                    bean.setFileId(GuidUtils.getUuid());
-                    bean.setParentId(parentId);
-                    bean.setFileType("1");// 文件类型：1文件
-                    bean.setCreateTime(LocalDateTime.now());
-                    return bean;
-                }).collect(Collectors.toList());
-                zFilesStaticService.saveBatch(saveList);
+                count++;
             }
+            if (count <= 0) {
+                throw new BaseException("上传失败！未选择文件");
+            }
+
+            // 普通文件上传
+            ZFilesStatic entity = zFilesStaticService.getById(parentId);
+            List<FileDTO> fileDTOS = UploadFileUtils.uploadOriginal(request, entity.getFileOldName());
+            // 保存到数据库
+            List<ZFilesStatic> saveList = fileDTOS.stream().map(dto -> {
+                ZFilesStatic bean = JSONUtil.toBean(JSONUtil.toJsonStr(dto), ZFilesStatic.class);
+                bean.setFileId(GuidUtils.getUuid());
+                bean.setParentId(parentId);
+                bean.setFileType("1");// 文件类型：1文件
+                bean.setCreateTime(LocalDateTime.now());
+                return bean;
+            }).collect(Collectors.toList());
+            zFilesStaticService.saveBatch(saveList);
+            return fileDTOS;
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException(StringUtils.hasText(e.getMessage()) ? e.getMessage() : "上传文件失败！请重试");

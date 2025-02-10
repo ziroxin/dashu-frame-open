@@ -48,6 +48,7 @@
         <if test="fileType!= null and fileType!= ''">
             AND file_type = #{fileType}
         </if>
+        ORDER BY create_time DESC
         <if test="offset != null and limit != null">
             LIMIT #{offset}, #{limit}
         </if>
