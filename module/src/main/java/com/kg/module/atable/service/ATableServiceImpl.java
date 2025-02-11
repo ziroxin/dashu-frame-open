@@ -14,8 +14,8 @@ import com.kg.module.atable.dto.ATableDTO;
 import com.kg.module.atable.dto.convert.ATableConvert;
 import com.kg.module.atable.entity.ATable;
 import com.kg.module.atable.excels.ATableExcelConstant;
-import com.kg.module.atable.excels.ATableExcelOutDTO;
 import com.kg.module.atable.excels.ATableExcelImportDTO;
+import com.kg.module.atable.excels.ATableExcelOutDTO;
 import com.kg.module.atable.mapper.ATableMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -128,7 +128,8 @@ public class ATableServiceImpl extends ServiceImpl<ATableMapper, ATable> impleme
     public String exportExcel(String params) {
         try {
             // 拼接导出Excel的文件，保存的临时路径
-            String path = FilePathConfig.SAVE_PATH + "/exportTemp/excel/" + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
+            String path = FilePathConfig.SAVE_PATH + "/exportTemp/excel/"
+                    + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
 
             // 查询待导出的数据
             JSONObject paramObj = new JSONObject();
@@ -138,7 +139,9 @@ public class ATableServiceImpl extends ServiceImpl<ATableMapper, ATable> impleme
 
             List<ATableDTO> list = aTableMapper.list(paramObj);
             // 转换成导出excel实体
-            List<ATableExcelOutDTO> dataList = list.stream().map(d -> JSONUtil.toBean(JSONUtil.parseObj(d), ATableExcelOutDTO.class)).collect(Collectors.toList());
+            List<ATableExcelOutDTO> dataList = list.stream()
+                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d), ATableExcelOutDTO.class))
+                    .collect(Collectors.toList());
             if (dataList == null || dataList.size() <= 0) {
                 // 未查到数据时，模拟一行空数据
                 dataList.add(new ATableExcelOutDTO());
@@ -165,7 +168,8 @@ public class ATableServiceImpl extends ServiceImpl<ATableMapper, ATable> impleme
     public String importExcel(HttpServletRequest request) {
         // 1. 读取导入数据
         int startRowIdx = 2;
-        List<ATableExcelImportDTO> importData = ExcelReadUtils.read(request, 1, startRowIdx, ATableExcelImportDTO.class, ATableExcelConstant.IMPORT_EXCEL_COLUMN);
+        List<ATableExcelImportDTO> importData =
+                ExcelReadUtils.read(request, 1, startRowIdx, ATableExcelImportDTO.class, ATableExcelConstant.IMPORT_EXCEL_COLUMN);
         if (importData == null || importData.isEmpty()) {
             return "Excel文件中没有数据！";
         }
@@ -214,7 +218,8 @@ public class ATableServiceImpl extends ServiceImpl<ATableMapper, ATable> impleme
     public String downloadTemplate() {
         try {
             // 拼接下载Excel模板，保存的临时路径
-            String path = FilePathConfig.SAVE_PATH + "/importTemp/excel/" + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
+            String path = FilePathConfig.SAVE_PATH + "/importTemp/excel/"
+                    + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
             // 第一行标题
             String title = "我的表a_table-导入模板";
             // 写入模板字段行
