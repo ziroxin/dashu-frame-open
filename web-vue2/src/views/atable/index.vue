@@ -171,6 +171,8 @@ export default {
     resetTableList() {
       this.pager.page = 1
       this.searchData = this.$options.data().searchData
+      this.sortData = this.$options.data().sortData
+      this.$refs.dataTable.clearSort()
       this.loadTableList()
     },
     // 加载表格
@@ -197,7 +199,7 @@ export default {
       if (sort.order) {
         this.sortData = {column: sort.prop, order: sort.order === 'descending' ? 'DESC' : 'ASC'}
       } else {
-        this.sortData = {}
+        this.sortData = this.$options.data().sortData
       }
       this.loadTableList()
     },
