@@ -54,9 +54,10 @@ public interface ATableService extends IService<ATable> {
      * 导出Excel
      *
      * @param params 查询参数
+     * @param sorts  排序条件
      * @return 导出后的文件url
      */
-    String exportExcel(String params);
+    String exportExcel(String params, String sorts);
 
     /**
      * 导入Excel

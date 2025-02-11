@@ -34,8 +34,23 @@
             AND b = #{b}
         </if>
         <choose>
-            <when test="columnStr != null and columnStr != '' and orderStr != null and orderStr != ''">
-                ORDER BY ${columnStr} ${orderStr}
+            <when test="mobileOrder != null and mobileOrder != ''">
+                ORDER BY mobile ${mobileOrder}
+            </when>
+            <when test="orderIndexOrder != null and orderIndexOrder != ''">
+                ORDER BY order_index ${orderIndexOrder}
+            </when>
+            <when test="field116Order != null and field116Order != ''">
+                ORDER BY field116 ${field116Order}
+            </when>
+            <when test="aOrder != null and aOrder != ''">
+                ORDER BY a ${aOrder}
+            </when>
+            <when test="bOrder != null and bOrder != ''">
+                ORDER BY b ${bOrder}
+            </when>
+            <when test="createTimeOrder != null and createTimeOrder != ''">
+                ORDER BY create_time ${createTimeOrder}
             </when>
             <otherwise>
                 ORDER BY order_index ASC
