@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kg.module.atable.mapper.ATableMapper">
+    <!-- 批量保存 -->
+    <insert id="saveList">
+        INSERT INTO a_table VALUES
+        <foreach collection="list" item="row" separator=",">
+            (
+            #{row.id},
+            #{row.mobile},
+            #{row.orderIndex},
+            #{row.field116},
+            #{row.a},
+            #{row.b},
+            #{row.createTime},
+            #{row.updateTime}
+            )
+        </foreach>
+    </insert>
+    <!-- 根据条件查询列表 -->
+    <select id="list" resultType="com.kg.module.atable.dto.ATableDTO">
+        SELECT * FROM a_table
+        WHERE 1=1
+        <if test="mobile!= null and mobile!= ''">
+            AND mobile = #{mobile}
+        </if>
+        <if test="field116!= null and field116!= ''">
+            AND field116 = #{field116}
+        </if>
+        <if test="a!= null and a!= ''">
+            AND a = #{a}
+        </if>
+        <if test="b!= null and b!= ''">
+            AND b = #{b}
+        </if>
+        <choose>
+            <when test="columnStr != null and columnStr != '' and orderStr != null and orderStr != ''">
+                ORDER BY ${columnStr} ${orderStr}
+            </when>
+            <otherwise>
+                ORDER BY order_index ASC
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            LIMIT #{offset}, #{limit}
+        </if>
+    </select>
+    <!-- 根据条件查询总数 -->
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM a_table
+        WHERE 1=1
+        <if test="mobile!= null and mobile!= ''">
+            AND mobile = #{mobile}
+        </if>
+        <if test="field116!= null and field116!= ''">
+            AND field116 = #{field116}
+        </if>
+        <if test="a!= null and a!= ''">
+            AND a = #{a}
+        </if>
+        <if test="b!= null and b!= ''">
+            AND b = #{b}
+        </if>
+    </select>
+</mapper>
