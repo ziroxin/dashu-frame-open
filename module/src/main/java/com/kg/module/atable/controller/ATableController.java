@@ -60,7 +60,7 @@ public class ATableController {
     public Page<ATableDTO> list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                 @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
                                 @RequestParam(value = "params", required = false) String params,
-                                @RequestParam(value = "params", required = false) String sorts) {
+                                @RequestParam(value = "sorts", required = false) String sorts) {
         return aTableService.pagelist(page, limit, params, sorts);
     }
 
