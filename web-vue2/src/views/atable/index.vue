@@ -38,12 +38,12 @@
     <el-table ref="dataTable" :data="tableData" stripe border v-loading="isLoading"
               @selection-change="handleTableSelectChange" @sort-change="handleTableSortChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
-      <el-table-column label="手机号" prop="mobile" align="center" sortable/>
-      <el-table-column label="顺序" prop="orderIndex" align="center" sortable/>
-      <el-table-column label="测试单行文本" prop="field116" align="center" sortable/>
-      <el-table-column label="测试decimal" prop="a" align="center" sortable/>
-      <el-table-column label="测试富文本" prop="b" align="center" sortable/>
-      <el-table-column label="添加时间" prop="createTime" align="center" sortable/>
+      <el-table-column label="手机号" prop="mobile" align="center" sortable="custom"/>
+      <el-table-column label="顺序" prop="orderIndex" align="center" sortable="custom"/>
+      <el-table-column label="测试单行文本" prop="field116" align="center" sortable="custom"/>
+      <el-table-column label="测试decimal" prop="a" align="center" sortable="custom"/>
+      <el-table-column label="测试富文本" prop="b" align="center" sortable="custom"/>
+      <el-table-column label="添加时间" prop="createTime" align="center" sortable="custom"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template v-slot="scope">
           <el-button type="text" style="color: #13ce66;"
@@ -195,7 +195,7 @@ export default {
     // 监听排序
     handleTableSortChange(sort) {
       if (sort.order) {
-        this.sortData = {columnStr: sort.prop, orderStr: sort.order === 'descending' ? 'DESC' : 'ASC'}
+        this.sortData = {column: sort.prop, order: sort.order === 'descending' ? 'DESC' : 'ASC'}
       } else {
         this.sortData = {}
       }
@@ -297,7 +297,7 @@ export default {
     },
     // 导出Excel文件
     exportExcel() {
-      const params = {params: JSON.stringify(this.searchData)}
+      const params = {params: JSON.stringify(this.searchData), sorts: JSON.stringify(this.sortData)}
       downloadUtil.download('/atable/aTable/export/excel', params, '我的表a_table.xlsx')
     },
     // 导入Excel之前，显示loading

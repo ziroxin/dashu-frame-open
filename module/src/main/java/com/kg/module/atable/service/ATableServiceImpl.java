@@ -70,7 +70,10 @@ public class ATableServiceImpl extends ServiceImpl<ATableMapper, ATable> impleme
         // 处理排序
         if (StringUtils.hasText(sorts)) {
             // 例如：{"columnStr": "字段名", "orderStr": "ASC/DESC"}
-            paramObj.putAll(JSONUtil.parseObj(sorts));
+            JSONObject sortObj = JSONUtil.parseObj(sorts);
+            if (sortObj.size() > 0) {
+                paramObj.set(sortObj.getStr("column") + "Order", sortObj.getStr("order"));
+            }
         }
         // 查询列表
         List<ATableDTO> list = aTableMapper.list(paramObj);
@@ -122,10 +125,11 @@ public class ATableServiceImpl extends ServiceImpl<ATableMapper, ATable> impleme
      * 导出Excel
      *
      * @param params 查询参数
+     * @param sorts  排序条件
      * @return 导出后的文件url
      */
     @Override
-    public String exportExcel(String params) {
+    public String exportExcel(String params, String sorts) {
         try {
             // 拼接导出Excel的文件，保存的临时路径
             String path = FilePathConfig.SAVE_PATH + "/exportTemp/excel/"
@@ -137,6 +141,16 @@ public class ATableServiceImpl extends ServiceImpl<ATableMapper, ATable> impleme
                 paramObj = JSONUtil.parseObj(params);
             }
 
+            // 处理排序
+            if (StringUtils.hasText(sorts)) {
+                // 例如：{"columnStr": "字段名", "orderStr": "ASC/DESC"}
+                JSONObject sortObj = JSONUtil.parseObj(sorts);
+                if (sortObj.size() > 0) {
+                    paramObj.set(sortObj.getStr("column") + "Order", sortObj.getStr("order"));
+                }
+            }
+
+            // 查询列表
             List<ATableDTO> list = aTableMapper.list(paramObj);
             // 转换成导出excel实体
             List<ATableExcelOutDTO> dataList = list.stream()

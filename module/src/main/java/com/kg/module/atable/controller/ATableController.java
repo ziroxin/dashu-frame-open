@@ -113,12 +113,14 @@ public class ATableController {
 
     @ApiOperation(value = "/atable/aTable/export/excel", notes = "导出excel-我的表a_table", httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "params", value = "查询条件", paramType = "query", required = false, dataType = "String")
+            @ApiImplicitParam(name = "params", value = "查询条件", paramType = "query", required = false, dataType = "String"),
+            @ApiImplicitParam(name = "sorts", value = "排序条件", paramType = "query", required = false, dataType = "String")
     })
     @GetMapping("/export/excel")
     @PreAuthorize("hasAuthority('atable:aTable:export:excel')")
-    public String exportExcel(@RequestParam(value = "params", required = false) String params) throws BaseException {
-        String result = aTableService.exportExcel(params);
+    public String exportExcel(@RequestParam(value = "params", required = false) String params,
+                              @RequestParam(value = "sorts", required = false) String sorts) throws BaseException {
+        String result = aTableService.exportExcel(params, sorts);
         if ("error".equals(result)) {
             throw new BaseException("导出Excel失败，请重试！");
         }
