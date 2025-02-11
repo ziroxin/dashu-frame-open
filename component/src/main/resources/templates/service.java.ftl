@@ -27,9 +27,10 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
      * @param page   页码
      * @param limit  条数
      * @param params 查询条件
-     * @return
+     * @param sorts  排序条件
+     * @return 分页列表
      */
-    Page<${dtoName}> pagelist(Integer page, Integer limit, String params);
+    Page<${dtoName}> pagelist(Integer page, Integer limit, String params, String sorts);
 
     /**
      * 新增
@@ -56,9 +57,10 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
      * 导出Excel
      *
      * @param params 查询参数
+     * @param sorts  排序条件
      * @return 导出后的文件url
      */
-    String exportExcel(String params);
+    String exportExcel(String params, String sorts);
 
     /**
      * 导入Excel
