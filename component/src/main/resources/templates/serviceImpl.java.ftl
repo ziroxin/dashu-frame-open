@@ -32,8 +32,8 @@ import ${package.DTO}.${dtoName};
 import ${package.Convert}.${dtoconvertName};
 import ${package.Entity}.${entity};
 import ${package.ExcelConstant}.${entity}ExcelConstant;
-import ${package.ExcelOut}.${entity}ExcelOutDTO;
 import ${package.ExcelImport}.${entity}ExcelImportDTO;
+import ${package.ExcelOut}.${entity}ExcelOutDTO;
 import ${package.Mapper}.${table.mapperName};
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,10 +82,11 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
      * @param page   页码
      * @param limit  条数
      * @param params 查询条件
+     * @param sorts  排序条件
      * @return 分页列表
      */
     @Override
-    public Page<${dtoName}> pagelist(Integer page, Integer limit, String params) {
+    public Page<${dtoName}> pagelist(Integer page, Integer limit, String params, String sorts) {
         // 解析查询参数
         JSONObject paramObj = new JSONObject();
         if (StringUtils.hasText(params)) {
@@ -95,6 +96,14 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         Integer offset = (page - 1) * limit;
         paramObj.set("limit", limit);
         paramObj.set("offset", offset);
+        // 处理排序
+        if (StringUtils.hasText(sorts)) {
+            // 例如：{"columnStr": "字段名", "orderStr": "ASC/DESC"}
+            JSONObject sortObj = JSONUtil.parseObj(sorts);
+            if (sortObj.size() > 0) {
+                paramObj.set(sortObj.getStr("column") + "Order", sortObj.getStr("order"));
+            }
+        }
         // 查询列表
         List<${dtoName}> list = ${table.mapperName?uncap_first}.list(paramObj);
 <#if childTableList??>
@@ -215,10 +224,11 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
      * 导出Excel
      *
      * @param params 查询参数
+     * @param sorts  排序条件
      * @return 导出后的文件url
      */
     @Override
-    public String exportExcel(String params) {
+    public String exportExcel(String params, String sorts) {
         try {
             // 拼接导出Excel的文件，保存的临时路径
             String path = FilePathConfig.SAVE_PATH + "/exportTemp/excel/"
@@ -230,6 +240,16 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
                 paramObj = JSONUtil.parseObj(params);
             }
 
+            // 处理排序
+            if (StringUtils.hasText(sorts)) {
+                // 例如：{"columnStr": "字段名", "orderStr": "ASC/DESC"}
+                JSONObject sortObj = JSONUtil.parseObj(sorts);
+                if (sortObj.size() > 0) {
+                    paramObj.set(sortObj.getStr("column") + "Order", sortObj.getStr("order"));
+                }
+            }
+
+            // 查询列表
             List<${dtoName}> list = ${table.mapperName?uncap_first}.list(paramObj);
             // 转换成导出excel实体
             List<${entity}ExcelOutDTO> dataList = list.stream()

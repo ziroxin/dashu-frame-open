@@ -1,165 +1,168 @@
 <template>
-	<div class="app-container">
-		<!-- ${table.comment!}-管理按钮 -->
-		<div style="margin-bottom: 10px;">
+  <div class="app-container">
+    <!-- ${table.comment!}-管理按钮 -->
+    <div style="margin-bottom: 10px;">
 <#list table.fields as field>
     <#if field.propertyName!=entityKeyName && field.propertyName!='orderIndex'
             && field.propertyName!='createUserId' && field.propertyName!='updateUserId'
             && field.propertyName!='createTime' && field.propertyName!='updateTime'>
-	    <#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
-			<el-date-picker v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
-							type="date" class="filter-item" placeholder="请选择${field.comment}查询"/>
-	    <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
-			<el-date-picker v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
-							type="datetime" class="filter-item" placeholder="请选择${field.comment}查询"/>
-	    <#else>
-			<el-input v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
-					  		class="filter-item" placeholder="请输入${field.comment}查询"/>
-	    </#if>
-	</#if>
+      <#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
+      <el-date-picker v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
+                type="date" class="filter-item" placeholder="请选择${field.comment}查询"/>
+      <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
+      <el-date-picker v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
+                type="datetime" class="filter-item" placeholder="请选择${field.comment}查询"/>
+      <#else>
+      <el-input v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
+                class="filter-item" placeholder="请输入${field.comment}查询"/>
+      </#if>
+  </#if>
 </#list>
-			<el-button v-waves class="filter-item" type="primary" size="small"
-                 icon="el-icon-search" @click="searchBtnHandle">查询</el-button>
-			<el-button v-waves class="filter-item" type="info" size="small"
-                 icon="el-icon-refresh" @click="resetTableList">重置</el-button>
-			<div style="float: right;">
-				<el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
+      <el-button v-waves class="filter-item" type="primary" size="small"
+                 icon="el-icon-search" @click="searchBtnHandle">查询
+      </el-button>
+      <el-button v-waves class="filter-item" type="info" size="small"
+                 icon="el-icon-refresh" @click="resetTableList">重置
+      </el-button>
+      <div style="float: right;">
+        <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
                    v-permission="'${buttonNamePre}add'">新增
-				</el-button>
-				<el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate(null)" size="small"
+        </el-button>
+        <el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate(null)" size="small"
                    v-permission="'${buttonNamePre}update'">修改
-				</el-button>
-				<el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
+        </el-button>
+        <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                    v-permission="'${buttonNamePre}delete'">删除
-				</el-button>
-                <el-button v-waves v-permission="'${buttonNamePre}importExcel'" @click="dialogImportVisible=true"
-                           type="primary" icon="el-icon-upload2" size="small">导入Excel
-                </el-button>
-				<el-button v-waves type="success" icon="el-icon-printer" @click="exportExcel" size="small"
-						   v-permission="'${buttonNamePre}exportExcel'">导出Excel
-				</el-button>
-			</div>
-		</div>
-		<!-- ${table.comment!}-列表 -->
-		<el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange" v-loading="isLoading">
-			<el-table-column type="selection" width="50" align="center" header-align="center"/>
+        </el-button>
+        <el-button v-waves v-permission="'${buttonNamePre}importExcel'" @click="dialogImportVisible=true"
+                   type="primary" icon="el-icon-upload2" size="small">导入Excel
+        </el-button>
+        <el-button v-waves type="success" icon="el-icon-printer" @click="exportExcel" size="small"
+                   v-permission="'${buttonNamePre}exportExcel'">导出Excel
+        </el-button>
+      </div>
+    </div>
+    <!-- ${table.comment!}-列表 -->
+    <el-table ref="dataTable" :data="tableData" stripe border v-loading="isLoading"
+              @selection-change="handleTableSelectChange" @sort-change="handleTableSortChange">
+      <el-table-column type="selection" width="50" align="center" header-align="center"/>
 <#list table.fields as field>
     <#if field.propertyName!=entityKeyName && field.propertyName!='updateTime'
             && field.propertyName!='createUserId' && field.propertyName!='updateUserId'>
-			<el-table-column label="${field.comment}" prop="${field.propertyName}" align="center"/>
+      <el-table-column label="${field.comment}" prop="${field.propertyName}" align="center" sortable="custom"/>
     </#if>
 </#list>
-			<el-table-column fixed="right" label="操作" width="120" align="center">
-				<template v-slot="scope">
-					<el-button type="text" style="color: #13ce66;"
-							   size="small" @click="openView(scope.row)">详情</el-button>
-					<el-button v-permission="'${buttonNamePre}update'"
-							   type="text" size="small" @click="openUpdate(scope.row)">修改
-					</el-button>
-					<el-button v-permission="'${buttonNamePre}delete'" style="color: #ff6d6d;"
-							   type="text" size="small" @click="deleteByIds(scope.row)">删除
-					</el-button>
-				</template>
-			</el-table-column>
-		</el-table>
-		<!-- ${table.comment!}-分页 -->
-		<el-pagination style="text-align: center;margin-top:10px;" layout="total,prev,pager,next,sizes,jumper"
+      <el-table-column fixed="right" label="操作" width="120" align="center">
+        <template v-slot="scope">
+          <el-button type="text" style="color: #13ce66;"
+                     size="small" @click="openView(scope.row)">详情
+          </el-button>
+          <el-button v-permission="'${buttonNamePre}update'"
+                     type="text" size="small" @click="openUpdate(scope.row)">修改
+          </el-button>
+          <el-button v-permission="'${buttonNamePre}delete'" style="color: #ff6d6d;"
+                     type="text" size="small" @click="deleteByIds(scope.row)">删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- ${table.comment!}-分页 -->
+    <el-pagination style="text-align: center;margin-top:10px;" layout="total,prev,pager,next,sizes,jumper"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
-                   @size-change="handleSizeChange"
-		/>
-		<!-- 添加修改弹窗 -->
-		<el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-				   :visible.sync="dialogFormVisible" @close="closeDialog" width="600px" :key="'myDialog'+dialogIndex">
+                   @size-change="handleSizeChange"/>
+    <!-- 添加修改弹窗 -->
+    <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
+               :visible.sync="dialogFormVisible" @close="closeDialog" width="600px" :key="'myDialog'+dialogIndex">
 <#if templateHtml??>
-			${templateHtml}
+      ${templateHtml}
 <#else>
-			<el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
+      <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
   <#list table.fields as field>
-	<#if field.propertyName=='orderIndex'>
-				<el-form-item label="顺序" prop="orderIndex"
+  <#if field.propertyName=='orderIndex'>
+        <el-form-item label="顺序" prop="orderIndex"
                       :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]">
-					<el-input-number v-model="temp.orderIndex" :min="0"/>
-				</el-form-item>
-	<#elseif field.propertyName!='createTime' && field.propertyName!='updateTime'
+          <el-input-number v-model="temp.orderIndex" :min="0"/>
+        </el-form-item>
+  <#elseif field.propertyName!='createTime' && field.propertyName!='updateTime'
                 && field.propertyName!='createUserId' && field.propertyName!='updateUserId'
                 && field.propertyName!=entityKeyName>
-		<#--判断是否为null的规则-->
-		<#assign rules1=field.metaInfo.nullable?string("","{required: true, message: '" + field.comment + "不能为空'}")>
-		<#if field.propertyType=='String'>
-			<#if field.metaInfo.length gte 255>
-				<el-form-item label="${field.comment}" prop="${field.propertyName}"
+    <#--判断是否为null的规则-->
+    <#assign rules1=field.metaInfo.nullable?string("","{required: true, message: '" + field.comment + "不能为空'}")>
+    <#if field.propertyType=='String'>
+      <#if field.metaInfo.length gte 255>
+        <el-form-item label="${field.comment}" prop="${field.propertyName}"
                       :rules="[${rules1}]">
-					<el-input v-model="temp.${field.propertyName}" type="textarea" maxlength="${field.metaInfo.length}"
+          <el-input v-model="temp.${field.propertyName}" type="textarea" maxlength="${field.metaInfo.length}"
                     placeholder="请输入${field.comment}"/>
-				</el-form-item>
-			<#else>
-				<el-form-item label="${field.comment}" prop="${field.propertyName}"
+        </el-form-item>
+      <#else>
+        <el-form-item label="${field.comment}" prop="${field.propertyName}"
                       :rules="[${rules1}]">
-					<el-input v-model="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
-				</el-form-item>
-			</#if>
-		<#elseif field.propertyType=='Integer' || field.propertyType=='Long'
-			|| field.propertyType=='BigDecimal'|| field.propertyType=='Double'>
-			<#--数字的可能有2种规则，所以单独判断-->
-			<#assign rules2=field.metaInfo.nullable?string("{type: 'number', message: '必须为数字'}","{required: true, message: '" + field.comment + "不能为空'},{type: 'number', message: '必须为数字'}")>
-				<el-form-item label="${field.comment}" prop="${field.propertyName}"
+          <el-input v-model="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
+        </el-form-item>
+      </#if>
+    <#elseif field.propertyType=='Integer' || field.propertyType=='Long'
+      || field.propertyType=='BigDecimal'|| field.propertyType=='Double'>
+      <#--数字的可能有2种规则，所以单独判断-->
+      <#assign rules2=field.metaInfo.nullable?string("{type: 'number', message: '必须为数字'}","{required: true, message: '" + field.comment + "不能为空'},{type: 'number', message: '必须为数字'}")>
+        <el-form-item label="${field.comment}" prop="${field.propertyName}"
                       :rules="[${rules2}]">
-					<el-input-number v-model.number="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
-				</el-form-item>
-		<#elseif field.propertyType=='LocalDate' || field.propertyType=='Date'>
-				<el-form-item label="${field.comment}" prop="${field.propertyName}"
-					  :rules="[${rules1}]">
-					<el-date-picker v-model="temp.${field.propertyName}" type="date" placeholder="请选择${field.comment}"/>
-				</el-form-item>
-        <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
-				<el-form-item label="${field.comment}" prop="${field.propertyName}"
-					  :rules="[${rules1}]">
-					<el-date-picker v-model="temp.${field.propertyName}" type="datetime" placeholder="请选择${field.comment}"/>
-				</el-form-item>
-		<#else>
-				<el-form-item label="${field.comment}" prop="${field.propertyName}"
-					  :rules="[${rules1}]">
-					<el-input v-model="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
-				</el-form-item>
-        </#if>
-	</#if>
+          <el-input-number v-model.number="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
+        </el-form-item>
+    <#elseif field.propertyType=='LocalDate' || field.propertyType=='Date'>
+        <el-form-item label="${field.comment}" prop="${field.propertyName}"
+                      :rules="[${rules1}]">
+          <el-date-picker v-model="temp.${field.propertyName}" type="date" placeholder="请选择${field.comment}"/>
+        </el-form-item>
+    <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
+        <el-form-item label="${field.comment}" prop="${field.propertyName}"
+                      :rules="[${rules1}]">
+          <el-date-picker v-model="temp.${field.propertyName}" type="datetime" placeholder="请选择${field.comment}"/>
+        </el-form-item>
+    <#else>
+        <el-form-item label="${field.comment}" prop="${field.propertyName}"
+                      :rules="[${rules1}]">
+          <el-input v-model="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
+        </el-form-item>
+    </#if>
+  </#if>
   </#list>
-			</el-form>
+      </el-form>
 </#if>
-			<div slot="footer" class="dialog-footer">
-				<el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-				<el-button v-waves @click="dialogFormVisible=false">取消</el-button>
-			</div>
-		</el-dialog>
-        <!-- 批量导入弹窗 -->
-        <el-dialog title="批量导入" :close-on-click-modal="false" :visible.sync="dialogImportVisible"
-                   @close="dialogIndex++" width="600px" :key="'importDialog'+dialogIndex">
-            <el-form ref="importForm" label-width="120px" v-loading="isImportLoading">
-                <el-form-item label="下载模板：">
-                    <el-button v-waves type="success" plain @click="downloadExcelTemplate"
-                               icon="el-icon-download" size="small">下载Excel模板
-                    </el-button>
-                </el-form-item>
-                <el-divider></el-divider>
-                <el-form-item label="导入：">
-                    <el-upload v-permission="'${buttonNamePre}importExcel'"
-                               :action="$baseServer+'${controllerMapping}/import/excel'" :headers="$store.getters.headerToken"
-                               :before-upload="beforeImportUpload" :on-error="importExcelError"
-                               :on-success="importExcelSuccess" accept=".xls,.xlsx"
-                               :show-file-list="false" :auto-upload="true">
-                        <el-button v-waves type="primary" plain icon="el-icon-upload2" size="small">点击上传Excel并导入</el-button>
-                    </el-upload>
-                    <el-tag type="info" size="small">
-                        说明：点击上方按钮上传Excel文件，上传成功后会自动开始导入！
-                    </el-tag>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button v-waves @click="dialogImportVisible=false">关闭</el-button>
-            </div>
-        </el-dialog>
-	</div>
+      <div slot="footer" class="dialog-footer">
+        <el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+        <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
+      </div>
+    </el-dialog>
+    <!-- 批量导入弹窗 -->
+    <el-dialog title="批量导入" :close-on-click-modal="false" :visible.sync="dialogImportVisible"
+               @close="dialogIndex++" width="600px" :key="'importDialog'+dialogIndex">
+      <el-form ref="importForm" label-width="120px" v-loading="isImportLoading">
+        <el-form-item label="下载模板：">
+          <el-button v-waves type="success" plain @click="downloadExcelTemplate"
+                     icon="el-icon-download" size="small">下载Excel模板
+          </el-button>
+        </el-form-item>
+        <el-divider></el-divider>
+        <el-form-item label="导入：">
+          <el-upload v-permission="'${buttonNamePre}importExcel'"
+                     :action="$baseServer+'${controllerMapping}/import/excel'" :headers="$store.getters.headerToken"
+                     :before-upload="beforeImportUpload" :on-error="importExcelError"
+                     :on-success="importExcelSuccess" accept=".xls,.xlsx"
+                     :show-file-list="false" :auto-upload="true">
+            <el-button v-waves type="primary" plain icon="el-icon-upload2" size="small">点击上传Excel并导入</el-button>
+          </el-upload>
+          <el-tag type="info" size="small">
+            说明：点击上方按钮上传Excel文件，上传成功后会自动开始导入！
+          </el-tag>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button v-waves @click="dialogImportVisible=false">关闭</el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -183,6 +186,8 @@ export default {
       tableData: [],
       // 查询表单数据
       searchData: {},
+      // 排序数据
+      sortData: {},
       // 选中行
       tableSelectRows: [],
       // 弹窗标题
@@ -219,12 +224,18 @@ export default {
     resetTableList() {
       this.pager.page = 1
       this.searchData = this.$options.data().searchData
+      this.sortData = this.$options.data().sortData
+      this.$refs.dataTable.clearSort()
       this.loadTableList()
     },
     // 加载表格
     loadTableList() {
       this.isLoading = true
-      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      const params = {
+        ...this.pager,
+        params: JSON.stringify(this.searchData),
+        sorts: JSON.stringify(this.sortData)
+      };
       request({url: '${controllerMapping}/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
@@ -236,24 +247,33 @@ export default {
     handleTableSelectChange(rows) {
       this.tableSelectRows = rows
     },
+    // 监听排序
+    handleTableSortChange(sort) {
+      if (sort.order) {
+        this.sortData = {column: sort.prop, order: sort.order === 'descending' ? 'DESC' : 'ASC'}
+      } else {
+        this.sortData = this.$options.data().sortData
+      }
+      this.loadTableList()
+    },
     // 监听分页
     handleCurrentChange(page) {
       this.pager.page = page
       this.loadTableList()
     },
-	// 分页条数改变
-	handleSizeChange(size) {
+    // 分页条数改变
+    handleSizeChange(size) {
       this.pager.limit = size
       this.loadTableList()
-	},
+    },
     // 清空表单temp数据
     closeDialog() {
       this.temp = this.$options.data().temp
       this.dialogIndex++
 <#if childTableList??>
-	<#list childTableList as child>
+  <#list childTableList as child>
       this.load${child}FileList()
-	</#list>
+  </#list>
 </#if>
 <#if jsMethods??>
       this.loadChkStr2Arr()
@@ -281,9 +301,9 @@ export default {
         // 修改弹窗
         this.temp = Object.assign({}, this.tableSelectRows[0])
 <#if childTableList??>
-	<#list childTableList as child>
+  <#list childTableList as child>
         this.load${child}FileList()
-	</#list>
+  </#list>
 </#if>
 <#if jsMethods??>
         this.loadChkStr2Arr()
@@ -359,7 +379,7 @@ export default {
     },
     // 导出Excel文件
     exportExcel() {
-      const params = {params: JSON.stringify(this.searchData)}
+      const params = {params: JSON.stringify(this.searchData), sorts: JSON.stringify(this.sortData)}
       downloadUtil.download('${controllerMapping}/export/excel', params, '${table.comment!}.xlsx')
     },
     // 导入Excel之前，显示loading

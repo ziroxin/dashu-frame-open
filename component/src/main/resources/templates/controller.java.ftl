@@ -69,14 +69,16 @@ public class ${table.controllerName} {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page", value = "当前页码", paramType = "query", required = false, dataType = "Integer"),
             @ApiImplicitParam(name = "limit", value = "每页条数", paramType = "query", required = false, dataType = "Integer"),
-            @ApiImplicitParam(name = "params", value = "查询条件", paramType = "query", required = false, dataType = "String")
+            @ApiImplicitParam(name = "params", value = "查询条件", paramType = "query", required = false, dataType = "String"),
+            @ApiImplicitParam(name = "sorts", value = "排序条件", paramType = "query", required = false, dataType = "String")
     })
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('${controllerAuthorizePre}list')")
     public Page<${dtoName}> list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                               @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
-                               @RequestParam(value = "params", required = false) String params) {
-        return ${table.serviceName?uncap_first}.pagelist(page, limit, params);
+                                @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
+                                @RequestParam(value = "params", required = false) String params,
+                                @RequestParam(value = "sorts", required = false) String sorts) {
+        return ${table.serviceName?uncap_first}.pagelist(page, limit, params, sorts);
     }
 
     @ApiOperation(value = "${controllerMapping}/add", notes = "新增-${table.comment!}", httpMethod = "POST")
@@ -128,12 +130,14 @@ public class ${table.controllerName} {
 
     @ApiOperation(value = "${controllerMapping}/export/excel", notes = "导出excel-${table.comment!}", httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "params", value = "查询条件", paramType = "query", required = false, dataType = "String")
+            @ApiImplicitParam(name = "params", value = "查询条件", paramType = "query", required = false, dataType = "String"),
+            @ApiImplicitParam(name = "sorts", value = "排序条件", paramType = "query", required = false, dataType = "String")
     })
     @GetMapping("/export/excel")
     @PreAuthorize("hasAuthority('${controllerAuthorizePre}export:excel')")
-    public String exportExcel(@RequestParam(value = "params", required = false) String params) throws BaseException {
-        String result = ${table.serviceName?uncap_first}.exportExcel(params);
+    public String exportExcel(@RequestParam(value = "params", required = false) String params,
+                              @RequestParam(value = "sorts", required = false) String sorts) throws BaseException {
+        String result = ${table.serviceName?uncap_first}.exportExcel(params, sorts);
         if ("error".equals(result)) {
             throw new BaseException("导出Excel失败，请重试！");
         }

@@ -54,11 +54,22 @@
         </if>
     </#if>
 </#list>
+        <choose>
 <#list table.fields as field>
-    <#if field.propertyName=='orderIndex'>
-        ORDER BY order_index ASC
+    <#if field.propertyName!=entityKeyName && field.propertyName!='updateTime' && field.propertyName!='createUserId' && field.propertyName!='updateUserId'>
+            <when test="${field.propertyName}Order != null and ${field.propertyName}Order != ''">
+                ORDER BY ${field.annotationColumnName} ${'$'}{${field.propertyName}Order}
+            </when>
     </#if>
 </#list>
+<#list table.fields as field>
+    <#if field.propertyName=='orderIndex'>
+            <otherwise>
+                ORDER BY order_index ASC
+            </otherwise>
+    </#if>
+</#list>
+        </choose>
         <if test="offset != null and limit != null">
             LIMIT ${'#'}{offset}, ${'#'}{limit}
         </if>
