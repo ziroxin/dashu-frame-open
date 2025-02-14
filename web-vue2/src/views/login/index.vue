@@ -119,7 +119,7 @@ export default {
       logo: require('@/assets/images/logo.png'),
       loginBgIndex: 0,
       loginForm: {
-        userName: 'admin',
+        userName: 'dashuadmin',
         password: 'qwer@123',
         yzm: '',
         codeUuid: '',

@@ -75,9 +75,8 @@ export default {
   methods: {
     loadImg() {
       this.imgList = []
-      if (this.value !== '') {
-        let file = {url: this.$baseServer + this.value}
-        this.imgList[0] = file
+      if (this.value && this.value !== null && this.value !== '') {
+        this.imgList[0] = {url: this.$baseServer + this.value}
       }
     },
     imgUploadSuccess(response, file, fileList) {
