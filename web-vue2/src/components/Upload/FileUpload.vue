@@ -87,7 +87,11 @@ export default {
     loadFileShowList() {
       if (this.value && this.value.length > 0) {
         this.fileList = [...this.value]
-        this.fileShowList = [...this.value.map(item => ({...item, name: item.fileOldName, url: item.fileUrl}))]
+        this.fileShowList = [...this.value.map(item => ({
+          ...item,
+          name: item.fileOldName,
+          url: this.$baseServer + item.fileUrl
+        }))]
       }
     },
     // 文件上传前，校验文件大小和类型

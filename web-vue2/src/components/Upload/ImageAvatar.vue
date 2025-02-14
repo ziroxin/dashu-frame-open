@@ -61,10 +61,9 @@ export default {
   },
   methods: {
     loadImg() {
-      if (this.value !== null && this.value !== '') {
+      this.dialogImageUrl = ''
+      if (this.value && this.value !== null && this.value !== '') {
         this.dialogImageUrl = this.$baseServer + this.value
-      } else {
-        this.dialogImageUrl = ''
       }
     },
     imgUploadSuccess(response, file, fileList) {
