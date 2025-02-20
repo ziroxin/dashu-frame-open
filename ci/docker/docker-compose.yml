@@ -33,7 +33,7 @@ services:
    - dashu-net
  mariadb:
   container_name: mariadb
-  image: mariadb:10.3
+  image: registry.cn-beijing.aliyuncs.com/dashu_pub/mariadb:10.3
   volumes:
    - /etc/localtime:/etc/localtime:ro
    - /etc/timezone:/etc/timezone:ro
@@ -51,7 +51,7 @@ services:
 #****************************redis容器****************************
  redis:
   container_name: redis
-  image: redis:5
+  image: registry.cn-beijing.aliyuncs.com/dashu_pub/redis:5
   command: redis-server /usr/local/etc/redis/redis.conf
   volumes:
    - /etc/localtime:/etc/localtime:ro
