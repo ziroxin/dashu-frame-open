@@ -6,14 +6,11 @@
         <div style="margin-bottom: 10px;">
           <el-button v-permission="'system-role-add'" type="primary" icon="el-icon-plus" size="small" @click="roleAdd"/>
           <el-button v-permission="'system-role-update'" type="success" icon="el-icon-edit" size="small"
-                     @click="roleUpdate"
-          />
+                     @click="roleUpdate"/>
           <el-button v-permission="'system-role-delete'" type="danger" icon="el-icon-delete" size="small"
-                     @click="roleDelete"
-          />
+                     @click="roleDelete"/>
           <el-button v-permission="'system-role-copy'" type="warning" icon="el-icon-copy-document" size="small"
-                     @click="roleCopy"
-          ></el-button>
+                     @click="roleCopy"></el-button>
         </div>
         <!-- 角色管理表格 -->
         <el-table ref="roleTable" :data="tableData" stripe border :height="this.$windowHeight-230" style="width: 95%"
@@ -21,12 +18,8 @@
           <el-table-column type="selection" width="50" align="center" header-align="center"/>
           <el-table-column label="角色" align="center">
             <template slot-scope="scope">
-              <el-popover trigger="hover" placement="right"
-                          :title="scope.row.roleName"
-              >
-                <p>
-                  顺序：{{ scope.row.roleOrder }}<br>描述：{{ scope.row.roleDescription }}
-                </p>
+              <el-popover trigger="hover" placement="right" :title="scope.row.roleName">
+                <p>顺序：{{ scope.row.roleOrder }}<br>描述：{{ scope.row.roleDescription }}</p>
                 <span slot="reference" style="cursor: pointer;">{{ scope.row.roleName }}</span>
               </el-popover>
             </template>
@@ -68,8 +61,7 @@
         <div style="margin-bottom: 5px;">
           <el-button :disabled="!isSaveBtn" size="small" icon="el-icon-check"
                      v-permission="'system-role-save-permission'" type="primary"
-                     @click="saveRolePermission()"
-          >保存角色权限
+                     @click="saveRolePermission()">保存角色权限
           </el-button>
           <el-button size="small" @click="toggleTableOprate"
                      :icon="isExpand?'el-icon-arrow-up':'el-icon-arrow-down'">
@@ -79,8 +71,7 @@
         <el-table ref="permissionTable" :height="this.$windowHeight-200" style="width: 100%;"
                   :default-expand-all="isExpand" :data="tableData2" row-key="permissionId"
                   :tree-props="{children: 'children'}" @row-click="table2RowClick"
-                  @select="table2RowSelect" resizable border
-        >
+                  @select="table2RowSelect" resizable border>
           <el-table-column type="selection" width="50" align="center" header-align="center"/>
           <el-table-column label="路由/外链" min-width="30%">
             <template v-slot="{row}">
@@ -93,10 +84,8 @@
             <template v-slot="{row}">
               <div @click.stop="">
                 <el-checkbox-group v-model="selectPermissionApiList">
-                  <el-checkbox v-for="perm in row.buttonList" :key="perm.permissionId"
-                               :label="perm.permissionId"
-                               style="margin-left: 0px!important;" @change="(val)=>buttonCheckChange(val,row)"
-                  >
+                  <el-checkbox v-for="perm in row.buttonList" :key="perm.permissionId" :label="perm.permissionId"
+                               style="margin-left: 0px!important;" @change="(val)=>buttonCheckChange(val,row)">
                     {{ perm.permissionTitle }}
                   </el-checkbox>
                 </el-checkbox-group>
@@ -174,12 +163,7 @@ export default {
     },
     //清空temp数据
     resetTemp() {
-      this.temp = {
-        roleId: '',
-        roleName: '',
-        roleDescription: '',
-        roleOrder: 1
-      }
+      this.temp = {roleId: '', roleName: '', roleDescription: '', roleOrder: 1}
     },
     //角色管理
     roleAdd() {
@@ -393,11 +377,11 @@ export default {
           this.$refs.permissionTable.toggleRowSelection(item, true)
           if (level !== 0) {
             //再遍历父级
-            this.parentRowSelected(data, item.parentId)
+            this.parentRowSelected(this.tableData2, item.parentId, 0)
           }
         } else {
           if (item.children !== undefined && item.children !== null) {
-            this.parentRowSelected(item.children, parentId, level++)
+            this.parentRowSelected(item.children, parentId, level + 1)
           }
         }
       })
