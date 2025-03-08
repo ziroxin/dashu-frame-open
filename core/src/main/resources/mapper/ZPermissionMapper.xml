@@ -3,7 +3,7 @@
 <mapper namespace="com.kg.core.zpermission.mapper.ZPermissionMapper">
 
     <select id="listPermissionByUserId" resultType="com.kg.core.zpermission.entity.ZPermission">
-        SELECT a.*
+        SELECT DISTINCT a.*
         FROM z_permission a
                  LEFT JOIN z_role_permission b ON a.permission_id = b.permission_id
                  LEFT JOIN z_user_role c ON b.role_id = c.role_id
