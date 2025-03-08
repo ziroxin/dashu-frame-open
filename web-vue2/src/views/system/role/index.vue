@@ -71,7 +71,7 @@
         <el-table ref="permissionTable" :height="this.$windowHeight-200" style="width: 100%;"
                   :default-expand-all="isExpand" :data="tableData2" row-key="permissionId"
                   :tree-props="{children: 'children'}" @row-click="table2RowClick"
-                  @select="table2RowSelect" resizable border>
+                  @select="table2RowSelect" @select-all="table2SelectAll" resizable border>
           <el-table-column type="selection" width="50" align="center" header-align="center"/>
           <el-table-column label="路由/外链" min-width="30%">
             <template v-slot="{row}">
@@ -299,6 +299,41 @@ export default {
         this.$refs.permissionTable.toggleRowSelection(item, item.hasPermission)
         if (item.children !== undefined && item.children !== null) {
           this.toggleRowSelectionAll(item.children)
+        }
+      })
+    },
+    // 全选/取消全选
+    table2SelectAll(selection) {
+      this.isLoading = true
+      setTimeout(() => {
+        const tableData2Ids = this.tableData2.map(item => item.permissionId);
+        const selectionIds = selection.map(item => item.permissionId);
+        // 检查 tableData2 中的每一个 permissionId 是否都在 selectionIds 中
+        if (tableData2Ids.every(id => selectionIds.includes(id))) {
+          // 全选
+          this.toggleSelectAll(this.tableData2, true)
+        } else {
+          // 取消全选
+          this.toggleSelectAll(this.tableData2, false)
+        }
+        this.$nextTick(() => {
+          this.selectPermissionApiList = []
+          this.selectPermissionApiList2 = []
+          this.toggleRowSelectionAll(this.tableData2)
+          setTimeout(() => {
+            this.isLoading = false
+          }, 100)
+        })
+      }, 100)
+    },
+    toggleSelectAll(data, selected) {
+      data.forEach(item => {
+        item.hasPermission = selected
+        item.buttonList.forEach(btn => {
+          btn.hasPermission = selected
+        })
+        if (item.children && item.children.length > 0) {
+          this.toggleSelectAll(item.children, selected)
         }
       })
     },
