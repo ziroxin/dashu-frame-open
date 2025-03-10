@@ -22,9 +22,8 @@ export default {
   },
   watch: {
     $route(route) {
-      // 如果是重定向，不需要改变面包屑
       if (route.path.startsWith('/redirect/')) {
-        return
+        return // 如果是重定向，页面跳转了，不需要手动刷新面包屑
       }
       this.getBreadcrumb()
     }
@@ -34,36 +33,26 @@ export default {
   },
   methods: {
     getBreadcrumb() {
-      // only show routes with meta.title
+      // 获取有效路由列表
       let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
-      const first = matched[0]
-
-      if (!this.isDashboard(first)) {
+      // 配置首页路由（无首页，自动加上）
+      const first = matched[0] || null
+      if (!first || !first.name || first.name.trim().toLocaleLowerCase() !== 'dashboard') {
         matched = [{path: '/dashboard/index', meta: {title: '首页'}}].concat(matched)
       }
-
+      // 过滤掉不需要显示面包屑的路由
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
-    },
-    isDashboard(route) {
-      const name = route && route.name
-      if (!name) {
-        return false
-      }
-      return name.trim().toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase()
-    },
-    pathCompile(path) {
-      // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561
-      const {params} = this.$route
-      var toPath = pathToRegexp.compile(path)
-      return toPath(params)
     },
     handleLink(item) {
       const {redirect, path} = item
       if (redirect) {
-        this.$router.push(redirect)
+        this.$router.push(redirect) // 重定向
         return
       }
-      this.$router.push(this.pathCompile(path))
+      // 支持:id方式传参 @see https://github.com/PanJiaChen/vue-element-admin/issues/561
+      let pathReg = pathToRegexp.compile(path)
+      const {params} = this.$route
+      this.$router.push(pathReg(params))
     }
   }
 }
