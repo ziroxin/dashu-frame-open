@@ -3,19 +3,19 @@
     <!-- ${table.comment!}-管理按钮 -->
     <div style="margin-bottom: 10px;">
 <#list table.fields as field>
-    <#if field.propertyName!=entityKeyName && field.propertyName!='orderIndex'
+  <#if field.propertyName!=entityKeyName && field.propertyName!='orderIndex'
             && field.propertyName!='createUserId' && field.propertyName!='updateUserId'
             && field.propertyName!='createTime' && field.propertyName!='updateTime'>
-      <#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
+    <#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
       <el-date-picker v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
-                type="date" class="filter-item" placeholder="请选择${field.comment}查询"/>
-      <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
+                type="date" clearable class="filter-item" placeholder="${field.comment}"/>
+    <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
       <el-date-picker v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
-                type="datetime" class="filter-item" placeholder="请选择${field.comment}查询"/>
-      <#else>
+                type="datetime" clearable class="filter-item" placeholder="${field.comment}"/>
+    <#else>
       <el-input v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入${field.comment}查询"/>
-      </#if>
+                clearable class="filter-item" placeholder="${field.comment}"/>
+    </#if>
   </#if>
 </#list>
       <el-button v-waves class="filter-item" type="primary" size="small"
