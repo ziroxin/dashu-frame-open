@@ -73,46 +73,55 @@
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
                :visible.sync="dialogFormVisible" @close="closeDialog" width="600px" :key="'myDialog'+dialogIndex">
       <el-row :gutter="15">
-        <el-form ref="dataForm" :model="temp" :rules="rules" size="medium" :disabled="dialogType=='view'" label-width="100px" >
-      <el-col :span="24">
-      <el-form-item  label="手机号" prop="mobile" >
-        <el-input v-model="temp.mobile"  placeholder="请输入"     clearable     :style="{width: '100%'}"></el-input>
-      </el-form-item>
-    </el-col><el-col :span="24">
-      <el-form-item  label="顺序" prop="orderIndex" >
-        <el-input-number v-model="temp.orderIndex"  :step='1'      ></el-input-number>
-      </el-form-item>
-    </el-col><el-col :span="24">
-      <el-form-item  label="测试单行文本" prop="testText" >
-        <el-input v-model="temp.testText"  placeholder="请输入"     clearable     :style="{width: '100%'}"></el-input>
-      </el-form-item>
-    </el-col><el-col :span="24">
-      <el-form-item  label="富文本框" prop="testEditor" >
-        <my-wang-editor v-model="temp.testEditor" placeholder="请输入富文本框" height="200px"></my-wang-editor>
-      </el-form-item>
-    </el-col><el-col :span="24">
-      <el-form-item  label="测试decimal" prop="testDecimal" >
-        <el-input v-model="temp.testDecimal"  placeholder="请输入"     clearable     :style="{width: '100%'}"></el-input>
-      </el-form-item>
-    </el-col><el-col :span="24">
-      <el-form-item  label="FileUpload" prop="field104" >
-        <file-upload v-model="temp.field104" accept=".gif,.png,.bmp,.jpg,.jpeg"  :limit-size="1024" ></file-upload>
-      </el-form-item>
-    </el-col><el-col :span="24">
-      <el-form-item  label="ImageUpload" prop="field103" >
-        <image-upload v-model="temp.field103"  :limit-size="1024" ></image-upload>
-      </el-form-item>
-    </el-col><el-col :span="24">
-      <el-form-item  label="ImageOne" prop="testImg" >
-        <image-one v-model="temp.testImg" :limit-size="1024"></image-one>
-      </el-form-item>
-    </el-col><el-col :span="24">
-      <el-form-item  label="ImageAvatar" prop="testAvatar" >
-        <image-avatar v-model="temp.testAvatar" :limit-size="1024"></image-avatar>
-      </el-form-item>
-    </el-col>
-      
-    </el-form>
+        <el-form ref="dataForm" :model="temp" :rules="rules" size="medium" :disabled="dialogType=='view'"
+                 label-width="100px">
+          <el-col :span="24">
+            <el-form-item label="手机号" prop="mobile">
+              <el-input v-model="temp.mobile" placeholder="请输入" clearable :style="{width: '100%'}"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="顺序" prop="orderIndex">
+              <el-input-number v-model="temp.orderIndex" :step='1'></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="测试单行文本" prop="testText">
+              <el-input v-model="temp.testText" placeholder="请输入" clearable :style="{width: '100%'}"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="富文本框" prop="testEditor">
+              <my-wang-editor v-model="temp.testEditor" placeholder="请输入富文本框" height="200px"></my-wang-editor>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="测试decimal" prop="testDecimal">
+              <el-input v-model="temp.testDecimal" placeholder="请输入" clearable :style="{width: '100%'}"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="FileUpload" prop="field104">
+              <file-upload v-model="temp.field104" accept=".gif,.png,.bmp,.jpg,.jpeg" :limit-size="1024"></file-upload>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="ImageUpload" prop="field103">
+              <image-upload v-model="temp.field103" :limit-size="1024"></image-upload>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="ImageOne" prop="testImg">
+              <image-one v-model="temp.testImg" :limit-size="1024"></image-one>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="ImageAvatar" prop="testAvatar">
+              <image-avatar v-model="temp.testAvatar" :limit-size="1024"></image-avatar>
+            </el-form-item>
+          </el-col>
+
+        </el-form>
       </el-row>
       <div slot="footer" class="dialog-footer">
         <el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
@@ -189,16 +198,23 @@ export default {
       dialogImportVisible: false,
       isImportLoading: false,
       rules: {
-        mobile: [{ required: true,  message: '请输入', trigger: 'blur' },{ pattern: /^1(3|4|5|7|8|9)\d{9}$/, message: '手机号格式错误', trigger: 'blur' }],orderIndex: [{ required: true,  message: '', trigger: 'blur' }],testText: [],testEditor: [],testDecimal: [{ pattern: /^[-+]?\d+(\.\d+)?$/, message: '只能输入数字或小数', trigger: 'blur' }],
+        mobile: [{required: true, message: '请输入', trigger: 'blur'}, {
+          pattern: /^1(3|4|5|7|8|9)\d{9}$/,
+          message: '手机号格式错误',
+          trigger: 'blur'
+        }],
+        orderIndex: [{required: true, message: '', trigger: 'blur'}],
+        testText: [],
+        testEditor: [],
+        testDecimal: [{pattern: /^[-+]?\d+(\.\d+)?$/, message: '只能输入数字或小数', trigger: 'blur'}],
       },
-      
-      
-      
+
+
     }
   },
   created() {
     this.loadTableList()
-    
+
   },
   methods: {
     // 查询按钮
@@ -375,10 +391,12 @@ export default {
     downloadExcelTemplate() {
       downloadUtil.download('/atable/aTable/import/downloadTemplate', {}, '我的表a_table-导入模板.xlsx')
     },
-    loadChkStr2Arr() {},loadChkArr2Str() {},
+    loadChkStr2Arr() {
+    }, loadChkArr2Str() {
+    },
   }
 }
 </script>
 <style>
-    
+
 </style>
