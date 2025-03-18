@@ -10,10 +10,10 @@ import com.kg.component.office.ExcelReadUtils;
 import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
 import com.kg.component.utils.StrTypeCheckUtils;
-import com.kg.module.aTableFiles.entity.ATableFiles;
-import com.kg.module.aTableFiles.service.ATableFilesService;
 import com.kg.module.aTableImages.entity.ATableImages;
 import com.kg.module.aTableImages.service.ATableImagesService;
+import com.kg.module.aTableFiles.entity.ATableFiles;
+import com.kg.module.aTableFiles.service.ATableFilesService;
 import com.kg.module.atable.dto.ATableDTO;
 import com.kg.module.atable.dto.convert.ATableConvert;
 import com.kg.module.atable.entity.ATable;
@@ -51,9 +51,9 @@ public class ATableServiceImpl extends ServiceImpl<ATableMapper, ATable> impleme
     private ATableMapper aTableMapper;
 
     @Resource
-    private ATableFilesService aTableFilesService;
-    @Resource
     private ATableImagesService aTableImagesService;
+    @Resource
+    private ATableFilesService aTableFilesService;
 
     /**
      * 分页列表
@@ -87,15 +87,15 @@ public class ATableServiceImpl extends ServiceImpl<ATableMapper, ATable> impleme
         List<ATableDTO> list = aTableMapper.list(paramObj);
         if (list != null && !list.isEmpty()) {
             // 查询所有附件列表
-            List<ATableFiles> allATableFilesList = aTableFilesService.lambdaQuery().in(ATableFiles::getATableId,
-                    list.stream().map(ATableDTO::getId).collect(Collectors.toList())).list();
             List<ATableImages> allATableImagesList = aTableImagesService.lambdaQuery().in(ATableImages::getATableId,
+                    list.stream().map(ATableDTO::getId).collect(Collectors.toList())).list();
+            List<ATableFiles> allATableFilesList = aTableFilesService.lambdaQuery().in(ATableFiles::getATableId,
                     list.stream().map(ATableDTO::getId).collect(Collectors.toList())).list();
             // 过滤附件列表，放入实体中
             list.stream().forEach(dto -> {
-                dto.setAtablefilesList(allATableFilesList.stream()
-                        .filter(f -> f.getATableId().equals(dto.getId())).collect(Collectors.toList()));
                 dto.setAtableimagesList(allATableImagesList.stream()
+                        .filter(f -> f.getATableId().equals(dto.getId())).collect(Collectors.toList()));
+                dto.setAtablefilesList(allATableFilesList.stream()
                         .filter(f -> f.getATableId().equals(dto.getId())).collect(Collectors.toList()));
             });
         }
@@ -118,15 +118,6 @@ public class ATableServiceImpl extends ServiceImpl<ATableMapper, ATable> impleme
         aTable.setCreateTime(LocalDateTime.now());
         save(aTable);
         // 保存附件
-        if (aTableDTO.getAtablefilesList() != null && aTableDTO.getAtablefilesList().size() > 0) {
-            List<ATableFiles> saveATableFilesList = aTableDTO.getAtablefilesList()
-                    .stream().map(m -> {
-                        m.setATableId(aTable.getId());
-                        m.setCreateTime(LocalDateTime.now());
-                        return m;
-                    }).collect(Collectors.toList());
-            aTableFilesService.saveBatch(saveATableFilesList);
-        }
         if (aTableDTO.getAtableimagesList() != null && aTableDTO.getAtableimagesList().size() > 0) {
             List<ATableImages> saveATableImagesList = aTableDTO.getAtableimagesList()
                     .stream().map(m -> {
@@ -135,6 +126,15 @@ public class ATableServiceImpl extends ServiceImpl<ATableMapper, ATable> impleme
                         return m;
                     }).collect(Collectors.toList());
             aTableImagesService.saveBatch(saveATableImagesList);
+        }
+        if (aTableDTO.getAtablefilesList() != null && aTableDTO.getAtablefilesList().size() > 0) {
+            List<ATableFiles> saveATableFilesList = aTableDTO.getAtablefilesList()
+                    .stream().map(m -> {
+                        m.setATableId(aTable.getId());
+                        m.setCreateTime(LocalDateTime.now());
+                        return m;
+                    }).collect(Collectors.toList());
+            aTableFilesService.saveBatch(saveATableFilesList);
         }
     }
 
@@ -150,18 +150,9 @@ public class ATableServiceImpl extends ServiceImpl<ATableMapper, ATable> impleme
         aTable.setUpdateTime(LocalDateTime.now());
         updateById(aTable);
         // 先删除附件
-        aTableFilesService.lambdaUpdate().eq(ATableFiles::getATableId, aTable.getId()).remove();
         aTableImagesService.lambdaUpdate().eq(ATableImages::getATableId, aTable.getId()).remove();
+        aTableFilesService.lambdaUpdate().eq(ATableFiles::getATableId, aTable.getId()).remove();
         // 再保存附件
-        if (aTableDTO.getAtablefilesList() != null && aTableDTO.getAtablefilesList().size() > 0) {
-            List<ATableFiles> saveATableFilesList = aTableDTO.getAtablefilesList()
-                    .stream().map(m -> {
-                        m.setATableId(aTable.getId());
-                        m.setCreateTime(LocalDateTime.now());
-                        return m;
-                    }).collect(Collectors.toList());
-            aTableFilesService.saveBatch(saveATableFilesList);
-        }
         if (aTableDTO.getAtableimagesList() != null && aTableDTO.getAtableimagesList().size() > 0) {
             List<ATableImages> saveATableImagesList = aTableDTO.getAtableimagesList()
                     .stream().map(m -> {
@@ -170,6 +161,15 @@ public class ATableServiceImpl extends ServiceImpl<ATableMapper, ATable> impleme
                         return m;
                     }).collect(Collectors.toList());
             aTableImagesService.saveBatch(saveATableImagesList);
+        }
+        if (aTableDTO.getAtablefilesList() != null && aTableDTO.getAtablefilesList().size() > 0) {
+            List<ATableFiles> saveATableFilesList = aTableDTO.getAtablefilesList()
+                    .stream().map(m -> {
+                        m.setATableId(aTable.getId());
+                        m.setCreateTime(LocalDateTime.now());
+                        return m;
+                    }).collect(Collectors.toList());
+            aTableFilesService.saveBatch(saveATableFilesList);
         }
     }
 
@@ -183,8 +183,8 @@ public class ATableServiceImpl extends ServiceImpl<ATableMapper, ATable> impleme
     public void delete(List<String> idlist) {
         removeBatchByIds(idlist);
         // 删除附件
-        aTableFilesService.lambdaUpdate().in(ATableFiles::getATableId, idlist).remove();
         aTableImagesService.lambdaUpdate().in(ATableImages::getATableId, idlist).remove();
+        aTableFilesService.lambdaUpdate().in(ATableFiles::getATableId, idlist).remove();
     }
 
     /**
@@ -268,10 +268,6 @@ public class ATableServiceImpl extends ServiceImpl<ATableMapper, ATable> impleme
                 }
                 if (emptyColName.size() > 0) {
                     errorMsg += "第" + currentRowIdx + "行，必填字段[" + String.join(",", emptyColName) + "]不能为空！<br/>";
-                }
-                // 检测数字格式
-                if (StringUtils.hasText(entity.getOrderIndex()) && !StrTypeCheckUtils.isNumeric(entity.getOrderIndex())) {
-                    errorMsg += "第" + currentRowIdx + "行，顺序必须是数字！<br/>";
                 }
             }
         }
