@@ -7,13 +7,9 @@
         <foreach collection="list" item="row" separator=",">
             (
             #{row.id},
-            #{row.mobile},
-            #{row.orderIndex},
-            #{row.testText},
-            #{row.testEditor},
-            #{row.testDecimal},
-            #{row.testImg},
-            #{row.testAvatar},
+            #{row.testName},
+            #{row.field118},
+            #{row.field119},
             #{row.createTime},
             #{row.updateTime}
             )
@@ -23,52 +19,28 @@
     <select id="list" resultType="com.kg.module.atable.dto.ATableDTO">
         SELECT * FROM a_table
         WHERE 1=1
-        <if test="mobile!= null and mobile!= ''">
-            AND mobile = #{mobile}
+        <if test="testName!= null and testName!= ''">
+            AND test_name = #{testName}
         </if>
-        <if test="testText!= null and testText!= ''">
-            AND test_text = #{testText}
+        <if test="field118!= null and field118!= ''">
+            AND field118 = #{field118}
         </if>
-        <if test="testEditor!= null and testEditor!= ''">
-            AND test_editor = #{testEditor}
-        </if>
-        <if test="testDecimal!= null and testDecimal!= ''">
-            AND test_decimal = #{testDecimal}
-        </if>
-        <if test="testImg!= null and testImg!= ''">
-            AND test_img = #{testImg}
-        </if>
-        <if test="testAvatar!= null and testAvatar!= ''">
-            AND test_avatar = #{testAvatar}
+        <if test="field119!= null and field119!= ''">
+            AND field119 = #{field119}
         </if>
         <choose>
-            <when test="mobileOrder != null and mobileOrder != ''">
-                ORDER BY mobile ${mobileOrder}
+            <when test="testNameOrder != null and testNameOrder != ''">
+                ORDER BY test_name ${testNameOrder}
             </when>
-            <when test="orderIndexOrder != null and orderIndexOrder != ''">
-                ORDER BY order_index ${orderIndexOrder}
+            <when test="field118Order != null and field118Order != ''">
+                ORDER BY field118 ${field118Order}
             </when>
-            <when test="testTextOrder != null and testTextOrder != ''">
-                ORDER BY test_text ${testTextOrder}
-            </when>
-            <when test="testEditorOrder != null and testEditorOrder != ''">
-                ORDER BY test_editor ${testEditorOrder}
-            </when>
-            <when test="testDecimalOrder != null and testDecimalOrder != ''">
-                ORDER BY test_decimal ${testDecimalOrder}
-            </when>
-            <when test="testImgOrder != null and testImgOrder != ''">
-                ORDER BY test_img ${testImgOrder}
-            </when>
-            <when test="testAvatarOrder != null and testAvatarOrder != ''">
-                ORDER BY test_avatar ${testAvatarOrder}
+            <when test="field119Order != null and field119Order != ''">
+                ORDER BY field119 ${field119Order}
             </when>
             <when test="createTimeOrder != null and createTimeOrder != ''">
                 ORDER BY create_time ${createTimeOrder}
             </when>
-            <otherwise>
-                ORDER BY order_index ASC
-            </otherwise>
         </choose>
         <if test="offset != null and limit != null">
             LIMIT #{offset}, #{limit}
@@ -78,23 +50,14 @@
     <select id="count" resultType="java.lang.Long">
         SELECT COUNT(*) FROM a_table
         WHERE 1=1
-        <if test="mobile!= null and mobile!= ''">
-            AND mobile = #{mobile}
+        <if test="testName!= null and testName!= ''">
+            AND test_name = #{testName}
         </if>
-        <if test="testText!= null and testText!= ''">
-            AND test_text = #{testText}
+        <if test="field118!= null and field118!= ''">
+            AND field118 = #{field118}
         </if>
-        <if test="testEditor!= null and testEditor!= ''">
-            AND test_editor = #{testEditor}
-        </if>
-        <if test="testDecimal!= null and testDecimal!= ''">
-            AND test_decimal = #{testDecimal}
-        </if>
-        <if test="testImg!= null and testImg!= ''">
-            AND test_img = #{testImg}
-        </if>
-        <if test="testAvatar!= null and testAvatar!= ''">
-            AND test_avatar = #{testAvatar}
+        <if test="field119!= null and field119!= ''">
+            AND field119 = #{field119}
         </if>
     </select>
 </mapper>

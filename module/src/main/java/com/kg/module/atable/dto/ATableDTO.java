@@ -2,7 +2,6 @@ package com.kg.module.atable.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import com.kg.core.base.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;
@@ -10,8 +9,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import com.kg.module.aTableFiles.entity.ATableFiles;
 import com.kg.module.aTableImages.entity.ATableImages;
+import com.kg.module.aTableFiles.entity.ATableFiles;
 import java.util.List;
 
 /**
@@ -31,26 +30,14 @@ public class ATableDTO implements BaseDTO {
     @ApiModelProperty("主键")
     private String id;
 
-    @ApiModelProperty("手机号")
-    private String mobile;
-
-    @ApiModelProperty("顺序")
-    private Integer orderIndex;
-
-    @ApiModelProperty("测试单行文本")
-    private String testText;
-
-    @ApiModelProperty("富文本框")
-    private String testEditor;
-
-    @ApiModelProperty("测试decimal")
-    private BigDecimal testDecimal;
-
-    @ApiModelProperty("ImageOne")
-    private String testImg;
+    @ApiModelProperty("姓名")
+    private String testName;
 
     @ApiModelProperty("ImageAvatar")
-    private String testAvatar;
+    private String field118;
+
+    @ApiModelProperty("ImageOne")
+    private String field119;
 
     @ApiModelProperty("添加时间")
     @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
@@ -60,7 +47,7 @@ public class ATableDTO implements BaseDTO {
     @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
 
-    private List<ATableFiles> atablefilesList;
-
     private List<ATableImages> atableimagesList;
+
+    private List<ATableFiles> atablefilesList;
 }

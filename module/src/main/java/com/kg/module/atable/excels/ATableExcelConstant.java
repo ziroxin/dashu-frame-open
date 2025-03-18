@@ -24,26 +24,16 @@ public class ATableExcelConstant {
 
     static {
         // 初始化导出字段
-        EXPORT_EXCEL_COLUMN.put("mobile", "手机号");
-        EXPORT_EXCEL_COLUMN.put("orderIndex", "顺序");
-        EXPORT_EXCEL_COLUMN.put("testText", "测试单行文本");
-        EXPORT_EXCEL_COLUMN.put("testEditor", "富文本框");
-        EXPORT_EXCEL_COLUMN.put("testDecimal", "测试decimal");
-        EXPORT_EXCEL_COLUMN.put("testImg", "ImageOne");
-        EXPORT_EXCEL_COLUMN.put("testAvatar", "ImageAvatar");
+        EXPORT_EXCEL_COLUMN.put("testName", "姓名");
+        EXPORT_EXCEL_COLUMN.put("field118", "ImageAvatar");
+        EXPORT_EXCEL_COLUMN.put("field119", "ImageOne");
         EXPORT_EXCEL_COLUMN.put("createTime", "添加时间");
         EXPORT_EXCEL_COLUMN.put("updateTime", "修改时间");
         // 初始化导入字段
-        IMPORT_EXCEL_COLUMN.put("手机号", "mobile");
-        IMPORT_EXCEL_COLUMN.put("顺序", "orderIndex");
-        IMPORT_EXCEL_COLUMN.put("测试单行文本", "testText");
-        IMPORT_EXCEL_COLUMN.put("富文本框", "testEditor");
-        IMPORT_EXCEL_COLUMN.put("测试decimal", "testDecimal");
-        IMPORT_EXCEL_COLUMN.put("ImageOne", "testImg");
-        IMPORT_EXCEL_COLUMN.put("ImageAvatar", "testAvatar");
+        IMPORT_EXCEL_COLUMN.put("姓名", "testName");
+        IMPORT_EXCEL_COLUMN.put("ImageAvatar", "field118");
+        IMPORT_EXCEL_COLUMN.put("ImageOne", "field119");
         // 初始化导入必填字段
-        IMPORT_REQUIRED_COLUMN.put("mobile", "手机号");
-        IMPORT_REQUIRED_COLUMN.put("orderIndex", "顺序");
     }
 
 }

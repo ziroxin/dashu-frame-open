@@ -2,18 +2,12 @@
   <div class="app-container">
     <!-- 我的表a_table-管理按钮 -->
     <div style="margin-bottom: 10px;">
-      <el-input v-model="searchData.mobile" size="small" style="width: 150px;margin-right: 10px;"
-                clearable class="filter-item" placeholder="手机号"/>
-      <el-input v-model="searchData.testText" size="small" style="width: 150px;margin-right: 10px;"
-                clearable class="filter-item" placeholder="测试单行文本"/>
-      <el-input v-model="searchData.testEditor" size="small" style="width: 150px;margin-right: 10px;"
-                clearable class="filter-item" placeholder="富文本框"/>
-      <el-input v-model="searchData.testDecimal" size="small" style="width: 150px;margin-right: 10px;"
-                clearable class="filter-item" placeholder="测试decimal"/>
-      <el-input v-model="searchData.testImg" size="small" style="width: 150px;margin-right: 10px;"
-                clearable class="filter-item" placeholder="ImageOne"/>
-      <el-input v-model="searchData.testAvatar" size="small" style="width: 150px;margin-right: 10px;"
+      <el-input v-model="searchData.testName" size="small" style="width: 150px;margin-right: 10px;"
+                clearable class="filter-item" placeholder="姓名"/>
+      <el-input v-model="searchData.field118" size="small" style="width: 150px;margin-right: 10px;"
                 clearable class="filter-item" placeholder="ImageAvatar"/>
+      <el-input v-model="searchData.field119" size="small" style="width: 150px;margin-right: 10px;"
+                clearable class="filter-item" placeholder="ImageOne"/>
       <el-button v-waves class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
       </el-button>
@@ -42,13 +36,9 @@
     <el-table ref="dataTable" :data="tableData" stripe border v-loading="isLoading"
               @selection-change="handleTableSelectChange" @sort-change="handleTableSortChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
-      <el-table-column label="手机号" prop="mobile" align="center" sortable="custom"/>
-      <el-table-column label="顺序" prop="orderIndex" align="center" sortable="custom"/>
-      <el-table-column label="测试单行文本" prop="testText" align="center" sortable="custom"/>
-      <el-table-column label="富文本框" prop="testEditor" align="center" sortable="custom"/>
-      <el-table-column label="测试decimal" prop="testDecimal" align="center" sortable="custom"/>
-      <el-table-column label="ImageOne" prop="testImg" align="center" sortable="custom"/>
-      <el-table-column label="ImageAvatar" prop="testAvatar" align="center" sortable="custom"/>
+      <el-table-column label="姓名" prop="testName" align="center" sortable="custom"/>
+      <el-table-column label="ImageAvatar" prop="field118" align="center" sortable="custom"/>
+      <el-table-column label="ImageOne" prop="field119" align="center" sortable="custom"/>
       <el-table-column label="添加时间" prop="createTime" align="center" sortable="custom"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template v-slot="scope">
@@ -73,55 +63,30 @@
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
                :visible.sync="dialogFormVisible" @close="closeDialog" width="600px" :key="'myDialog'+dialogIndex">
       <el-row :gutter="15">
-        <el-form ref="dataForm" :model="temp" :rules="rules" size="medium" :disabled="dialogType=='view'"
-                 label-width="100px">
-          <el-col :span="24">
-            <el-form-item label="手机号" prop="mobile">
-              <el-input v-model="temp.mobile" placeholder="请输入" clearable :style="{width: '100%'}"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="顺序" prop="orderIndex">
-              <el-input-number v-model="temp.orderIndex" :step='1'></el-input-number>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="测试单行文本" prop="testText">
-              <el-input v-model="temp.testText" placeholder="请输入" clearable :style="{width: '100%'}"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="富文本框" prop="testEditor">
-              <my-wang-editor v-model="temp.testEditor" placeholder="请输入富文本框" height="200px"></my-wang-editor>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="测试decimal" prop="testDecimal">
-              <el-input v-model="temp.testDecimal" placeholder="请输入" clearable :style="{width: '100%'}"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="FileUpload" prop="field104">
-              <file-upload v-model="temp.field104" accept=".gif,.png,.bmp,.jpg,.jpeg" :limit-size="1024"></file-upload>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="ImageUpload" prop="field103">
-              <image-upload v-model="temp.field103" :limit-size="1024"></image-upload>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="ImageOne" prop="testImg">
-              <image-one v-model="temp.testImg" :limit-size="1024"></image-one>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="ImageAvatar" prop="testAvatar">
-              <image-avatar v-model="temp.testAvatar" :limit-size="1024"></image-avatar>
-            </el-form-item>
-          </el-col>
-
-        </el-form>
+        <el-form ref="dataForm" :model="temp" :rules="rules" size="medium" :disabled="dialogType=='view'" label-width="100px" >
+      <el-col :span="24">
+      <el-form-item  label="姓名" prop="testName" >
+        <el-input v-model="temp.testName"  placeholder="请输入姓名"     clearable     :style="{width: '100%'}"></el-input>
+      </el-form-item>
+    </el-col><el-col :span="24">
+      <el-form-item  label="ImageAvatar" prop="field118" >
+        <image-avatar v-model="temp.field118" :limit-size="1024"></image-avatar>
+      </el-form-item>
+    </el-col><el-col :span="24">
+      <el-form-item  label="ImageOne" prop="field119" >
+        <image-one v-model="temp.field119" :limit-size="1024"></image-one>
+      </el-form-item>
+    </el-col><el-col :span="24">
+      <el-form-item  label="ImageUpload" prop="field120" >
+        <image-upload v-model="temp.atableimagesList"  :limit-size="1024" ></image-upload>
+      </el-form-item>
+    </el-col><el-col :span="24">
+      <el-form-item  label="FileUpload" prop="field121" >
+        <file-upload v-model="temp.atablefilesList"   :limit-size="1024" ></file-upload>
+      </el-form-item>
+    </el-col>
+      
+    </el-form>
       </el-row>
       <div slot="footer" class="dialog-footer">
         <el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
@@ -162,15 +127,13 @@
 import waves from '@/directive/waves'
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util';
-import MyWangEditor from '@/components/MyWangEditor/index.vue';
 import ImageAvatar from '@/components/Upload/ImageAvatar';
 import ImageOne from '@/components/Upload/ImageOne';
 import ImageUpload from '@/components/Upload/ImageUpload';
 import FileUpload from '@/components/Upload/FileUpload';
 
-
 export default {
-  components: {MyWangEditor, ImageAvatar, ImageOne, ImageUpload, FileUpload},
+  components: {ImageAvatar, ImageOne, ImageUpload, FileUpload},
   directives: {waves},
   data() {
     return {
@@ -198,23 +161,16 @@ export default {
       dialogImportVisible: false,
       isImportLoading: false,
       rules: {
-        mobile: [{required: true, message: '请输入', trigger: 'blur'}, {
-          pattern: /^1(3|4|5|7|8|9)\d{9}$/,
-          message: '手机号格式错误',
-          trigger: 'blur'
-        }],
-        orderIndex: [{required: true, message: '', trigger: 'blur'}],
-        testText: [],
-        testEditor: [],
-        testDecimal: [{pattern: /^[-+]?\d+(\.\d+)?$/, message: '只能输入数字或小数', trigger: 'blur'}],
+        testName: [],
       },
-
-
+      
+      
+      
     }
   },
   created() {
     this.loadTableList()
-
+    
   },
   methods: {
     // 查询按钮
@@ -272,8 +228,8 @@ export default {
     closeDialog() {
       this.temp = this.$options.data().temp
       this.dialogIndex++
-      this.loadaTableFilesFileList()
       this.loadaTableImagesFileList()
+      this.loadaTableFilesFileList()
       this.loadChkStr2Arr()
     },
     // 打开添加窗口
@@ -297,8 +253,8 @@ export default {
       } else {
         // 修改弹窗
         this.temp = Object.assign({}, this.tableSelectRows[0])
-        this.loadaTableFilesFileList()
         this.loadaTableImagesFileList()
+        this.loadaTableFilesFileList()
         this.loadChkStr2Arr()
         this.dialogType = 'update'
         this.dialogFormVisible = true
@@ -310,8 +266,8 @@ export default {
     // 打开查看窗口
     openView(row) {
       this.temp = Object.assign({}, row)
-      this.loadaTableFilesFileList()
       this.loadaTableImagesFileList()
+      this.loadaTableFilesFileList()
       this.loadChkStr2Arr()
       this.dialogType = 'view'
       this.dialogFormVisible = true
@@ -391,12 +347,10 @@ export default {
     downloadExcelTemplate() {
       downloadUtil.download('/atable/aTable/import/downloadTemplate', {}, '我的表a_table-导入模板.xlsx')
     },
-    loadChkStr2Arr() {
-    }, loadChkArr2Str() {
-    },
+    loadChkStr2Arr() {},loadChkArr2Str() {},
   }
 }
 </script>
 <style>
-
+    
 </style>

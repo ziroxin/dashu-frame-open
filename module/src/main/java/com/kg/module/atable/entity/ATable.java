@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.kg.core.base.model.BaseEntity;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -34,33 +33,17 @@ public class ATable implements BaseEntity {
     @TableId(value = "id", type = IdType.ASSIGN_UUID)
     private String id;
 
-    @ApiModelProperty("手机号")
-    @TableField("mobile")
-    private String mobile;
-
-    @ApiModelProperty("顺序")
-    @TableField("order_index")
-    private Integer orderIndex;
-
-    @ApiModelProperty("测试单行文本")
-    @TableField("test_text")
-    private String testText;
-
-    @ApiModelProperty("富文本框")
-    @TableField("test_editor")
-    private String testEditor;
-
-    @ApiModelProperty("测试decimal")
-    @TableField("test_decimal")
-    private BigDecimal testDecimal;
-
-    @ApiModelProperty("ImageOne")
-    @TableField("test_img")
-    private String testImg;
+    @ApiModelProperty("姓名")
+    @TableField("test_name")
+    private String testName;
 
     @ApiModelProperty("ImageAvatar")
-    @TableField("test_avatar")
-    private String testAvatar;
+    @TableField("field118")
+    private String field118;
+
+    @ApiModelProperty("ImageOne")
+    @TableField("field119")
+    private String field119;
 
     @ApiModelProperty("添加时间")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
