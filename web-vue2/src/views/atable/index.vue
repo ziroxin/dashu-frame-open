@@ -63,30 +63,35 @@
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
                :visible.sync="dialogFormVisible" @close="closeDialog" width="600px" :key="'myDialog'+dialogIndex">
       <el-row :gutter="15">
-        <el-form ref="dataForm" :model="temp" :rules="rules" size="medium" :disabled="dialogType=='view'" label-width="100px" >
-      <el-col :span="24">
-      <el-form-item  label="姓名" prop="testName" >
-        <el-input v-model="temp.testName"  placeholder="请输入姓名"     clearable     :style="{width: '100%'}"></el-input>
-      </el-form-item>
-    </el-col><el-col :span="24">
-      <el-form-item  label="ImageAvatar" prop="field118" >
-        <image-avatar v-model="temp.field118" :limit-size="1024"></image-avatar>
-      </el-form-item>
-    </el-col><el-col :span="24">
-      <el-form-item  label="ImageOne" prop="field119" >
-        <image-one v-model="temp.field119" :limit-size="1024"></image-one>
-      </el-form-item>
-    </el-col><el-col :span="24">
-      <el-form-item  label="ImageUpload" prop="field120" >
-        <image-upload v-model="temp.atableimagesList"  :limit-size="1024" ></image-upload>
-      </el-form-item>
-    </el-col><el-col :span="24">
-      <el-form-item  label="FileUpload" prop="field121" >
-        <file-upload v-model="temp.atablefilesList"   :limit-size="1024" ></file-upload>
-      </el-form-item>
-    </el-col>
-      
-    </el-form>
+        <el-form ref="dataForm" :model="temp" :rules="rules" size="medium" :disabled="dialogType=='view'"
+                 label-width="100px">
+          <el-col :span="24">
+            <el-form-item label="姓名" prop="testName">
+              <el-input v-model="temp.testName" placeholder="请输入姓名" clearable :style="{width: '100%'}"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="ImageAvatar" prop="field118">
+              <image-avatar v-model="temp.field118" :limit-size="1024"></image-avatar>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="ImageOne" prop="field119">
+              <image-one v-model="temp.field119" :limit-size="1024"></image-one>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="ImageUpload" prop="field120">
+              <image-upload v-model="temp.atableimagesList" :limit-size="1024"></image-upload>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="FileUpload" prop="field121">
+              <file-upload v-model="temp.atablefilesList" :limit-size="1024"></file-upload>
+            </el-form-item>
+          </el-col>
+
+        </el-form>
       </el-row>
       <div slot="footer" class="dialog-footer">
         <el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
@@ -163,14 +168,13 @@ export default {
       rules: {
         testName: [],
       },
-      
-      
-      
+
+
     }
   },
   created() {
     this.loadTableList()
-    
+
   },
   methods: {
     // 查询按钮
@@ -347,10 +351,12 @@ export default {
     downloadExcelTemplate() {
       downloadUtil.download('/atable/aTable/import/downloadTemplate', {}, '我的表a_table-导入模板.xlsx')
     },
-    loadChkStr2Arr() {},loadChkArr2Str() {},
+    loadChkStr2Arr() {
+    }, loadChkArr2Str() {
+    },
   }
 }
 </script>
 <style>
-    
+
 </style>
