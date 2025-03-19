@@ -312,8 +312,14 @@ public class FormGeneratorController {
     private void createTable(TableDTO tableDTO) throws BaseException {
         // 检查表是否存在，若存在，则备份该表
         if (hasTables(tableDTO.getTableName())) {
-            String backupTableName = tableDTO.getTableName() + "_bak_" + TimeUtils.now().toFormat("yyyyMMddHHmmss");
-            jdbcTemplate.execute("CREATE TABLE " + backupTableName + " AS SELECT * FROM " + tableDTO.getTableName());
+            // 获取原表的创建语句
+            String oldTblName = tableDTO.getTableName();
+            String sql = jdbcTemplate.queryForMap("SHOW CREATE TABLE " + oldTblName).get("Create Table").toString();
+            // 替换新表名
+            String newTblName = oldTblName + "_bak_" + TimeUtils.now().toFormat("yyyyMMddHHmmss");
+            sql = sql.replace("CREATE TABLE `" + oldTblName, "CREATE TABLE `" + newTblName);
+            // 备份
+            jdbcTemplate.execute(sql);
         }
         // 删除表
         jdbcTemplate.execute("DROP TABLE IF EXISTS " + tableDTO.getTableName() + ";");
