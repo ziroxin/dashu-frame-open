@@ -267,7 +267,7 @@ public class FormGeneratorController {
                                         .permissionSQLBuilder()// ==========permissionSQL配置
                                         .enableFileOverride();
                             }
-                            // ====================DTO配置
+                            // ====================DTO配置（配置附件子表信息）
                             LinkedList<String> childTableList = (LinkedList) childTableMap.get(tableNames.get(finalIndex));
                             if (childTableList != null && childTableList.size() > 0) {
                                 builder.dtoBuilder()
