@@ -33,6 +33,17 @@
             </el-tooltip>
           </div>
         </template>
+        <!-- mp3/mp4/wmv/avi文件 -->
+        <template v-else-if="'mp3,mp4,wmv,avi'.includes(file.fileExtend.toLowerCase())">
+          <div class="file-img">
+            <el-checkbox v-if="showCheck" :value="selectedFileList.includes(file)" @change="checkFile($event,file)"/>
+            <video :src="$baseServer+file.fileUrl" controls="controls" class="icons"/>
+          </div>
+          <div class="file-name">
+            <el-tooltip :content="file.fileOldName"><span>{{ file.fileOldName }}</span></el-tooltip>
+            <div class="file-btn"><span @click="downloadFile(file)">下载</span></div>
+          </div>
+        </template>
         <!-- xls/xlsx文件 -->
         <template v-else-if="'xls,xlsx'.includes(file.fileExtend.toLowerCase())">
           <div class="file-img">
