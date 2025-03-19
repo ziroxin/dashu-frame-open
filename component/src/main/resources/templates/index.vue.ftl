@@ -75,8 +75,10 @@
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
                :visible.sync="dialogFormVisible" @close="closeDialog" width="600px" :key="'myDialog'+dialogIndex">
 <#if templateHtml??>
+<#-- 在线表单，直接用表单生成的代码 -->
       ${templateHtml}
 <#else>
+<#-- 非在线表单，使用以下代码生成 -->
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
   <#list table.fields as field>
   <#if field.propertyName=='orderIndex'>
@@ -169,13 +171,34 @@
 import waves from '@/directive/waves'
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util';
+<#-- 初始化 componentsArr 数组 -->
+<#assign componentsArr = []>
+<#-- 根据条件将组件名称添加到 componentsArr 中 -->
 <#if templateHtml?? && templateHtml?contains("my-wang-editor")>
+  <#assign componentsArr = componentsArr + ["MyWangEditor"]>
 import MyWangEditor from '@/components/MyWangEditor/index.vue';
+</#if>
+<#if templateHtml?? && templateHtml?contains("image-avatar")>
+  <#assign componentsArr = componentsArr + ["ImageAvatar"]>
+import ImageAvatar from '@/components/Upload/ImageAvatar';
+</#if>
+<#if templateHtml?? && templateHtml?contains("image-one")>
+  <#assign componentsArr = componentsArr + ["ImageOne"]>
+import ImageOne from '@/components/Upload/ImageOne';
+</#if>
+<#if templateHtml?? && templateHtml?contains("image-upload")>
+  <#assign componentsArr = componentsArr + ["ImageUpload"]>
+import ImageUpload from '@/components/Upload/ImageUpload';
+</#if>
+<#if templateHtml?? && templateHtml?contains("file-upload")>
+  <#assign componentsArr = componentsArr + ["FileUpload"]>
+import FileUpload from '@/components/Upload/FileUpload';
 </#if>
 
 export default {
-  <#if templateHtml?? && templateHtml?contains("my-wang-editor")>
-  components: {MyWangEditor},
+  <#-- 如果 componentsArr 不为空，则使用它来定义组件 -->
+  <#if componentsArr??>
+  components: {<#list componentsArr as component>${component}<#if component_has_next>, </#if></#list>},
   </#if>
   directives: {waves},
   data() {
