@@ -342,8 +342,14 @@ public class FormGeneratorController {
             if (StringUtils.hasText(field.getChildFileTable())) {
                 // 判断附件是否有此表
                 if (hasTables(field.getChildFileTable())) {
-                    String backupTableName = field.getChildFileTable() + "_bak_" + TimeUtils.now().toFormat("yyyyMMddHHmmss");
-                    jdbcTemplate.execute("CREATE TABLE " + backupTableName + " AS SELECT * FROM " + field.getChildFileTable());
+                    // 获取原表的创建语句
+                    String oldTblName = field.getChildFileTable();
+                    String sql = jdbcTemplate.queryForMap("SHOW CREATE TABLE " + oldTblName).get("Create Table").toString();
+                    // 替换新表名
+                    String newTblName = oldTblName + "_bak_" + TimeUtils.now().toFormat("yyyyMMddHHmmss");
+                    sql = sql.replace("CREATE TABLE `" + oldTblName, "CREATE TABLE `" + newTblName);
+                    // 备份
+                    jdbcTemplate.execute(sql);
                 }
                 // 删除表
                 jdbcTemplate.execute("DROP TABLE IF EXISTS " + field.getChildFileTable() + ";");
