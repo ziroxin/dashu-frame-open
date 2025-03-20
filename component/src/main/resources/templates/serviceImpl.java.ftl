@@ -110,8 +110,9 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         if (list != null && !list.isEmpty()) {
             // 查询所有附件列表
     <#list childTableList as child>
-            List<${child?cap_first}> all${child?cap_first}List = ${child}Service.lambdaQuery().in(${child?cap_first}::get${entity}Id,
-                    list.stream().map(${dtoName}::get${entityKeyName?cap_first}).collect(Collectors.toList())).list();
+            List<${child?cap_first}> all${child?cap_first}List = ${child}Service.lambdaQuery()
+                    .in(${child?cap_first}::get${entity}Id, list.stream().map(${dtoName}::get${entityKeyName?cap_first}).collect(Collectors.toList()))
+                    .orderByAsc(${child?cap_first}::getOrderIndex).list();
     </#list>
             // 过滤附件列表，放入实体中
             list.stream().forEach(dto -> {
@@ -153,10 +154,12 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         // 保存附件
     <#list childTableList as child>
         if (${dtoName?uncap_first}.get${child?lower_case?cap_first}List() != null && ${dtoName?uncap_first}.get${child?lower_case?cap_first}List().size() > 0) {
+            final int[] orderIndex = {1};
             List<${child?cap_first}> save${child?cap_first}List = ${dtoName?uncap_first}.get${child?lower_case?cap_first}List()
                     .stream().map(m -> {
                         m.set${entity}Id(${entity?uncap_first}.get${entityKeyName?cap_first}());
                         m.setCreateTime(LocalDateTime.now());
+                        m.setOrderIndex(orderIndex[0]++);
                         return m;
                     }).collect(Collectors.toList());
             ${child}Service.saveBatch(save${child?cap_first}List);
@@ -191,10 +194,12 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         // 再保存附件
     <#list childTableList as child>
         if (${dtoName?uncap_first}.get${child?lower_case?cap_first}List() != null && ${dtoName?uncap_first}.get${child?lower_case?cap_first}List().size() > 0) {
+            final int[] orderIndex = {1};
             List<${child?cap_first}> save${child?cap_first}List = ${dtoName?uncap_first}.get${child?lower_case?cap_first}List()
                     .stream().map(m -> {
                         m.set${entity}Id(${entity?uncap_first}.get${entityKeyName?cap_first}());
                         m.setCreateTime(LocalDateTime.now());
+                        m.setOrderIndex(orderIndex[0]++);
                         return m;
                     }).collect(Collectors.toList());
             ${child}Service.saveBatch(save${child?cap_first}List);
