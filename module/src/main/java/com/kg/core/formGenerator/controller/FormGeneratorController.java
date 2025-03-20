@@ -362,6 +362,7 @@ public class FormGeneratorController {
                         "  `file_name` varchar(100) NULL COMMENT '存储文件名'," +
                         "  `file_extend` varchar(20) NULL COMMENT '文件扩展名'," +
                         "  `file_size` bigint(20) NULL COMMENT '文件大小'," +
+                        "  `order_index` int(10) DEFAULT NULL COMMENT '顺序'," +
                         "  `create_time` datetime(0) NULL COMMENT '附件上传时间'," +
                         "  PRIMARY KEY (`file_id`) USING BTREE" +
                         ") COMMENT = '" + tableDTO.getTableDecription() + "附件表';");
