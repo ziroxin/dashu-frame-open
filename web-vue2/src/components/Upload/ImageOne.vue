@@ -77,6 +77,8 @@ export default {
       this.imgList = []
       if (this.value && this.value !== null && this.value !== '') {
         this.imgList[0] = {url: this.$baseServer + this.value}
+      } else {
+        this.$emit('input', '')
       }
     },
     imgUploadSuccess(response, file, fileList) {

@@ -64,6 +64,8 @@ export default {
       this.dialogImageUrl = ''
       if (this.value && this.value !== null && this.value !== '') {
         this.dialogImageUrl = this.$baseServer + this.value
+      } else {
+        this.$emit('input', '')
       }
     },
     imgUploadSuccess(response, file, fileList) {
