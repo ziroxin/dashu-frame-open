@@ -62,7 +62,7 @@ public class ZFilesStaticServiceImpl extends ServiceImpl<ZFilesStaticMapper, ZFi
         // 解析查询参数
         JSONObject paramObj = new JSONObject();
         if (StringUtils.hasText(params)) {
-            paramObj = JSONUtil.parseObj(params);
+            paramObj = JSONUtil.parseObj(params, true);
         }
         // 计算分页偏移量
         Integer offset = (page - 1) * limit;
@@ -172,7 +172,7 @@ public class ZFilesStaticServiceImpl extends ServiceImpl<ZFilesStaticMapper, ZFi
             // 查询待导出的数据
             JSONObject paramObj = new JSONObject();
             if (StringUtils.hasText(params)) {
-                paramObj = JSONUtil.parseObj(params);
+                paramObj = JSONUtil.parseObj(params, true);
             }
 
             List<ZFilesStaticDTO> list = zFilesStaticMapper.list(paramObj);

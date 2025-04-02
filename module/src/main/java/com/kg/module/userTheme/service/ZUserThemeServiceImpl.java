@@ -60,7 +60,7 @@ public class ZUserThemeServiceImpl extends ServiceImpl<ZUserThemeMapper, ZUserTh
         // 根据条件查询
         QueryWrapper<ZUserTheme> wrapper = new QueryWrapper<>();
         if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
+            JSONObject paramObj = JSONUtil.parseObj(params, true);
             if (paramObj.containsKey("themeId")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("themeId")), ZUserTheme::getThemeId, paramObj.getStr("themeId"));
             }
@@ -165,7 +165,7 @@ public class ZUserThemeServiceImpl extends ServiceImpl<ZUserThemeMapper, ZUserTh
             // 查询待导出的数据
             QueryWrapper<ZUserTheme> wrapper = new QueryWrapper<>();
             if (StringUtils.hasText(params)) {
-                JSONObject paramObj = JSONUtil.parseObj(params);
+                JSONObject paramObj = JSONUtil.parseObj(params, true);
                 if (paramObj.containsKey("themeId")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("themeId")), ZUserTheme::getThemeId, paramObj.getStr("themeId"));
                 }

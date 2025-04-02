@@ -51,7 +51,7 @@ public class ZUserLockController {
         // 根据条件查询
         QueryWrapper<ZUserLock> wrapper = new QueryWrapper<>();
         if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
+            JSONObject paramObj = JSONUtil.parseObj(params, true);
             if (paramObj.containsKey("lockId")) {
                 wrapper.lambda().eq(ZUserLock::getLockId, paramObj.getStr("lockId"));
             }

@@ -56,7 +56,7 @@ public class ZDdosServiceImpl extends ServiceImpl<ZDdosMapper, ZDdos> implements
         // 根据条件查询
         QueryWrapper<ZDdos> wrapper = new QueryWrapper<>();
         if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
+            JSONObject paramObj = JSONUtil.parseObj(params, true);
             if (paramObj.containsKey("ddosId")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("ddosId")), ZDdos::getDdosId, paramObj.getStr("ddosId"));
             }
@@ -145,7 +145,7 @@ public class ZDdosServiceImpl extends ServiceImpl<ZDdosMapper, ZDdos> implements
             // 查询待导出的数据
             QueryWrapper<ZDdos> wrapper = new QueryWrapper<>();
             if (StringUtils.hasText(params)) {
-                JSONObject paramObj = JSONUtil.parseObj(params);
+                JSONObject paramObj = JSONUtil.parseObj(params, true);
                 if (paramObj.containsKey("ddosId")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("ddosId")), ZDdos::getDdosId, paramObj.getStr("ddosId"));
                 }

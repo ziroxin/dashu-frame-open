@@ -56,7 +56,7 @@ public class ZFilesServiceImpl extends ServiceImpl<ZFilesMapper, ZFiles> impleme
         // 根据条件查询
         QueryWrapper<ZFiles> wrapper = new QueryWrapper<>();
         if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
+            JSONObject paramObj = JSONUtil.parseObj(params, true);
             if (paramObj.containsKey("fileId")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("fileId")), ZFiles::getFileId, paramObj.getStr("fileId"));
             }
@@ -150,7 +150,7 @@ public class ZFilesServiceImpl extends ServiceImpl<ZFilesMapper, ZFiles> impleme
             // 查询待导出的数据
             QueryWrapper<ZFiles> wrapper = new QueryWrapper<>();
             if (StringUtils.hasText(params)) {
-                JSONObject paramObj = JSONUtil.parseObj(params);
+                JSONObject paramObj = JSONUtil.parseObj(params, true);
                 if (paramObj.containsKey("fileId")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("fileId")), ZFiles::getFileId, paramObj.getStr("fileId"));
                 }

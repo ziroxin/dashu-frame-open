@@ -182,7 +182,7 @@ public class ZMessageServiceImpl extends ServiceImpl<ZMessageMapper, ZMessage> i
             // 查询待导出的数据
             QueryWrapper<ZMessage> wrapper = new QueryWrapper<>();
             if (StringUtils.hasText(params)) {
-                JSONObject paramObj = JSONUtil.parseObj(params);
+                JSONObject paramObj = JSONUtil.parseObj(params, true);
                 if (paramObj.containsKey("msgId")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("msgId")), ZMessage::getMsgId, paramObj.getStr("msgId"));
                 }

@@ -56,7 +56,7 @@ public class ZConfigServiceImpl extends ServiceImpl<ZConfigMapper, ZConfig> impl
         // 根据条件查询
         QueryWrapper<ZConfig> wrapper = new QueryWrapper<>();
         if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
+            JSONObject paramObj = JSONUtil.parseObj(params, true);
             if (paramObj.containsKey("cfgId")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("cfgId")), ZConfig::getCfgId, paramObj.getStr("cfgId"));
             }
@@ -154,7 +154,7 @@ public class ZConfigServiceImpl extends ServiceImpl<ZConfigMapper, ZConfig> impl
             // 查询待导出的数据
             QueryWrapper<ZConfig> wrapper = new QueryWrapper<>();
             if (StringUtils.hasText(params)) {
-                JSONObject paramObj = JSONUtil.parseObj(params);
+                JSONObject paramObj = JSONUtil.parseObj(params, true);
                 if (paramObj.containsKey("cfgId")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("cfgId")), ZConfig::getCfgId, paramObj.getStr("cfgId"));
                 }

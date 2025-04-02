@@ -62,7 +62,7 @@ public class DemoSmsServiceImpl extends ServiceImpl<DemoSmsMapper, DemoSms> impl
         // 根据条件查询
         QueryWrapper<DemoSms> wrapper = new QueryWrapper<>();
         if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
+            JSONObject paramObj = JSONUtil.parseObj(params, true);
             if (paramObj.containsKey("smsId")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("smsId")), DemoSms::getSmsId, paramObj.getStr("smsId"));
             }
@@ -173,7 +173,7 @@ public class DemoSmsServiceImpl extends ServiceImpl<DemoSmsMapper, DemoSms> impl
             // 查询待导出的数据
             QueryWrapper<DemoSms> wrapper = new QueryWrapper<>();
             if (StringUtils.hasText(params)) {
-                JSONObject paramObj = JSONUtil.parseObj(params);
+                JSONObject paramObj = JSONUtil.parseObj(params, true);
                 if (paramObj.containsKey("smsId")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("smsId")), DemoSms::getSmsId, paramObj.getStr("smsId"));
                 }

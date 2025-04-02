@@ -56,7 +56,7 @@ public class ZMessageToServiceImpl extends ServiceImpl<ZMessageToMapper, ZMessag
         // 根据条件查询
         QueryWrapper<ZMessageTo> wrapper = new QueryWrapper<>();
         if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
+            JSONObject paramObj = JSONUtil.parseObj(params, true);
             if (paramObj.containsKey("toId")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("toId")), ZMessageTo::getToId, paramObj.getStr("toId"));
             }
@@ -148,7 +148,7 @@ public class ZMessageToServiceImpl extends ServiceImpl<ZMessageToMapper, ZMessag
             // 查询待导出的数据
             QueryWrapper<ZMessageTo> wrapper = new QueryWrapper<>();
             if (StringUtils.hasText(params)) {
-                JSONObject paramObj = JSONUtil.parseObj(params);
+                JSONObject paramObj = JSONUtil.parseObj(params, true);
                 if (paramObj.containsKey("toId")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("toId")), ZMessageTo::getToId, paramObj.getStr("toId"));
                 }

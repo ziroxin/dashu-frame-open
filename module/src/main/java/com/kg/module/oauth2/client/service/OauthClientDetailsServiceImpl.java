@@ -59,7 +59,7 @@ public class OauthClientDetailsServiceImpl extends ServiceImpl<OauthClientDetail
         // 根据条件查询
         QueryWrapper<OauthClientDetails> wrapper = new QueryWrapper<>();
         if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
+            JSONObject paramObj = JSONUtil.parseObj(params, true);
             if (paramObj.containsKey("clientId")) {
                 wrapper.lambda().like(StringUtils.hasText(paramObj.getStr("clientId")), OauthClientDetails::getClientId, paramObj.getStr("clientId"));
             }
@@ -161,7 +161,7 @@ public class OauthClientDetailsServiceImpl extends ServiceImpl<OauthClientDetail
             // 查询待导出的数据
             QueryWrapper<OauthClientDetails> wrapper = new QueryWrapper<>();
             if (StringUtils.hasText(params)) {
-                JSONObject paramObj = JSONUtil.parseObj(params);
+                JSONObject paramObj = JSONUtil.parseObj(params, true);
                 if (paramObj.containsKey("clientId")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("clientId")), OauthClientDetails::getClientId, paramObj.getStr("clientId"));
                 }

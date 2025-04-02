@@ -90,7 +90,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         // 解析查询参数
         JSONObject paramObj = new JSONObject();
         if (StringUtils.hasText(params)) {
-            paramObj = JSONUtil.parseObj(params);
+            paramObj = JSONUtil.parseObj(params, true);
         }
         // 计算分页偏移量
         Integer offset = (page - 1) * limit;
@@ -242,7 +242,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             // 查询待导出的数据
             JSONObject paramObj = new JSONObject();
             if (StringUtils.hasText(params)) {
-                paramObj = JSONUtil.parseObj(params);
+                paramObj = JSONUtil.parseObj(params, true);
             }
 
             // 处理排序

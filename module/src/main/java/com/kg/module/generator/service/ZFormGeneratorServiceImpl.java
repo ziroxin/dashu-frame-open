@@ -55,7 +55,7 @@ public class ZFormGeneratorServiceImpl extends ServiceImpl<ZFormGeneratorMapper,
         // 根据条件查询
         QueryWrapper<ZFormGenerator> wrapper = new QueryWrapper<>();
         if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
+            JSONObject paramObj = JSONUtil.parseObj(params, true);
             if (paramObj.containsKey("formId")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("formId")), ZFormGenerator::getFormId, paramObj.getStr("formId"));
             }
@@ -163,7 +163,7 @@ public class ZFormGeneratorServiceImpl extends ServiceImpl<ZFormGeneratorMapper,
             // 查询待导出的数据
             QueryWrapper<ZFormGenerator> wrapper = new QueryWrapper<>();
             if (StringUtils.hasText(params)) {
-                JSONObject paramObj = JSONUtil.parseObj(params);
+                JSONObject paramObj = JSONUtil.parseObj(params, true);
                 if (paramObj.containsKey("formId")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("formId")), ZFormGenerator::getFormId, paramObj.getStr("formId"));
                 }

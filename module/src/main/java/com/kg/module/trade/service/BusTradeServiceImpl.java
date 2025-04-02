@@ -56,7 +56,7 @@ public class BusTradeServiceImpl extends ServiceImpl<BusTradeMapper, BusTrade> i
         // 根据条件查询
         QueryWrapper<BusTrade> wrapper = new QueryWrapper<>();
         if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
+            JSONObject paramObj = JSONUtil.parseObj(params, true);
             if (paramObj.containsKey("tradeId")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("tradeId")), BusTrade::getTradeId, paramObj.getStr("tradeId"));
             }
@@ -167,7 +167,7 @@ public class BusTradeServiceImpl extends ServiceImpl<BusTradeMapper, BusTrade> i
             // 查询待导出的数据
             QueryWrapper<BusTrade> wrapper = new QueryWrapper<>();
             if (StringUtils.hasText(params)) {
-                JSONObject paramObj = JSONUtil.parseObj(params);
+                JSONObject paramObj = JSONUtil.parseObj(params, true);
                 if (paramObj.containsKey("tradeId")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("tradeId")), BusTrade::getTradeId, paramObj.getStr("tradeId"));
                 }

@@ -46,7 +46,7 @@ public class ZUserWechatServiceImpl extends ServiceImpl<ZUserWechatMapper, ZUser
         // 解析查询参数
         JSONObject paramObj = new JSONObject();
         if (StringUtils.hasText(params)) {
-            paramObj = JSONUtil.parseObj(params);
+            paramObj = JSONUtil.parseObj(params, true);
         }
         // 计算分页偏移量
         Integer offset = (page - 1) * limit;
