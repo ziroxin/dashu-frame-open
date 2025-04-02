@@ -66,7 +66,7 @@ public class ZOperateLogController {
         // 根据条件查询
         QueryWrapper<ZOperateLog> wrapper = new QueryWrapper<>();
         if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
+            JSONObject paramObj = JSONUtil.parseObj(params, true);
             if (paramObj.containsKey("logId")) {
                 wrapper.lambda().eq(ZOperateLog::getLogId, paramObj.getStr("logId"));
             }

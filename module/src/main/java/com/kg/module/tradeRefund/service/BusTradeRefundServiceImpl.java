@@ -55,7 +55,7 @@ public class BusTradeRefundServiceImpl extends ServiceImpl<BusTradeRefundMapper,
         // 根据条件查询
         QueryWrapper<BusTradeRefund> wrapper = new QueryWrapper<>();
         if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
+            JSONObject paramObj = JSONUtil.parseObj(params, true);
             if (paramObj.containsKey("refundId")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("refundId")), BusTradeRefund::getRefundId, paramObj.getStr("refundId"));
             }
@@ -150,7 +150,7 @@ public class BusTradeRefundServiceImpl extends ServiceImpl<BusTradeRefundMapper,
             // 查询待导出的数据
             QueryWrapper<BusTradeRefund> wrapper = new QueryWrapper<>();
             if (StringUtils.hasText(params)) {
-                JSONObject paramObj = JSONUtil.parseObj(params);
+                JSONObject paramObj = JSONUtil.parseObj(params, true);
                 if (paramObj.containsKey("refundId")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("refundId")), BusTradeRefund::getRefundId, paramObj.getStr("refundId"));
                 }

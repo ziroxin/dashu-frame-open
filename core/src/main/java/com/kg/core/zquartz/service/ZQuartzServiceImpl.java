@@ -47,7 +47,7 @@ public class ZQuartzServiceImpl extends ServiceImpl<ZQuartzMapper, ZQuartz> impl
             // 查询待导出的数据
             QueryWrapper<ZQuartz> wrapper = new QueryWrapper<>();
             if (StringUtils.hasText(params)) {
-                JSONObject paramObj = JSONUtil.parseObj(params);
+                JSONObject paramObj = JSONUtil.parseObj(params, true);
                 if (paramObj.containsKey("quartzId")) {
                     wrapper.lambda().eq(ZQuartz::getQuartzId, paramObj.getStr("quartzId"));
                 }

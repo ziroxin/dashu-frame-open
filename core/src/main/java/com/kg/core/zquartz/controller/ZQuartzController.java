@@ -82,7 +82,7 @@ public class ZQuartzController {
         // 根据条件查询
         QueryWrapper<ZQuartz> wrapper = new QueryWrapper<>();
         if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
+            JSONObject paramObj = JSONUtil.parseObj(params, true);
             if (paramObj.containsKey("quartzId")) {
                 wrapper.lambda().eq(ZQuartz::getQuartzId, paramObj.getStr("quartzId"));
             }

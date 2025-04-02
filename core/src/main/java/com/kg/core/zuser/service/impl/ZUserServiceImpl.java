@@ -64,7 +64,7 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
     @Override
     public Page<ZUserDTO> getUserList(Integer page, Integer limit, String params) {
         Page<ZUserDTO> result = new Page<>(page, limit);
-        JSONObject paramObj = JSONUtil.parseObj(params);
+        JSONObject paramObj = JSONUtil.parseObj(params, true);
         paramObj.set("offset", (page - 1) * limit);
         paramObj.set("limit", limit);
         // 用户管理，排除开发管理员

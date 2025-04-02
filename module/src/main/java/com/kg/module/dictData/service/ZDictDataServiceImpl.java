@@ -63,7 +63,7 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
         // 根据条件查询
         QueryWrapper<ZDictData> wrapper = new QueryWrapper<>();
         if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
+            JSONObject paramObj = JSONUtil.parseObj(params, true);
             if (paramObj.containsKey("dictId")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("dictId")), ZDictData::getDictId, paramObj.getStr("dictId"));
             }
@@ -174,7 +174,7 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
             // 查询待导出的数据
             QueryWrapper<ZDictData> wrapper = new QueryWrapper<>();
             if (StringUtils.hasText(params)) {
-                JSONObject paramObj = JSONUtil.parseObj(params);
+                JSONObject paramObj = JSONUtil.parseObj(params, true);
                 if (paramObj.containsKey("dictId")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("dictId")), ZDictData::getDictId, paramObj.getStr("dictId"));
                 }

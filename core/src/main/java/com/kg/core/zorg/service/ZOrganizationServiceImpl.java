@@ -129,7 +129,7 @@ public class ZOrganizationServiceImpl extends ServiceImpl<ZOrganizationMapper, Z
             // 查询待导出的数据
             QueryWrapper<ZOrganization> wrapper = new QueryWrapper<>();
             if (StringUtils.hasText(params)) {
-                JSONObject paramObj = JSONUtil.parseObj(params);
+                JSONObject paramObj = JSONUtil.parseObj(params, true);
                 if (paramObj.containsKey("orgId")) {
                     wrapper.lambda().eq(ZOrganization::getOrgId, paramObj.getStr("orgId"));
                 }

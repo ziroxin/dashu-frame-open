@@ -46,7 +46,7 @@ public class ZOperateLogServiceImpl extends ServiceImpl<ZOperateLogMapper, ZOper
             // 查询待导出的数据
             QueryWrapper<ZOperateLog> wrapper = new QueryWrapper<>();
             if (StringUtils.hasText(params)) {
-                JSONObject paramObj = JSONUtil.parseObj(params);
+                JSONObject paramObj = JSONUtil.parseObj(params, true);
                 if (paramObj.containsKey("logId")) {
                     wrapper.lambda().eq(ZOperateLog::getLogId, paramObj.getStr("logId"));
                 }

@@ -112,7 +112,7 @@ public class ZOrganizationController {
         // 根据条件查询
         QueryWrapper<ZOrganization> wrapper = new QueryWrapper<>();
         if (StringUtils.hasText(params)) {
-            JSONObject paramObj = JSONUtil.parseObj(params);
+            JSONObject paramObj = JSONUtil.parseObj(params, true);
             if (paramObj.containsKey("orgId")) {
                 wrapper.lambda().eq(ZOrganization::getOrgId, paramObj.getStr("orgId"));
             }
