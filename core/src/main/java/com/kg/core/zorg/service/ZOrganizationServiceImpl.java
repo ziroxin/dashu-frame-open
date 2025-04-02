@@ -157,7 +157,9 @@ public class ZOrganizationServiceImpl extends ServiceImpl<ZOrganizationMapper, Z
             }
             List<ZOrganization> list = list(wrapper);
             // 转换成导出excel实体
-            List<ZOrganizationExcelOutDTO> dataList = list.stream().map(d -> JSONUtil.toBean(JSONUtil.parseObj(d), ZOrganizationExcelOutDTO.class)).collect(Collectors.toList());
+            List<ZOrganizationExcelOutDTO> dataList = list.stream()
+                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d, true), ZOrganizationExcelOutDTO.class))
+                    .collect(Collectors.toList());
             // 第一行标题
             String title = "组织机构表";
             // 写入导出excel文件

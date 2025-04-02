@@ -198,7 +198,9 @@ public class DemoSmsServiceImpl extends ServiceImpl<DemoSmsMapper, DemoSms> impl
             }
             List<DemoSms> list = list(wrapper);
             // 转换成导出excel实体
-            List<DemoSmsExcelOutDTO> dataList = list.stream().map(d -> JSONUtil.toBean(JSONUtil.parseObj(d), DemoSmsExcelOutDTO.class)).collect(Collectors.toList());
+            List<DemoSmsExcelOutDTO> dataList = list.stream()
+                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d, true), DemoSmsExcelOutDTO.class))
+                    .collect(Collectors.toList());
             if (dataList == null || dataList.size() <= 0) {
                 // 未查到数据时，模拟一行空数据
                 dataList.add(new DemoSmsExcelOutDTO());

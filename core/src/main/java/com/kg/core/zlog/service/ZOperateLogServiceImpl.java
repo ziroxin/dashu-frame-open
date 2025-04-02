@@ -78,7 +78,7 @@ public class ZOperateLogServiceImpl extends ServiceImpl<ZOperateLogMapper, ZOper
             List<ZOperateLog> list = list(wrapper);
             // 转换成导出excel实体
             List<ZOperateLogExcelOutDTO> dataList = list.stream()
-                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d), ZOperateLogExcelOutDTO.class))
+                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d, true), ZOperateLogExcelOutDTO.class))
                     .collect(Collectors.toList());
             // 第一行标题
             String title = "操作日志表";

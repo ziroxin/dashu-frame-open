@@ -99,7 +99,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         // 处理排序
         if (StringUtils.hasText(sorts)) {
             // 例如：{"columnStr": "字段名", "orderStr": "ASC/DESC"}
-            JSONObject sortObj = JSONUtil.parseObj(sorts);
+            JSONObject sortObj = JSONUtil.parseObj(sorts, true);
             if (sortObj.size() > 0) {
                 paramObj.set(sortObj.getStr("column") + "Order", sortObj.getStr("order"));
             }
@@ -248,7 +248,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             // 处理排序
             if (StringUtils.hasText(sorts)) {
                 // 例如：{"columnStr": "字段名", "orderStr": "ASC/DESC"}
-                JSONObject sortObj = JSONUtil.parseObj(sorts);
+                JSONObject sortObj = JSONUtil.parseObj(sorts, true);
                 if (sortObj.size() > 0) {
                     paramObj.set(sortObj.getStr("column") + "Order", sortObj.getStr("order"));
                 }
@@ -258,7 +258,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             List<${dtoName}> list = ${table.mapperName?uncap_first}.list(paramObj);
             // 转换成导出excel实体
             List<${entity}ExcelOutDTO> dataList = list.stream()
-                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d), ${entity}ExcelOutDTO.class))
+                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d, true), ${entity}ExcelOutDTO.class))
                     .collect(Collectors.toList());
             if (dataList == null || dataList.size() <= 0) {
                 // 未查到数据时，模拟一行空数据
