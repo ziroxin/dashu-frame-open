@@ -85,7 +85,7 @@ public class WechatLoginController {
             // 验证码校验
             captchaService.checkCaptchaByConfig(loginForm.getCodeUuid(), loginForm.getYzm());
             // 2. 未绑定，开始登录
-            LoginFormDTO login = JSONUtil.toBean(JSONUtil.parseObj(loginForm), LoginFormDTO.class);
+            LoginFormDTO login = JSONUtil.toBean(JSONUtil.parseObj(loginForm, true), LoginFormDTO.class);
             LoginSuccessDTO result = loginService.login(login);
             if (loginForm.getBindWechat() != null && loginForm.getBindWechat()) {
                 // 3. 若未绑定，且前端勾选绑定微信，则进行绑定

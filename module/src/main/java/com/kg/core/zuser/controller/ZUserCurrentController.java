@@ -54,7 +54,7 @@ public class ZUserCurrentController {
             ZUserAllDTO currentUser = CurrentUserUtils.getCurrentUserAll();
             // 用户基本资料
             ZUserRoleSaveDTO user = userService.getUserById(currentUser.getUserId());
-            MyUserDTO myUserDTO = JSONUtil.toBean(JSONUtil.parseObj(user), MyUserDTO.class);
+            MyUserDTO myUserDTO = JSONUtil.toBean(JSONUtil.parseObj(user, true), MyUserDTO.class);
             // 角色IDs
             if (LoginConstant.isDeveloper(currentUser.getUserId())) {
                 myUserDTO.setRoleId(Arrays.asList("isDeveloper"));

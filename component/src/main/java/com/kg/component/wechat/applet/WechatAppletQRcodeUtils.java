@@ -116,7 +116,7 @@ public class WechatAppletQRcodeUtils {
             paramMap.put("grant_type", "client_credential");
             // 请求微信
             String result = HttpUtil.get(appletConfig.getAccessTokenUrl(), paramMap);
-            JSONObject obj = JSONUtil.parseObj(result);
+            JSONObject obj = JSONUtil.parseObj(result, true);
             String access_token = obj.getStr("access_token");
             if (StringUtils.hasText(access_token)) {
                 // 把access_token填入redis，有效期：实际有效期-100s

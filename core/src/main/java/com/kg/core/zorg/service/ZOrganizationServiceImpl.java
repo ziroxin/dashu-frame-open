@@ -356,7 +356,7 @@ public class ZOrganizationServiceImpl extends ServiceImpl<ZOrganizationMapper, Z
         if (ZOrganizationExcelConstant.IMPORT_REQUIRED_COLUMN.size() > 0) {
             for (ZOrganizationExcelImportDTO entity : importData) {
                 currentRowIdx++;
-                JSONObject rowData = JSONUtil.parseObj(entity);
+                JSONObject rowData = JSONUtil.parseObj(entity, true);
                 List<String> emptyColName = new ArrayList<>();
                 for (Map.Entry<String, String> col : ZOrganizationExcelConstant.IMPORT_REQUIRED_COLUMN.entrySet()) {
                     if (!StringUtils.hasText(rowData.getStr(col.getKey()))) {
@@ -431,7 +431,7 @@ public class ZOrganizationServiceImpl extends ServiceImpl<ZOrganizationMapper, Z
 
         // 5. 保存数据
         List<ZOrganization> saveData = importData.stream().map(o -> {
-            ZOrganization entity = JSONUtil.toBean(JSONUtil.parseObj(JSONUtil.toJsonStr(o)), ZOrganization.class);
+            ZOrganization entity = JSONUtil.toBean(JSONUtil.parseObj(JSONUtil.toJsonStr(o), true), ZOrganization.class);
             entity.setCreateTime(LocalDateTime.now());
             return entity;
         }).collect(Collectors.toList());

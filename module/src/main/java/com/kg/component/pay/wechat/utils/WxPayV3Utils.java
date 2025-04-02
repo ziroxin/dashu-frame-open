@@ -49,7 +49,7 @@ public class WxPayV3Utils {
             );
             // 根据证书序列号，查询对应的证书来验证签名结果
             // boolean verifySignature = WxPayKit.verifySignature(response, wxPayConfig.getCertPath());
-            return JSONUtil.parseObj(response.getBody());
+            return JSONUtil.parseObj(response.getBody(), true);
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException(e.getMessage());
@@ -82,7 +82,7 @@ public class WxPayV3Utils {
             );
             // 根据证书序列号，查询对应的证书来验证签名结果
             // boolean verifySignature = WxPayKit.verifySignature(response, wxPayConfig.getCertPath());
-            return JSONUtil.parseObj(response.getBody());
+            return JSONUtil.parseObj(response.getBody(), true);
         } catch (Exception e) {
             e.printStackTrace();
             throw new BaseException(e.getMessage());
@@ -112,7 +112,7 @@ public class WxPayV3Utils {
             );
             // 根据证书序列号，查询对应的证书来验证签名结果
             // boolean verifySignature = WxPayKit.verifySignature(response, wxPayConfig.getCertPath());
-            JSONObject result = JSONUtil.parseObj(response.getBody());
+            JSONObject result = JSONUtil.parseObj(response.getBody(), true);
             if (result.containsKey("prepay_id")) {
                 Map<String, String> map = WxPayKit.jsApiCreateSign(wxPayConfig.getAppId(),
                         result.getStr("prepay_id"), wxPayConfig.getKeyPath());

@@ -217,7 +217,7 @@ public class ZFilesStaticServiceImpl extends ServiceImpl<ZFilesStaticMapper, ZFi
         if (ZFilesStaticExcelConstant.IMPORT_REQUIRED_COLUMN.size() > 0) {
             for (ZFilesStaticExcelImportDTO entity : importData) {
                 currentRowIdx++;
-                JSONObject rowData = JSONUtil.parseObj(entity);
+                JSONObject rowData = JSONUtil.parseObj(entity, true);
                 List<String> emptyColName = new ArrayList<>();
                 for (Map.Entry<String, String> col : ZFilesStaticExcelConstant.IMPORT_REQUIRED_COLUMN.entrySet()) {
                     if (!StringUtils.hasText(rowData.getStr(col.getKey()))) {
@@ -234,7 +234,7 @@ public class ZFilesStaticServiceImpl extends ServiceImpl<ZFilesStaticMapper, ZFi
         }
         // 3. 保存
         List<ZFilesStatic> saveData = importData.stream().map(obj -> {
-            ZFilesStatic o = JSONUtil.toBean(JSONUtil.parseObj(obj), ZFilesStatic.class);
+            ZFilesStatic o = JSONUtil.toBean(JSONUtil.parseObj(obj, true), ZFilesStatic.class);
             o.setFileId(GuidUtils.getUuid());
             o.setCreateTime(LocalDateTime.now());
             return o;

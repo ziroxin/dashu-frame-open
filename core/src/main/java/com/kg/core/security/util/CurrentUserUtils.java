@@ -66,7 +66,7 @@ public class CurrentUserUtils {
     public static ZUserAllDTO getCurrentUserAll() {
         ZUser user = getCurrentUser();
         if (user != null) {
-            ZUserAllDTO result = JSONUtil.toBean(JSONUtil.parseObj(user), ZUserAllDTO.class);
+            ZUserAllDTO result = JSONUtil.toBean(JSONUtil.parseObj(user, true), ZUserAllDTO.class);
             // 查询部门信息
             ZOrganization org = staticZOrganizationService.getById(user.getOrgId());
             if (org != null) {

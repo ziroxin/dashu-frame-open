@@ -114,7 +114,7 @@ public class ZMessageServiceImpl extends ServiceImpl<ZMessageMapper, ZMessage> i
     @Override
     public Page<ZMessageDTO> pagelist(Integer page, Integer limit, String params) {
         // 查询条件
-        HashMap<String, Object> paramsJson = JSONUtil.toBean(JSONUtil.parseObj(params), HashMap.class);
+        HashMap<String, Object> paramsJson = JSONUtil.toBean(JSONUtil.parseObj(params, true), HashMap.class);
         paramsJson.put("userId", CurrentUserUtils.getCurrentUser().getUserId());
         Integer offset = page != null && limit != null ? (page - 1) * limit : null;
         // 查询列表
