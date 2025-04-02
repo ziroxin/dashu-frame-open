@@ -97,7 +97,7 @@ public class WxPayV2ServiceUtils {
         // 以下字段在 return_code 和 result_code 都为 SUCCESS 的时候代表支付成功
         if (WxPayKit.codeIsOk(resultMap.get("return_code"))) {
             if (WxPayKit.codeIsOk(resultMap.get("result_code"))) {
-                JSONObject resultObj = JSONUtil.parseObj(resultMap);
+                JSONObject resultObj = JSONUtil.parseObj(resultMap, true);
                 List<BusTrade> list = tradeService.lambdaQuery().eq(BusTrade::getOutTradeNo, resultObj.getStr("out_trade_no")).list();
                 BusTrade busTrade = list != null && list.size() > 0 ? list.get(0) : new BusTrade();
                 // 支付成功，且金额正确
@@ -138,7 +138,7 @@ public class WxPayV2ServiceUtils {
         if (WxPayKit.codeIsOk(result.get("return_code"))) {
             if (WxPayKit.codeIsOk(result.get("result_code"))) {
                 // 支付成功，且金额正确
-                JSONObject resultObj = JSONUtil.parseObj(result);
+                JSONObject resultObj = JSONUtil.parseObj(result, true);
                 if (TradeConstant.TRADE_SUCCESS_WECHAT.equals(resultObj.getStr("trade_state"))
                         && b.getTotalFee().toString().equals(resultObj.getStr("total_fee"))) {
                     // 保存订单信息

@@ -251,7 +251,7 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
         if (ZDictDataExcelConstant.IMPORT_REQUIRED_COLUMN.size() > 0) {
             for (ZDictDataExcelImportDTO entity : importData) {
                 currentRowIdx++;
-                JSONObject rowData = JSONUtil.parseObj(entity);
+                JSONObject rowData = JSONUtil.parseObj(entity, true);
                 List<String> emptyColName = new ArrayList<>();
                 for (Map.Entry<String, String> col : ZDictDataExcelConstant.IMPORT_REQUIRED_COLUMN.entrySet()) {
                     if (!StringUtils.hasText(rowData.getStr(col.getKey()))) {
@@ -308,7 +308,7 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
 
         // 5. 保存数据
         List<ZDictData> saveData = importData.stream().map(o -> {
-            ZDictData entity = JSONUtil.toBean(JSONUtil.parseObj(JSONUtil.toJsonStr(o)), ZDictData.class);
+            ZDictData entity = JSONUtil.toBean(JSONUtil.parseObj(JSONUtil.toJsonStr(o), true), ZDictData.class);
             entity.setDictId(GuidUtils.getUuid());
             entity.setTypeCode(typeCode);
             entity.setStatus("1");// 默认正常（0：停用，1：正常）

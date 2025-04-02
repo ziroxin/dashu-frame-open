@@ -79,7 +79,7 @@ public class WxPayV3ServiceUtils {
      * V3版支付通知
      */
     public static String payNotify(String result, WxPayConfig wxPayConfig, BusTradeService tradeService) {
-        JSONObject resultJson = JSONUtil.parseObj(result);// 密文数据
+        JSONObject resultJson = JSONUtil.parseObj(result, true);// 密文数据
         if ("TRANSACTION.SUCCESS".equals(resultJson.getStr("event_type"))
                 && "encrypt-resource".equals(resultJson.getStr("resource_type"))) {
             // 解密
@@ -90,7 +90,7 @@ public class WxPayV3ServiceUtils {
                 String data = aesUtil.decryptToString(resource.getStr("associated_data").getBytes(),
                         resource.getStr("nonce").getBytes(),
                         resource.getStr("ciphertext"));
-                JSONObject dataObj = JSONUtil.parseObj(data);
+                JSONObject dataObj = JSONUtil.parseObj(data, true);
                 if (WxPayKit.codeIsOk(dataObj.getStr("trade_state"))) {
                     List<BusTrade> list = tradeService.lambdaQuery().eq(BusTrade::getOutTradeNo, dataObj.getStr("out_trade_no")).list();
                     BusTrade busTrade = list != null && list.size() > 0 ? list.get(0) : new BusTrade();
@@ -124,7 +124,7 @@ public class WxPayV3ServiceUtils {
                                              BusTrade b, WxTradeResutDTO wxTradeResutDTO) {
         try {
             String result = WxPayV3Utils.queryOrder(wxPayConfig, b.getOutTradeNo());
-            JSONObject resultJson = JSONUtil.parseObj(result);
+            JSONObject resultJson = JSONUtil.parseObj(result, true);
             if (WxPayKit.codeIsOk(resultJson.getStr("trade_state"))
                     && b.getTotalFee().toString().equals(resultJson.getJSONObject("amount").getStr("total"))) {
                 // 保存订单信息
@@ -169,7 +169,7 @@ public class WxPayV3ServiceUtils {
             );
             // 根据证书序列号，查询对应的证书来验证签名结果
             // boolean verifySignature = WxPayKit.verifySignature(response, wxPayConfig.getCertPath());
-            JSONObject result = JSONUtil.parseObj(response.getBody());
+            JSONObject result = JSONUtil.parseObj(response.getBody(), true);
             if ("SUCCESS".equals(result.getStr("status")) || "PROCESSING".equals(result.getStr("status"))) {
                 // 保存退款信息
                 refund.setRefundStatus(TradeConstant.REFUNDING);
@@ -204,7 +204,7 @@ public class WxPayV3ServiceUtils {
             );
             // 根据证书序列号，查询对应的证书来验证签名结果
             // boolean verifySignature = WxPayKit.verifySignature(response, wxPayConfig.getCertPath());
-            JSONObject result = JSONUtil.parseObj(response.getBody());
+            JSONObject result = JSONUtil.parseObj(response.getBody(), true);
             // 退款状态（下标_0，用out_refund_no查询，下标始始为0）
             if ("SUCCESS".equals(result.getStr("status"))) {
                 // 更新退款信息

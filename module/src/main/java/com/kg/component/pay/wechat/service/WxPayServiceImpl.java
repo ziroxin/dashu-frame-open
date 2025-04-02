@@ -137,7 +137,7 @@ public class WxPayServiceImpl implements WxPayService {
         }
         // 退款状态已更新，直接返回
         if (refund.getRefundStatus().intValue() != 0) {
-            return JSONUtil.toBean(JSONUtil.parseObj(refund), WxTradeRefundDTO.class);
+            return JSONUtil.toBean(JSONUtil.parseObj(refund, true), WxTradeRefundDTO.class);
         }
         // 去微信查询退款信息
         if (wxPayConfig.getKeyVersion().equals("v3")) {

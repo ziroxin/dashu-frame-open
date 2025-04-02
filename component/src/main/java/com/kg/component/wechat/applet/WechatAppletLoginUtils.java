@@ -37,7 +37,7 @@ public class WechatAppletLoginUtils {
         paramMap.put("grant_type", "authorization_code");
         // 请求微信
         String result = HttpUtil.get(appletConfig.getJsCodeUrl(), paramMap);
-        JSONObject obj = JSONUtil.parseObj(result);
+        JSONObject obj = JSONUtil.parseObj(result, true);
         String openId = obj.getStr("openid");
         if (StringUtils.hasText(openId)) {
             // 请求成功

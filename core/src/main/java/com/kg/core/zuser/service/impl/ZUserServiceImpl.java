@@ -226,7 +226,7 @@ public class ZUserServiceImpl extends ServiceImpl<ZUserMapper, ZUser> implements
         try {
             ZUser user = getById(userId);
             if (user != null) {
-                ZUserAllDTO result = JSONUtil.toBean(JSONUtil.parseObj(user), ZUserAllDTO.class);
+                ZUserAllDTO result = JSONUtil.toBean(JSONUtil.parseObj(user, true), ZUserAllDTO.class);
                 // 查询部门信息
                 ZOrganization org = organizationService.getById(user.getOrgId());
                 if (org != null) {

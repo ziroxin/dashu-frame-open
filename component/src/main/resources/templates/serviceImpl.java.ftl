@@ -297,7 +297,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         if (${entity}ExcelConstant.IMPORT_REQUIRED_COLUMN.size() > 0) {
             for (${entity}ExcelImportDTO entity : importData) {
                 currentRowIdx++;
-                JSONObject rowData = JSONUtil.parseObj(entity);
+                JSONObject rowData = JSONUtil.parseObj(entity, true);
                 List<String> emptyColName = new ArrayList<>();
                 for (Map.Entry<String, String> col : ${entity}ExcelConstant.IMPORT_REQUIRED_COLUMN.entrySet()) {
                     if (!StringUtils.hasText(rowData.getStr(col.getKey()))) {
@@ -322,7 +322,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         }
         // 3. 保存
         List<${entity}> saveData = importData.stream().map(obj -> {
-            ${entity} o = JSONUtil.toBean(JSONUtil.parseObj(obj), ${entity}.class);
+            ${entity} o = JSONUtil.toBean(JSONUtil.parseObj(obj, true), ${entity}.class);
             o.set${entityKeyName?cap_first}(GuidUtils.getUuid());
 <#list table.fields as field>
     <#if field.propertyName=="createTime">

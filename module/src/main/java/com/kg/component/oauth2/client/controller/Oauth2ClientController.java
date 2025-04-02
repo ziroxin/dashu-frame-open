@@ -76,7 +76,7 @@ public class Oauth2ClientController {
                 paramMap.put("code", code);
                 String result = HttpUtil.post(client.getOauthServerUri() + "oauth/token?", paramMap);
                 if (StringUtils.hasText(result) && result.indexOf("access_token") >= 0) {
-                    JSONObject resultObj = JSONUtil.parseObj(result);
+                    JSONObject resultObj = JSONUtil.parseObj(result, true);
                     String accessToken = resultObj.getJSONObject("data").getStr("access_token");
                     if (StringUtils.hasText(accessToken)) {
                         //2. 使用access_token换取用户信息
@@ -85,7 +85,7 @@ public class Oauth2ClientController {
                         String result2 = HttpUtil.post(client.getOauthServerUri() + "oauth/resources/userInfo?", paramMap);
                         if (StringUtils.hasText(result2) && result2.indexOf("openId") >= 0) {
                             // 授权成功，获得用户信息
-                            JSONObject result2Obj = JSONUtil.parseObj(result2);
+                            JSONObject result2Obj = JSONUtil.parseObj(result2, true);
                             Oauth2ClientUser oauthUser = JSONUtil.toBean(result2Obj.getJSONObject("data"), Oauth2ClientUser.class);
 
                             // ====================== 自己写登录逻辑 =======================
@@ -157,7 +157,7 @@ public class Oauth2ClientController {
                 // 验证验证码
                 captchaService.checkCaptchaByConfig(bindUser.getCodeUuid(), bindUser.getYzm());
                 // 尝试登录
-                LoginFormDTO loginForm = JSONUtil.toBean(JSONUtil.parseObj(bindUser), LoginFormDTO.class);
+                LoginFormDTO loginForm = JSONUtil.toBean(JSONUtil.parseObj(bindUser, true), LoginFormDTO.class);
                 LoginSuccessDTO loginSuccess = loginService.login(loginForm);
                 // 登录成功，开始绑定
                 Object userId;

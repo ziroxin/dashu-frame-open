@@ -69,7 +69,7 @@ public class UrlParams2JsonUtils {
      * @return {@link String }
      */
     public static String toUrlParams(String jsonStr) throws UnsupportedEncodingException {
-        JSONObject json = JSONUtil.parseObj(jsonStr);
+        JSONObject json = JSONUtil.parseObj(jsonStr, true);
         StringBuilder sb = new StringBuilder();
         for (String key : json.keySet()) {
             sb.append(key).append("=").append(URLEncoder.encode(json.getStr(key), "UTF-8")).append("&");

@@ -239,7 +239,7 @@ public class AliPayServiceImpl implements AliPayService {
         }
         // 退款状态已更新，直接返回
         if (refund.getRefundStatus().intValue() != 0) {
-            return JSONUtil.toBean(JSONUtil.parseObj(refund), AliTradeRefundDTO.class);
+            return JSONUtil.toBean(JSONUtil.parseObj(refund, true), AliTradeRefundDTO.class);
         }
         try {
             // 查询退款结果

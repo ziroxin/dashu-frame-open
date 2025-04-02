@@ -46,6 +46,6 @@ public class ZUserLock implements BaseEntity {
 
     @Override
     public String toString() {
-        return JSONUtil.parseObj(this).toString();
+        return JSONUtil.parseObj(this, true).toString();
     }
 }
