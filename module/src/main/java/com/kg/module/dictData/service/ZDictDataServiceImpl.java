@@ -208,7 +208,7 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
             // 转换成导出excel实体
             List<ZDictDataExcelOutDTO> dataList = list.stream()
                     .map(d -> {
-                        ZDictDataExcelOutDTO b = JSONUtil.toBean(JSONUtil.parseObj(d), ZDictDataExcelOutDTO.class);
+                        ZDictDataExcelOutDTO b = JSONUtil.toBean(JSONUtil.parseObj(d, true), ZDictDataExcelOutDTO.class);
                         b.setStatus("0".equals(d.getStatus()) ? "停用" : "正常");
                         return b;
                     })

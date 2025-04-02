@@ -205,7 +205,7 @@ public class ZMessageServiceImpl extends ServiceImpl<ZMessageMapper, ZMessage> i
             List<ZMessage> list = list(wrapper);
             // 转换成导出excel实体
             List<ZMessageExcelOutDTO> dataList = list.stream()
-                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d), ZMessageExcelOutDTO.class))
+                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d, true), ZMessageExcelOutDTO.class))
                     .collect(Collectors.toList());
             if (dataList == null || dataList.size() <= 0) {
                 // 未查到数据时，模拟一行空数据

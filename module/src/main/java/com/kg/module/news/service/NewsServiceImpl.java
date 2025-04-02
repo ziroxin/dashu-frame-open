@@ -69,7 +69,7 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, News> implements Ne
             List<News> list = list(wrapper);
             // 转换成导出excel实体
             List<NewsExcelOutDTO> dataList = list.stream()
-                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d), NewsExcelOutDTO.class))
+                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d, true), NewsExcelOutDTO.class))
                     .collect(Collectors.toList());
             // 第一行标题
             String title = "新闻表-测试";

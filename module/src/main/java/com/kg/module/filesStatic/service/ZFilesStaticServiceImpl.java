@@ -178,7 +178,7 @@ public class ZFilesStaticServiceImpl extends ServiceImpl<ZFilesStaticMapper, ZFi
             List<ZFilesStaticDTO> list = zFilesStaticMapper.list(paramObj);
             // 转换成导出excel实体
             List<ZFilesStaticExcelOutDTO> dataList = list.stream()
-                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d), ZFilesStaticExcelOutDTO.class))
+                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d, true), ZFilesStaticExcelOutDTO.class))
                     .collect(Collectors.toList());
             if (dataList == null || dataList.size() <= 0) {
                 // 未查到数据时，模拟一行空数据

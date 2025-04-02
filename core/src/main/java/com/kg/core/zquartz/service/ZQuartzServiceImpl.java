@@ -76,7 +76,7 @@ public class ZQuartzServiceImpl extends ServiceImpl<ZQuartzMapper, ZQuartz> impl
             List<ZQuartz> list = list(wrapper);
             // 转换成导出excel实体
             List<ZQuartzExcelOutDTO> dataList = list.stream()
-                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d), ZQuartzExcelOutDTO.class))
+                    .map(d -> JSONUtil.toBean(JSONUtil.parseObj(d, true), ZQuartzExcelOutDTO.class))
                     .collect(Collectors.toList());
             // 第一行标题
             String title = "定时任务调度表";
