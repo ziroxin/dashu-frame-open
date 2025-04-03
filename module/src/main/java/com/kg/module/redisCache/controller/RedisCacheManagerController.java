@@ -3,6 +3,7 @@ package com.kg.module.redisCache.controller;
 import cn.hutool.json.JSONUtil;
 import com.kg.component.redis.RedisUtils;
 import com.kg.module.redisCache.dto.RedisCacheManagerDTO;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,12 +34,22 @@ public class RedisCacheManagerController {
         keysList.sort(String::compareTo);
         return keysList
                 .stream().map(key -> {
+                    if (!redisUtils.hasKey(key)) {
+                        return null;
+                    }
                     RedisCacheManagerDTO dto = new RedisCacheManagerDTO();
                     dto.setKey(key);
-                    dto.setValue(JSONUtil.toJsonStr(redisUtils.get(key)));
+                    String value;
+                    try {
+                        value = JSONUtil.toJsonStr(redisUtils.get(key));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        value = "该值无法正确解析";
+                    }
+                    dto.setValue(value);
                     dto.setExpireTime(redisUtils.getExpire(key));
                     return dto;
-                }).collect(Collectors.toList());
+                }).filter(dto -> dto != null).collect(Collectors.toList());
     }
 
     @GetMapping("/delete")
