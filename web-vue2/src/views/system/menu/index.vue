@@ -180,14 +180,15 @@
     </el-dialog>
 
     <!-- 修改上下级菜单 -->
-    <el-dialog title="修改上下级关系" :visible.sync="parentDialogVisible" width="500px" top="50px">
+    <el-dialog title="修改上下级关系" :visible.sync="parentDialogVisible" width="500px" top="5px">
       <el-form ref="parentDataForm" :model="temp2">
         <el-form-item label="顶级菜单：">
           <el-button v-if="temp2.parentId==='-1'" type="primary" icon="el-icon-check">顶级菜单</el-button>
           <el-button v-else @click="handleNodeClick('-1')">顶级菜单</el-button>
         </el-form-item>
         <el-divider content-position="center">请选择父级菜单</el-divider>
-        <el-tree ref="parentTree" :key="temp2.permissionId" :data="tableData" class="parentDataTree"
+        <el-tree ref="parentTree" :key="temp2.permissionId" :data="tableData"
+                 class="parentDataTree" :style="{height: ($windowHeight-300) + 'px'}"
                  :props="{children: 'children',label: 'permissionTitle'}"
                  :highlight-current="true" :default-expand-all="true"
                  :expand-on-click-node="false" node-key="permissionId"
@@ -561,6 +562,8 @@ export default {
   }
 
   .parentDataTree {
+    overflow: auto;
+
     ::v-deep .el-tree-node__content {
       height: 30px !important;
     }
@@ -574,7 +577,7 @@ export default {
 
   .parentDataDialogFooter {
     position: fixed;
-    bottom: 0;
+    bottom: 5px;
     border-top: 1px solid #4080ff;
     background-color: #fff;
     width: 500px;
