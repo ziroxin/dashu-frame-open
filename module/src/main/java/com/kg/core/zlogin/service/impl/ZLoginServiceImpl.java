@@ -1,11 +1,11 @@
 package com.kg.core.zlogin.service.impl;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
-import cn.hutool.extra.servlet.ServletUtil;
 import com.google.common.primitives.Ints;
 import com.kg.component.jwt.JwtUtils;
 import com.kg.component.redis.RedisUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.component.utils.IpUtils;
 import com.kg.component.utils.MyRSAUtils;
 import com.kg.component.utils.TimeUtils;
 import com.kg.core.common.constant.CacheConstant;
@@ -141,7 +141,7 @@ public class ZLoginServiceImpl implements ZLoginService {
         loginLog.setUserId(zUser.getUserId());
         loginLog.setUserName(zUser.getUserName());
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        loginLog.setIp(ServletUtil.getClientIP(request));
+        loginLog.setIp(IpUtils.getClientIP(request));
         loginLog.setCreateTime(LocalDateTime.now());
         operateLogService.save(loginLog);
     }
