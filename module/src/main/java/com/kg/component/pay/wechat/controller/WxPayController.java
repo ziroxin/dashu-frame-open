@@ -1,12 +1,12 @@
 package com.kg.component.pay.wechat.controller;
 
-import cn.hutool.extra.servlet.ServletUtil;
 import com.ijpay.core.enums.TradeType;
 import com.ijpay.core.kit.HttpKit;
 import com.kg.component.pay.wechat.dto.WxTradePayDTO;
 import com.kg.component.pay.wechat.dto.WxTradeRefundDTO;
 import com.kg.component.pay.wechat.dto.WxTradeResutDTO;
 import com.kg.component.pay.wechat.service.WxPayService;
+import com.kg.component.utils.IpUtils;
 import com.kg.core.exception.BaseException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -51,7 +51,7 @@ public class WxPayController {
             if (!StringUtils.hasText(wxTradePayDTO.getProductId()) || wxTradePayDTO.getTotalFee() == null) {
                 throw new BaseException("您传的参数不正确");
             }
-            wxTradePayDTO.setSpbillCreateIp(ServletUtil.getClientIP(request));
+            wxTradePayDTO.setSpbillCreateIp(IpUtils.getClientIP(request));
             // 调取支付
             return wxPayService.getPayInfo(wxTradePayDTO, TradeType.NATIVE.getTradeType());
         } catch (BaseException e) {
@@ -79,7 +79,7 @@ public class WxPayController {
             if (!StringUtils.hasText(wxTradePayDTO.getProductId()) || wxTradePayDTO.getTotalFee() == null) {
                 throw new BaseException("您传的参数不正确");
             }
-            wxTradePayDTO.setSpbillCreateIp(ServletUtil.getClientIP(request));
+            wxTradePayDTO.setSpbillCreateIp(IpUtils.getClientIP(request));
             // 调取支付
             return wxPayService.getPayInfo(wxTradePayDTO, TradeType.MWEB.getTradeType());
         } catch (BaseException e) {
@@ -114,7 +114,7 @@ public class WxPayController {
                     || wxTradePayDTO.getOpenId() == null) {
                 throw new BaseException("您传的参数不正确");
             }
-            wxTradePayDTO.setSpbillCreateIp(ServletUtil.getClientIP(request));
+            wxTradePayDTO.setSpbillCreateIp(IpUtils.getClientIP(request));
             // 调取支付
             return wxPayService.getPayInfo(wxTradePayDTO, TradeType.JSAPI.getTradeType());
         } catch (BaseException e) {

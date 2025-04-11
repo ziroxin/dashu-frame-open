@@ -1,9 +1,9 @@
 package com.kg.core.aspect;
 
-import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.kg.component.utils.GuidUtils;
+import com.kg.component.utils.IpUtils;
 import com.kg.core.annotation.AutoOperateLog;
 import com.kg.core.security.util.CurrentUserUtils;
 import com.kg.core.zlog.entity.ZOperateLog;
@@ -53,7 +53,7 @@ public class AutoOperateLogAspect {
                 log.setUserName(currentUser.getUserName());
             }
             // 3. 操作IP
-            log.setIp(ServletUtil.getClientIP(request));
+            log.setIp(IpUtils.getClientIP(request));
             // 4. body参数
             JSONObject content = new JSONObject();
             boolean hasFile = false;// 判断传参数中是否有上传文件，如果有，则不记录body参数
