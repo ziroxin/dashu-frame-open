@@ -11,9 +11,10 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2025/4/11 16:03
  */
 public class IpUtils {
-
     /**
      * 获取客户端IP
+     * <p>
+     * 取最后一个非unknown的IP，有可能有多个IP，一般最后一个IP才是真实的IP
      */
     public static String getClientIP(HttpServletRequest request) {
         String[] ipList = getClientIPs(request);
@@ -24,7 +25,7 @@ public class IpUtils {
     }
 
     /**
-     * 获取客户端IP列表
+     * 获取客户端IP数组
      */
     public static String[] getClientIPs(HttpServletRequest request) {
         String[] headers = {"X-Real-IP", "X-Forwarded-For", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR"};
@@ -32,7 +33,7 @@ public class IpUtils {
     }
 
     /**
-     * 获取客户端IP列表
+     * 获取客户端IP数组
      */
     private static String[] getClientIPByHeader(HttpServletRequest request, String... headerNames) {
         String ipStr;
@@ -47,7 +48,7 @@ public class IpUtils {
     }
 
     /**
-     * 从多级反向代理中获得第一个非unknown IP地址
+     * 从多级反向代理中 非unknown IP地址数组
      */
     private static String[] getMultistageReverseProxyIp(String ipStr) {
         // 多级反向代理检测
