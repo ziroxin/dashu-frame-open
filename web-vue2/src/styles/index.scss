@@ -127,6 +127,36 @@ aside {
   padding: 15px;
   margin: 15px;
   border-radius: 10px;
+
+  // 顶部查询表单和操作按钮等样式
+  .searchPanel {
+    display: flex;
+    justify-content: space-between;
+
+    .searchForm {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+
+      .searchInput {
+        width: 120px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .searchBtn {
+        margin-bottom: 10px;
+      }
+    }
+
+    .operatePanel {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: flex-end;
+      margin-bottom: 10px;
+    }
+  }
 }
 
 .components-container {

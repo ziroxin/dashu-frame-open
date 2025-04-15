@@ -540,6 +540,25 @@ aside {
   padding: 15px;
   margin: 15px;
   border-radius: 10px; }
+  .app-container .searchPanel {
+    display: flex;
+    justify-content: space-between; }
+    .app-container .searchPanel .searchForm {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start; }
+      .app-container .searchPanel .searchForm .searchInput {
+        width: 120px;
+        margin-right: 10px;
+        margin-bottom: 10px; }
+      .app-container .searchPanel .searchForm .searchBtn {
+        margin-bottom: 10px; }
+    .app-container .searchPanel .operatePanel {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: flex-end;
+      margin-bottom: 10px; }
 
 .components-container {
   margin: 30px 50px;
