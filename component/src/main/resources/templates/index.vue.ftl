@@ -1,30 +1,31 @@
 <template>
   <div class="app-container">
     <!-- ${table.comment!}-管理按钮 -->
-    <div style="margin-bottom: 10px;">
+    <div class="searchPanel">
+      <div class="searchForm">
 <#list table.fields as field>
   <#if field.propertyName!=entityKeyName && field.propertyName!='orderIndex'
             && field.propertyName!='createUserId' && field.propertyName!='updateUserId'
             && field.propertyName!='createTime' && field.propertyName!='updateTime'>
     <#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
-      <el-date-picker v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
-                type="date" clearable class="filter-item" placeholder="${field.comment}"/>
+        <el-date-picker v-model="searchData.${field.propertyName}" size="small" type="date" clearable class="searchInput"
+                        placeholder="${field.comment}" value-format="yyyy-MM-dd" format="yyyy-MM-dd"/>
     <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
-      <el-date-picker v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
-                type="datetime" clearable class="filter-item" placeholder="${field.comment}"/>
+        <el-date-picker v-model="searchData.${field.propertyName}" size="small" type="datetime" clearable class="searchInput"
+                        placeholder="${field.comment}" value-format="yyyy/MM/dd HH:mm:ss" format="yyyy/MM/dd HH:mm:ss"/>
     <#else>
-      <el-input v-model="searchData.${field.propertyName}" size="small" style="width: 150px;margin-right: 10px;"
-                clearable class="filter-item" placeholder="${field.comment}"/>
+        <el-input v-model="searchData.${field.propertyName}" size="small" clearable class="searchInput" placeholder="${field.comment}"/>
     </#if>
   </#if>
 </#list>
-      <el-button v-waves class="filter-item" type="primary" size="small"
-                 icon="el-icon-search" @click="searchBtnHandle">查询
-      </el-button>
-      <el-button v-waves class="filter-item" type="info" size="small"
-                 icon="el-icon-refresh" @click="resetTableList">重置
-      </el-button>
-      <div style="float: right;">
+        <el-button v-waves class="searchBtn" type="primary" size="small" icon="el-icon-search"
+                   @click="searchBtnHandle">查询
+        </el-button>
+        <el-button v-waves class="searchBtn" type="info" size="small" icon="el-icon-refresh"
+                   @click="resetTableList">重置
+        </el-button>
+      </div>
+      <div class="operatePanel" style="width: 685px;">
         <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
                    v-permission="'${buttonNamePre}add'">新增
         </el-button>
@@ -93,14 +94,11 @@
     <#assign rules1=field.metaInfo.nullable?string("","{required: true, message: '" + field.comment + "不能为空'}")>
     <#if field.propertyType=='String'>
       <#if field.metaInfo.length gte 255>
-        <el-form-item label="${field.comment}" prop="${field.propertyName}"
-                      :rules="[${rules1}]">
-          <el-input v-model="temp.${field.propertyName}" type="textarea" maxlength="${field.metaInfo.length}"
-                    placeholder="请输入${field.comment}"/>
+        <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
+          <el-input v-model="temp.${field.propertyName}" type="textarea" maxlength="${field.metaInfo.length}" placeholder="请输入${field.comment}"/>
         </el-form-item>
       <#else>
-        <el-form-item label="${field.comment}" prop="${field.propertyName}"
-                      :rules="[${rules1}]">
+        <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
           <el-input v-model="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
         </el-form-item>
       </#if>
@@ -113,18 +111,17 @@
           <el-input-number v-model.number="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
         </el-form-item>
     <#elseif field.propertyType=='LocalDate' || field.propertyType=='Date'>
-        <el-form-item label="${field.comment}" prop="${field.propertyName}"
-                      :rules="[${rules1}]">
-          <el-date-picker v-model="temp.${field.propertyName}" type="date" placeholder="请选择${field.comment}"/>
+        <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
+          <el-date-picker v-model="temp.${field.propertyName}" type="date" clearable placeholder="请选择${field.comment}"
+                          value-format="yyyy/MM/dd" format="yyyy/MM/dd"/>
         </el-form-item>
     <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
-        <el-form-item label="${field.comment}" prop="${field.propertyName}"
-                      :rules="[${rules1}]">
-          <el-date-picker v-model="temp.${field.propertyName}" type="datetime" placeholder="请选择${field.comment}"/>
+        <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
+          <el-date-picker v-model="temp.${field.propertyName}" type="datetime" clearable placeholder="请选择${field.comment}"
+                          value-format="yyyy/MM/dd HH:mm:ss" format="yyyy/MM/dd HH:mm:ss"/>
         </el-form-item>
     <#else>
-        <el-form-item label="${field.comment}" prop="${field.propertyName}"
-                      :rules="[${rules1}]">
+        <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
           <el-input v-model="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
         </el-form-item>
     </#if>
