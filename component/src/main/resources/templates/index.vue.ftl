@@ -85,7 +85,7 @@
   <#if field.propertyName=='orderIndex'>
         <el-form-item label="顺序" prop="orderIndex"
                       :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]">
-          <el-input-number v-model="temp.orderIndex" :min="0"/>
+          <el-input-number v-model="temp.orderIndex" :min="0" step-strictly/>
         </el-form-item>
   <#elseif field.propertyName!='createTime' && field.propertyName!='updateTime'
                 && field.propertyName!='createUserId' && field.propertyName!='updateUserId'
