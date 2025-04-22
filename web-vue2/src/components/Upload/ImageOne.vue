@@ -6,7 +6,7 @@
        name: 可选，file表单的name属性，默认：filename
        action: 可选，上传接口地址，默认：/upload/images
        folder: 可选，服务端存储文件夹，默认空
-       limitSize: 可选，上传文件大小限制，单位：kb（默认1mb）
+       limitSize: 可选，上传文件大小限制，单位：b（默认10mb）
  * @Author: ziro
  * @Date: 2023/01/02 15:16:40
  -->
@@ -52,8 +52,8 @@ export default {
     action: {type: String, default: ''},
     // 上传文件路径，可为空
     folder: {type: String, default: ''},
-    // 上传文件大小限制，单位：kb（默认1mb）
-    limitSize: {type: Number, default: 1024}
+    // 上传文件大小限制，单位：b（默认10mb）
+    limitSize: {type: Number, default: 1024 * 1024 * 10}
   },
   data() {
     return {
@@ -91,14 +91,12 @@ export default {
     },
     // 图片大小和格式限制
     imgBeforeUpload(file) {
-      let isRightSize = file.size / 1024 < this.limitSize
+      // 判断文件大小
+      let isRightSize = file.size < this.limitSize
       if (!isRightSize) {
-        let sizeStr = this.limitSize + 'KB';
-        if (this.limitSize >= 1024) {
-          sizeStr = (this.limitSize / 1024) + 'MB';
-        }
-        this.$message.error('文件大小超过 ' + sizeStr)
+        this.$message.error('图片大小不能超过 ' + this.formatSize(this.limitSize))
       }
+      // 判断图片扩展名
       let isAccept = new RegExp('image/*').test(file.type)
       if (!isAccept) {
         this.$message.error('请选择正确的图片！')
@@ -109,6 +107,19 @@ export default {
     imgPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
+    },
+    formatSize(size) {
+      let sizeStr = size + 'B';
+      if (size >= 1024 * 1024 * 1024) {
+        sizeStr = (size / 1024 / 1024 / 1024).toFixed(2) + 'GB'
+      } else if (size >= 1024 * 1024) {
+        sizeStr = (size / 1024 / 1024).toFixed(2) + 'MB'
+      } else if (size >= 1024) {
+        sizeStr = (size / 1024).toFixed(2) + 'KB'
+      } else {
+        sizeStr = size + 'B'
+      }
+      return sizeStr;
     }
   }
 }
