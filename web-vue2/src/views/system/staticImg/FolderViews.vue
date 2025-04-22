@@ -14,7 +14,7 @@
           <el-button type="info" v-else icon="el-icon-delete" size="small">请选择要删除的文件</el-button>
         </div>
         <file-upload v-model="uploadFileList" :action="$baseServer+'/filesStatic/zFilesStatic/upload'"
-                     :params-data="{parentId: item.fileId}" :limit-size="2048" :show-file-list="false"
+                     :params-data="{parentId: item.fileId}" :limit-size="1024*1024*2" :show-file-list="false"
                      accept=".jpg,.jpeg,.png,.gif" tip-info="只允许上传.jpg,.jpeg,.png,.gif格式文件"/>
       </div>
     </div>
