@@ -100,7 +100,6 @@ export default {
     handleFileSelected(event) {
       // 上传前检测文件大小和类型等
       if (this.beforeUpload(event.target.files[0])) {
-        console.log(event.target.files[0])
         let f = event.target.files[0]
         let fid = generateUUID()
         this.fileList.push({file: f, percentage: 0, fileId: fid, fileOldName: f.name, fileSize: f.size})
@@ -110,13 +109,16 @@ export default {
     // 分片上传方法
     async chunkFile(file, uId) {
       // 计算分片数量
-      const chunks = Math.ceil(file.size / this.chunkSize);
+      const chunks = Math.ceil(file.size / this.chunkSize)
       // 循环上传分片
       for (let i = 0; i < chunks; i++) {
-        const start = i * this.chunkSize;
-        const end = start + this.chunkSize;
-        const cFile = file.slice(start, end); // 使用slice方法获取分片
-        await new Promise(async (resolve, reject) => {// 上传分片
+        const start = i * this.chunkSize
+        const end = start + this.chunkSize
+        const cFile = file.slice(start, end) // 使用slice方法获取分片
+        if (!this.fileList.some(item => item.fileId === uId)) {
+          break // 文件已移除，停止上传
+        }
+        await new Promise(async (resolve, reject) => { // 上传分片
           await this.getChunkFileMd5(cFile, async md5 => {
             let params = {
               chunk: i, chunks: chunks, name: file.name, uploadId: uId, path: this.folder,
@@ -189,7 +191,7 @@ export default {
       const spark = new SparkMD5.ArrayBuffer();
       fileReader.onload = function (e) {
         spark.append(e.target.result) // 将文件块内容添加到MD5计算中
-        callback(spark.end())// 计算完成，调用回调函数返回MD5值
+        callback(spark.end()) // 计算完成，调用回调函数返回MD5值
       }
       fileReader.onerror = function () {
         console.error('文件读取出错')
