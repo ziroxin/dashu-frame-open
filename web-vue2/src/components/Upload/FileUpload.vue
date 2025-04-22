@@ -13,7 +13,7 @@
        showFileList: 可选，是否显示文件列表，默认：true
        autoUpload: 可选，是否自动上传，默认：true
        folder: 可选，服务端存储文件夹，默认空
-       limitSize: 可选，上传文件大小限制，单位：kb（默认1mb）
+       limitSize: 可选，上传文件大小限制，单位：b（默认10mb）
        limitCount: 可选，上传个数限制（0表示不限制），默认：0
 
  * @Author: ziro
@@ -65,8 +65,8 @@ export default {
     autoUpload: {type: Boolean, default: true},
     // 上传文件路径，可为空
     folder: {type: String, default: ''},
-    // 上传文件大小限制，单位：kb（默认1mb）
-    limitSize: {type: Number, default: 1024},
+    // 上传文件大小限制，单位：b（默认10mb）
+    limitSize: {type: Number, default: 1024 * 1024 * 10},
     // 上传文件个数限制（0表示不限制）
     limitCount: {type: Number, default: 0}
   },
@@ -97,19 +97,15 @@ export default {
     // 文件上传前，校验文件大小和类型
     handleBeforeUpload(file) {
       // 判断文件大小
-      let isRightSize = file.size / 1024 < this.limitSize
+      let isRightSize = file.size < this.limitSize
       if (!isRightSize) {
-        let sizeStr = this.limitSize + 'KB';
-        if (this.limitSize >= 1024) {
-          sizeStr = (this.limitSize / 1024) + 'MB';
-        }
-        this.$message.error('文件大小超过 ' + sizeStr)
+        this.$message.error('文件大小不能超过' + this.formatSize(this.limitSize))
       }
       // 判断文件扩展名
-      const fileExtend = file.name.substring(file.name.lastIndexOf('.')).toLowerCase()
-      let isAccept = this.accept.split(',').some(extend => extend.toLowerCase() === fileExtend)
+      const fileExt = file.name.slice(file.name.lastIndexOf('.')).toLowerCase()
+      let isAccept = this.accept.split(',').some(ext => ext.toLowerCase() === fileExt)
       if (!isAccept) {
-        this.$message.error('请选择正确的格式的文件！')
+        this.$message.error('上传文件格式错误！只能上传' + this.accept + '格式的文件');
       }
       // 判断上传个数
       let isLimitCount = this.limitCount <= 0 || this.fileList.length < this.limitCount
@@ -143,6 +139,19 @@ export default {
       this.fileList = fileList.map(o => o.response && o.response.data.length > 0 ? o.response.data[0] : o)
       this.$emit('input', this.fileList)
     },
+    formatSize(size) {
+      let sizeStr = size + 'B';
+      if (size >= 1024 * 1024 * 1024) {
+        sizeStr = (size / 1024 / 1024 / 1024).toFixed(2) + 'GB'
+      } else if (size >= 1024 * 1024) {
+        sizeStr = (size / 1024 / 1024).toFixed(2) + 'MB'
+      } else if (size >= 1024) {
+        sizeStr = (size / 1024).toFixed(2) + 'KB'
+      } else {
+        sizeStr = size + 'B'
+      }
+      return sizeStr;
+    }
   }
 }
 </script>

@@ -7,7 +7,7 @@
        action: 可选，上传接口地址，默认：/upload/images
        multiple: 可选，是否多选，默认：true
        folder: 可选，服务端存储文件夹，默认空
-       limitSize: 可选，上传文件大小限制，单位：kb（默认1mb）
+       limitSize: 可选，上传文件大小限制，单位：b（默认10mb）
        limitCount: 可选，上传个数限制（0表示不限制），默认：0
  * @Author: ziro
  * @Date: 2024/01/23 09:20:52
@@ -37,15 +37,15 @@ export default {
     // 传入参数
     paramsData: {type: Object, default: () => ({})},
     // file表单名称
-    name: {type: String, default: 'imagefilename'},
+    name: {type: String, default: 'filename'},
     // 上传接口地址
     action: {type: String, default: ''},
     // 是否多选
     multiple: {type: Boolean, default: true},
     // 上传文件路径，可为空
     folder: {type: String, default: ''},
-    // 上传文件大小限制，单位：kb（默认1mb）
-    limitSize: {type: Number, default: 1024},
+    // 上传文件大小限制，单位：b（默认10mb）
+    limitSize: {type: Number, default: 1024 * 1024 * 10},
     // 上传个数限制（0表示不限制）
     limitCount: {type: Number, default: 0},
   },
@@ -76,13 +76,9 @@ export default {
     // 文件图片前，校验图片大小和类型
     handleBeforeUpload(file) {
       // 判断图片大小
-      let isRightSize = file.size / 1024 < this.limitSize
+      let isRightSize = file.size < this.limitSize
       if (!isRightSize) {
-        let sizeStr = this.limitSize + 'KB';
-        if (this.limitSize >= 1024) {
-          sizeStr = (this.limitSize / 1024) + 'MB';
-        }
-        this.$message.error('图片大小超过 ' + sizeStr)
+        this.$message.error('图片大小不能超过 ' + this.formatSize(this.limitSize))
       }
       // 判断图片扩展名
       let isAccept = new RegExp('image/*').test(file.type)
@@ -121,6 +117,19 @@ export default {
       this.fileList = fileList.map(o => o.response && o.response.data.length > 0 ? o.response.data[0] : o)
       this.$emit('input', this.fileList)
     },
+    formatSize(size) {
+      let sizeStr = size + 'B';
+      if (size >= 1024 * 1024 * 1024) {
+        sizeStr = (size / 1024 / 1024 / 1024).toFixed(2) + 'GB'
+      } else if (size >= 1024 * 1024) {
+        sizeStr = (size / 1024 / 1024).toFixed(2) + 'MB'
+      } else if (size >= 1024) {
+        sizeStr = (size / 1024).toFixed(2) + 'KB'
+      } else {
+        sizeStr = size + 'B'
+      }
+      return sizeStr;
+    }
   }
 }
 </script>
