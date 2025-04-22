@@ -11,8 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -74,9 +73,12 @@ public class UploadFileUtils {
                         + "/" + dirName
                         + "/" + DateUtil.format(new Date(), "yyyyMMdd")
                         + "/" + file.getFileName();
-                File saveFile = new File(savePath.replaceAll("//", "/"));
-                FileUtil.mkParentDirs(saveFile);
-                FileCopyUtils.copy(multipartFile.getBytes(), saveFile);
+                FileUtil.mkParentDirs(savePath);
+                // 保存文件改为文件流方式（占内存小，速度快）
+                try (InputStream inputStream = multipartFile.getInputStream();
+                     OutputStream outputStream = new FileOutputStream(savePath)) {
+                    FileCopyUtils.copy(inputStream, outputStream);
+                }
                 // 文件访问地址
                 file.setFileUrl(FilePathConfig.switchUrl(savePath));
                 resultList.add(file);
@@ -133,9 +135,12 @@ public class UploadFileUtils {
                 String savePath = FilePathConfig.SAVE_PATH
                         + "/" + dirName
                         + "/" + file.getFileName();
-                File saveFile = new File(savePath.replaceAll("//", "/"));
-                FileUtil.mkParentDirs(saveFile);
-                FileCopyUtils.copy(multipartFile.getBytes(), saveFile);
+                FileUtil.mkParentDirs(savePath);
+                // 保存文件改为文件流方式（占内存小，速度快）
+                try (InputStream inputStream = multipartFile.getInputStream();
+                     OutputStream outputStream = new FileOutputStream(savePath)) {
+                    FileCopyUtils.copy(inputStream, outputStream);
+                }
                 // 文件访问地址
                 file.setFileUrl(FilePathConfig.switchUrl(savePath));
                 resultList.add(file);
