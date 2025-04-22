@@ -104,6 +104,7 @@ export default {
         let fid = generateUUID()
         this.fileList.push({file: f, percentage: 0, fileId: fid, fileOldName: f.name, fileSize: f.size})
         this.chunkFile(f, fid)
+        this.$refs.fileIpt.value = '' // 清空选择文件框
       }
     },
     // 分片上传方法
