@@ -25,6 +25,7 @@ public class WordWriteTableUtils {
      * @param keyStr       要匹配的key
      * @param rowLength    行数
      * @param columnLength 列数
+     * @param isAppend     是否追加内容
      * @return 返回已插入的表格
      */
     public static XWPFTable tableWriteByKey(XWPFDocument doc, String keyStr, int rowLength, int columnLength, boolean isAppend) {
