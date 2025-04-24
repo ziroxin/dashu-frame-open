@@ -1,9 +1,8 @@
 package com.kg.component.redis;
 
 
-import cn.hutool.core.date.DateUnit;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.thread.ThreadUtil;
+import com.kg.component.utils.TimeUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -98,7 +97,7 @@ public class RedisUtils {
     public boolean set(final String key, Object value, Date endtime) {
         boolean result = false;
         try {
-            Long timeout = DateUtil.between(DateUtil.date(), endtime, DateUnit.SECOND);
+            Long timeout = TimeUtils.now().betweenSecond(TimeUtils.setTime(endtime));
             redisTemplate.opsForValue().set(key, value, timeout, TimeUnit.SECONDS);
             result = true;
             updateSaveKeysList(key);

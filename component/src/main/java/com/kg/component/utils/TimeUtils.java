@@ -98,14 +98,14 @@ public class TimeUtils {
      * 当天开始时间，格式：yyyy/MM/dd 00:00:00
      */
     public TimeUtils startOfDay() {
-        return TimeUtils.setTime(this.toFormat("yyyy/MM/dd 00:00:00"));
+        return TimeUtils.setTime(TimeUtils.setTime(this.timestamp).toFormat("yyyy-MM-dd 00:00:00"));
     }
 
     /**
      * 当天结束时间，格式：yyyy/MM/dd 23:59:59
      */
     public TimeUtils endOfDay() {
-        return TimeUtils.setTime(this.toFormat("yyyy/MM/dd 23:59:59"));
+        return TimeUtils.setTime(TimeUtils.setTime(this.timestamp).toFormat("yyyy-MM-dd 23:59:59"));
     }
 
     /**
@@ -181,6 +181,26 @@ public class TimeUtils {
      */
     public long toTimestamp() {
         return this.timestamp;
+    }
+
+    /**
+     * 计算当前时间和指定时间的差值，单位：毫秒
+     *
+     * @param compareTime 比对时间
+     * @return 差值，单位：毫秒
+     */
+    public long between(TimeUtils compareTime) {
+        return Math.abs(compareTime.toTimestamp() - this.timestamp);
+    }
+
+    /**
+     * 计算当前时间和指定时间的差值，单位：秒
+     *
+     * @param compareTime 比对时间
+     * @return 差值，单位：秒
+     */
+    public long betweenSecond(TimeUtils compareTime) {
+        return between(compareTime) / 1000;
     }
 
     /**
@@ -260,5 +280,8 @@ public class TimeUtils {
         System.out.println(TimeUtils.now().addMinute(10).toFormat("yyyy-MM-dd HH:mm:ss"));
         System.out.println("---");
         System.out.println(TimeUtils.now());
+        System.out.println(TimeUtils.now().endOfDay().toDate());
+        System.out.println(TimeUtils.now().endOfDay().toString());
+        System.out.println(TimeUtils.now().between(TimeUtils.setTime("2025-04-24 14:05:00")));
     }
 }
