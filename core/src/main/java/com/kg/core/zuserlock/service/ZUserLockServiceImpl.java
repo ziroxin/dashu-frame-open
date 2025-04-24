@@ -1,12 +1,12 @@
 package com.kg.core.zuserlock.service;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.redis.RedisUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.component.utils.TimeUtils;
 import com.kg.core.common.constant.CacheConstant;
 import com.kg.core.zsafety.entity.ZSafety;
 import com.kg.core.zsafety.service.ZSafetyService;
@@ -17,7 +17,10 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -85,7 +88,7 @@ public class ZUserLockServiceImpl extends ServiceImpl<ZUserLockMapper, ZUserLock
         // 登录错误次数
         redisUtils.set(errorUserKey, count,
                 // 只记录到当前的晚上
-                DateUtil.parse(DateUtil.format(new Date(), "yyyy/MM/dd 23:59:59")));
+                TimeUtils.setTime(TimeUtils.now().toFormat("yyyy/MM/dd 23:59:59")).toDate());
         // 判断是否锁定
         if (count >= safety.getLoginFailedTimes()) {
             // 锁定

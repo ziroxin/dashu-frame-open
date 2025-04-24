@@ -1,6 +1,5 @@
 package com.kg.module.sms.service;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -27,7 +26,6 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -168,7 +166,7 @@ public class DemoSmsServiceImpl extends ServiceImpl<DemoSmsMapper, DemoSms> impl
     public String exportExcel(String params) {
         try {
             // 拼接导出Excel的文件，保存的临时路径
-            String path = FilePathConfig.SAVE_PATH + "/exportTemp/excel/" + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
+            String path = FilePathConfig.SAVE_PATH + "/exportTemp/excel/" + TimeUtils.now().toFormat("yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
 
             // 查询待导出的数据
             QueryWrapper<DemoSms> wrapper = new QueryWrapper<>();

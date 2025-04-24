@@ -1,6 +1,5 @@
 package com.kg.core.zorg.service;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -10,6 +9,7 @@ import com.kg.component.office.ExcelReadUtils;
 import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
 import com.kg.component.utils.StrTypeCheckUtils;
+import com.kg.component.utils.TimeUtils;
 import com.kg.core.exception.BaseException;
 import com.kg.core.security.util.CurrentUserUtils;
 import com.kg.core.zorg.dto.ZOrganizationDTO;
@@ -29,7 +29,10 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -124,7 +127,7 @@ public class ZOrganizationServiceImpl extends ServiceImpl<ZOrganizationMapper, Z
     public String exportExcel(String params) {
         try {
             // 拼接导出Excel的文件，保存的临时路径
-            String path = FilePathConfig.SAVE_PATH + "/exportTemp/excel/" + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
+            String path = FilePathConfig.SAVE_PATH + "/exportTemp/excel/" + TimeUtils.now().toFormat("yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
 
             // 查询待导出的数据
             QueryWrapper<ZOrganization> wrapper = new QueryWrapper<>();
@@ -449,7 +452,7 @@ public class ZOrganizationServiceImpl extends ServiceImpl<ZOrganizationMapper, Z
     public String downloadTemplate() {
         try {
             // 拼接下载Excel模板，保存的临时路径
-            String path = FilePathConfig.SAVE_PATH + "/importTemp/excel/" + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
+            String path = FilePathConfig.SAVE_PATH + "/importTemp/excel/" + TimeUtils.now().toFormat("yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
             // 第一行标题
             String title = "组织机构-导入模板";
             // 写入模板字段行

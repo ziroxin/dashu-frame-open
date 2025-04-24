@@ -1,6 +1,5 @@
 package com.kg.module.trade.service;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -10,6 +9,7 @@ import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelReadUtils;
 import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.component.utils.TimeUtils;
 import com.kg.module.trade.dto.BusTradeDTO;
 import com.kg.module.trade.dto.convert.BusTradeConvert;
 import com.kg.module.trade.entity.BusTrade;
@@ -24,7 +24,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -162,7 +161,7 @@ public class BusTradeServiceImpl extends ServiceImpl<BusTradeMapper, BusTrade> i
     public String exportExcel(String params) {
         try {
             // 拼接导出Excel的文件，保存的临时路径
-            String path = FilePathConfig.SAVE_PATH + "/exportTemp/excel/" + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
+            String path = FilePathConfig.SAVE_PATH + "/exportTemp/excel/" + TimeUtils.now().toFormat("yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
 
             // 查询待导出的数据
             QueryWrapper<BusTrade> wrapper = new QueryWrapper<>();

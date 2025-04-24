@@ -1,6 +1,5 @@
 package com.kg.core.zlog.service;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -8,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.component.utils.TimeUtils;
 import com.kg.core.zlog.entity.ZOperateLog;
 import com.kg.core.zlog.excels.ZOperateLogExcelConstant;
 import com.kg.core.zlog.excels.ZOperateLogExcelOutDTO;
@@ -15,7 +15,6 @@ import com.kg.core.zlog.mapper.ZOperateLogMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +40,7 @@ public class ZOperateLogServiceImpl extends ServiceImpl<ZOperateLogMapper, ZOper
         try {
             // 拼接导出Excel的文件，保存的临时路径
             String path = FilePathConfig.SAVE_PATH + "/exportTemp/excel/"
-                    + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
+                    + TimeUtils.now().toFormat("yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
 
             // 查询待导出的数据
             QueryWrapper<ZOperateLog> wrapper = new QueryWrapper<>();

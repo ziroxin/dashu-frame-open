@@ -1,6 +1,5 @@
 package com.kg.module.userTheme.service;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -10,6 +9,7 @@ import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelReadUtils;
 import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.component.utils.TimeUtils;
 import com.kg.core.zuser.entity.ZUser;
 import com.kg.core.zuser.service.IZUserService;
 import com.kg.module.userTheme.dto.ZUserThemeDTO;
@@ -25,7 +25,6 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -160,7 +159,7 @@ public class ZUserThemeServiceImpl extends ServiceImpl<ZUserThemeMapper, ZUserTh
         try {
             // 拼接导出Excel的文件，保存的临时路径
             String path = FilePathConfig.SAVE_PATH + "/exportTemp/excel/"
-                    + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
+                    + TimeUtils.now().toFormat("yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
 
             // 查询待导出的数据
             QueryWrapper<ZUserTheme> wrapper = new QueryWrapper<>();

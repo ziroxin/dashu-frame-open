@@ -1,6 +1,5 @@
 package com.kg.module.filesStatic.service;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -11,6 +10,7 @@ import com.kg.component.file.utils.RemoveFileUtils;
 import com.kg.component.office.ExcelReadUtils;
 import com.kg.component.office.ExcelWriteUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.component.utils.TimeUtils;
 import com.kg.module.filesStatic.dto.ZFilesStaticDTO;
 import com.kg.module.filesStatic.dto.convert.ZFilesStaticConvert;
 import com.kg.module.filesStatic.entity.ZFilesStatic;
@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -167,7 +166,7 @@ public class ZFilesStaticServiceImpl extends ServiceImpl<ZFilesStaticMapper, ZFi
         try {
             // 拼接导出Excel的文件，保存的临时路径
             String path = FilePathConfig.SAVE_PATH + "/exportTemp/excel/"
-                    + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
+                    + TimeUtils.now().toFormat("yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
 
             // 查询待导出的数据
             JSONObject paramObj = new JSONObject();
@@ -253,7 +252,7 @@ public class ZFilesStaticServiceImpl extends ServiceImpl<ZFilesStaticMapper, ZFi
         try {
             // 拼接下载Excel模板，保存的临时路径
             String path = FilePathConfig.SAVE_PATH + "/importTemp/excel/"
-                    + DateUtil.format(new Date(), "yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
+                    + TimeUtils.now().toFormat("yyyyMMdd") + "/" + GuidUtils.getUuid32() + ".xlsx";
             // 第一行标题
             String title = "静态资源文件表-导入模板";
             // 写入模板字段行

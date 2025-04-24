@@ -1,6 +1,5 @@
 package com.kg.component.file.utils;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.img.Img;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.Header;
@@ -9,11 +8,11 @@ import cn.hutool.http.HttpUtil;
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.file.dto.FileDTO;
 import com.kg.component.utils.GuidUtils;
+import com.kg.component.utils.TimeUtils;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.util.Date;
 
 
 /**
@@ -92,7 +91,7 @@ public class DownloadNetFileUtils {
         // 组合文件名
         String savePath = FilePathConfig.SAVE_PATH
                 + "/" + dirName
-                + "/" + DateUtil.format(new Date(), "yyyyMMdd")
+                + "/" + TimeUtils.now().toFormat("yyyyMMdd")
                 + "/" + fileDto.getFileName();
         savePath = savePath.replaceAll("//", "/");
         // 检查目录并创建

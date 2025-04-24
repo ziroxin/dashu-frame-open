@@ -1,6 +1,5 @@
 package com.kg.component.pay.alipay.service;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.domain.*;
@@ -16,6 +15,7 @@ import com.kg.component.pay.alipay.dto.AliTradePayDTO;
 import com.kg.component.pay.alipay.dto.AliTradeRefundDTO;
 import com.kg.component.pay.alipay.dto.AliTradeResutDTO;
 import com.kg.component.utils.GuidUtils;
+import com.kg.component.utils.TimeUtils;
 import com.kg.core.exception.BaseException;
 import com.kg.core.security.util.CurrentUserUtils;
 import com.kg.module.trade.constant.TradeConstant;
@@ -30,7 +30,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -253,9 +252,7 @@ public class AliPayServiceImpl implements AliPayService {
                 // 退款成功
                 refund.setRefundStatus(TradeConstant.REFUND_SUCCESS);
                 // 格式：2014-11-27 15:45:57
-                String format = DateUtil.format(response.getGmtRefundPay(), "yyyy-MM-dd HH:mm:ss");
-                refund.setRefundSuccessTime(LocalDateTime.parse(format,
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                refund.setRefundSuccessTime(TimeUtils.setTime(response.getGmtRefundPay()).toLocalDateTime());
                 refund.setRefundResultJson(JSONUtil.toJsonStr(response));
                 refund.setUpdateTime(LocalDateTime.now());
                 refundService.updateById(refund);
