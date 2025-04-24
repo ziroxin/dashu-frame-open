@@ -1,6 +1,5 @@
 package com.kg.core.zupload.controller;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONUtil;
 import com.kg.component.file.FilePathConfig;
@@ -8,6 +7,7 @@ import com.kg.component.file.dto.FileChunkDTO;
 import com.kg.component.file.utils.UploadFileChunksUtils;
 import com.kg.component.redis.RedisUtils;
 import com.kg.component.utils.GuidUtils;
+import com.kg.component.utils.TimeUtils;
 import com.kg.core.base.controller.BaseController;
 import com.kg.core.exception.BaseException;
 import com.kg.core.zupload.dto.FileSecondDTO;
@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -170,7 +169,7 @@ public class ZUploadSecondController implements BaseController {
         if (isCopy) {
             String copyPath = FilePathConfig.SAVE_PATH
                     + "/" + dirName
-                    + "/" + DateUtil.format(new Date(), "yyyyMMdd")
+                    + "/" + TimeUtils.now().toFormat("yyyyMMdd")
                     + "/" + result.getFileName();
             copyPath = copyPath.replaceAll("//", "/");
             File saveFile = new File(copyPath);

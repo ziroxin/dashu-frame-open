@@ -1,10 +1,10 @@
 package com.kg.component.file.utils;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.file.dto.FileChunkDTO;
 import com.kg.component.utils.GuidUtils;
+import com.kg.component.utils.TimeUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
 
 /**
  * 文件分片上传 - 工具类
@@ -26,7 +25,7 @@ public class UploadFileChunksUtils {
      * 分片上传临时文件存储地址
      */
     private static final String FILE_CHUNK_TEMP_PATH =
-            FilePathConfig.SAVE_PATH + "/chunks/temp/" + DateUtil.format(new Date(), "yyyyMMdd") + "/";
+            FilePathConfig.SAVE_PATH + "/chunks/temp/" + TimeUtils.now().toFormat("yyyyMMdd") + "/";
 
     /**
      * 文件上传处理
@@ -76,7 +75,7 @@ public class UploadFileChunksUtils {
         // 合并，返回合并信息
         String extend = FileUtil.extName(tempFileName).toLowerCase();// 文件扩展名
         String saveFileName = GuidUtils.getUuid32() + "." + extend;
-        String savePath = FilePathConfig.SAVE_PATH + "/" + dirName + "/" + DateUtil.format(new Date(), "yyyyMMdd") + "/" + saveFileName;
+        String savePath = FilePathConfig.SAVE_PATH + "/" + dirName + "/" + TimeUtils.now().toFormat("yyyyMMdd") + "/" + saveFileName;
         FileUtil.mkParentDirs(savePath);
         // 调用合并文件方法
         mergeChunksSave(tempFileName, uploadId, totalChunks, savePath);

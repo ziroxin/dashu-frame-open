@@ -1,10 +1,10 @@
 package com.kg.component.file.utils;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.file.dto.FileDTO;
 import com.kg.component.utils.GuidUtils;
+import com.kg.component.utils.TimeUtils;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -71,7 +70,7 @@ public class UploadFileUtils {
                 // 准备保存文件
                 String savePath = FilePathConfig.SAVE_PATH
                         + "/" + dirName
-                        + "/" + DateUtil.format(new Date(), "yyyyMMdd")
+                        + "/" + TimeUtils.now().toFormat("yyyyMMdd")
                         + "/" + file.getFileName();
                 FileUtil.mkParentDirs(savePath);
                 // 保存文件改为文件流方式（占内存小，速度快）
@@ -168,7 +167,7 @@ public class UploadFileUtils {
             // 准备保存文件
             String savePath = FilePathConfig.SAVE_PATH
                     + "/" + dirName
-                    + "/" + DateUtil.format(new Date(), "yyyyMMdd")
+                    + "/" + TimeUtils.now().toFormat("yyyyMMdd")
                     + "/" + file.getFileName();
             File saveFile = new File(savePath.replaceAll("//", "/"));
             FileUtil.mkParentDirs(saveFile);
