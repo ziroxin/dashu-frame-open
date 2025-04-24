@@ -81,8 +81,8 @@ public class DemoSmsServiceImpl extends ServiceImpl<DemoSmsMapper, DemoSms> impl
             }
             if (paramObj.containsKey("createTime")) {
                 if (StringUtils.hasText(paramObj.getStr("createTime"))) {
-                    String start = TimeUtils.setTime(paramObj.getStr("createTime"), "yyyy-MM-dd").toFormat("yyyy-MM-dd 00:00:00");
-                    String end = TimeUtils.setTime(paramObj.getStr("createTime"), "yyyy-MM-dd").toFormat("yyyy-MM-dd 23:59:59");
+                    String start = TimeUtils.setTime(paramObj.getStr("createTime"), "yyyy-MM-dd").startOfDay().toString();
+                    String end = TimeUtils.setTime(paramObj.getStr("createTime"), "yyyy-MM-dd").endOfDay().toString();
                     wrapper.lambda().between(DemoSms::getCreateTime, start, end);
                 }
             }

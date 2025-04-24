@@ -88,10 +88,24 @@ public class TimeUtils {
     }
 
     /**
-     * 操作当前时间
+     * 当前时间
      */
     public static TimeUtils now() {
         return new TimeUtils(Calendar.getInstance().getTimeInMillis());
+    }
+
+    /**
+     * 当天开始时间，格式：yyyy/MM/dd 00:00:00
+     */
+    public TimeUtils startOfDay() {
+        return TimeUtils.setTime(this.toFormat("yyyy/MM/dd 00:00:00"));
+    }
+
+    /**
+     * 当天结束时间，格式：yyyy/MM/dd 23:59:59
+     */
+    public TimeUtils endOfDay() {
+        return TimeUtils.setTime(this.toFormat("yyyy/MM/dd 23:59:59"));
     }
 
     /**
