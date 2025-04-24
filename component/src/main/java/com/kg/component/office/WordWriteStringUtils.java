@@ -20,9 +20,10 @@ public class WordWriteStringUtils {
     /**
      * 匹配 ${key} 写入文本内容
      *
-     * @param doc     所操作文档
-     * @param key     要匹配的key
-     * @param content 写入文本内容
+     * @param doc      所操作文档
+     * @param key      要匹配的key
+     * @param content  写入文本内容
+     * @param isAppend 是否追加内容
      * @return 返回当前段落
      */
     public static XWPFParagraph writeStrByKey(XWPFDocument doc, String key, String content, boolean isAppend) {
@@ -32,10 +33,11 @@ public class WordWriteStringUtils {
     /**
      * 匹配 ${key} 写入文本内容（自定义格式）
      *
-     * @param doc     所操作文档
-     * @param key     要匹配的key
-     * @param content 写入文本内容
-     * @param format  常用格式设置
+     * @param doc      所操作文档
+     * @param key      要匹配的key
+     * @param content  写入文本内容
+     * @param format   常用格式设置
+     * @param isAppend 是否追加内容
      * @return 返回当前段落
      */
     public static XWPFParagraph writeStrByKey(XWPFDocument doc, String key, String content,
@@ -98,9 +100,10 @@ public class WordWriteStringUtils {
     /**
      * 另起一行：匹配 ${key} 写入文本内容
      *
-     * @param doc     所操作文档
-     * @param key     要匹配的key
-     * @param content 写入文本内容
+     * @param doc      所操作文档
+     * @param key      要匹配的key
+     * @param content  写入文本内容
+     * @param isAppend 是否追加内容
      * @return 返回当前段落
      */
     public static XWPFParagraph writeStrNewline(XWPFDocument doc, String key, String content, boolean isAppend) {
@@ -111,10 +114,11 @@ public class WordWriteStringUtils {
     /**
      * 另起一行：匹配 ${key} 写入文本内容（自定义格式）
      *
-     * @param doc     所操作文档
-     * @param key     要匹配的key
-     * @param content 写入文本内容
-     * @param format  常用格式设置
+     * @param doc      所操作文档
+     * @param key      要匹配的key
+     * @param content  写入文本内容
+     * @param format   常用格式设置
+     * @param isAppend 是否追加内容
      * @return 返回当前段落
      */
     public static XWPFParagraph writeStrNewline(XWPFDocument doc, String key, String content,

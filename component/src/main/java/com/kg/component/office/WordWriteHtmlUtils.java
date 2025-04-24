@@ -42,9 +42,10 @@ public class WordWriteHtmlUtils {
     /**
      * 匹配 ${key} 写入html内容
      *
-     * @param doc  所操作文档
-     * @param key  要匹配的key
-     * @param html 写入html内容
+     * @param doc      所操作文档
+     * @param key      要匹配的key
+     * @param html     写入html内容
+     * @param isAppend 是否追加内容
      * @return 返回当前段落
      */
     public static XWPFParagraph writeByKey(XWPFDocument doc, String key, String html, boolean isAppend) {
@@ -54,10 +55,11 @@ public class WordWriteHtmlUtils {
     /**
      * 匹配 ${key} 写入文本内容（自定义格式）
      *
-     * @param doc    所操作文档
-     * @param key    要匹配的key
-     * @param html   写入html内容
-     * @param format 常用格式设置（只有文字格式，图片自动大小）
+     * @param doc      所操作文档
+     * @param key      要匹配的key
+     * @param html     写入html内容
+     * @param format   常用格式设置（只有文字格式，图片自动大小）
+     * @param isAppend 是否追加内容
      * @return 返回当前段落
      */
     public static XWPFParagraph writeByKey(XWPFDocument doc, String key, String html,
