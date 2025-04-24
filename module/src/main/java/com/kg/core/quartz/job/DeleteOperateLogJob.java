@@ -27,7 +27,7 @@ public class DeleteOperateLogJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         // 删除操作日志，默认保存180天（在com.kg.auto-operate-log里配置）
         StaticLog.warn("---delete operate log---(Delete " + autoOperateLogDay + " days ago!!!)");
-        String deleteDate = TimeUtils.now().addDay(-autoOperateLogDay).toFormat("yyyy-MM-dd 00:00:00");
+        String deleteDate = TimeUtils.now().addDay(-autoOperateLogDay).startOfDay().toString();
         logService.lambdaUpdate().lt(ZOperateLog::getCreateTime, deleteDate).remove();
     }
 }

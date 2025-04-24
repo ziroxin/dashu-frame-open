@@ -86,9 +86,7 @@ public class ZUserLockServiceImpl extends ServiceImpl<ZUserLockMapper, ZUserLock
             count = Integer.parseInt(redisUtils.get(errorUserKey).toString()) + 1;
         }
         // 登录错误次数
-        redisUtils.set(errorUserKey, count,
-                // 只记录到当前的晚上
-                TimeUtils.setTime(TimeUtils.now().toFormat("yyyy/MM/dd 23:59:59")).toDate());
+        redisUtils.set(errorUserKey, count, TimeUtils.now().endOfDay().toDate());// 只记录到当前的晚上
         // 判断是否锁定
         if (count >= safety.getLoginFailedTimes()) {
             // 锁定
