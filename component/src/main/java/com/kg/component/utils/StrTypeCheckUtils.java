@@ -21,11 +21,35 @@ public class StrTypeCheckUtils {
     }
 
     /**
+     * 判断是否为 Long 类型
+     */
+    public static boolean isLong(String str) {
+        try {
+            Long.parseLong(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    /**
      * 判断是否为 Integer 类型
      */
     public static boolean isInteger(String str) {
         try {
             Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    /**
+     * 判断是否为 BigDecimal 类型
+     */
+    public static boolean isBigDecimal(String str) {
+        try {
+            new BigDecimal(str);
             return true;
         } catch (NumberFormatException e) {
             return false;
@@ -50,30 +74,6 @@ public class StrTypeCheckUtils {
     public static boolean isFloat(String str) {
         try {
             Float.parseFloat(str);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    /**
-     * 判断是否为 BigDecimal 类型
-     */
-    public static boolean isBigDecimal(String str) {
-        try {
-            new BigDecimal(str);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    /**
-     * 判断是否为 Long 类型
-     */
-    public static boolean isLong(String str) {
-        try {
-            Long.parseLong(str);
             return true;
         } catch (NumberFormatException e) {
             return false;
