@@ -45,6 +45,10 @@ public class WordWriteHtmlUtils {
      * @param doc      所操作文档
      * @param key      要匹配的key
      * @param html     写入html内容
+     *                 说明：- 若html内有图片，自动识别图片地址，支持3种类型图片，并自动调整宽高（默认原图宽高，超过A4尺寸的图按比例缩小，最大宽600px最大高930px）
+     *                      1. 网络图片：图片网址，如：https://www.example.com/image.jpg
+     *                      2. 本项目图片：以本项目api地址开头的图片地址，如：http://xxx.cn/dashuserver/upload/xxx/image.jpg
+     *                      3. 本地图片：服务器上的图片，绝对路径，如：/usr/local/image.jpg
      * @param isAppend 是否追加内容
      * @return 返回当前段落
      */
@@ -58,7 +62,11 @@ public class WordWriteHtmlUtils {
      * @param doc      所操作文档
      * @param key      要匹配的key
      * @param html     写入html内容
-     * @param format   常用格式设置（只有文字格式，图片自动大小）
+     *                 说明：- 若html内有图片，自动识别图片地址，支持3种类型图片，并自动调整宽高（默认原图宽高，超过A4尺寸的图按比例缩小，最大宽600px最大高930px）
+     *                      1. 网络图片：图片网址，如：https://www.example.com/image.jpg
+     *                      2. 本项目图片：以本项目api地址开头的图片地址，如：http://xxx.cn/dashuserver/upload/xxx/image.jpg
+     *                      3. 本地图片：服务器上的图片，绝对路径，如：/usr/local/image.jpg
+     * @param format   常用格式设置（设置文字格式）
      * @param isAppend 是否追加内容
      * @return 返回当前段落
      */

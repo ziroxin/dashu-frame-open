@@ -20,7 +20,7 @@ import java.util.List;
 public class WordWriteImageUtils {
 
     /**
-     * 图片写入，自动适配宽度（最大宽度600px，最大高度930px）
+     * 图片写入，自动适配宽度（默认原图宽高，超过A4尺寸的图按比例缩小，最大宽600px最大高930px）
      *
      * @param doc      待操作的文档
      * @param keyStr   要匹配的key
@@ -109,7 +109,7 @@ public class WordWriteImageUtils {
     }
 
     /**
-     * 图片写入，自动适配宽度（最大宽度600px，最大高度930px）
+     * 图片写入，自动适配宽度（默认原图宽高，超过A4尺寸的图按比例缩小，最大宽600px最大高930px）
      *
      * @param doc      待操作的文档
      * @param keyStr   要匹配的key

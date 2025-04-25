@@ -133,6 +133,12 @@ public class WordWriteTableUtils {
 
     /**
      * 合并单元格
+     *
+     * @param table    所操作的表格
+     * @param startRow 开始行（从0开始计数）
+     * @param endRow   结束行（从0开始计数） 注意：endRow 必须大于 startRow
+     * @param startCol 开始列（从0开始计数）
+     * @param endCol   结束列（从0开始计数） 注意：endCol 必须大于 startCol
      */
     public static void tableMerge(XWPFTable table, int startRow, int endRow, int startCol, int endCol) {
         for (int i = startRow; i <= endRow; i++) {
@@ -157,7 +163,10 @@ public class WordWriteTableUtils {
     }
 
     /**
-     * 设置表格整体格式
+     * 设置表格格式
+     *
+     * @param table  所操作的表格
+     * @param format 表格格式
      */
     public static void tableFormat(XWPFTable table, WordTableFormatDTO format) {
         // 1 设置表宽度
@@ -187,6 +196,13 @@ public class WordWriteTableUtils {
 
     /**
      * 设置单元格格式
+     *
+     * @param table    所操作的表格
+     * @param startRow 开始行（从0开始计数）
+     * @param endRow   结束行（从0开始计数） 注意：endRow 必须大于 startRow
+     * @param startCol 开始列（从0开始计数）
+     * @param endCol   结束列（从0开始计数） 注意：endCol 必须大于 startCol
+     * @param format   单元格格式
      */
     public static void tableCellFormat(XWPFTable table, int startRow, int endRow, int startCol, int endCol,
                                        WordTableFormatDTO format) {
