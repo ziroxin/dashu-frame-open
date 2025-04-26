@@ -186,8 +186,8 @@ public class Test2 {
                     System.getProperty("user.dir") + officeFolder + "0.jpg",
                     System.getProperty("user.dir") + officeFolder + "1.jpg"
             };
-//            ImgToPdfUtils.listToPdf(paths, System.getProperty("user.dir") + officeFolder + "img.pdf");
-            FileDTO fileDTO2 = ImgToPdfUtils.listToPdf(paths, outFolder, 500, 500);
+//            ImgToPdfUtils.listToPdf(Arrays.asList(paths), System.getProperty("user.dir") + officeFolder + "img.pdf");
+            FileDTO fileDTO2 = ImgToPdfUtils.listToPdf(Arrays.asList(paths), outFolder, 500, 500);
             System.out.println(JSONUtil.toJsonStr(fileDTO2));
 
         } catch (Exception e) {
