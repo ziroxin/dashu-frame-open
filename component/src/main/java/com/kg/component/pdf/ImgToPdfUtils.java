@@ -15,7 +15,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,10 +24,12 @@ import java.util.List;
  * @date 2024/5/29 9:52
  */
 public class ImgToPdfUtils {
+
     /**
      * 一张图片转PDF
      *
      * @param imgUrl 图片路径
+     * @return pdf文件DTO
      */
     public static FileDTO toPdf(String imgUrl) throws IOException {
         return toPdf(imgUrl, null, null, null);
@@ -40,6 +41,7 @@ public class ImgToPdfUtils {
      * @param imgUrl 图片路径
      * @param width  pdf页面宽度
      * @param height pdf页面高度
+     * @return pdf文件DTO
      */
     public static FileDTO toPdf(String imgUrl, Integer width, Integer height) throws IOException {
         return toPdf(imgUrl, null, width, height);
@@ -51,6 +53,7 @@ public class ImgToPdfUtils {
      *
      * @param imgUrl    图片路径
      * @param outFolder PDF保存文件夹（为空时，默认保存到源文件同目录）
+     * @return pdf文件DTO
      */
     public static FileDTO toPdf(String imgUrl, String outFolder) throws IOException {
         return toPdf(imgUrl, outFolder, null, null);
@@ -63,6 +66,7 @@ public class ImgToPdfUtils {
      * @param outFolder PDF保存文件夹（为空时，默认保存到源文件同目录）
      * @param width     pdf页面宽度
      * @param height    pdf页面高度
+     * @return pdf文件DTO
      */
     public static FileDTO toPdf(String imgUrl, String outFolder, Integer width, Integer height)
             throws IOException {
@@ -91,32 +95,10 @@ public class ImgToPdfUtils {
     /**
      * 多张图片转PDF
      *
-     * @param imgUrls   图片路径数组
-     * @param outFolder PDF保存文件夹
-     */
-    public static FileDTO listToPdf(String[] imgUrls, String outFolder) throws IOException {
-        return listToPdf(Arrays.asList(imgUrls), outFolder, null, null);
-    }
-
-    /**
-     * 多张图片转PDF
-     *
-     * @param imgUrls   图片路径数组
-     * @param outFolder PDF保存文件夹
-     * @param width     pdf页面宽度
-     * @param height    pdf页面高度
-     */
-    public static FileDTO listToPdf(String[] imgUrls, String outFolder, Integer width, Integer height)
-            throws IOException {
-        return listToPdf(Arrays.asList(imgUrls), outFolder, width, height);
-    }
-
-    /**
-     * 多张图片转PDF
-     *
      * @param imgUrlList 图片路径列表
      * @param outFolder  PDF保存文件夹
      * @param outFolder  PDF保存文件夹
+     * @return pdf文件DTO
      */
     public static FileDTO listToPdf(List<String> imgUrlList, String outFolder) throws IOException {
         return listToPdf(imgUrlList, outFolder, null, null);
@@ -129,6 +111,7 @@ public class ImgToPdfUtils {
      * @param outFolder  PDF保存路径
      * @param width      pdf页面宽度
      * @param height     pdf页面高度
+     * @return pdf文件DTO
      */
     public static FileDTO listToPdf(List<String> imgUrlList, String outFolder, Integer width, Integer height)
             throws IOException {

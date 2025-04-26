@@ -23,7 +23,6 @@ public class WordToPdfUtils {
      *
      * @param fileUrl word文件路径
      * @return pdf文件DTO
-     * @throws Exception word转pdf异常
      */
     public static FileDTO toPdf(String fileUrl) throws Exception {
         return toPdf(fileUrl, null);
@@ -32,10 +31,9 @@ public class WordToPdfUtils {
     /**
      * word转pdf
      *
-     * @param fileUrl word文件路径
+     * @param fileUrl   word文件路径
      * @param outFolder 输出文件夹（为空时默认与word文件同目录）
      * @return pdf文件DTO
-     * @throws Exception word转pdf异常
      */
     public static FileDTO toPdf(String fileUrl, String outFolder) throws Exception {
         // 读取word

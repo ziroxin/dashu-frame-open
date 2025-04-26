@@ -18,12 +18,12 @@ import java.io.File;
  * @date 2024/5/28 15:55
  */
 public class ExcelToPdfUtils {
+
     /**
      * excel转pdf（全部工作簿）
      *
      * @param fileUrl excel文件路径
      * @return pdf文件DTO
-     * @throws Exception excel转pdf异常
      */
     public static FileDTO toPdf(String fileUrl) throws Exception {
         return toPdf(fileUrl, null, -1);
@@ -35,7 +35,6 @@ public class ExcelToPdfUtils {
      * @param fileUrl   excel文件路径
      * @param outFolder 输出文件夹（为空时默认与excel同目录）
      * @return pdf文件DTO
-     * @throws Exception excel转pdf异常
      */
     public static FileDTO toPdf(String fileUrl, String outFolder) throws Exception {
         return toPdf(fileUrl, outFolder, -1);
@@ -47,7 +46,6 @@ public class ExcelToPdfUtils {
      * @param fileUrl    excel文件路径
      * @param sheetIndex sheet索引（从0开始，-1为全部工作簿）
      * @return pdf文件DTO
-     * @throws Exception excel转pdf异常
      */
     public static FileDTO toPdf(String fileUrl, int sheetIndex) throws Exception {
         return toPdf(fileUrl, null, sheetIndex);
@@ -60,7 +58,6 @@ public class ExcelToPdfUtils {
      * @param outFolder  输出文件夹（为空时默认与excel同目录）
      * @param sheetIndex sheet索引（从0开始，-1为全部工作簿）
      * @return pdf文件DTO
-     * @throws Exception excel转pdf异常
      */
     public static FileDTO toPdf(String fileUrl, String outFolder, int sheetIndex) throws Exception {
         // 读取excel
