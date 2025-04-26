@@ -1,3 +1,23 @@
+<!--
+* 富文本 WangEditor 组件
+* 参数说明：
+    value: 富文本内容，通过v-model双向绑定
+    placeholder: 空白提示，默认：'请输入...'
+    imageServer: 上传图片api地址，默认：/upload/wang/images
+    imageSizeLimit: 上传图片大小限制，默认：2MB
+    videoServer: 上传视频地址，默认：/upload/wang/videos
+    videoSizeLimit: 上传视频大小限制，默认：50MB
+    toolbarKeys: 工具栏配置，例如：['bold', 'underline', 'italic']
+    height: 编辑器内容区高度，默认：'400px'
+
+* 注意事项：
+    若放在新增、编辑弹窗中使用，建议增加 :key="dialogFormVisible"，每次打开弹窗时重载编辑器，否则会有未知异常
+    例如：<my-wang-editor v-model="temp.content" :key="dialogFormVisible" />
+
+* 更多配置：@see https://www.wangeditor.com/v5/toolbar-config.html#toolbarkeys
+* @Author: ziro
+* @Date: 2025/04/26 15:40:52
+-->
 <template>
   <div style="border: 1px solid #ccc;z-index: 9999;">
     <Toolbar
