@@ -65,7 +65,7 @@ com.kg:
     #图片自动压缩，压缩比率（0-1之间的小数，例如：0.6表示压缩为60%）
     image-quality: 0.6
     #默认上传路径（文件保存的物理绝对路径;不要使用\；若使用docker部署，要配置容器内部路径，一般是/usr/local/springboot/）
-    save-path: /usr/local/springboot/config/myupload/files
+    save-path: /usr/local/springboot/myupload/files
     #隐藏上传路径（用于访问的路径，通过spring代理;不要使用\;要在security.ignore放开）
     url-pre: /upload
   #登录常量配置
@@ -78,10 +78,20 @@ com.kg:
     jwt-token-expiry: 120
   #开发管理员配置 (所有开发管理员的ids，多个用逗号隔开)
   developer-user-ids: 1
-  #跨域配置，是否允许跨域：默认关闭（true开启；false关闭）
-  cors-enable: false
+  #跨域配置
+  cors:
+    #是否允许跨域：默认关闭（false关闭；true开启）
+    enabled: true
+    #允许跨域的域名：*表示全部允许；多个用逗号隔开，支持localhost，例如："http://localhost:8080,https://xxx.cn"
+    allowed-origins: "*"
+    #允许跨域请求方法：*表示全部允许；多个用逗号隔开，例如："GET,POST"
+    allowed-methods: "*"
+    #允许跨域访问的api资源：/**表示全部允许；多个用逗号隔开，例如："/api1/**,/api2/**"
+    allowed-patterns: "/**"
   #默认操作日志，保存天数，默认：180天（定时任务自动删除旧日志）
   auto-operate-log: 180
+  #组织机构最大层级（-1表示无限级）
+  max-org-level: 3
   #验证码配置
   captcha:
     #类型枚举 ARITHMETIC-算数；CHINESE-中文；CHINESE_GIF-中文闪图；GIF-闪图；SPEC-常规

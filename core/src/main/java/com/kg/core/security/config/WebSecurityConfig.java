@@ -45,8 +45,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * 配置是否允许跨域，默认false
      */
-    @Value("${com.kg.cors-enable}")
+    @Value("${com.kg.cors.enabled}")
     private Boolean isCorsEnable;
+    @Value("${com.kg.cors.allowed-origins}")
+    private String allowedOrigins;
+    @Value("${com.kg.cors.allowed-methods}")
+    private String allowedMethods;
+    @Value("${com.kg.cors.allowed-patterns}")
+    private String allowedPatterns;
 
     /**
      * 配置默认解密方法
@@ -113,12 +119,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     private CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("*");// 同源配置，*表示任何请求都视为同源，若需指定ip和端口可以改为如“localhost：8080”，多个以“，”分隔；
-        corsConfiguration.addAllowedHeader("*");// header，允许哪些header，本案中使用的是token，此处可将*替换为token；
-        corsConfiguration.addAllowedMethod("*");// 允许的请求方法，POST、GET等
-        // 配置允许跨域访问的 url
+        // 允许跨域的源配置，如：http://localhost:8080,https://xxx.cn
+        for (String origin : allowedOrigins.split(",")) {
+            corsConfiguration.addAllowedOrigin(origin);
+        }
+        // 允许的请求方法配置，如：GET,POST等
+        for (String method : allowedMethods.split(",")) {
+            corsConfiguration.addAllowedMethod(method.toUpperCase());
+        }
+        // 配置允许跨域访问的api资源，默认全部，例如：/**
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
+        for (String url : allowedPatterns.split(",")) {
+            source.registerCorsConfiguration(url, corsConfiguration);
+        }
         return source;
     }
 }
