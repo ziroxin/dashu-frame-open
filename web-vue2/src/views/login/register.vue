@@ -25,13 +25,11 @@
                 <p class="login-card-description">用户注册</p>
                 <!--注册表单-->
                 <el-form ref="regForm" :model="regForm" :rules="loginRules"
-                         autocomplete="off" label-position="left"
-                >
+                         autocomplete="off" label-position="left">
                   <el-form-item prop="userName">
                     <el-input ref="userName" prefix-icon="el-icon-user" tabindex="1"
                               v-model="regForm.userName" placeholder="请输入用户名"
-                              name="userName" type="text" autocomplete="off"
-                    />
+                              name="userName" type="text" autocomplete="off"/>
                   </el-form-item>
                   <el-tooltip v-model="capsTooltip" content="大写已打开" placement="right" manual>
                     <el-form-item prop="password">

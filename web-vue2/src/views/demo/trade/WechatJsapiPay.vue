@@ -41,7 +41,7 @@ export default {
       // 注意：
       //     1. 只能在微信客户端内完成；
       //     2. 且用户必须先（商户号关联的公众号）授权，需要先获取用户的openid
-      // 商户后台设置回调域名：https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_3
+      // 商户后台设置回调域名：https://pay.weixin.qq.com/doc/v2/merchant/4011935208#%E4%BA%8C%E3%80%81%E8%AE%BE%E7%BD%AE%E6%8E%88%E6%9D%83%E5%9F%9F%E5%90%8D
 
       // let data = {...this.payData, openId: 'o_IQK5AvUyFUouVr5byhnXocxKU4'}
       let data = {...this.payData, openId: 'oA1uP6Q6ByzfrUpXr_N4dPuXmuQk'}
