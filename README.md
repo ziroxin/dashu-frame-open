@@ -38,6 +38,15 @@ Node + Npm 等
 
 
 ---
+## 请作者喝杯茶
+
+如果觉得本平台对您有帮助，请作者喝杯茶吧，您的支持是作者持续开发的动力。  
+  
+![微信支付](https://gitee.com/ziro/dashu-frame-docs/raw/master/docs/public/img/wechatpay_shou.jpg)
+![支付宝支付](https://gitee.com/ziro/dashu-frame-docs/raw/master/docs/public/img/alipay_shou.jpg)
+
+
+---
 ## 下载
 
 推荐使用开发工具：**IDEA**
