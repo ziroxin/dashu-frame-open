@@ -43,3 +43,5 @@
 /pay/alipay/returnUrl
 # 阿里云OSS回调接口
 /oss/client/upload/callback
+# 微信小程序登录接口
+/applet/wechat/login/**

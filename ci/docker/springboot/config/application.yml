@@ -37,7 +37,9 @@ spring:
   #thymeleaf配置
   thymeleaf:
     enabled: true
-    prefix: classpath:/static/
+    prefix:
+      - classpath:/static/
+      - classpath:/templates/
     suffix: .html
     encoding: UTF-8
     cache: false
@@ -80,9 +82,9 @@ com.kg:
   developer-user-ids: 1
   #跨域配置
   cors:
-    #是否允许跨域：默认关闭（false关闭；true开启）
-    enabled: true
-    #允许跨域的域名：*表示全部允许；多个用逗号隔开，支持localhost，例如："http://localhost:8080,https://xxx.cn"
+    #是否允许跨域：false不允许；true允许（根据下方配置匹配跨域规则）
+    enabled: false
+    #允许跨域的域名：*表示全部允许；多个用逗号隔开，支持localhost、支持端口，例如："http://localhost:8080,https://xxx.cn"
     allowed-origins: "*"
     #允许跨域请求方法：*表示全部允许；多个用逗号隔开，例如："GET,POST"
     allowed-methods: "*"
