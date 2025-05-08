@@ -9,10 +9,13 @@
 <br/>
 
 
-文档地址：[[中文文档]](http://docs.java119.cn/)  
-演示地址：[[演示地址]](http://yanshi.java119.cn/)  
 仓库地址：[[Gitee]](https://gitee.com/ziro/dashu-frame-open)  
-
+文档地址：[[开发文档]](https://docs.java119.cn/)    
+演示地址：[[演示地址]](https://yanshi.java119.cn/)  
+H5版演示地址：[[H5演示地址]](https://yanshi.java119.cn/h5/)  
+小程序演示，使用微信扫描二维码：
+![小程序码](https://gitee.com/ziro/dashu-frame-docs/blob/master/docs/public/img/dashu-wechat.png)
+或点击链接查看[《爆肝100天，我的小程序终于上线了~》](https://www.java119.cn/article/info/512a88d0-9c03-4704-88c1-163baedfd3e7)
 
 ---
 ## 简介
@@ -31,6 +34,7 @@ MySQL + Redis + MybatisPlus + Swagger + Quartz 等
 Html + Css + Vue2 + Element-ui + Javascript + ES6 + Webpack + Axios +
 Node + Npm 等
 ```
+
 
 ---
 ## 下载
