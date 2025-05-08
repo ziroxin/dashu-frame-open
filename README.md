@@ -12,8 +12,9 @@
 仓库地址：[[Gitee]](https://gitee.com/ziro/dashu-frame-open)  
 文档地址：[[开发文档]](https://docs.java119.cn/)    
 演示地址：[[演示地址]](https://yanshi.java119.cn/)  
+<hr/>
 H5版演示地址：[[H5演示地址]](https://yanshi.java119.cn/h5/)  
-小程序演示，使用微信扫描下方二维码：
+小程序演示，使用微信扫描下方二维码：  
 <img src="https://gitee.com/ziro/dashu-frame-docs/raw/master/docs/public/img/dashu-wechat.png" width="200" height="200">  
 或点击链接查看[《爆肝100天，我的小程序终于上线了~》](https://www.java119.cn/article/info/512a88d0-9c03-4704-88c1-163baedfd3e7)
 
