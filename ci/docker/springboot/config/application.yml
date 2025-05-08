@@ -24,12 +24,12 @@ spring:
     database.type: mysql
     url: jdbc:mysql://mariadb:13306/dashu_frame_open?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
     username: root
-    password: dashu@2023++
+    password: dashu@2025++
   #Redis配置
   redis:
     host: redis
     port: 6379
-    password: dashu@2023++
+    password: dashu@2025++
     database: 0
   mvc:
     # 解决swagger2冲突，导致启动报错问题(@See：https://blog.csdn.net/mapboo/article/details/121568519)
@@ -202,8 +202,8 @@ com.kg:
     #连接信息
     host: xxx.xxx.xxx.xxx
     port: 5672
-    username: xxxx
-    password: xxxx
+    username: dashu
+    password: dashu@2025++
   #DDoS防护配置
   ddos:
     #是否启用

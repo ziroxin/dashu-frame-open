@@ -42,7 +42,7 @@ services:
    - ./mysql/logs:/var/log/mysql
   environment:
 # 设置root用户的默认密码（只有第一次安装启动时起作用）
-   - MYSQL_ROOT_PASSWORD=dashu@2023++
+   - MYSQL_ROOT_PASSWORD=dashu@2025++
   ports:
    - 13306:13306
   restart: always
