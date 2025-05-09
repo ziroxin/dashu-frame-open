@@ -95,7 +95,7 @@ import SocialSign from './components/SocialSignin'
 import {mapState} from 'vuex'
 import request from '@/utils/request';
 import {encryptRSA} from '@/utils/jsencrypt-util'
-import {imageAdeskVertical} from "@/utils/image-data-util";
+import {imageAdeskVertical, imageUpsplash} from "@/utils/image-data-util";
 import Cookies from 'js-cookie';
 import defaultSettings from '@/settings'
 
@@ -298,16 +298,29 @@ export default {
           this.loginBg = JSON.parse(loginBgData)
         } else {
           // 动态加载背景图
-          imageAdeskVertical(null, 'hot', 20, skip * 20).then(imgs => {
-            if (imgs && imgs.length > 0) {
-              this.loginBg = []
-              for (let i = 0; i < imgs.length; i++) {
-                this.loginBg.push(imgs[i].img)
+          if (location.protocol === 'https:') {
+            imageUpsplash(null, 20, skip * 20).then(imgs => {
+              if (imgs && imgs.length > 0) {
+                this.loginBg = []
+                for (let i = 0; i < imgs.length; i++) {
+                  this.loginBg.push(imgs[i].urls.full)
+                }
+                localStorage.setItem('loginBgData', JSON.stringify(this.loginBg))
+                localStorage.setItem('loginBgDataSkip', skip)
               }
-              localStorage.setItem('loginBgData', JSON.stringify(this.loginBg))
-              localStorage.setItem('loginBgDataSkip', skip)
-            }
-          })
+            })
+          } else {
+            imageAdeskVertical(null, 'hot', 20, skip * 20).then(imgs => {
+              if (imgs && imgs.length > 0) {
+                this.loginBg = []
+                for (let i = 0; i < imgs.length; i++) {
+                  this.loginBg.push(imgs[i].img)
+                }
+                localStorage.setItem('loginBgData', JSON.stringify(this.loginBg))
+                localStorage.setItem('loginBgDataSkip', skip)
+              }
+            })
+          }
         }
       } catch (e) {
         console.log(e)
