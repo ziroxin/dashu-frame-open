@@ -25,13 +25,15 @@ import axios from 'axios'
  * @param orientation 方向（landscape=横屏；portrait=竖屏； squarish=方形）
  */
 export function imageUpsplash(query, page, limit, orientation) {
-  axios({
-    url: 'https://api.unsplash.com/search/photos?query=' + (query || 'cityscape') +
-      '&page=' + (page || 1) + '&per_page=' + (limit || 10) + '&orientation=' + (orientation || 'landscape'),
-    method: 'get', headers: {Authorization: 'Client-ID LsH8s8dZyEFCVtaiiZE6KmJ_ZbvPO1i4MPCtItk6GKE'}
-  }).then((response) => {
-    console.log('imageUpsplash', response.data.results)
-    return response.data.results;
+  return new Promise(async (resolve, reject) => {
+    axios({
+      url: 'https://api.unsplash.com/search/photos?query=' + (query || 'cityscape') +
+        '&page=' + (page || 1) + '&per_page=' + (limit || 10) + '&orientation=' + (orientation || 'landscape'),
+      method: 'get', headers: {Authorization: 'Client-ID LsH8s8dZyEFCVtaiiZE6KmJ_ZbvPO1i4MPCtItk6GKE'}
+    }).then((response) => {
+      console.log('imageUpsplash', response.data.results)
+      resolve(response.data.results)
+    })
   })
 }
 
@@ -39,11 +41,13 @@ export function imageUpsplash(query, page, limit, orientation) {
  * 获取adesk横屏壁纸分类
  */
 export function imageAdeskWallpaperType() {
-  axios({
-    url: 'http://service.picasso.adesk.com/v1/wallpaper/category', method: 'get'
-  }).then((response) => {
-    console.log('imageAdeskWallpaperType', response.data.res.category)
-    return response.data.res.category
+  return new Promise(async (resolve, reject) => {
+    axios({
+      url: 'http://service.picasso.adesk.com/v1/wallpaper/category', method: 'get'
+    }).then((response) => {
+      console.log('imageAdeskWallpaperType', response.data.res.category)
+      resolve(response.data.res.category)
+    })
   })
 }
 
@@ -51,11 +55,13 @@ export function imageAdeskWallpaperType() {
  * 获取adesk竖屏壁纸分类
  */
 export function imageAdeskVerticalType() {
-  axios({
-    url: 'http://service.picasso.adesk.com/v1/vertical/category', method: 'get'
-  }).then((response) => {
-    console.log('imageAdeskVerticalType', response.data.res.category)
-    return response.data.res.category
+  return new Promise(async (resolve, reject) => {
+    axios({
+      url: 'http://service.picasso.adesk.com/v1/vertical/category', method: 'get'
+    }).then((response) => {
+      console.log('imageAdeskVerticalType', response.data.res.category)
+      resolve(response.data.res.category)
+    })
   })
 }
 
