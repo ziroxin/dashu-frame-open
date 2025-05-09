@@ -18,7 +18,7 @@ function decryptRSA(encryptedData) {
 }
 
 function setCookieToken(data) {
-  // 设置 cookie 的有效期为 token 的有效期 - 10分钟
+  // 设置 cookie 的有效期为 token 的有效期 - 10分钟（用于提前刷新token，防止token过期）
   var expirationDate = new Date(data.accessTokenValidTime);
   expirationDate.setMinutes(expirationDate.getMinutes() - 10);
   $.cookie('UserJwtToken', data.accessToken, {expires: expirationDate});
