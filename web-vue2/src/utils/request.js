@@ -28,7 +28,7 @@ service.interceptors.request.use(
           let tokenValidTime = getTokenValidTime();
           if (new Date().getTime() < new Date(tokenValidTime).getTime() &&
             (new Date().getTime() + getTokenRefreshInterval()) > new Date(tokenValidTime).getTime()) {
-            // token失效前10分钟，刷新token
+            // token失效前60分钟，刷新token
             store.dispatch('user/refreshToken')
           }
         }
@@ -44,7 +44,7 @@ service.interceptors.request.use(
       }
     }
     // 3、防止数据重复提交
-    if (config.method === 'post' || config.method === 'put') {
+    if (config.method === 'post' || config.method === 'put' || config.method === 'delete') {
       requestCheckRepeatSubmit(config)
     }
     return config
