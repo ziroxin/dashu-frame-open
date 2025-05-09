@@ -1,10 +1,9 @@
 /**
  * 自定义日期格式化指令（已注册全局）
  * 使用方法：
- *    span可以换成，除了表单之外的任意html标签
  *    <span v-mydate="需要格式化的日期值"></span>
+ *    span可以换成，除了表单之外的任意html标签
  */
-
 function formatDate(value) {
   try {
     let v = new Date(value)

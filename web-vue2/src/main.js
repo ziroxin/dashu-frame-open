@@ -17,7 +17,7 @@ import router from './router'
 import './icons'
 import './permission'
 import './utils/error-log'
-import { objCopy } from '@/utils/tools'
+import {objCopy} from '@/utils/tools'
 // 导入全局过滤器filters
 import * as filters from './filters'
 // 导入全局指令directive
@@ -25,11 +25,12 @@ import permission from '@/directive/permission'
 import mydate from '@/directive/mydate'
 import waves from '@/directive/waves/index'
 import clipboard from '@/directive/clipboard'
+import resize from '@/directive/resize'
 // 导入全局变量
 import request from '@/utils/request'
 // 初始化数据字典
 import '@/utils/dict-install'
-import { loadTheme } from "@/utils/load-theme";
+import {loadTheme} from "@/utils/load-theme";
 import PATCH_ElOverlayAutoClose from '@/utils/el-overlay-auto-close';
 
 // 加载自定义主题
@@ -53,6 +54,7 @@ Vue.directive('permission', permission)
 Vue.directive('mydate', mydate)
 Vue.directive('waves', waves)
 Vue.directive('clipboard', clipboard)
+Vue.directive('resize', resize)
 
 // window.innerHeight自适应（1是否显示多标签；2横向布局多出一行面包屑）
 let windowHeight = window.innerHeight
