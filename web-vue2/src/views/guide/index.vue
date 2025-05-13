@@ -2,8 +2,10 @@
   <div class="app-container">
     <aside>
       引导页：用户首次进入时，一步一步，引导用户操作。
-      Demo：
-      <a href="https://github.com/kamranahmedse/driver.js" target="_blank">driver.js.</a>
+      GitHub仓库：
+      <a href="https://github.com/kamranahmedse/driver.js" target="_blank">driver.js</a>
+      文档地址：
+      <a href="https://driverjs.com/" target="_blank">官方文档</a>
     </aside>
     <el-button icon="el-icon-question" type="primary" @click.prevent.stop="guide">显示引导页</el-button>
   </div>
@@ -22,7 +24,8 @@ export default {
     }
   },
   mounted() {
-    this.driver = new Driver()
+    // 初始化driver.js，设置按钮文字（更多配置看文档）
+    this.driver = new Driver({nextBtnText: '下一步', prevBtnText: '上一步', doneBtnText: '完成', closeBtnText: '关闭'})
   },
   methods: {
     guide() {

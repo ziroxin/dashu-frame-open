@@ -1,5 +1,6 @@
 <template>
-  <div :class="{'has-logo':showLogo}" :style="{'--theme-color': theme}">
+  <!-- 综合布局-左侧菜单 -->
+  <div id="menu-container2" :class="{'has-logo':showLogo}" :style="{'--theme-color': theme}">
     <logo v-if="showLogo" :collapse="isCollapse" style="border-bottom: 1px solid #e6e6e6;"/>
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
