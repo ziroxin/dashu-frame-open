@@ -4,7 +4,7 @@
     <ErrorB />
     <h3>请点击右上角的bug图标</h3>
     <aside>
-      <a target="_blank" class="link-type" href="https://panjiachen.gitee.io/vue-element-admin-site/zh/guide/advanced/error.html#%E9%A1%B5%E9%9D%A2">
+      <a target="_blank" class="link-type" href="https://panjiachen.github.io/vue-element-admin-site/zh/guide/advanced/error.html#%E9%A1%B5%E9%9D%A2">
         错误处理说明文档
       </a>
     </aside>
