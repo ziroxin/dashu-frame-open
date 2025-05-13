@@ -3,7 +3,7 @@ import {Loading, Message} from 'element-ui'
 import {saveAs} from 'file-saver'
 import {getToken} from '@/utils/auth'
 import errorCode from '@/utils/error-code'
-import {blobValidate} from '@/utils/tools';
+import request from '@/utils/request'
 
 const baseURL = process.env.VUE_APP_BASE_API
 
@@ -14,22 +14,18 @@ export default {
       spinner: 'el-icon-loading',
       background: 'rgba(255, 255, 255, 0.7)'
     })
-    axios({
-      method: 'get',
-      url: baseURL + url,
-      responseType: 'blob',
-      headers: {'UserJwtToken': getToken()}
-    }).then((res) => {
-      const isBlob = blobValidate(res.data);
-      if (isBlob) {
-        const blob = new Blob([res.data], {type: 'application/zip'})
-        this.saveAs(blob, name)
-        downloadLoadingInstance.close();
-      } else {
-        this.printErrMsg(res.data);
-        downloadLoadingInstance.close();
-      }
-    })
+    // 下载blob文件，需要单独处理axios请求，不用封装好的request
+    axios({url: baseURL + url, method: 'get', responseType: 'blob', headers: {'UserJwtToken': getToken()}})
+      .then((res) => {
+        if (res.data.type !== 'application/json') {
+          // 下载文件
+          this.saveAs(new Blob([res.data], {type: 'application/zip'}), name)
+        } else {
+          const resObj = JSON.parse(res.data.text());
+          Message.error(errorCode[resObj.code] || resObj.msg || errorCode['default'])
+        }
+        downloadLoadingInstance.close()
+      })
   },
   /**
    * 下载文件（通过文件链接下载，并重命名下载文件名）
@@ -44,22 +40,12 @@ export default {
       background: 'rgba(255, 255, 255, 0.7)'
     })
     // 获取下载链接
-    axios({
-      method: 'get',
-      url: baseURL + url,
-      params,
-      headers: {'UserJwtToken': getToken()}
-    }).then(async (res) => {
-      if (res.data.code === '200') {
-        saveAs(baseURL + res.data.data, filename);
-        downloadLoadingInstance.close();
-      } else {
-        Message.error(res.data.message)
-      }
+    request({url: url, method: 'get', params}).then(async (res) => {
+      saveAs(baseURL + res.data.data, filename);
+      downloadLoadingInstance.close()
     }).catch((r) => {
       console.error(r)
-      Message.error('下载文件出现错误，请重试！')
-      downloadLoadingInstance.close();
+      downloadLoadingInstance.close()
     })
   },
   /**
@@ -70,11 +56,5 @@ export default {
    */
   saveAs(text, name, opts) {
     saveAs(text, name, opts);
-  },
-  async printErrMsg(data) {
-    const resText = await data.text();
-    const rspObj = JSON.parse(resText);
-    const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode['default']
-    Message.error(errMsg);
-  },
+  }
 }
