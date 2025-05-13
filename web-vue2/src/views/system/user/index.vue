@@ -6,28 +6,21 @@
                   style="margin-bottom: 10px;"/>
         <!-- 组织机构树 -->
         <el-tree ref="orgTreeRef" class="filter-tree" :data="orgSelectTreeData"
-                 style="height: calc(100vh - 155px);overflow: auto;"
-                 :expand-on-click-node="false" :highlight-current="true"
-                 :props="{children: 'children',label: 'label'}" node-key="value"
-                 default-expand-all :filter-node-method="filterNode" @node-click="treeNodeClick"
-        />
+                 style="height: calc(100vh - 155px);overflow: auto;" :expand-on-click-node="false"
+                 :highlight-current="true" :props="{children: 'children',label: 'label'}" node-key="value"
+                 default-expand-all :filter-node-method="filterNode" @node-click="treeNodeClick"/>
       </el-col>
       <el-col :span="20" style="">
-        <el-switch v-model="searchData.isSelf" active-value="self" inactive-value="notself"
-                   style="margin-right: 10px;" size="small"
-                   active-text="包含下级" inactive-text="只查本级" @change="getUserList"
-        />
-        <el-input v-model="searchData.userName" style="width: 125px;margin-right: 10px;" size="small"
-                  class="filter-item" placeholder="输入用户名查询"
-        />
-        <el-input v-model="searchData.name" style="width: 115px;margin-right: 10px;" size="small"
-                  class="filter-item" placeholder="输入姓名查询"
-        />
-        <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" size="small"
-                   @click="searchBtnHandle"/>
-        <el-button v-waves class="filter-item" type="info"
-                   icon="el-icon-refresh" size="small" @click="resetTableList">
-        </el-button>
+        <el-switch v-model="searchData.isSelf" active-value="self" inactive-value="notself" style="margin-right: 10px;"
+                   size="small" active-text="包含下级" inactive-text="只查本级" @change="getUserList"/>
+        <el-input v-model="searchData.userName" style="width: 125px;margin-right: 10px;"
+                  size="small" class="filter-item" placeholder="输入用户名查询"/>
+        <el-input v-model="searchData.name" style="width: 115px;margin-right: 10px;"
+                  size="small" class="filter-item" placeholder="输入姓名查询"/>
+        <el-button v-waves class="filter-item" type="primary" icon="el-icon-search"
+                   size="small" @click="searchBtnHandle"/>
+        <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh"
+                   size="small" @click="resetTableList"/>
         <div style="float: right;margin-bottom: 10px;">
           <!--  操作按钮  -->
           <el-button v-waves type="primary" v-permission="'user-add'" size="small"
@@ -41,10 +34,8 @@
           </el-button>
         </div>
         <!-- 表格部分 -->
-        <el-table :data="userTable" row-key="userId" ref="dataTable"
-                  :height="this.$windowHeight-230" style="width: 100%;"
-                  border @selection-change="selectionChangeHandlerOrder"
-        >
+        <el-table :data="userTable" row-key="userId" ref="dataTable" :height="this.$windowHeight-230"
+                  style="width: 100%;" border @selection-change="selectionChangeHandlerOrder">
           <el-table-column align="center" type="selection" width="40"/>
           <el-table-column align="center" prop="roleName" label="角色" min-width="10%"/>
           <el-table-column align="center" prop="orgName" label="部门" min-width="10%"/>
@@ -102,8 +93,8 @@
     </el-row>
 
     <!--  弹窗  -->
-    <el-dialog :title="textMap[dialogStatus]" top="5vh" :close-on-click-modal="false"
-               :visible.sync="dialogFormVisible" width="680px">
+    <el-dialog :title="textMap[dialogStatus]" top="5vh" :close-on-click-modal="false" @close="closeDialog"
+               :visible.sync="dialogFormVisible" width="680px" :key="'myDialog'+dialogIndex">
       <el-form ref="userDataForm" :model="temp" label-position="right"
                label-width="100px" style="width: 500px; margin-left: 50px;">
         <el-form-item label="用户名" prop="userName"
@@ -178,6 +169,7 @@ export default {
       // 对话框属性
       dialogStatus: '',
       dialogFormVisible: false,
+      dialogIndex: 0,
       //选中的数据
       changeData: [],
       //删除的IDS
@@ -274,10 +266,19 @@ export default {
         this.roleNameOptions = response.data.records
       })
     },
+    closeDialog() {
+      this.dialogIndex++
+      if (this.searchData && this.searchData.orgId) {
+        this.$refs.orgTreeRef.setCurrentKey(this.searchData.orgId)
+      }
+    },
     userAdd() {
       this.resetTemp()
       this.dialogFormVisible = true
       this.dialogStatus = 'create'
+      if (this.searchData && this.searchData.orgId) {
+        this.temp.orgId = this.searchData.orgId + ''
+      }
       this.$nextTick(() => {
         this.$refs['userDataForm'].clearValidate()
         this.loadOrgTreeForSelect()
@@ -314,14 +315,15 @@ export default {
       // 表单验证
       this.$refs['userDataForm'].validate((valid) => {
         if (valid) {
+          let data = {...this.temp}
           if (this.dialogStatus === 'update') {
-            userUpdate(this.temp).then(reponse => {
+            userUpdate(data).then(reponse => {
               this.$message({type: 'success', message: '修改成功！'})
               this.dialogFormVisible = false
               this.getUserList()
             })
           } else {
-            userAdd(this.temp).then(reponse => {
+            userAdd(data).then(reponse => {
               this.$message({type: 'success', message: '添加成功！'})
               this.dialogFormVisible = false
               this.getUserList()
@@ -386,11 +388,10 @@ export default {
         this.userIds = []
         this.userIds.push(...this.changeData.map(r => r.userId))
         let data = {userIds: this.userIds, status: status}
-        request({url: '/user/change/status', method: 'post', data})
-            .then(response => {
-              this.$message({type: 'success', message: '用户' + msg + '成功！'})
-              this.getUserList()
-            })
+        request({url: '/user/change/status', method: 'post', data}).then(response => {
+          this.$message({type: 'success', message: '用户' + msg + '成功！'})
+          this.getUserList()
+        })
       }
     }
   }
