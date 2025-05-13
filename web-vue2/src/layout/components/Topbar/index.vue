@@ -1,15 +1,8 @@
 <template>
-  <el-menu :style="{'--theme-color': themeColor}"
-           class="top-bar"
-           :default-active="activeMenu"
-           :background-color="variables.menuBg"
-           :text-color="variables.menuText"
-           :active-text-color="themeColor"
-           :unique-opened="false"
-           :collapse-transition="false"
-           mode="horizontal"
-           menu-trigger="hover"
-  >
+  <!-- 顶部菜单栏 -->
+  <el-menu id="menu-container" :style="{'--theme-color': themeColor}" class="top-bar" :default-active="activeMenu"
+           :background-color="variables.menuBg" :text-color="variables.menuText" :active-text-color="themeColor"
+           :unique-opened="false" :collapse-transition="false" mode="horizontal" menu-trigger="hover">
     <topbar-item v-for="route in permission_routes" :key="route.path" :item="route" :base-path="route.path"/>
   </el-menu>
 </template>

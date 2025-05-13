@@ -5,7 +5,7 @@
     <!--主内容区-->
     <transition name="fade-transform" mode="out-in">
       <keep-alive :include="cachedViews">
-        <router-view :key="key"/>
+        <router-view :key="key" id="app-main-containter"/>
       </keep-alive>
     </transition>
   </section>

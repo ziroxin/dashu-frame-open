@@ -4,7 +4,8 @@
     <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container"
                @toggleClick="toggleSideBar"/>
     <div class="left-menu">
-      <scroll-horizontal v-if="leftMenuWidth" :container-width="leftMenuWidth" :container-height="50">
+      <!-- 综合布局-顶部菜单 -->
+      <scroll-horizontal id="menu-container1" v-if="leftMenuWidth" :container-width="leftMenuWidth" :container-height="50">
         <el-menu class="top-left-bar"
                  :default-active="activeTopMenu.name"
                  :background-color="variables.menuBg"

@@ -1,16 +1,10 @@
 <template>
-  <div :class="{'has-logo':showLogo}" :style="{'--theme-color': theme}">
+  <!-- 左侧菜单栏 -->
+  <div id="menu-container" :class="{'has-logo':showLogo}" :style="{'--theme-color': theme}">
     <logo v-if="showLogo" :collapse="isCollapse" style="border-bottom: 1px solid #e6e6e6;"/>
     <el-scrollbar wrap-class="scrollbar-wrapper">
-      <el-menu
-          :default-active="activeMenu"
-          :collapse="isCollapse"
-          :text-color="variables.menuText"
-          :active-text-color="theme"
-          :unique-opened="false"
-          :collapse-transition="false"
-          mode="vertical"
-      >
+      <el-menu :default-active="activeMenu" :collapse="isCollapse" :text-color="variables.menuText"
+               :active-text-color="theme" :unique-opened="false" :collapse-transition="false" mode="vertical">
         <sidebar-item v-for="route in permission_routes" :key="route.path" :item="route" :base-path="route.path"/>
       </el-menu>
     </el-scrollbar>
