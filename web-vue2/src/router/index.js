@@ -75,7 +75,7 @@ const otherRouter = [
 ]
 
 /**
- * 路由说明文档：https://panjiachen.gitee.io/vue-element-admin-site/zh/guide/essentials/router-and-nav.html
+ * 路由说明文档：https://panjiachen.github.io/vue-element-admin-site/zh/guide/essentials/router-and-nav.html
  * 下面是静态路由
  */
 export const constantRoutes = [
@@ -129,7 +129,7 @@ export function resetRouter() {
 }
 
 // 初始化路由（动态路由，src/permission.js里动态addRoutes）
-// 文档（see: https://panjiachen.gitee.io/vue-element-admin-site/zh/guide/essentials/router-and-nav.html）
+// 文档（see: https://panjiachen.github.io/vue-element-admin-site/zh/guide/essentials/router-and-nav.html）
 const createRouter = () => new Router({
   // mode: 'history', // 默认使用：hashHistory，如果需要browserHistory则开启
   scrollBehavior: () => ({y: 0}),

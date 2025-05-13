@@ -89,7 +89,7 @@ master分支，是完全开源的源码分支。
 - [Hutool](https://www.hutool.cn/)
 - [Vue2](https://v2.cn.vuejs.org/)
 - [Element UI](https://element.eleme.cn/)
-- [vue-element-admin](https://panjiachen.gitee.io/vue-element-admin-site/zh/)
+- [vue-element-admin](https://panjiachen.github.io/vue-element-admin-site/zh/)
 - [wangEditor 5](https://www.wangeditor.com/)
 - [Form Generator](https://mrhj.gitee.io/form-generator/#/)
 - [knife4j](https://doc.xiaominfo.com/)

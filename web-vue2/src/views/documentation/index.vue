@@ -17,7 +17,7 @@
       <a class="document-btn" target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
         vue-element-admin仓库Github
       </a>
-      <a class="document-btn" target="_blank" href="https://panjiachen.gitee.io/vue-element-admin-site/zh/">
+      <a class="document-btn" target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/zh/">
         vue-element-admin文档
       </a>
       <a class="document-btn" target="_blank" href="https://element.eleme.cn/#/zh-CN/component/installation">
@@ -34,7 +34,7 @@
 
     <el-divider>其他框架预览</el-divider>
     <div class="documentation-container">
-      <a class="document-btn" target="_blank" href="https://panjiachen.gitee.io/vue-element-admin/">
+      <a class="document-btn" target="_blank" href="https://panjiachen.github.io/vue-element-admin/">
         vue-element-admin预览
       </a>
       <a class="document-btn" target="_blank" href="https://vue-admin-beautiful.com/admin-pro/">
