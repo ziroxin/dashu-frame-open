@@ -1,78 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '@/layout'
+import oauthRouter from "@/router/oauthRouter";
+import otherRouter from "@/router/otherRouter";
+import homeRouter from "@/router/homeRouter";
 
 // 开启路由
 Vue.use(Router)
-
-// oauth2 client 相关页面
-const oauthRouter = [
-  {
-    path: '/oauth2/error',
-    component: () => import('@/views/oauth2/error'),
-    hidden: true
-  }, {
-    path: '/oauth2/success',
-    component: () => import('@/views/oauth2/success'),
-    hidden: true
-  }, {
-    path: '/oauth2/bind',
-    component: () => import('@/views/oauth2/bind'),
-    hidden: true
-  }
-]
-
-// 其他静态页面
-const otherRouter = [
-  // swagger 静态页
-  {
-    path: '/knife4jVue3/dashuSwagger/home',
-    component: () => import('@/views/swagger/home'),
-    hidden: true
-  },
-  // 在线表单代码生成器 静态页
-  {
-    path: '/generator/form',
-    component: () => import('@/views/generator/form'),
-    hidden: true
-  },
-  // 用户个人中心（登录可用）
-  {
-    path: '/system/user/MyUser',
-    component: () => import('@/layout'),
-    hidden: true,
-    children: [{
-      path: '/system/user/MyUser',
-      component: () => import('@/views/system/user/MyUser.vue'),
-      meta: {title: '个人中心'}
-    }]
-  },
-  // 消息中心（登录可用）
-  {
-    path: '/system/message',
-    component: () => import('@/layout'),
-    hidden: true,
-    children: [{
-      path: '/system/message',
-      component: () => import('@/views/system/message/index.vue'),
-      meta: {title: '消息中心'}
-    }]
-  },
-  // 首页路由
-  {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: () => import('@/layout'),
-    hidden: false,
-    redirect: 'noRedirect',
-    children: [{
-      path: 'index',
-      name: 'dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: {title: '首页', activeMenu: '', affix: false, breadcrumb: true, icon: 'dashboard', noCache: false}
-    }]
-  },
-]
 
 /**
  * 路由说明文档：https://panjiachen.github.io/vue-element-admin-site/zh/guide/essentials/router-and-nav.html
@@ -109,10 +43,11 @@ export const constantRoutes = [
     hidden: true
   }, {
     path: '/',
-    redirect: '/dashboard/index',
+    redirect: homeRouter.path,
   },
   ...oauthRouter,
-  ...otherRouter
+  ...otherRouter,
+  homeRouter
 ]
 
 // 错误页跳转404
