@@ -25,10 +25,7 @@
 export default {
   filters: {
     statusFilter(status) {
-      const statusMap = {
-        success: 'success',
-        pending: 'danger'
-      }
+      const statusMap = {success: 'success', pending: 'danger'}
       return statusMap[status]
     },
     orderNoFilter(str) {
@@ -46,14 +43,14 @@ export default {
   methods: {
     fetchData() {
       this.list = [
-        {order_no: 1, price: 10, status: 'success'},
-        {order_no: 2, price: 20, status: 'pending'},
-        {order_no: 3, price: 30, status: 'pending'},
-        {order_no: 3, price: 30, status: 'pending'},
-        {order_no: 5, price: 50, status: 'success'},
-        {order_no: 7, price: 70, status: 'success'},
-        {order_no: 7, price: 70, status: 'success'},
-        {order_no: 10, price: 100, status: 'pending'}
+        {order_no: 1, price: 10500, status: 'success'},
+        {order_no: 2, price: 24560, status: 'pending'},
+        {order_no: 3, price: 34520, status: 'pending'},
+        {order_no: 3, price: 34530, status: 'pending'},
+        {order_no: 5, price: 55350, status: 'success'},
+        {order_no: 7, price: 75320, status: 'success'},
+        {order_no: 7, price: 72340, status: 'success'},
+        {order_no: 10, price: 104530, status: 'pending'}
       ]
     }
   }
