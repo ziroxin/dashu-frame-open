@@ -3,6 +3,7 @@ import {Message, MessageBox} from 'element-ui'
 import store from '@/store'
 import {getToken, getTokenRefreshInterval, getTokenValidTime} from '@/utils/auth'
 import {isWhiteList} from '@/router/white-list'
+import errorCode, {notLoginError} from '@/utils/error-code'
 
 // 创建axios
 const service = axios.create({
@@ -89,7 +90,7 @@ service.interceptors.response.use(
       // 正常
       return res
     } else {
-      if (res.code === '40001' || res.code === '40002' || res.code === '40003' || res.code === '40004' || res.code === '401') {
+      if (notLoginError(res.code)) {
         // 自定义异常1：未正常登录！40001=用户名或者密码错误;40002=无效的TOKEN;40003=用户未登录;40004=用户已禁用;401=无权限;
         MessageBox.confirm(res.message, '登录错误',
           {confirmButtonText: '刷新', cancelButtonText: '取消', type: 'error', center: true}
@@ -99,24 +100,8 @@ service.interceptors.response.use(
           })
         })
       } else {
-        let errMsg, logErr;
-        if (res.code === '500') {
-          // 自定义异常2：服务器端异常（一般是bug）
-          errMsg = res.message || '服务器端出错';
-          logErr = '服务端出错';
-        } else if (res.code === '400' || res.code === '403' || res.code === '405') {
-          // 自定义异常3：客户端异常（一般是bug）
-          errMsg = res.message || '客户端出错';
-          logErr = '客户端出错';
-        } else if (res.code === '429') {
-          // 请求过于频繁或恶意攻击
-          errMsg = res.message || '请求过于频繁';
-          logErr = '请求过于频繁，疑似恶意请求';
-        } else {
-          // 未知异常
-          errMsg = res.message || '未知异常';
-          logErr = '未知异常';
-        }
+        let logErr = errorCode[res.code] || errorCode['default']
+        let errMsg = res.message || logErr
         console.log(logErr + '(' + res.code + ')：' + errMsg);
         Message({message: errMsg, type: 'error', duration: 3 * 1000})
         return Promise.reject(new Error(errMsg))
