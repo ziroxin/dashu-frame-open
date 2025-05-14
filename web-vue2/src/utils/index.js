@@ -1,8 +1,4 @@
 /**
- * 全局工具类
- */
-
-/**
  * 时间格式化
  * @param {(Object|string|number)} 时间
  * @param {string} 格式
@@ -12,7 +8,7 @@ export function parseTime(time, cFormat) {
   if (arguments.length === 0 || !time) {
     return null
   }
-  const format = cFormat || '{y}-{m}-{d} {h}:{i}:{s}'
+  const format = cFormat || 'yyyy-MM-dd HH:mm:ss' // 修改默认格式为 'yyyy-MM-dd HH:mm:ss'
   let date
   if (typeof time === 'object') {
     date = time
@@ -32,76 +28,35 @@ export function parseTime(time, cFormat) {
     date = new Date(time)
   }
   const formatObj = {
-    y: date.getFullYear(),
-    m: date.getMonth() + 1,
+    yyyy: date.getFullYear(),
+    MM: (date.getMonth() + 1).toString().padStart(2, '0'), // 月份从0开始，所以需要加1
+    M: (date.getMonth() + 1),
+    dd: date.getDate().toString().padStart(2, '0'),
     d: date.getDate(),
-    h: date.getHours(),
-    i: date.getMinutes(),
+    HH: date.getHours().toString().padStart(2, '0'),
+    H: date.getHours(),
+    mm: date.getMinutes().toString().padStart(2, '0'),
+    m: date.getMinutes(),
+    ss: date.getSeconds().toString().padStart(2, '0'),
     s: date.getSeconds(),
-    a: date.getDay()
+    SSS: date.getMilliseconds().toString().padStart(3, '0'),
+    S: date.getMilliseconds(),
+    ww: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][date.getDay()],
+    w: ['日', '一', '二', '三', '四', '五', '六'][date.getDay()],
   }
-  const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
-    const value = formatObj[key]
-    // 注意: getDay() 从周日开始 返回0
-    if (key === 'a') {
-      return ['日', '一', '二', '三', '四', '五', '六'][value]
-    }
-    return value.toString().padStart(2, '0')
+  const time_str = format.replace(/(yyyy|MM|M|dd|d|HH|H|mm|m|ss|s|SSS|S|ww|w)/g, (key) => {
+    return formatObj[key] || ''
   })
   return time_str
 }
 
 /**
- * 时间格式化
- * @param {number} 时间戳
- * @param {string} 格式
- * @returns {string}
+ * 数字格式化，每千位加逗号（10000 => "10,000"）
+ * @param num 数字
+ * @returns {string} 格式化后的字符串
  */
-export function formatTime(time, option) {
-  if (('' + time).length === 10) {
-    time = parseInt(time) * 1000
-  } else {
-    time = +time
-  }
-  const d = new Date(time)
-  const now = Date.now()
-  const diff = (now - d) / 1000
-  if (diff < 30) {
-    return '刚刚'
-  } else if (diff < 3600) {
-    // 1小时内
-    return Math.ceil(diff / 60) + '分钟前'
-  } else if (diff < 3600 * 24) {
-    // 1天内
-    return Math.ceil(diff / 3600) + '小时前'
-  } else if (diff < 3600 * 24 * 2) {
-    return '1天前'
-  }
-  if (option) {
-    return parseTime(time, option)
-  } else {
-    return (d.getMonth() + 1 + '月' + d.getDate() + '日' + d.getHours() + '时' + d.getMinutes() + '分')
-  }
-}
-
-/**
- * 获取链接地址的参数
- * @param {string} 链接
- * @returns {Object}
- */
-export function getQueryObject(url) {
-  url = url === null ? window.location.href : url
-  const search = url.substring(url.lastIndexOf('?') + 1)
-  const obj = {}
-  const reg = /([^?&=]+)=([^?&=]*)/g
-  search.replace(reg, (rs, $1, $2) => {
-    const name = decodeURIComponent($1)
-    let val = decodeURIComponent($2)
-    val = String(val)
-    obj[name] = val
-    return rs
-  })
-  return obj
+export function toThousandFilter(num) {
+  return (+num || 0).toString().replace(/^-?\d+/g, m => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
 }
 
 /**

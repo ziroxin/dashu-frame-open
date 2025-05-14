@@ -1,7 +1,7 @@
 <template>
   <el-card class="box-card-component" style="margin-left:8px;border-radius: 5px;">
     <div slot="header" class="box-card-header">
-      <img src="https://wpimg.wallstcn.com/e7d23d71-cf19-4b90-a1cc-f56af8c0903d.png">
+      <img src="@/assets/images/loginbg1.jpg" style="object-fit: cover;">
     </div>
     <div style="position:relative;">
       <pan-thumb class="panThumb"></pan-thumb>
@@ -22,6 +22,11 @@
         <span>ESLint</span>
         <el-progress :percentage="100" status="success"/>
       </div>
+      <div style="font-size:14px;color:#333333;margin-top:20px;">
+        <!-- 使用插值语法时，可直接使用以下格式，不需要导入parseTime函数（应为在main.js中注册了filter） -->
+        {{ new Date() | parseTime('yyyy-MM-dd HH:mm:ss SSS (ww)') }}
+      </div>
+      <div style="font-size:14px;color:#333333;margin-top:20px;">{{ currentTime }}</div>
     </div>
   </el-card>
 </template>
@@ -30,16 +35,13 @@
 import {mapGetters} from 'vuex'
 import PanThumb from '@/components/PanThumb'
 import Mallki from '@/components/TextHoverEffect/Mallki'
+import {parseTime} from '@/utils'
 
 export default {
   components: {PanThumb, Mallki},
-
   filters: {
     statusFilter(status) {
-      const statusMap = {
-        success: 'success',
-        pending: 'danger'
-      }
+      const statusMap = {success: 'success', pending: 'danger'}
       return statusMap[status]
     }
   },
@@ -48,8 +50,15 @@ export default {
       statisticsData: {
         article_count: 1024,
         pageviews_count: 1024
-      }
+      },
+      currentTime: ''
     }
+  },
+  mounted() {
+    setInterval(() => {
+      // 在js中使用parseTime函数时，需要先导入
+      this.currentTime = parseTime(new Date(), 'yyyy-MM-dd HH:mm:ss')
+    }, 1000)
   },
   computed: {
     ...mapGetters([
@@ -73,7 +82,7 @@ export default {
 .box-card-component {
   .box-card-header {
     position: relative;
-    height: 220px;
+    height: 160px;
 
     img {
       width: 100%;
