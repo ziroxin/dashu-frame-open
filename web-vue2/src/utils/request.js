@@ -1,8 +1,7 @@
 import axios from 'axios'
 import {Message, MessageBox} from 'element-ui'
 import store from '@/store'
-import {getToken, getTokenValidTime, getTokenRefreshInterval} from '@/utils/auth'
-import qs from 'qs'
+import {getToken, getTokenRefreshInterval, getTokenValidTime} from '@/utils/auth'
 import {isWhiteList} from '@/router/white-list'
 
 // 创建axios
@@ -36,14 +35,7 @@ service.interceptors.request.use(
         config.headers['UserJwtToken'] = hasToken
       }
     }
-    // 2、处理get请求参数
-    if (config.method === 'get') {
-      // 若是是get请求，且params是数组类型如arr=[1,2]，则转换成arr=1&arr=2
-      config.paramsSerializer = function (params) {
-        return qs.stringify(params, {arrayFormat: 'repeat'})
-      }
-    }
-    // 3、防止数据重复提交
+    // 2、防止鼠标连击造成的数据重复提交
     if (config.method === 'post' || config.method === 'put' || config.method === 'delete') {
       requestCheckRepeatSubmit(config)
     }
