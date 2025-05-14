@@ -37,8 +37,8 @@ export default {
       let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
       // 配置首页路由（无首页，自动加上）
       const first = matched[0] || null
-      if (!first || !first.name || first.name.trim().toLocaleLowerCase() !== 'dashboard') {
-        matched = [{path: '/dashboard/index', meta: {title: '首页'}}].concat(matched)
+      if (!first || !first.name || first.name.trim().toLowerCase() !== this.$homeRouter.name.toLowerCase()) {
+        matched = [{path: this.$homeRouter.path, meta: {title: this.$homeRouter.title}}].concat(matched)
       }
       // 过滤掉不需要显示面包屑的路由
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)

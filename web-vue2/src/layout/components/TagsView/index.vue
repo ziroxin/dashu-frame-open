@@ -76,10 +76,7 @@ export default {
     },
     activeStyle(tag) {
       if (!this.isActive(tag)) return {};
-      return {
-        'background-color': this.theme,
-        'border-color': this.theme
-      };
+      return {'background-color': this.theme, 'border-color': this.theme};
     },
     isAffix(tag) {
       return tag.meta && tag.meta.affix
@@ -89,12 +86,7 @@ export default {
       routes.forEach(route => {
         if (route.meta && route.meta.affix) {
           const tagPath = path.resolve(basePath, route.path)
-          tags.push({
-            fullPath: tagPath,
-            path: tagPath,
-            name: route.name,
-            meta: {...route.meta}
-          })
+          tags.push({fullPath: tagPath, path: tagPath, name: route.name, meta: {...route.meta}})
         }
         if (route.children) {
           const tempTags = this.filterAffixTags(route.children, route.path)
@@ -108,7 +100,6 @@ export default {
     initTags() {
       const affixTags = this.affixTags = this.filterAffixTags(this.routes)
       for (const tag of affixTags) {
-        // Must have tag name
         if (tag.name) {
           this.$store.dispatch('tagsView/addVisitedView', tag)
         }
@@ -127,7 +118,7 @@ export default {
         for (const tag of tags) {
           if (tag.to.path === this.$route.path) {
             this.$refs.scrollPane.moveToTarget(tag)
-            // when query is different then update
+            // 更新当前所在标签
             if (tag.to.fullPath !== this.$route.fullPath) {
               this.$store.dispatch('tagsView/updateVisitedView', this.$route)
             }
@@ -172,10 +163,9 @@ export default {
       if (latestView) {
         this.$router.push(latestView.fullPath)
       } else {
-        // now the default is to redirect to the home page if there is no tags-view,
-        // you can adjust it according to your needs.
-        if (view.name === 'Dashboard') {
-          // to reload home page
+        // 若没有最后一个标签，则返回首页
+        if (view.name === this.$homeRouter.name) {
+          // 如果当前就是首页，则（通过重定向）刷新页面
           this.$router.replace({path: '/redirect' + view.fullPath})
         } else {
           this.$router.push('/')
