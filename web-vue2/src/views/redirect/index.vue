@@ -1,8 +1,11 @@
 <!--
-路由跳转中间页
-使用方法 - 举例：
-    跳转到'/news/index'页，带参数newsId
-    this.$router.push('redirect/news/index?newsId=value', {query: {newsId: 'value'}})
+  路由跳转带参数中间页（在router/index.js中配置）
+    注意：不可删除!!!
+        目前用在标签页和面包屑页面。
+
+    使用方法-举例：
+        跳转到 '/news/index' 页，并带参数（直接url带参数，或者使用query参数，作用完全相同）
+        this.$router.push({path:'redirect/news/index?newsId1=value', query: {newsId2: 'value'}})
 -->
 <script>
 export default {
