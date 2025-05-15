@@ -29,9 +29,10 @@ import resize from '@/directive/resize'
 import request from '@/utils/request'
 // 初始化数据字典
 import '@/utils/dict-install'
-import {loadTheme} from "@/utils/load-theme";
+import {loadTheme} from '@/utils/load-theme'
 import PATCH_ElOverlayAutoClose from '@/utils/el-overlay-auto-close';
-import homeRouter from "@/router/homeRouter";
+import homeRouter from '@/router/homeRouter'
+import loginRouter from '@/router/loginRouter'
 
 // 加载自定义主题
 loadTheme(Cookies.get('settings') ? JSON.parse(Cookies.get('settings')).theme : '#4080FF')
@@ -65,7 +66,8 @@ Object.assign(Vue.prototype, {
   $baseServer: process.env.VUE_APP_BASE_API,
   $windowHeight: windowHeight,
   $request: request,
-  $homeRouter: homeRouter
+  $homeRouter: homeRouter,
+  $loginRouter: loginRouter
 });
 
 // 开发时不提示生产环境
