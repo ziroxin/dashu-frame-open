@@ -237,6 +237,7 @@ export default {
         .icons {
           width: 100%;
           height: 100%;
+          max-height: 300px;
           border: 1px solid #ccc;
           border-radius: 5px;
         }
