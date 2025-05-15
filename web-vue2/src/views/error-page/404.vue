@@ -20,9 +20,17 @@
 </template>
 
 <script>
+import {getLastedRoutes} from "@/utils/lasted-routes";
 
 export default {
-  name: 'Page404'
+  name: 'Page404',
+  created() {
+    // 判断上一路由是否为登录页面，如果是，则直接跳转到主页
+    const lastRoute = [...getLastedRoutes()].filter(r => r !== '/404');
+    if (lastRoute && lastRoute.length > 0 && lastRoute[0] === this.$loginRouter.path) {
+      this.$router.push(this.$homeRouter.path)
+    }
+  }
 }
 </script>
 
