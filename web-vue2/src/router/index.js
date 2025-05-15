@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '@/layout'
-import oauthRouter from "@/router/oauthRouter";
-import otherRouter from "@/router/otherRouter";
-import homeRouter from "@/router/homeRouter";
+import homeRouter from '@/router/homeRouter'
+import oauthRouter from '@/router/oauthRouter'
+import otherRouter from '@/router/otherRouter'
+import loginRouter from '@/router/loginRouter'
 
 // 开启路由
 Vue.use(Router)
@@ -21,11 +22,9 @@ export const constantRoutes = [
       path: '/redirect/:path(.*)',
       component: () => import('@/views/redirect/index')
     }]
-  }, {
-    path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
-  }, {
+  },
+  loginRouter,// 登录页路由
+  {
     path: '/register',
     component: () => import('@/views/login/register'),
     hidden: true
@@ -45,9 +44,9 @@ export const constantRoutes = [
     path: '/',
     redirect: homeRouter.path,
   },
-  ...oauthRouter,
-  ...otherRouter,
-  homeRouter
+  ...oauthRouter,// oauth客户端相关路由
+  ...otherRouter,// 其他静态路由
+  homeRouter,// 首页路由
 ]
 
 // 错误页跳转404
