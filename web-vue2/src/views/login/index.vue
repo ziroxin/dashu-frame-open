@@ -217,6 +217,7 @@ export default {
           data.isEncrypt = true
           data.userName = encryptRSA(this.loginForm.userName)
           data.password = encryptRSA(this.loginForm.password)
+          data.codeBaseImage = ''// 验证码base64图片不传递
           this.$store.dispatch('user/login', data).then(() => {
             if (this.loginForm.rememberMe) {
               localStorage.setItem('currentLoginUserData', JSON.stringify({
