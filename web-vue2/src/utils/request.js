@@ -4,6 +4,7 @@ import store from '@/store'
 import {getToken, getTokenRefreshInterval, getTokenValidTime} from '@/utils/auth'
 import {isWhiteList} from '@/router/white-list'
 import errorCode, {notLoginError} from '@/utils/error-code'
+import {encryptRSA, isEncrypt} from "@/utils/jsencrypt-util";
 
 // 创建axios
 const service = axios.create({
@@ -37,9 +38,12 @@ service.interceptors.request.use(
       }
     }
     // 2、防止鼠标连击造成的数据重复提交
-    if (config.method === 'post' || config.method === 'put' || config.method === 'delete') {
+    const method = config.method.toLowerCase()
+    if (method === 'post' || method === 'put' || method === 'delete') {
       requestCheckRepeatSubmit(config)
     }
+    // 3、请求参数加密传输（data和params）
+    requestCheckEncrypt(config)
     return config
   },
   error => {
@@ -74,6 +78,62 @@ function requestCheckRepeatSubmit(config) {
     }
     // 保存本次请求对象到sessionStorage
     sessionStorage.setItem('oldReqObj', JSON.stringify(reqObj))
+  }
+}
+
+// 请求参数加密处理
+function requestCheckEncrypt(config) {
+  let isFormData = config.headers.getContentType() && config.headers.getContentType().toLowerCase().indexOf('multipart/form-data') >= 0
+  if (isFormData) {
+    return // form-data请求不加密，直接返回
+  }
+  if (!isEncrypt(config.url.split('?')[0])) {
+    return // 全局配置不加密，或不加密白名单接口，直接返回
+  }
+  try {
+    // 加密body中的data参数
+    if (config.data) {
+      if (Array.isArray(config.data)) {
+        config.data = {encryptDataArray: encryptRSA(encodeURIComponent(JSON.stringify(config.data)))}
+      } else {
+        Object.keys(config.data).forEach(key => {
+          const val = config.data[key]
+          const type = Object.prototype.toString.call(val)
+          if (val !== null && val !== undefined && val !== 'null' && val !== 'undefined' && val !== ''
+            && type !== '[object File]' && type !== '[object Blob]') {
+            // 通过前缀区分是字符串还是对象，用于后台解密时解析正确的数据格式
+            config.data[key] = typeof val === 'object'
+              ? encryptRSA('object_' + encodeURIComponent(JSON.stringify(val)))
+              : encryptRSA('string_' + encodeURIComponent(String(val)))
+          }
+        })
+      }
+    }
+    // 处理params，提取url中的参数
+    if (config.url.indexOf('?') > -1) {
+      config.params = config.params || {}
+      let paramsArr = config.url.split('?')[1].split('&')
+      paramsArr.forEach(item => {
+        config.params[item.split('=')[0]] = item.split('=')[1]
+      })
+      config.url = config.url.split('?')[0]
+    }
+    // 加密params参数
+    if (config.params) {
+      Object.keys(config.params).forEach(key => {
+        const val = config.params[key]
+        if (val !== null && val !== undefined && val !== 'null' && val !== 'undefined' && val !== '') {
+          config.params[key] = typeof val === 'object' ?
+            encryptRSA(encodeURIComponent(JSON.stringify(val))) : encryptRSA(encodeURIComponent(String(val)))
+        }
+      })
+    }
+    // 配置请求加密标识（后台根据此标识 {isRequestEncrypt:true/false} 判断是否解密）
+    if (config.data || config.params) {
+      config.headers['isRequestEncrypt'] = 'true'
+    }
+  } catch (e) {
+    console.log('加密失败:', e)
   }
 }
 
