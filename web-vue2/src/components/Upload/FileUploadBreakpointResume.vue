@@ -4,7 +4,6 @@
        value: 可选，上传文件路径（通过v-model双向绑定），默认为空，传入正确路径可回显
        paramsData: 可选，调用上传接口时传入后台的参数（JSON格式）
        name: 可选，file表单的name属性，默认：filename
-       action: 可选，上传接口地址，默认：/upload/chunks/resume
        accept: 可选，上传文件类型（格式举例：.zip,.rar）
        btnTitle: 可选，上传按钮显示文字，默认：点击上传文件
        showTip: 可选，是否显示提示信息，默认：true
@@ -64,8 +63,6 @@ export default {
     paramsData: {type: Object, default: () => ({})},
     // file表单名称
     name: {type: String, default: 'filename'},
-    // 上传接口地址
-    action: {type: String, default: '/upload/chunks/resume'},
     // 上传文件类型
     accept: {type: String, default: '.zip,.rar'},
     // 上传按钮标题
@@ -117,33 +114,43 @@ export default {
         const end = start + this.chunkSize
         const cFile = file.slice(start, end) // 使用slice方法获取分片
         if (!this.fileList.some(item => item.fileId === uId)) {
-          break // 文件已移除，停止上传
+          break // 文件已移除（手动点击删除按钮），停止上传
         }
-        await new Promise(async (resolve, reject) => { // 上传分片
+        await new Promise(async (resolve, reject) => {
+          // 上传分片：分2步
           await this.getChunkFileMd5(cFile, async md5 => {
-            let params = {
-              chunk: i, chunks: chunks, name: file.name, uploadId: uId, path: this.folder,
-              chunkMD5: md5, ...this.paramsData
-            }
-            let header1 = {skipRepeatSubmitCheck: true}
-            await this.$request({url: this.action, method: 'post', params, headers: header1}).then(async res1 => {
-              if (res1.code !== '200') {
-                reject('上传失败，请重试')
+            // 1. 只传递文件分片的MD5值，服务端根据MD5值判断分片是否已上传过，若已上传过，则直接返回已上传的分片信息
+            await this.$request({
+              url: '/upload/chunks/resume/first', method: 'get', headers: {skipRepeatSubmitCheck: true},
+              params: {
+                chunkNumber: i,// 分片索引
+                totalChunks: chunks,// 总分片数
+                tempFileName: file.name,// 原始文件名
+                uploadId: uId,// 文件ID（断点续传唯一标识，用于合并分片文件等）
+                path: this.folder,// 服务端存储路径，可为空
+                chunkMD5: md5,// 分片文件MD5值
+                ...this.paramsData,// 其他参数
               }
+            }).then(async res1 => {
+              // 2. 判断是否返回分片信息
               if (res1.data !== null) {
-                // 分片已存在（redis缓存），无需上传，直接更新状态
+                // 2.1 后台返回分片信息，说明分片已存在，无需上传
                 this.uploadProcess(res1.data, i, chunks, uId)
               } else {
-                // 分片不存在，新上传，然后更新状态
-                let data = {
-                  chunk: i, chunks: chunks, name: file.name, uploadId: uId, path: this.folder,
-                  file: cFile, ...this.paramsData
-                }
-                let header2 = {skipRepeatSubmitCheck: true, 'Content-Type': 'multipart/form-data'}
-                await this.$request({url: this.action, method: 'post', data, headers: header2}).then(async res2 => {
-                  if (res2.code !== '200') {
-                    reject('上传失败，请重试')
+                // 2.2 后台返回null，说明分片不存在，则带着文件上传该分片
+                await this.$request({
+                  url: '/upload/chunks/resume/second', method: 'post',
+                  headers: {skipRepeatSubmitCheck: true, 'Content-Type': 'multipart/form-data'},
+                  data: {
+                    chunkNumber: i,// 分片索引
+                    totalChunks: chunks,// 总分片数
+                    tempFileName: file.name,// 原始文件名
+                    uploadId: uId,// 文件ID（断点续传唯一标识，用于合并分片文件等）
+                    path: this.folder,// 服务端存储路径，可为空
+                    file: cFile,// 分片文件
+                    ...this.paramsData,// 其他参数
                   }
+                }).then(async res2 => {
                   this.uploadProcess(res2.data, i, chunks, uId)
                 })
               }
