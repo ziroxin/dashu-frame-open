@@ -2,6 +2,8 @@ package com.kg.component.utils;
 
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.RSA;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * RSA方式，非对称加密、解密
@@ -13,16 +15,29 @@ import cn.hutool.crypto.asymmetric.RSA;
  * @author ziro
  * @date 2023/6/29 9:57
  */
+@Component
 public class MyRSAUtils {
-    /**
-     * 公钥
-     */
-    private static final String RSA_PUBLIC_KEY_DEFAULT = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCdSR523juSOUKRfyCwxLMnueQ5HbFH3ORgSzsIFIuz40lUIeZqRPjNkFFBbV159XQfXGs0pfoX68Y+ylTdWaCCeHHxNjx+qVkAE9tMyosxDXSUj+Yz8ruZA920u0ne2VSVZd41AtrlLaM8DaFVOfC7dngFx12rosfSlxrx0yPU8wIDAQAB";
+    /** 公钥 */
+    private static String RSA_PUBLIC_KEY_DEFAULT;
+    /** 私钥 */
+    private static String RSA_PRIVATE_KEY_DEFAULT;
+    /** 分块加密的分隔符 */
+    private static String RSA_SEPARATOR;
 
-    /**
-     * 私钥
-     */
-    private static final String RSA_PRIVATE_KEY_DEFAULT = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAJ1JHnbeO5I5QpF/ILDEsye55DkdsUfc5GBLOwgUi7PjSVQh5mpE+M2QUUFtXXn1dB9cazSl+hfrxj7KVN1ZoIJ4cfE2PH6pWQAT20zKizENdJSP5jPyu5kD3bS7Sd7ZVJVl3jUC2uUtozwNoVU58Lt2eAXHXauix9KXGvHTI9TzAgMBAAECgYBF2l1vSU+Hp2qLF7y7BQDUGdjkDO3ZDp9WrNKwyf8piz3b4Zplg/BDy15rAllLetlxvCfYoAYsbYgEBvQdwlpoINyt3WjCfwaOH6CRI2AtgI90D6qLk+1ejQuepzzitCKId5gvu0uOQbYxo4YMiszDzH15FjqnLODQ7VSWO2vCYQJBAPpVxeGZ2C0hFNgNZWF5wGubMqEYXdMOqO2B/Fo1k3oO8TWhuT+4PupXMHtvVWWu1py/KzVTAGZNyR1CiZyjnMsCQQCg2EwaBF5UUCYk0xYmXpp5c7ysnzErgYBztihWbFrX2LsgNInN6EBvjT4hNjz3sQcfwfy3jDac5HIocGVl9gt5AkBZRIDd5Ahsf2F5cb13Nv1g4eT6AUBj5NRkbXfZi0VdvzpQj60JheAZnKHTQm5HZkNtfdYgm8qGsLJI1tNPoiBlAkBJAcSRLphuZq7ZmiJ8qgYtyHXEWMGlwLNAUlc+2xHk1VAijxZZqujMeWzRAGBuASF9rbx6x57mWd7jMhkkTajpAkEApVakMWfoALWG/zigX6CiuIDXuPqn1Qh73AR5C3ypPUNbYCReJx9G5gxDohtqiHBxY9rYqR1wR7pWFanmMTGlPw==";
+    @Value("${com.kg.rsa.publicKey}")
+    public void setRsaPublicKey(String publicKey) {
+        MyRSAUtils.RSA_PUBLIC_KEY_DEFAULT = publicKey;
+    }
+
+    @Value("${com.kg.rsa.privateKey}")
+    public void setRsaPrivateKey(String privateKey) {
+        MyRSAUtils.RSA_PRIVATE_KEY_DEFAULT = privateKey;
+    }
+
+    @Value("${com.kg.rsa.separator}")
+    public void setRsaSeparator(String separator) {
+        MyRSAUtils.RSA_SEPARATOR = separator;
+    }
 
     /**
      * 公钥加密
@@ -65,6 +80,15 @@ public class MyRSAUtils {
      */
     public static String decryptPrivate(String data, String privateKey) {
         RSA rsa = new RSA(privateKey, null);
+        // 前端分块加密时，需要分块解密，然后拼接
+        if (data.contains(RSA_SEPARATOR)) {
+            String[] arr = data.split(RSA_SEPARATOR);
+            StringBuilder sb = new StringBuilder();
+            for (String s : arr) {
+                sb.append(rsa.decryptStr(s, KeyType.PrivateKey));
+            }
+            return sb.toString();
+        }
         return rsa.decryptStr(data, KeyType.PrivateKey);
     }
 
@@ -110,21 +134,24 @@ public class MyRSAUtils {
      */
     public static String decryptPublic(String data, String publicKey) {
         RSA rsa = new RSA(null, publicKey);
+        // 前端分块加密时，需要分块解密，然后拼接
+        if (data.contains(RSA_SEPARATOR)) {
+            String[] arr = data.split(RSA_SEPARATOR);
+            StringBuilder sb = new StringBuilder();
+            for (String s : arr) {
+                sb.append(rsa.decryptStr(s, KeyType.PublicKey));
+            }
+            return sb.toString();
+        }
         return rsa.decryptStr(data, KeyType.PublicKey);
     }
 
     public static void main(String[] args) {
-        String str = "abcdziro1234";
-        // 1.公钥加密，私钥解密
-        String enStr = encryptPublic(str);
-        System.out.println(enStr);
-        System.out.println(decryptPrivate(enStr));
-        // 2.私钥加密，公钥解密
-        String enStr2 = encryptPrivate(str);
-        System.out.println(enStr2);
-        System.out.println(decryptPublic(enStr2));
+        // @ziroxin 2025-5-19
+        // 由于公钥和私钥改为配置文件配置，main内不能直接调用加密解密方法
+        // 可用示例见：见 com.kg.other.OtherTest.java 单元测试类 testMyRSA() 方法
 
-        // 3.生成公钥和私钥
+        // 生成公钥和私钥
         RSA rsa = new RSA();
         System.out.println("--- 公钥base64 ---");
         System.out.println(rsa.getPublicKeyBase64());
