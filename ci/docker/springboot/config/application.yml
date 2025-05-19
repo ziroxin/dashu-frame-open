@@ -37,9 +37,7 @@ spring:
   #thymeleaf配置
   thymeleaf:
     enabled: true
-    prefix:
-      - classpath:/static/
-      - classpath:/templates/
+    prefix: classpath:/static/
     suffix: .html
     encoding: UTF-8
     cache: false
@@ -56,7 +54,7 @@ mybatis-xml-reload:
 #自定义配置
 com.kg:
   #配置本项目 页面地址 和 api接口地址
-  vueBaseUrl: http://localhost:9527
+  vueBaseUrl: http://localhost
   apiBaseUrl: ${com.kg.vueBaseUrl}/dashuserver
   #文件上传配置
   file:
@@ -213,6 +211,7 @@ com.kg:
     time: 5
     #限制时间内请求限制次数
     limit: 200
+  #OSS相关配置
   oss:
     aliyun:
       #阿里云子账号AccessKey和Secret(至少要有oss权限和sts权限）
@@ -230,6 +229,14 @@ com.kg:
       domain: ${com.kg.oss.aliyun.host}
       #临时访问凭证有效期，单位：秒
       stsExpire: 300
+  #RSA加密配置
+  rsa:
+    #默认公钥
+    publicKey: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCdSR523juSOUKRfyCwxLMnueQ5HbFH3ORgSzsIFIuz40lUIeZqRPjNkFFBbV159XQfXGs0pfoX68Y+ylTdWaCCeHHxNjx+qVkAE9tMyosxDXSUj+Yz8ruZA920u0ne2VSVZd41AtrlLaM8DaFVOfC7dngFx12rosfSlxrx0yPU8wIDAQAB
+    #默认私钥
+    privateKey: MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAJ1JHnbeO5I5QpF/ILDEsye55DkdsUfc5GBLOwgUi7PjSVQh5mpE+M2QUUFtXXn1dB9cazSl+hfrxj7KVN1ZoIJ4cfE2PH6pWQAT20zKizENdJSP5jPyu5kD3bS7Sd7ZVJVl3jUC2uUtozwNoVU58Lt2eAXHXauix9KXGvHTI9TzAgMBAAECgYBF2l1vSU+Hp2qLF7y7BQDUGdjkDO3ZDp9WrNKwyf8piz3b4Zplg/BDy15rAllLetlxvCfYoAYsbYgEBvQdwlpoINyt3WjCfwaOH6CRI2AtgI90D6qLk+1ejQuepzzitCKId5gvu0uOQbYxo4YMiszDzH15FjqnLODQ7VSWO2vCYQJBAPpVxeGZ2C0hFNgNZWF5wGubMqEYXdMOqO2B/Fo1k3oO8TWhuT+4PupXMHtvVWWu1py/KzVTAGZNyR1CiZyjnMsCQQCg2EwaBF5UUCYk0xYmXpp5c7ysnzErgYBztihWbFrX2LsgNInN6EBvjT4hNjz3sQcfwfy3jDac5HIocGVl9gt5AkBZRIDd5Ahsf2F5cb13Nv1g4eT6AUBj5NRkbXfZi0VdvzpQj60JheAZnKHTQm5HZkNtfdYgm8qGsLJI1tNPoiBlAkBJAcSRLphuZq7ZmiJ8qgYtyHXEWMGlwLNAUlc+2xHk1VAijxZZqujMeWzRAGBuASF9rbx6x57mWd7jMhkkTajpAkEApVakMWfoALWG/zigX6CiuIDXuPqn1Qh73AR5C3ypPUNbYCReJx9G5gxDohtqiHBxY9rYqR1wR7pWFanmMTGlPw==
+    #分块加密的分隔符（用于解密时，分块解密）
+    separator: '@dashu@'
 
 #输出日志配置（日志级别：trace/debug/info/warn/error）
 logging.level:
