@@ -41,7 +41,7 @@ export default {
     })
     // 获取下载链接
     request({url: url, method: 'get', params}).then(async (res) => {
-      saveAs(baseURL + res.data.data, filename);
+      saveAs(baseURL + res.data, filename);
       downloadLoadingInstance.close()
     }).catch((r) => {
       console.error(r)
