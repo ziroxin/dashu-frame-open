@@ -69,10 +69,10 @@
         说明：断点续传，是把文件分片，每次上传前，检测分片是否已上传。若已上传，则跳过；未上传的则继续上传。
       </div>
       <div class="uploadPanel">
-        <file-chunk-resume upload-server-url="/upload/chunks/resume" upload-dir="testChunksResume"
-                           mime-types=".zip,.rar"
-                           :max-file-size="300*1024*1024" :chunk-size="10*1024*1024"
-                           key="chunkResume"></file-chunk-resume>
+        <file-upload-breakpoint-resume folder="testChunksResume" key="chunkResume"
+                                       accept=".zip,.rar"
+                                       tip-info="文件断点续传上传，最大支持300M，分片大小10M，支持zip、rar格式"
+                                       :limit-size="300*1024*1024" :chunk-size="10*1024*1024"/>
       </div>
       <div style="text-align: center;margin-top: 30px;">
         <a href="http://docs.java119.cn/use/comm-fileupload2.html#_2-%E6%96%87%E4%BB%B6%E6%96%AD%E7%82%B9%E7%BB%AD%E4%BC%A0"
@@ -174,11 +174,11 @@ import FileOssUpload from "@/components/Upload/FileOssUpload.vue";
 import JsonViewer from 'vue-json-viewer'
 import FileUpload from "@/components/Upload/FileUpload.vue";
 import FileSecond from "@/views/demo/files/FileSecond.vue";
-import FileChunkResume from "@/views/demo/files/FileChunkResume.vue";
 import PluploadChunk from "@/views/demo/files/PluploadChunk.vue";
+import FileUploadBreakpointResume from "@/components/Upload/FileUploadBreakpointResume.vue";
 
 export default {
-  components: {PluploadChunk, FileChunkResume, FileSecond, FileUpload, FileOssUpload, JsonViewer},
+  components: {FileUploadBreakpointResume, PluploadChunk, FileSecond, FileUpload, FileOssUpload, JsonViewer},
   data() {
     return {
       // 上传类型：normal=普通上传;chunk=分片上传;chunkResume=断点续传;second=秒传;oss=OSS上传（阿里云）
