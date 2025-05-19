@@ -3,11 +3,14 @@ package com.kg.other;
 import cn.hutool.core.util.ZipUtil;
 import cn.hutool.cron.CronUtil;
 import cn.hutool.cron.task.Task;
+import com.kg.component.utils.MyRSAUtils;
 import com.kg.component.utils.TimeUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.zip.ZipFile;
 
@@ -17,6 +20,19 @@ import java.util.zip.ZipFile;
  */
 @SpringBootTest
 public class OtherTest {
+
+    @Test
+    public void testMyRSA() throws UnsupportedEncodingException {
+        // todo: 这段文字加密问题
+        String aa = MyRSAUtils.encryptPublic("您正在使用阿里云短信测试服务，体验验证码是：${code}，如非本人操作，请忽略本短信！");
+        System.out.println(aa);
+        System.out.println(MyRSAUtils.decryptPrivate(aa));
+        String bb = MyRSAUtils.decryptPrivate("kEUl6hEmvtKd4rTJEoq2w0fXgWqhZe2BBMy1Hm9ap3A2IDTywrrGYVKChnZ4xl8OGznooZxmwpZA/ifgkuF5d0KwSd5GD/rQr70vMKOgOHUAsWrzYnKX9SkOJLGVJxw+SeYRp+tMMXaHnPkLSng74FZTfbK292S6J4gClgupdd8=@dashu@j59KAMTuoxkImooW4V+HQjUOzJHLd+0HPk9aNFstUkEI/oFBTmy+/jci/6V2o5WB01a/NJYa2LJgo59tgIM6XytTDASqPJuyDJGKdlqLQpuGn/hSW+MlvdMLsdutpxV8scMMjinF6+/3HTt+iX+xJRkTb4Et8AN6JJK0Df9Am0E=@dashu@mcPs53eCdOXgXZx+16Eqxs5Xlw7nwAqhAAE8iuKYFdS7P261gUBLk8eny1j8gdubmc1uOokY8HGZmCzVj+U0bf8R09i+TuH++VYsl43ab5Ac0h47UBqIQXsyaHTjf9LTX0nqiPSSM3+uzAu3DQAv/ettYGo6m/hu84/YYkzefDA=@dashu@WkhKlKJLUFHGbHoUv9Vxa1vEavAPTiAbquNGMU/se7EeirqBw/fU4jZWLcYTxgyUJbsB5xnxt6KfjcqF6vQnCehfhVkpdzUPFAUTqDdgVKsGJHLJZiE/MU1UvhetVrtvPq9XLjLVDthhtYbl0RFvt91LDJabiJ/8WrGxJT1gZos=");
+        System.out.println(bb);
+        System.out.println(URLDecoder.decode(bb, "utf-8"));
+        System.out.println(MyRSAUtils.decryptPrivate(""));
+    }
+
 
     @Test
     public void test() throws IOException {
