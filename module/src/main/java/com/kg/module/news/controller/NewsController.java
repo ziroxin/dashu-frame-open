@@ -130,8 +130,10 @@ public class NewsController {
             String newsId = GuidUtils.getUuid();
             // 通知用户
             MessageToBaseDTO msg = JSONUtil.toBean(JSONUtil.toJsonStr(newsDTO), MessageToBaseDTO.class);
-            msg.setJoinId(newsId);
-            messageService.send(msg);
+            if (StringUtils.hasText(msg.getMsgTitle())) {
+                msg.setJoinId(newsId);
+                messageService.send(msg);
+            }
             // 保存news
             News news = newsConvert.dtoToEntity(newsDTO);
             news.setNewsId(newsId);
