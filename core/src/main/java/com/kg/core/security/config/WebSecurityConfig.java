@@ -3,6 +3,7 @@ package com.kg.core.security.config;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.CharsetUtil;
 import com.kg.core.security.filter.JwtTokenAuthenticationFilter;
+import com.kg.core.security.filter.DecryptHttpServletRequestFilter;
 import com.kg.core.security.handler.SimpleAccessDeniedHandler;
 import com.kg.core.security.handler.SimpleAuthenticationEntryPoint;
 import com.kg.core.security.util.MyPasswordEncoder;
@@ -38,6 +39,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Resource
     private JwtTokenAuthenticationFilter jwtTokenAuthenticationFilter;
+    @Resource
+    private DecryptHttpServletRequestFilter decryptHttpServletRequestFilter;
     @Resource
     private SimpleAccessDeniedHandler accessDeniedHandler;
     @Resource
@@ -98,6 +101,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 配置JwtToken过滤器，早于用户名密码验证过滤器
         http.addFilterBefore(jwtTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        // 配置请求参数（data和params）加密/解密过滤器，早于JwtToken过滤器
+         http.addFilterBefore(decryptHttpServletRequestFilter, JwtTokenAuthenticationFilter.class);
 
         // 配置异常的拦截器
         http.exceptionHandling()
