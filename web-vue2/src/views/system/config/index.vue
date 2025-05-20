@@ -77,7 +77,9 @@
 
         <el-form-item label="是否系统参数" prop="cfgIsSys"
                       :rules="[{required: true, message: '是否系统参数不能为空'}]">
-          <el-radio-group v-model="temp.cfgIsSys" size="small">
+          <!-- 系统参数，不能改成非系统参数 -->
+          <el-tag type="primary" v-if="dialogType==='update'&&temp.noUpdateCfgIsSys==='1'">是</el-tag>
+          <el-radio-group v-else v-model="temp.cfgIsSys" size="small">
             <el-radio-button label="1">是</el-radio-button>
             <el-radio-button label="0">否</el-radio-button>
           </el-radio-group>
@@ -199,6 +201,7 @@ export default {
       } else {
         // 修改弹窗
         this.temp = Object.assign({}, this.tableSelectRows[0])
+        this.temp.noUpdateCfgIsSys = this.temp.cfgIsSys// 如果是系统参数，设置不能修改该属性
         this.dialogType = 'update'
         this.dialogFormVisible = true
         this.$nextTick(() => {

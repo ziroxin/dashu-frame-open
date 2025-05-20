@@ -3,7 +3,7 @@
     <div v-for="item in folders" v-loading="isLoading">
       <el-divider>当前文件夹：{{ item.fileOldName }}</el-divider>
       <!-- 文件显示 -->
-      <img-view :file-list="item.children" :show-check="true" v-model="selectedFileList"/>
+      <files-view :file-list="item.children" :show-check="true" v-model="selectedFileList"/>
       <!-- 文件上传 -->
       <el-divider></el-divider>
       <div style="display: flex;justify-content: space-between;align-items: center;">
@@ -15,7 +15,7 @@
         </div>
         <file-upload v-model="uploadFileList" :action="$baseServer+'/filesStatic/zFilesStatic/upload'"
                      :params-data="{parentId: item.fileId}" :limit-size="1024*1024*2" :show-file-list="false"
-                     accept=".jpg,.jpeg,.png,.gif" tip-info="只允许上传.jpg,.jpeg,.png,.gif格式文件"/>
+                     accept=".jpg,.jpeg,.png,.gif,.pdf" tip-info="只允许上传jpg、jpeg、png、gif、pdf格式文件，最大2MB"/>
       </div>
     </div>
   </div>
@@ -25,11 +25,11 @@
 <script>
 import request from "@/utils/request";
 import FileUpload from "@/components/Upload/FileUpload.vue";
-import ImgView from "@/views/system/staticImg/ImgView.vue";
+import FilesView from "@/components/Upload/FilesView.vue";
 
 export default {
   props: ['currentParentId'],
-  components: {ImgView, FileUpload},
+  components: {FilesView, FileUpload},
   data() {
     return {
       // 加载图片列表

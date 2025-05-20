@@ -2,7 +2,7 @@
   <div class="app-container" v-loading="isLoading">
     <el-row :gutter="24">
       <el-col :span="12">
-        <el-card style="height: calc(100vh - 125px)">
+        <el-card style="height: calc(100vh - 125px);overflow: auto">
           <div slot="header">
             <span><i class="el-icon-collection"></i> 缓存列表</span>
             <el-button style="float: right; padding: 3px 0" type="text" icon="el-icon-refresh-right"
@@ -37,7 +37,7 @@
           <el-form :model="cacheForm">
             <el-row :gutter="32" v-if="cacheForm.key">
               <el-col :offset="1" :span="22">
-                <el-form-item label="缓存名称:" prop="cacheName">
+                <el-form-item label="缓存键名:" prop="cacheName">
                   <el-input :value="cacheForm.key" :readOnly="true"/>
                 </el-form-item>
               </el-col>
@@ -47,7 +47,7 @@
                 </el-form-item>
               </el-col>
               <el-col :offset="1" :span="22">
-                <el-form-item label="缓存键名:" prop="cacheKey">
+                <el-form-item label="缓存过期时间:" prop="cacheKey">
                   <el-input :value="cacheForm.expireTime===-1?'永不过期':cacheForm.expireTime" :readOnly="true"/>
                 </el-form-item>
               </el-col>
