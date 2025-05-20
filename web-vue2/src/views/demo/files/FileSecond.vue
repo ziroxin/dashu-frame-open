@@ -16,7 +16,7 @@
         <div v-if="isCopy" style="color: #dd1f29;">文件拷贝地址（业务表文件地址）:{{ uploadData.copyPath }}</div>
       </div>
     </div>
-    <div v-show="!uploadData" class="upload">
+    <div v-show="!uploadData" class="upload" v-loading="isLoading">
       <label for="fileInput" class="fileInputButton">
         <icon-show icon="el-icon-plus"></icon-show>
         选择文件
@@ -63,6 +63,8 @@ export default {
       percentage: 0,
       // 已上传完成内容
       uploadData: null,
+      // 是否正在上传
+      isLoading: false,
     }
   },
   methods: {
@@ -78,6 +80,7 @@ export default {
       }
     },
     async submitUpload() {
+      this.isLoading = true
       // 上传前，校验文件秒传表
       await this.getChunkFileMd5(this.currentFile, async secondMd5 => {
         const params = {secondMd5: secondMd5, isCopy: this.isCopy, path: this.uploadDir}
@@ -92,6 +95,7 @@ export default {
                 console.log('准备分片上传')
                 this.chunkFile(this.currentFile, generateUUID())
               }
+              this.isLoading = false
             })
       })
     },
