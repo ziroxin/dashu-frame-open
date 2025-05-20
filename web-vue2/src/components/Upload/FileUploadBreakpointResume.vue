@@ -19,7 +19,10 @@
 <template>
   <div class="upload">
     <!-- 选择文件上传按钮 -->
-    <label for="fileIpt" class="fileInputButton">
+    <label v-if="isUploading" class="fileInputButton">
+      <el-icon class="el-icon-loading"/>
+      正在上传...</label>
+    <label v-else for="fileIpt" class="fileInputButton">
       <el-icon class="el-icon-upload2"/>
       {{ btnTitle }}
       <input type="file" id="fileIpt" ref="fileIpt" @change="handleFileSelected" style="display:none" :accept="accept">
@@ -43,7 +46,8 @@
           </div>
         </div>
         <!-- 文件上传进度条 -->
-        <el-progress :stroke-width="2" :percentage="item.percentage" v-if="item.percentage<100"/>
+        <el-progress :stroke-width="2" :percentage="item.percentage" v-if="item.percentage<100"
+                     style="margin-top:5px;"/>
       </div>
     </template>
   </div>
@@ -84,6 +88,8 @@ export default {
     return {
       // 已上传完成内容
       fileList: [],
+      // 是否正在上传
+      isUploading: false
     }
   },
   mounted() {
@@ -94,14 +100,16 @@ export default {
   },
   methods: {
     // 选择文件上传
-    handleFileSelected(event) {
+    async handleFileSelected(event) {
       // 上传前检测文件大小和类型等
       if (this.beforeUpload(event.target.files[0])) {
+        this.isUploading = true
         let f = event.target.files[0]
         let fid = generateUUID()
         this.fileList.push({file: f, percentage: 0, fileId: fid, fileOldName: f.name, fileSize: f.size})
-        this.chunkFile(f, fid)
+        await this.chunkFile(f, fid)
         this.$refs.fileIpt.value = '' // 清空选择文件框
+        this.isUploading = false
       }
     },
     // 分片上传方法
@@ -114,6 +122,7 @@ export default {
         const end = start + this.chunkSize
         const cFile = file.slice(start, end) // 使用slice方法获取分片
         if (!this.fileList.some(item => item.fileId === uId)) {
+          this.isUploading = false
           break // 文件已移除（手动点击删除按钮），停止上传
         }
         await new Promise(async (resolve, reject) => {
@@ -176,6 +185,7 @@ export default {
           return item
         })
         this.$emit('input', this.fileList)
+        this.isUploading = false
       } else {
         // 分片上传完成，更新进度条
         this.fileList.forEach(item => {
