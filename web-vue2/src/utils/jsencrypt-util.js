@@ -9,7 +9,7 @@ const config = {
   // 最大分块大小
   maxChunkSize: 117,
   // 是否全局加密
-  isEncrypt: true,
+  isEncrypt: false,
   // 不加密白名单（全局加密开启后不加密的接口，例如：验证码）
   whiteList: ['/captcha/get']
 }
