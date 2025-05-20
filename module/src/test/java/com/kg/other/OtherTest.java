@@ -23,7 +23,6 @@ public class OtherTest {
 
     @Test
     public void testMyRSA() throws UnsupportedEncodingException {
-        // todo: 这段文字加密问题
         String aa = MyRSAUtils.encryptPublic("您正在使用阿里云短信测试服务，体验验证码是：${code}，如非本人操作，请忽略本短信！");
         System.out.println(aa);
         System.out.println(MyRSAUtils.decryptPrivate(aa));

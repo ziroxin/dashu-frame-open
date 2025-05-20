@@ -17,6 +17,13 @@
         </el-button>
       </div>
     </div>
+    <div style="margin-bottom:10px;font-size:12px;line-height:20px;color:#666;border:1px dashed #ddd;padding:5px;border-radius:5px;">
+      <b>用途：</b>静态资源管理&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <b>统一文件前缀：</b>{{ copyUrlBase }}<br/>
+      <b>说明：</b>静态资源上传后，不修改原文件名；如果上传同名文件，需要先删除旧文件<br/>
+      <b>其他：</b>允许上传的文件格式、大小等，根据开发需要在FolderViews.vue文件中自行修改<br/>
+      <b>举例：</b>小程序开发时，有文件大小限制等，可以将图片、附件等资源上传到这里，直接使用链接引用，建议统一设置文件前缀，方便后期修改域名
+    </div>
     <!-- 静态资源文件表-列表 -->
     <el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange"
               v-loading="isLoading">

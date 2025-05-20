@@ -24,12 +24,18 @@
         <template v-if="'jpg,jpeg,png,gif,bpm'.includes(file.fileExtend.toLowerCase())">
           <div class="file-img">
             <el-checkbox v-if="showCheck" :value="selectedFileList.includes(file)" @change="checkFile($event,file)"/>
-            <el-image :src="$baseServer+file.fileUrl" fit="cover" class="icons"
-                      :preview-src-list="[$baseServer+file.fileUrl]"/>
+            <el-tooltip content="点击查看大图" placement="top">
+              <el-image :src="$baseServer+file.fileUrl" fit="cover" class="icons"
+                        :preview-src-list="[$baseServer+file.fileUrl]"/>
+            </el-tooltip>
           </div>
           <div class="file-name">
-            <el-tooltip :content="file.fileOldName">
-              <span style="width:100%;text-align:center;cursor:default;">点击图片查看大图</span>
+            <el-tooltip>
+              <div slot="content" style="line-height: 20px;">
+                文件名：{{ file.fileOldName }}<br/>图片地址：{{ copyUrlBase + file.fileUrl }}
+              </div>
+              <span style="width:100%;text-align:center;cursor:pointer;"
+                    v-clipboard:copy="copyUrlBase+file.fileUrl">点击复制图片地址</span>
             </el-tooltip>
           </div>
         </template>
@@ -131,6 +137,12 @@ export default {
       isLoading: false,
       // 选中的文件列表
       selectedFileList: [],
+    }
+  },
+  computed: {
+    // 拷贝路径根地址
+    copyUrlBase() {
+      return this.$baseServer.startsWith('http') ? this.$baseServer : window.location.origin + this.$baseServer
     }
   },
   watch: {

@@ -122,8 +122,7 @@
         上传说明：Oss直传（从后台获取上传凭证，前端直接上传到oss，文件不经过服务器）
       </div>
       <div class="uploadPanel">
-        <file-oss-upload v-model="ossFileIds" oss-folder="demoFolder" :limit="2"
-                         accept=".jpg,.png,.mp4"></file-oss-upload>
+        <file-oss-upload v-model="ossFileIds" oss-folder="demoFolder" :limit="2" accept=".jpg,.png,.mp4"/>
         <el-divider></el-divider>
         <div style="font-size: 12px;margin-top: 10px;color: #666;">
           已上传的fileId：{{ ossFileIds }}
