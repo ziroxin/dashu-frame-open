@@ -103,9 +103,9 @@ export default {
   methods: {
     // 首次加载或刷新页面
     firstOrRefreshLoad() {
-      if (sessionStorage.hasOwnProperty('activeTopMenu')) {
+      if (sessionStorage.hasOwnProperty(this.$storageKeys.activeTopMenu)) {
         // 刷新
-        this.activeTopMenu = JSON.parse(sessionStorage.getItem('activeTopMenu'))
+        this.activeTopMenu = JSON.parse(sessionStorage.getItem(this.$storageKeys.activeTopMenu))
         const item = this.activeTopMenu;
         const isRouter = this.hasOneShowingChild(item.children, item)
             && (!this.onlyOneChild.children || this.onlyOneChild.noShowingChildren)
@@ -179,7 +179,7 @@ export default {
           }
         }
       }
-      sessionStorage.setItem('activeTopMenu', JSON.stringify(item))
+      sessionStorage.setItem(this.$storageKeys.activeTopMenu, JSON.stringify(item))
       this.activeTopMenu = item
     },
     hasOneShowingChild(children = [], parent) {

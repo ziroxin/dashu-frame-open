@@ -81,7 +81,6 @@ import RightPanel from '@/components/RightPanel'
 import {AppMain, Navbar, NavbarHor, NavbarTopLeft, Settings, Sidebar, TagsView, TopSidebar} from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import {mapState} from 'vuex'
-import Cookies from 'js-cookie';
 import UserEditPassword from '@/views/system/user/UserEditPassword';
 import Breadcrumb from '@/components/Breadcrumb'
 
@@ -114,12 +113,12 @@ export default {
   },
   mounted() {
     this.editPasswordVisible = false
-    if (Cookies.get('isDefaultPassword') === 'true') {
+    if (sessionStorage.getItem(this.$storageKeys.isDefaultPassword) === 'true') {
       this.editPasswordVisible = true
       this.isDefaultPassword = true
       this.editPasswordInfo = '检测到您当前的密码，是系统默认密码，请及时修改！！！'
     }
-    if (Cookies.get('isInvalidPassword') === 'true') {
+    if (sessionStorage.getItem(this.$storageKeys.isInvalidPassword) === 'true') {
       this.editPasswordVisible = true
       this.editPasswordInfo = '检测到您的密码已失效，请修改！！！'
     }

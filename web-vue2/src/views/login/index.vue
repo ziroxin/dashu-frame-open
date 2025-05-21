@@ -96,7 +96,6 @@ import {mapState} from 'vuex'
 import request from '@/utils/request';
 import {encryptRSA} from '@/utils/jsencrypt-util'
 import {imageAdeskVertical, imageUpsplash} from "@/utils/image-data-util";
-import Cookies from 'js-cookie';
 import defaultSettings from '@/settings'
 
 export default {
@@ -153,8 +152,8 @@ export default {
     }
   },
   mounted() {
-    if (localStorage.getItem('currentLoginUserData')) {
-      const userData = JSON.parse(localStorage.getItem('currentLoginUserData'))
+    if (localStorage.getItem(this.$storageKeys.currentLoginUserData)) {
+      const userData = JSON.parse(localStorage.getItem(this.$storageKeys.currentLoginUserData))
       this.loginForm.userName = userData.userName || ''
       this.loginForm.password = userData.password || ''
       this.loginForm.rememberMe = true
@@ -220,12 +219,12 @@ export default {
           data.codeBaseImage = ''// 验证码base64图片不传递
           this.$store.dispatch('user/login', data).then(() => {
             if (this.loginForm.rememberMe) {
-              localStorage.setItem('currentLoginUserData', JSON.stringify({
+              localStorage.setItem(this.$storageKeys.currentLoginUserData, JSON.stringify({
                 userName: this.loginForm.userName,
                 password: this.loginForm.password
               }))
             } else {
-              localStorage.removeItem('currentLoginUserData')
+              localStorage.removeItem(this.$storageKeys.currentLoginUserData)
             }
             const routerMode = this.$router.mode;
             if (defaultSettings.showSettings) {
@@ -243,7 +242,7 @@ export default {
                 // 刷新页面样式
                 const {data} = response
                 if (data) {
-                  Cookies.set('settings', data, {expires: new Date('9999-12-31T23:59:59')})
+                  localStorage.setItem(this.$storageKeys.themeSetting, data)
                   if (routerMode !== 'history') location.reload()
                 }
               })
@@ -291,10 +290,10 @@ export default {
         let skip = 0
         if (forceFlush) {
           // 强制刷新（换一批）
-          localStorage.removeItem('loginBgData')
-          skip = parseInt(localStorage.getItem('loginBgDataSkip')) + 1 || 0
+          localStorage.removeItem(this.$storageKeys.loginBgData)
+          skip = parseInt(localStorage.getItem(this.$storageKeys.loginBgDataSkip)) + 1 || 0
         }
-        let loginBgData = localStorage.getItem('loginBgData')
+        let loginBgData = localStorage.getItem(this.$storageKeys.loginBgData)
         if (loginBgData) {
           this.loginBg = JSON.parse(loginBgData)
         } else {
@@ -306,8 +305,8 @@ export default {
                 for (let i = 0; i < imgs.length; i++) {
                   this.loginBg.push(imgs[i].urls.full)
                 }
-                localStorage.setItem('loginBgData', JSON.stringify(this.loginBg))
-                localStorage.setItem('loginBgDataSkip', skip)
+                localStorage.setItem(this.$storageKeys.loginBgData, JSON.stringify(this.loginBg))
+                localStorage.setItem(this.$storageKeys.loginBgDataSkip, skip)
               }
             })
           } else {
@@ -317,8 +316,8 @@ export default {
                 for (let i = 0; i < imgs.length; i++) {
                   this.loginBg.push(imgs[i].img)
                 }
-                localStorage.setItem('loginBgData', JSON.stringify(this.loginBg))
-                localStorage.setItem('loginBgDataSkip', skip)
+                localStorage.setItem(this.$storageKeys.loginBgData, JSON.stringify(this.loginBg))
+                localStorage.setItem(this.$storageKeys.loginBgDataSkip, skip)
               }
             })
           }

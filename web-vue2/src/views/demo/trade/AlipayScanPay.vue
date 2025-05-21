@@ -49,7 +49,7 @@ export default {
       // 清空二维码
       this.tradePayQRCodeUrl = ''
       // 支付信息
-      this.payData = {...JSON.parse(window.sessionStorage.getItem('payData'))}
+      this.payData = {...JSON.parse(window.sessionStorage.getItem(this.$storageKeys.payData))}
       // 调用支付宝支付
       let data = {...this.payData}
       this.$request({url: '/pay/alipay/scanPay', method: 'post', data})

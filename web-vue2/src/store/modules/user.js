@@ -1,7 +1,7 @@
 import {getInfo, login, logout, refreshToken} from '@/api/user'
 import {getToken, getTokenHeader, removeToken, setToken, setTokenValidTime} from '@/utils/auth'
 import {resetRouter} from '@/router'
-import Cookies from 'js-cookie';
+import storageKeys from '@/utils/storage-keys';
 
 const state = {
   token: getToken(),
@@ -45,8 +45,8 @@ const actions = {
         setTokenValidTime(new Date(data.accessTokenValidTime))
         commit('SET_TOKEN', data.accessToken)
         // 是默认密码
-        Cookies.set('isDefaultPassword', data.defaultPassword)
-        Cookies.set('isInvalidPassword', data.invalidPassword)
+        sessionStorage.setItem(storageKeys.isDefaultPassword, data.defaultPassword)
+        sessionStorage.setItem(storageKeys.isInvalidPassword, data.invalidPassword)
         resolve()
       }).catch(error => {
         reject(error)

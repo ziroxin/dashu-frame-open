@@ -36,7 +36,7 @@ export default {
   methods: {
     getPay() {
       // 支付信息
-      this.payData = {...JSON.parse(window.sessionStorage.getItem('payData'))}
+      this.payData = {...JSON.parse(window.sessionStorage.getItem(this.$storageKeys.payData))}
       // 调用微信支付（微信客户端内）
       // 注意：
       //     1. 只能在微信客户端内完成；

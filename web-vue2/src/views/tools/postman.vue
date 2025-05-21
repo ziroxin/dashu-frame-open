@@ -294,11 +294,11 @@ export default {
       localStorage.setItem(key, JSON.stringify(value));// 保存新的key
       this.historyUrlList.push(key);// 添加上新key
       this.historyUrlList = [...new Set(this.historyUrlList)]// 去重
-      localStorage.setItem('historyKeys', JSON.stringify(this.historyUrlList));
+      localStorage.setItem(this.$storageKeys.historyKeys, JSON.stringify(this.historyUrlList));
     },
     loadHistoryFromCookie() {
       this.historyUrl = ''
-      const allKeys = localStorage.getItem('historyKeys');
+      const allKeys = localStorage.getItem(this.$storageKeys.historyKeys);
       if (allKeys) {
         this.historyUrlList = JSON.parse(allKeys);
       }
@@ -309,7 +309,7 @@ export default {
       }).then(() => {
         localStorage.removeItem(key);
         this.historyUrlList = this.historyUrlList.filter(item => item !== key);
-        localStorage.setItem('historyKeys', JSON.stringify(this.historyUrlList));
+        localStorage.setItem(this.$storageKeys.historyKeys, JSON.stringify(this.historyUrlList));
       })
     },
     changeHistoryUrl(url) {
