@@ -2,6 +2,11 @@ module.exports = {
   title: '大树快速开发平台',
 
   /**
+   * cookie等key值的统一前缀
+   */
+  storageKeyPrefix: 'dashu',
+
+  /**
    * @type {boolean} true | false
    * @description 是否显示右侧面板（设置）
    */

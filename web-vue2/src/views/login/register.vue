@@ -117,7 +117,6 @@
 <script>
 import {encryptRSA} from '@/utils/jsencrypt-util'
 import {imageAdeskVertical} from "@/utils/image-data-util";
-import Cookies from 'js-cookie';
 import SelectTree from "@/components/SelectTree/index.vue";
 
 export default {
@@ -242,10 +241,10 @@ export default {
         let skip = 0
         if (forceFlush) {
           // 强制刷新（换一批）
-          Cookies.remove('loginBgData')
-          skip = parseInt(Cookies.get('loginBgDataSkip')) + 1 || 0
+          localStorage.removeItem(this.$storageKeys.loginBgData)
+          skip = parseInt(localStorage.getItem(this.$storageKeys.loginBgDataSkip)) + 1 || 0
         }
-        let loginBgData = Cookies.get('loginBgData')
+        let loginBgData = localStorage.getItem(this.$storageKeys.loginBgData)
         if (loginBgData) {
           this.loginBg = JSON.parse(loginBgData)
         } else {
@@ -256,8 +255,8 @@ export default {
               for (let i = 0; i < imgs.length; i++) {
                 this.loginBg.push(imgs[i].img)
               }
-              Cookies.set('loginBgData', JSON.stringify(this.loginBg))
-              Cookies.set('loginBgDataSkip', skip)
+              localStorage.setItem(this.$storageKeys.loginBgData, JSON.stringify(this.loginBg))
+              localStorage.setItem(this.$storageKeys.loginBgDataSkip, skip)
             }
           })
         }

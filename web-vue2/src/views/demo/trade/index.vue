@@ -163,7 +163,7 @@ export default {
       this.dialogFormVisible = true
     },
     toPay() {
-      window.sessionStorage.setItem('payData', JSON.stringify(this.payData))
+      window.sessionStorage.setItem(this.$storageKeys.payData, JSON.stringify(this.payData))
       if (this.openPayType === 0) {
         // 微信PC扫码支付
         this.$router.replace('/demo/trade/WechatPcPay')

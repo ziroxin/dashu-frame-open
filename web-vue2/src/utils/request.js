@@ -5,6 +5,7 @@ import {getToken, getTokenRefreshInterval, getTokenValidTime} from '@/utils/auth
 import {isWhiteList} from '@/router/white-list'
 import errorCode, {notLoginError} from '@/utils/error-code'
 import {encryptRSA, isEncrypt} from "@/utils/jsencrypt-util";
+import storageKeys from '@/utils/storage-keys';
 
 // 创建axios
 const service = axios.create({
@@ -33,7 +34,7 @@ service.interceptors.request.use(
             store.dispatch('user/refreshToken')
           }
         }
-        // 给每个请求头，加上TOKEN：UserJwtToken
+        // 给每个请求头，加上TOKEN：UserJwtToken（key和后台api相对应，不要修改）
         config.headers['UserJwtToken'] = hasToken
       }
     }
@@ -69,7 +70,7 @@ function requestCheckRepeatSubmit(config) {
     // 处理重复提交逻辑
     try {
       // 1.尝试从sessionStorage中取出上一次请求对象
-      const o1 = JSON.parse(sessionStorage.getItem('oldReqObj'))
+      const o1 = JSON.parse(sessionStorage.getItem(storageKeys.oldReqObj))
       // 2.同一请求，且间隔时间小于 repeatSubmitTime 则视为重复提交
       if (o1.data === reqObj.data && o1.url === reqObj.url && (reqObj.time - o1.time) < repeatSubmitTime) {
         return Promise.reject(new Error('数据正在处理，请勿重复提交'))
@@ -77,7 +78,7 @@ function requestCheckRepeatSubmit(config) {
     } catch (e) {
     }
     // 保存本次请求对象到sessionStorage
-    sessionStorage.setItem('oldReqObj', JSON.stringify(reqObj))
+    sessionStorage.setItem(storageKeys.oldReqObj, JSON.stringify(reqObj))
   }
 }
 

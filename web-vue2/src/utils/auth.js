@@ -1,9 +1,10 @@
 import Cookies from 'js-cookie'
+import storageKeys from '@/utils/storage-keys';
 
 // token信息
-const TokenKey = 'Admin-Token'
+const TokenKey = storageKeys.tokenKey
 // token过期时间
-const TokenValidTimeKey = 'Admin-Token-Valid-Time'
+const TokenValidTimeKey = storageKeys.tokenValidTimeKey
 // token到期前多久，刷新token（默认：60分钟；每次请求api前检测request.js中）
 // 注意：该时间必须小于后台配置的jwtToken有效期！！！
 const TokenRefreshInterval = 60 * 60 * 1000

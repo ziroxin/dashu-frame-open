@@ -54,7 +54,7 @@ export default {
   methods: {
     init() {
       // 支付信息
-      this.payData = {...JSON.parse(window.sessionStorage.getItem('payData'))}
+      this.payData = {...JSON.parse(window.sessionStorage.getItem(this.$storageKeys.payData))}
       // 调用微信支付
       let data = {...this.payData}
       this.$request({url: '/pay/wechat/getPayH5', method: 'post', data})

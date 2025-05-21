@@ -2,9 +2,10 @@
  * 最新访问路由列表
  * 功能：保存/获取，最近访问的 n 个路由列表
  */
+import storageKeys from '@/utils/storage-keys';
 
 // 保存的key
-const lastedRoutesKey = "LastedRoutes@";
+const lastedRoutesKey = storageKeys.lastedRoutesKey;
 // 最多保存几个路由，默认10
 const saveLength = 10;
 

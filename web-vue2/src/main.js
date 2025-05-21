@@ -1,6 +1,5 @@
 import Vue from 'vue'
 
-import Cookies from 'js-cookie'
 // CSS重置工具，纠正错误和常见的浏览器的不一致性
 import 'normalize.css/normalize.css'
 
@@ -33,13 +32,14 @@ import {loadTheme} from '@/utils/load-theme'
 import PATCH_ElOverlayAutoClose from '@/utils/el-overlay-auto-close';
 import homeRouter from '@/router/homeRouter'
 import loginRouter from '@/router/loginRouter'
+import storageKeys from '@/utils/storage-keys';
 
 // 加载自定义主题
-loadTheme(Cookies.get('settings') ? JSON.parse(Cookies.get('settings')).theme : '#4080FF')
+loadTheme(localStorage.getItem(storageKeys.themeSetting) ? JSON.parse(localStorage.getItem(storageKeys.themeSetting)).theme : '#4080FF')
 // element-ui配置
 Vue.use(Element, {
   // 默认大小
-  size: Cookies.get('size') || 'medium'
+  size: sessionStorage.getItem(storageKeys.size) || 'medium'
   // 英文语言包，如果使用中文，无需设置，请删除
   //, locale: enLang
 })
@@ -67,7 +67,8 @@ Object.assign(Vue.prototype, {
   $windowHeight: windowHeight,
   $request: request,
   $homeRouter: homeRouter,
-  $loginRouter: loginRouter
+  $loginRouter: loginRouter,
+  $storageKeys: storageKeys
 });
 
 // 开发时不提示生产环境

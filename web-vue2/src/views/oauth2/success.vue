@@ -6,7 +6,6 @@
 </template>
 <script>
 import {setToken, setTokenValidTime} from '@/utils/auth';
-import Cookies from 'js-cookie';
 
 export default {
   name: 'oauth2Success',
@@ -22,8 +21,8 @@ export default {
         setToken(data.accessToken, new Date(data.accessTokenValidTime))
         setTokenValidTime(new Date(data.accessTokenValidTime))
         this.$store.commit('user/SET_TOKEN', data.accessToken)
-        Cookies.set('isDefaultPassword', data.defaultPassword)
-        Cookies.set('isInvalidPassword', data.invalidPassword)
+        sessionStorage.setItem(this.$storageKeys.isDefaultPassword, data.defaultPassword)
+        sessionStorage.setItem(this.$storageKeys.isInvalidPassword, data.invalidPassword)
         // 跳转
         this.$router.push({path: this.redirect || '/', query: this.otherQuery})
       }
