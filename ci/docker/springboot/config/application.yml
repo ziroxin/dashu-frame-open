@@ -54,7 +54,7 @@ mybatis-xml-reload:
 #自定义配置
 com.kg:
   #配置本项目 页面地址 和 api接口地址
-  vueBaseUrl: http://localhost
+  vueBaseUrl: http://localhost:9528
   apiBaseUrl: ${com.kg.vueBaseUrl}/dashuserver
   #文件上传配置
   file:
