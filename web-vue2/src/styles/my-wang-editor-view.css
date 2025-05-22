@@ -1,0 +1,58 @@
+@charset "UTF-8";
+.editor-content-view {
+  border-radius: 5px;
+  margin-top: 20px;
+  overflow-x: auto; }
+
+.editor-content-view p,
+.editor-content-view li {
+  white-space: pre-wrap;
+  /* 保留空格 */ }
+
+.editor-content-view blockquote {
+  border-left: 8px solid #d0e5f2;
+  padding: 10px 10px;
+  margin: 10px 0;
+  background-color: #f1f1f1; }
+
+.editor-content-view table {
+  border-collapse: collapse; }
+
+.editor-content-view td,
+.editor-content-view th {
+  border: 1px solid #ccc;
+  min-width: 50px;
+  height: 20px; }
+
+.editor-content-view th {
+  background-color: #f1f1f1; }
+
+.editor-content-view ul,
+.editor-content-view ol {
+  padding-left: 20px; }
+
+.editor-content-view input[type="checkbox"] {
+  margin-right: 5px; }
+
+/*代码高亮prismjs样式优化*/
+code[class*="language-"], pre[class*="language-"] {
+  text-shadow: 0 0 #fff !important;
+  font-size: 0.8em !important;
+  letter-spacing: 0.05em !important; }
+
+div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span {
+  color: #fff !important;
+  padding: 0.5em 1em !important;
+  margin: 5px !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  cursor: pointer !important; }
+
+div.code-toolbar > .toolbar > .toolbar-item > a:hover, div.code-toolbar > .toolbar > .toolbar-item > button:hover {
+  background: rgba(130, 130, 130, 0.3) !important;
+  color: #D7000F !important; }
+
+pre[class*=language-] > code {
+  border-left: 0px solid #d1d1d1 !important;
+  box-shadow: 0px 0 0 0 #358ccb, 0 0 0 1px #dfdfdf !important; }
+
+/*# sourceMappingURL=my-wang-editor-view.css.map */
