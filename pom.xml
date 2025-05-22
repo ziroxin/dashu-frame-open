@@ -19,8 +19,6 @@
 
     <!-- 子模块 -->
     <modules>
-        <module>component</module>
-        <module>core</module>
         <module>module</module>
     </modules>
 
