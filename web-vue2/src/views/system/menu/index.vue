@@ -17,9 +17,9 @@
         </div>
         <!-- 表格部分 -->
         <el-table ref="dataTable" :data="tableData" row-key="permissionId" :height="this.$windowHeight-200"
-                  border :tree-props="{children: 'children'}" class="data-table-permission"
-                  :default-expand-all="isExpand" highlight-current-row
-                  @selection-change="selectionChangeHandlerOrder">
+                  border highlight-current-row :tree-props="{children: 'children'}" class="data-table-permission"
+                  :default-expand-all="isExpand" @selection-change="selectionChangeHandlerOrder"
+                  @expand-change="expandChangeHandler" :expand-row-keys="Array.from(this.expandRowKeys)">
           <el-table-column type="selection" width="50" header-align="center" align="center"/>
           <el-table-column prop="permissionTitle" label="菜单名称" min-width="35%">
             <template v-slot="{row}">
@@ -96,7 +96,6 @@
         <PermissionButton :current-permission-row="currentPermissionRow" :close-button-table="closeButtonTable"/>
       </el-col>
     </el-row>
-
     <!--    添加和修改菜单窗口-->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="700px"
                :close-on-click-modal="false">
@@ -190,7 +189,7 @@
         <el-tree ref="parentTree" :key="temp2.permissionId" :data="tableData"
                  class="parentDataTree" :style="{height: ($windowHeight-300) + 'px'}"
                  :props="{children: 'children',label: 'permissionTitle'}"
-                 :highlight-current="true" :default-expand-all="true"
+                 :highlight-current="true" :default-expand-all="this.isExpand"
                  :expand-on-click-node="false" node-key="permissionId"
                  :current-node-key.sync="temp2.parentId" @node-click="handleNodeClick"/>
       </el-form>
@@ -230,7 +229,7 @@ export default {
     return {
       // 表格数据
       tableData: [],
-      isExpand: true,
+      isExpand: false,
       // 查询数据条数
       total: 0,
       // 分页属性
@@ -267,6 +266,7 @@ export default {
       temp2: {},
       parentDialogVisible: false,
       currentParentName: '',
+      expandRowKeys: new Set(),
     }
   },
   computed: {
@@ -285,6 +285,14 @@ export default {
       const {data} = await permissionTreeList()
       this.tableData = data
       this.listLoading = false
+    },
+    // 监听展开和收起事件（保存展开状态）
+    expandChangeHandler(row, expanded) {
+      if (expanded) {
+        this.expandRowKeys.add(row.permissionId)
+      } else {
+        this.expandRowKeys.delete(row.permissionId)
+      }
     },
     //展开和收起
     toggleTableOprate() {
