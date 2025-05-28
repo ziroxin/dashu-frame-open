@@ -4,25 +4,18 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.kg.component.file.FilePathConfig;
-import com.kg.component.generator.FastAutoGenerator;
-import com.kg.component.generator.config.OutputFile;
-import com.kg.component.generator.engine.FreemarkerTemplateEngine;
-import com.kg.component.generator.fill.Column;
 import com.kg.component.generator.util.RuntimeUtils;
 import com.kg.component.utils.TimeUtils;
-import com.kg.core.base.dto.BaseDTO;
-import com.kg.core.base.model.BaseEntity;
 import com.kg.core.exception.BaseException;
 import com.kg.core.formGenerator.dto.TableDTO;
 import com.kg.core.formGenerator.dto.TableFieldDTO;
 import com.kg.core.formGenerator.dto.TableInfoDTO;
+import com.kg.core.formGenerator.utils.GeneratorCodeUtils;
 import com.kg.module.generator.entity.ZFormGenerator;
 import com.kg.module.generator.service.ZFormGeneratorService;
 import org.apache.commons.lang3.SystemUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -32,8 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -49,12 +40,8 @@ import java.util.stream.Collectors;
 public class FormGeneratorController {
     @Resource
     private JdbcTemplate jdbcTemplate;
-    @Value("${spring.datasource.url}")
-    private String dbUrl;
-    @Value("${spring.datasource.username}")
-    private String dbUserName;
-    @Value("${spring.datasource.password}")
-    private String dbPassword;
+    @Resource
+    private GeneratorCodeUtils generatorCodeUtils;
     @Resource
     private ZFormGeneratorService formGeneratorService;
 
@@ -62,7 +49,7 @@ public class FormGeneratorController {
      * 获取数据库名称
      */
     private String getMyDbName() {
-        return dbUrl.split("\\?")[0].split("/")[3];// 截取获得数据库名称
+        return generatorCodeUtils.getDbUrl().split("\\?")[0].split("/")[3];// 截取获得数据库名称
     }
 
     /**
@@ -190,7 +177,8 @@ public class FormGeneratorController {
         }
         childTableMap.put(tableDTO.getTableName(), childTableList);// 只有主表存储子表信息
         // ==================================开始执行生成=====================================
-        start(basePath, basePackage, author, tableNames, idTypes, packages, viewPaths, tableDTO, childTableMap);
+        generatorCodeUtils.start(basePath, "module", basePackage, author, "web-vue2",
+                tableNames, idTypes, packages, viewPaths, tableDTO, childTableMap);
         // 打成压缩包
         String zipPath = basePath + ".zip";
         ZipUtil.zip(basePath, zipPath);
@@ -208,104 +196,6 @@ public class FormGeneratorController {
                 .set(ZFormGenerator::getUpdateTime, LocalDateTime.now()).update();
         // 返回下载地址
         return FilePathConfig.switchUrl(zipPath);
-    }
-
-    // 代码生成器开始生成
-    private void start(String basePath, String basePackage, String author, LinkedList<String> tableNames, LinkedList<IdType> idTypes,
-                       LinkedList<String> packages, LinkedList<String> viewPaths, TableDTO tableDTO, Map<String, Object> childTableMap) {
-        for (int i = 0; i < tableNames.size(); i++) {
-            // ===========================================执行生成=======================
-            // 配置文件路径
-            Map<OutputFile, String> pathInfo = new HashMap<>();
-            // 后台和xml代码，输出到java
-            String javaPath = basePath + "/module/src/main/java";
-            pathInfo.put(OutputFile.xml, basePath + "/module/src/main/resources/mapper");
-            // 前台代码，输出到vue
-            pathInfo.put(OutputFile.indexVue, basePath + "/web-vue2/src/views");
-            // 权限脚本，输出到sql
-            pathInfo.put(OutputFile.permissionSql, basePath + "/sql");
-            // 配置生成器
-            int finalIndex = i;
-            FastAutoGenerator.create(dbUrl, dbUserName, dbPassword)
-                    .globalConfig(builder -> {
-                        builder.author(author) // 设置作者
-                                .enableSwagger() // 开启swagger模式
-                                .disableOpenDir()
-                                .outputDir(javaPath); // 指定输出目录
-                    })
-                    .packageConfig(builder -> {
-                        builder.parent(basePackage) // 设置父包名
-                                .moduleName(packages.get(finalIndex)) // 设置父包模块名
-                                // 设置各包路径
-                                .entity("entity")
-                                .dto("dto")
-                                .dtoconvert("dto.convert")
-                                .excelConstant("excels")
-                                .excelOut("excels")
-                                .excelImport("excels")
-                                .service("service")
-                                .serviceImpl("service")
-                                .mapper("mapper")
-                                .xml("mapper")
-                                .controller("controller")
-                                .pathInfo(pathInfo);
-                    })
-                    .strategyConfig(builder -> {
-                        try {
-                            // 设置需要生成的表名
-                            builder.addInclude(tableNames.get(finalIndex));
-                            // ===============indexVue配置
-                            if (viewPaths.size() > finalIndex && StringUtils.hasText(viewPaths.get(finalIndex))) {
-                                builder.indexVueBuilder()
-                                        .templateHtml(URLDecoder.decode(tableDTO.getTemplate(), "UTF-8"))
-                                        .jsData(URLDecoder.decode(tableDTO.getJsData(), "UTF-8"))
-                                        .jsCreated(URLDecoder.decode(tableDTO.getJsCreated(), "UTF-8"))
-                                        .jsMethods(URLDecoder.decode(tableDTO.getJsMethods(), "UTF-8"))
-                                        .templateCss(URLDecoder.decode(tableDTO.getCss(), "UTF-8"))
-                                        .enableFileOverride()
-                                        .viewPath(viewPaths.get(finalIndex))// 前端文件路径
-                                        .permissionSQLBuilder()// ==========permissionSQL配置
-                                        .enableFileOverride();
-                            }
-                            // ====================DTO配置（配置附件子表信息）
-                            LinkedList<String> childTableList = (LinkedList) childTableMap.get(tableNames.get(finalIndex));
-                            if (childTableList != null && childTableList.size() > 0) {
-                                builder.dtoBuilder()
-                                        .enableFileOverride()
-                                        .superClass(BaseDTO.class)
-                                        .childTableList(childTableList)
-                                        .enableLombok();
-                            } else {
-                                builder.dtoBuilder()
-                                        .enableFileOverride()
-                                        .superClass(BaseDTO.class)
-                                        .enableLombok();
-                            }
-                            // =============controller配置
-                            builder.controllerBuilder()
-                                    .enableFileOverride()// 生成覆盖
-                                    .enableRestStyle()// 开启RestController
-                                    .serviceBuilder()// ================service配置
-                                    .enableFileOverride()
-                                    .mapperBuilder()// =================mapper配置
-                                    .enableFileOverride()
-                                    .excelsBuilder()// =================excel配置
-                                    .enableFileOverride()
-                                    .entityBuilder()// =================entity配置
-                                    .enableFileOverride()
-                                    .superClass(BaseEntity.class)
-                                    .idType(idTypes.get(finalIndex))// 生成id类型
-                                    .enableTableFieldAnnotation()// 生成TableField
-                                    .addTableFills(new Column("create_time", FieldFill.INSERT))// 创建时间
-                                    .addTableFills(new Column("update_time", FieldFill.INSERT_UPDATE))// 修改时间
-                                    .enableLombok();// 设置生成lombok格式
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
-                    })
-                    .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板
-                    .execute();
-        }
     }
 
     // 生成表
