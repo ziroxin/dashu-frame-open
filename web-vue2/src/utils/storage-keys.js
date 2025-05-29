@@ -1,7 +1,9 @@
+import Cookies from 'js-cookie'
 import {storageKeyPrefix} from "@/settings";
 
 /** 配置一个统一前缀，防止不同项目key值冲突 */
 let key_prefix = storageKeyPrefix
+Cookies.set('key_prefix', key_prefix)
 
 /**
  * 统一管理: Cookie、localStorage、sessionStorage 的key值

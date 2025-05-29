@@ -45,17 +45,15 @@
           <el-tag v-if="scope.row.status === '1'" type="success">已生成</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="显示顺序" prop="orderIndex" align="center"/>
+      <el-table-column label="顺序" prop="orderIndex" align="center"/>
       <el-table-column fixed="right" label="操作" width="100" align="center">
         <template v-slot="scope">
           <el-button v-permission="'generator-zFormGenerator-update'"
-                     type="text" size="small" @click="openUpdate(scope.row)">修改表单
-          </el-button>
-          <el-button type="text" style="color: #13ce66;"
-                     size="small" @click="openView(scope.row)">详情
-          </el-button>
+                     type="text" size="mini" @click="openUpdate(scope.row)">修改表单
+          </el-button><br/>
+          <el-button type="text" size="mini" style="color: #13ce66;" @click="openView(scope.row)">详情</el-button>
           <el-button v-permission="'generator-zFormGenerator-delete'" style="color: #ff6d6d;"
-                     type="text" size="small" @click="deleteByIds(scope.row)">删除
+                     type="text" size="mini" @click="deleteByIds(scope.row)">删除
           </el-button>
         </template>
       </el-table-column>
