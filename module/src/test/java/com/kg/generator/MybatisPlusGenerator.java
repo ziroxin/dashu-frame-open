@@ -50,6 +50,6 @@ public class MybatisPlusGenerator {
 
         // ==================================开始执行生成=====================================
         generatorCodeUtils.start(basePath, module, basePackage, author, vueFolder,
-                tableNames, idTypes, packages, viewPaths, null, null);
+                tableNames, idTypes, packages, viewPaths, null, null, true);
     }
 }

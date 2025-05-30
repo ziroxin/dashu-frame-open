@@ -59,6 +59,11 @@ public class BaseBuilder implements IConfigBuilder<StrategyConfig> {
     }
 
     @NotNull
+    public DeleteLogsVue.Builder deleteLogsVueBuilder() {
+        return strategyConfig.deleteLogsVueBuilder();
+    }
+
+    @NotNull
     public PermissionSQL.Builder permissionSQLBuilder() {
         return strategyConfig.permissionSqlBuilder();
     }

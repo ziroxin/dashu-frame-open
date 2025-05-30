@@ -98,6 +98,11 @@ public interface ConstVal {
     String TEMPLATE_INDEXVUE = "/templates/index.vue";
 
     /**
+     * DeleteLogsVue模板路径
+     */
+    String TEMPLATE_DELETELOGSVUE = "/templates/deleteLogs.vue";
+
+    /**
      * 权限SQL文件模板路径
      */
     String TEMPLATE_PERMISSION_SQL = "/templates/permission.sql";

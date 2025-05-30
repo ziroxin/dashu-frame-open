@@ -5,8 +5,6 @@ import com.kg.component.generator.ITemplate;
 import com.kg.component.generator.config.StrategyConfig;
 import com.kg.component.generator.config.po.TableInfo;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +16,6 @@ import java.util.Map;
  * @date 2022-08-19 20:37:06
  */
 public class IndexVue implements ITemplate {
-    private final static Logger LOGGER = LoggerFactory.getLogger(IndexVue.class);
 
     private IndexVue() {
     }
@@ -69,7 +66,7 @@ public class IndexVue implements ITemplate {
     @Override
     @NotNull
     public Map<String, Object> renderData(@NotNull ConfigBuilder config, @NotNull TableInfo tableInfo) {
-        Map<String, Object> data = new HashMap<>(7);
+        Map<String, Object> data = new HashMap<>(10);
         String packageStr = config.getPackageConfig().getModuleName();
         if (StringUtils.isNotBlank(packageStr)) {
             data.put("controllerMapping", packageStr.replaceAll("\\.", "/") + "/" +
@@ -85,6 +82,7 @@ public class IndexVue implements ITemplate {
         data.put("jsCreated", getJsCreated());
         data.put("jsMethods", getJsMethods());
         data.put("templateCss", getTemplateCss());
+        data.put("hasDeleteLog", config.getStrategyConfig().service().hasDeleteLog());
         return data;
     }
 

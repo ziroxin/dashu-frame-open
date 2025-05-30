@@ -64,6 +64,11 @@ public class TemplateConfig {
     private String indexVue;
 
     /**
+     * 设置deleteLogsVue模板路径
+     */
+    private String deleteLogsVue;
+
+    /**
      * 设置permissionSQL模板路径
      */
     private String permissionSQL;
@@ -106,6 +111,7 @@ public class TemplateConfig {
         this.excelImport = ConstVal.TEMPLATE_EXCEL_IMPORT;
         this.controller = ConstVal.TEMPLATE_CONTROLLER;
         this.indexVue = ConstVal.TEMPLATE_INDEXVUE;
+        this.deleteLogsVue = ConstVal.TEMPLATE_DELETELOGSVUE;
         this.permissionSQL = ConstVal.TEMPLATE_PERMISSION_SQL;
         this.mapper = ConstVal.TEMPLATE_MAPPER;
         this.xml = ConstVal.TEMPLATE_XML;
@@ -178,6 +184,9 @@ public class TemplateConfig {
                         break;
                     case INDEXVUE:
                         this.indexVue = null;
+                        break;
+                    case DELETELOGSVUE:
+                        this.deleteLogsVue = null;
                         break;
                     case PERMISSIONSQL:
                         this.permissionSQL = null;
@@ -253,6 +262,10 @@ public class TemplateConfig {
 
     public String getIndexVue() {
         return indexVue;
+    }
+
+    public String getDeleteLogsVue() {
+        return deleteLogsVue;
     }
 
     public String getPermissionSQL() {
@@ -426,6 +439,17 @@ public class TemplateConfig {
          */
         public Builder indexVue(@NotNull String indexVueTemplate) {
             this.templateConfig.indexVue = indexVueTemplate;
+            return this;
+        }
+
+        /**
+         * 设置DeleteLogsVue模板路径
+         *
+         * @param deleteLogsVueTemplate DeleteLogsVue模板路径
+         * @return this
+         */
+        public Builder deleteLogsVue(@NotNull String deleteLogsVueTemplate) {
+            this.templateConfig.deleteLogsVue = deleteLogsVueTemplate;
             return this;
         }
 

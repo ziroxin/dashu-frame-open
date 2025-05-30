@@ -34,6 +34,7 @@ public enum OutputFile {
     xml,
     controller,
     indexVue,
+    deleteLogsVue,
     permissionSql,
     /**
      * 已弃用，已重构自定义文件生成，3.5.4版本会删除

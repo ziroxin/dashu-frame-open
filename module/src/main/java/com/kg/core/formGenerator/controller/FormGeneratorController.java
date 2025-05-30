@@ -177,8 +177,9 @@ public class FormGeneratorController {
         }
         childTableMap.put(tableDTO.getTableName(), childTableList);// 只有主表存储子表信息
         // ==================================开始执行生成=====================================
+        // todo: 在线表单生成删除日志代码
         generatorCodeUtils.start(basePath, "module", basePackage, author, "web-vue2",
-                tableNames, idTypes, packages, viewPaths, tableDTO, childTableMap);
+                tableNames, idTypes, packages, viewPaths, tableDTO, childTableMap, false);
         // 打成压缩包
         String zipPath = basePath + ".zip";
         ZipUtil.zip(basePath, zipPath);

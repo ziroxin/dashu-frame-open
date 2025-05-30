@@ -22,8 +22,6 @@ import com.kg.component.generator.config.po.TableInfo;
 import com.kg.component.generator.function.ConverterFileName;
 import com.kg.component.generator.util.ClassUtils;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,8 +33,6 @@ import java.util.Map;
  * @since 3.5.0
  */
 public class Service implements ITemplate {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(Service.class);
 
     private Service() {
     }
@@ -82,6 +78,11 @@ public class Service implements ITemplate {
      */
     private boolean fileOverride;
 
+    /**
+     * 是否包含删除日志子表
+     */
+    private boolean hasDeleteLog = false;
+
     @NotNull
     public ConverterFileName getConverterServiceFileName() {
         return converterServiceFileName;
@@ -96,6 +97,10 @@ public class Service implements ITemplate {
         return fileOverride;
     }
 
+    public boolean hasDeleteLog() {
+        return hasDeleteLog;
+    }
+
     @Override
     @NotNull
     public Map<String, Object> renderData(@NotNull ConfigBuilder config, @NotNull TableInfo tableInfo) {
@@ -104,6 +109,7 @@ public class Service implements ITemplate {
         data.put("superServiceClass", ClassUtils.getSimpleName(this.superServiceClass));
         data.put("superServiceImplClassPackage", this.superServiceImplClass);
         data.put("superServiceImplClass", ClassUtils.getSimpleName(this.superServiceImplClass));
+        data.put("hasDeleteLog", hasDeleteLog);
         return data;
     }
 
@@ -208,6 +214,14 @@ public class Service implements ITemplate {
          */
         public Builder enableFileOverride() {
             this.service.fileOverride = true;
+            return this;
+        }
+
+        /**
+         * 包含删除日志子表
+         */
+        public Builder hasDeleteLogs(boolean isDeleteLogs) {
+            this.service.hasDeleteLog = isDeleteLogs;
             return this;
         }
 

@@ -18,29 +18,33 @@
     </#if>
   </#if>
 </#list>
-        <el-button v-waves class="searchBtn" type="primary" size="small" icon="el-icon-search"
+        <el-button class="searchBtn" type="primary" size="small" icon="el-icon-search"
                    @click="searchBtnHandle">查询
         </el-button>
-        <el-button v-waves class="searchBtn" type="info" size="small" icon="el-icon-refresh"
+        <el-button class="searchBtn" type="info" size="small" icon="el-icon-refresh"
                    @click="resetTableList">重置
         </el-button>
       </div>
       <div class="operatePanel" style="width: 685px;">
-        <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
+        <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
                    v-permission="'${buttonNamePre}add'">新增
         </el-button>
-        <el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate(null)" size="small"
+        <el-button type="info" icon="el-icon-edit" @click="openUpdate(null)" size="small"
                    v-permission="'${buttonNamePre}update'">修改
         </el-button>
-        <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
+        <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                    v-permission="'${buttonNamePre}delete'">删除
         </el-button>
-        <el-button v-waves v-permission="'${buttonNamePre}importExcel'" @click="dialogImportVisible=true"
+        <el-button v-permission="'${buttonNamePre}importExcel'" @click="dialogImportVisible=true"
                    type="primary" icon="el-icon-upload2" size="small">导入Excel
         </el-button>
-        <el-button v-waves type="success" icon="el-icon-printer" @click="exportExcel" size="small"
+        <el-button type="success" icon="el-icon-printer" @click="exportExcel" size="small"
                    v-permission="'${buttonNamePre}exportExcel'">导出Excel
         </el-button>
+<#if hasDeleteLog?? && hasDeleteLog>
+        <el-button type="warning" icon="el-icon-time" @click="deleteLogsDialogVisible=true" size="small">删除日志
+        </el-button>
+</#if>
       </div>
     </div>
     <!-- ${table.comment!}-列表 -->
@@ -73,7 +77,7 @@
                    :total="pager.totalCount" @current-change="handleCurrentChange"
                    @size-change="handleSizeChange"/>
     <!-- 添加修改弹窗 -->
-    <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
+    <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType!=='view'?false:true"
                :visible.sync="dialogFormVisible" @close="closeDialog" width="600px" :key="'myDialog'+dialogIndex">
 <#if templateHtml??>
 <#-- 在线表单，直接用表单生成的代码 -->
@@ -82,56 +86,56 @@
 <#-- 非在线表单，使用以下代码生成 -->
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
   <#list table.fields as field>
-  <#if field.propertyName=='orderIndex'>
+    <#if field.propertyName=='orderIndex'>
         <el-form-item label="顺序" prop="orderIndex"
                       :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]">
           <el-input-number v-model="temp.orderIndex" :min="0" step-strictly/>
         </el-form-item>
-  <#elseif field.propertyName!='createTime' && field.propertyName!='updateTime'
+    <#elseif field.propertyName!='createTime' && field.propertyName!='updateTime'
                 && field.propertyName!='createUserId' && field.propertyName!='updateUserId'
                 && field.propertyName!=entityKeyName>
-    <#--判断是否为null的规则-->
-    <#assign rules1=field.metaInfo.nullable?string("","{required: true, message: '" + field.comment + "不能为空'}")>
-    <#if field.propertyType=='String'>
-      <#if field.metaInfo.length gte 255>
+      <#--判断是否为null的规则-->
+      <#assign rules1=field.metaInfo.nullable?string("","{required: true, message: '" + field.comment + "不能为空'}")>
+      <#if field.propertyType=='String'>
+        <#if field.metaInfo.length gte 255>
         <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
           <el-input v-model="temp.${field.propertyName}" type="textarea" maxlength="${field.metaInfo.length}" placeholder="请输入${field.comment}"/>
+        </el-form-item>
+        <#else>
+        <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
+          <el-input v-model="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
+        </el-form-item>
+        </#if>
+      <#elseif field.propertyType=='Integer' || field.propertyType=='Long'
+                || field.propertyType=='BigDecimal'|| field.propertyType=='Double'>
+        <#--数字的可能有2种规则，所以单独判断-->
+        <#assign rules2=field.metaInfo.nullable?string("{type: 'number', message: '必须为数字'}","{required: true, message: '" + field.comment + "不能为空'},{type: 'number', message: '必须为数字'}")>
+        <el-form-item label="${field.comment}" prop="${field.propertyName}"
+                      :rules="[${rules2}]">
+          <el-input-number v-model.number="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
+        </el-form-item>
+      <#elseif field.propertyType=='LocalDate' || field.propertyType=='Date'>
+        <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
+          <el-date-picker v-model="temp.${field.propertyName}" type="date" clearable placeholder="请选择${field.comment}"
+                          value-format="yyyy/MM/dd" format="yyyy/MM/dd"/>
+        </el-form-item>
+      <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
+        <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
+          <el-date-picker v-model="temp.${field.propertyName}" type="datetime" clearable placeholder="请选择${field.comment}"
+                          value-format="yyyy/MM/dd HH:mm:ss" format="yyyy/MM/dd HH:mm:ss"/>
         </el-form-item>
       <#else>
         <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
           <el-input v-model="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
         </el-form-item>
       </#if>
-    <#elseif field.propertyType=='Integer' || field.propertyType=='Long'
-      || field.propertyType=='BigDecimal'|| field.propertyType=='Double'>
-      <#--数字的可能有2种规则，所以单独判断-->
-      <#assign rules2=field.metaInfo.nullable?string("{type: 'number', message: '必须为数字'}","{required: true, message: '" + field.comment + "不能为空'},{type: 'number', message: '必须为数字'}")>
-        <el-form-item label="${field.comment}" prop="${field.propertyName}"
-                      :rules="[${rules2}]">
-          <el-input-number v-model.number="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
-        </el-form-item>
-    <#elseif field.propertyType=='LocalDate' || field.propertyType=='Date'>
-        <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
-          <el-date-picker v-model="temp.${field.propertyName}" type="date" clearable placeholder="请选择${field.comment}"
-                          value-format="yyyy/MM/dd" format="yyyy/MM/dd"/>
-        </el-form-item>
-    <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
-        <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
-          <el-date-picker v-model="temp.${field.propertyName}" type="datetime" clearable placeholder="请选择${field.comment}"
-                          value-format="yyyy/MM/dd HH:mm:ss" format="yyyy/MM/dd HH:mm:ss"/>
-        </el-form-item>
-    <#else>
-        <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
-          <el-input v-model="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
-        </el-form-item>
     </#if>
-  </#if>
   </#list>
       </el-form>
 </#if>
       <div slot="footer" class="dialog-footer">
-        <el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-        <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
+        <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+        <el-button @click="dialogFormVisible=false">取消</el-button>
       </div>
     </el-dialog>
     <!-- 批量导入弹窗 -->
@@ -139,7 +143,7 @@
                @close="dialogIndex++" width="600px" :key="'importDialog'+dialogIndex">
       <el-form ref="importForm" label-width="120px" v-loading="isImportLoading">
         <el-form-item label="下载模板：">
-          <el-button v-waves type="success" plain @click="downloadExcelTemplate"
+          <el-button type="success" plain @click="downloadExcelTemplate"
                      icon="el-icon-download" size="small">下载Excel模板
           </el-button>
         </el-form-item>
@@ -150,7 +154,7 @@
                      :before-upload="beforeImportUpload" :on-error="importExcelError"
                      :on-success="importExcelSuccess" accept=".xls,.xlsx"
                      :show-file-list="false" :auto-upload="true">
-            <el-button v-waves type="primary" plain icon="el-icon-upload2" size="small">点击上传Excel并导入</el-button>
+            <el-button type="primary" plain icon="el-icon-upload2" size="small">点击上传Excel并导入</el-button>
           </el-upload>
           <el-tag type="info" size="small">
             说明：点击上方按钮上传Excel文件，上传成功后会自动开始导入！
@@ -158,14 +162,20 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button v-waves @click="dialogImportVisible=false">关闭</el-button>
+        <el-button @click="dialogImportVisible=false">关闭</el-button>
       </div>
     </el-dialog>
+<#if hasDeleteLog?? && hasDeleteLog>
+    <!-- 删除日志弹窗 -->
+    <el-dialog title="删除日志" :visible.sync="deleteLogsDialogVisible" width="95%" top="5vh"
+               @close="dialogIndex++" :key="'deleteLogsDialog'+dialogIndex">
+      <delete-logs/>
+    </el-dialog>
+</#if>
   </div>
 </template>
 
 <script>
-import waves from '@/directive/waves'
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util';
 <#-- 初始化 componentsArr 数组 -->
@@ -191,13 +201,16 @@ import ImageUpload from '@/components/Upload/ImageUpload';
   <#assign componentsArr = componentsArr + ["FileUpload"]>
 import FileUpload from '@/components/Upload/FileUpload';
 </#if>
+<#if hasDeleteLog?? && hasDeleteLog>
+  <#assign componentsArr = componentsArr + ["deleteLogs"]>
+import deleteLogs from './deleteLogs'
+</#if>
 
 export default {
   <#-- 如果 componentsArr 不为空，则使用它来定义组件 -->
   <#if componentsArr??>
   components: {<#list componentsArr as component>${component}<#if component_has_next>, </#if></#list>},
   </#if>
-  directives: {waves},
   data() {
     return {
       // 分页数据
@@ -223,6 +236,10 @@ export default {
       // 导入弹窗
       dialogImportVisible: false,
       isImportLoading: false,
+<#if hasDeleteLog?? && hasDeleteLog>
+      // 删除日志弹窗
+      deleteLogsDialogVisible: false,
+</#if>
 <#if jsData??>
       ${jsData}
 </#if>

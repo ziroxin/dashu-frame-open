@@ -31,6 +31,9 @@ import ${packageBaseParent}.${child}.service.${child?cap_first}Service;
 import ${package.DTO}.${dtoName};
 import ${package.Convert}.${dtoconvertName};
 import ${package.Entity}.${entity};
+<#if hasDeleteLog?? && hasDeleteLog>
+import ${package.Entity}.${entity}Logs;
+</#if>
 import ${package.ExcelConstant}.${entity}ExcelConstant;
 import ${package.ExcelImport}.${entity}ExcelImportDTO;
 import ${package.ExcelOut}.${entity}ExcelOutDTO;
@@ -67,7 +70,10 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     private ${dtoconvertName} ${dtoconvertName?uncap_first};
     @Resource
     private ${table.mapperName} ${table.mapperName?uncap_first};
-
+<#if hasDeleteLog?? && hasDeleteLog>
+    @Resource
+    private ${entity}LogsService ${entity?uncap_first}LogsService;
+</#if>
 <#if childTableList??>
     <#list childTableList as child>
     @Resource
@@ -215,6 +221,17 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public void delete(List<String> idlist) {
+<#if hasDeleteLog?? && hasDeleteLog>
+        // 保存删除日志
+        List<${entity}Logs> logsList = listByIds(idlist).stream().map(d -> {
+            ${entity}Logs logBean = JSONUtil.toBean(JSONUtil.parseObj(d, true), ${entity}Logs.class);
+            logBean.setLogsId(GuidUtils.getUuid());
+            logBean.setDeleteTime(LocalDateTime.now());
+            return logBean;
+        }).collect(Collectors.toList());
+        ${entity?uncap_first}LogsService.saveBatch(logsList);
+</#if>
+        // 删除数据
         removeBatchByIds(idlist);
 <#if childTableList??>
         // 删除附件

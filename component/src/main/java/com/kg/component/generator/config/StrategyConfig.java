@@ -123,6 +123,8 @@ public class StrategyConfig {
 
     private final IndexVue.Builder indexVueBuilder = new IndexVue.Builder(this);
 
+    private final DeleteLogsVue.Builder deleteLogsVueBuilder = new DeleteLogsVue.Builder(this);
+
     private final PermissionSQL.Builder permissionSQLBuilder = new PermissionSQL.Builder(this);
 
     private final Mapper.Builder mapperBuilder = new Mapper.Builder(this);
@@ -142,6 +144,8 @@ public class StrategyConfig {
     private Service service;
 
     private IndexVue indexVue;
+
+    private DeleteLogsVue deleteLogsVue;
 
     private PermissionSQL permissionSQL;
 
@@ -268,6 +272,31 @@ public class StrategyConfig {
             this.indexVue = indexVueBuilder.get();
         }
         return indexVue;
+    }
+
+    /**
+     * DeleteLogsVue配置构建者
+     *
+     * @return DeleteLogsVue配置构建者
+     * @since 3.5.0
+     */
+    @NotNull
+    public DeleteLogsVue.Builder deleteLogsVueBuilder() {
+        return deleteLogsVueBuilder;
+    }
+
+    /**
+     * DeleteLogsVue配置
+     *
+     * @return DeleteLogsVue配置
+     * @since 3.5.0
+     */
+    @NotNull
+    public DeleteLogsVue deleteLogsVue() {
+        if (deleteLogsVue == null) {
+            this.deleteLogsVue = deleteLogsVueBuilder.get();
+        }
+        return deleteLogsVue;
     }
 
     /**

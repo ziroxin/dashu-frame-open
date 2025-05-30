@@ -253,6 +253,24 @@ public abstract class AbstractTemplateEngine {
     }
 
     /**
+     * 输出deleteLogsVue文件
+     *
+     * @param tableInfo 表信息
+     * @param objectMap 渲染数据
+     * @since 3.5.0
+     */
+    protected void outputDeleteLogsVue(@NotNull TableInfo tableInfo, @NotNull Map<String, Object> objectMap) {
+        // mp/deleteLogs.vue
+        String deleteLogsVuePath = getPathInfo(OutputFile.deleteLogsVue);
+        if (StringUtils.isNotBlank(deleteLogsVuePath)) {
+            getTemplateFilePath(TemplateConfig::getDeleteLogsVue).ifPresent(deleteLogsVue -> {
+                String deleteLogsVueFile = deleteLogsVuePath + File.separator + objectMap.get("deleteLogsVuePackage") + ConstVal.VUE_SUFFIX;
+                outputFile(new File(deleteLogsVueFile), objectMap, deleteLogsVue, getConfigBuilder().getStrategyConfig().deleteLogsVue().isFileOverride());
+            });
+        }
+    }
+
+    /**
      * 输出permissionSQL文件
      *
      * @param tableInfo 表信息
@@ -373,6 +391,12 @@ public abstract class AbstractTemplateEngine {
                     // permissionSQL
                     outputPermissionSQL(tableInfo, objectMap);
                 }
+                // 根据需要生成deleteLogsVue的文件
+                if (config.getStrategyConfig().deleteLogsVue() != null
+                        && config.getStrategyConfig().deleteLogsVue().getViewPath() != null) {
+                    // deleteLogsVue
+                    outputDeleteLogsVue(tableInfo, objectMap);
+                }
             });
         } catch (Exception e) {
             throw new RuntimeException("无法创建文件，请检查配置信息！", e);
@@ -453,8 +477,6 @@ public abstract class AbstractTemplateEngine {
         StrategyConfig strategyConfig = config.getStrategyConfig();
         Map<String, Object> controllerData = strategyConfig.controller().renderData(config, tableInfo);
         objectMap.putAll(controllerData);
-        Map<String, Object> indexVueData = strategyConfig.indexVue().renderData(config, tableInfo);
-        objectMap.putAll(indexVueData);
         Map<String, Object> permissionSqlData = strategyConfig.permissionSQL().renderData(config, tableInfo);
         objectMap.putAll(permissionSqlData);
         Map<String, Object> mapperData = strategyConfig.mapper().renderData(config, tableInfo);
@@ -467,9 +489,12 @@ public abstract class AbstractTemplateEngine {
         objectMap.putAll(dtoData);
         Map<String, Object> excelsData = strategyConfig.excels().renderData(config, tableInfo);
         objectMap.putAll(excelsData);
+        Map<String, Object> indexVueData = strategyConfig.indexVue().renderData(config, tableInfo);
+        objectMap.putAll(indexVueData);
         objectMap.put("config", config);
         objectMap.put("package", config.getPackageConfig().getPackageInfo());
         objectMap.put("indexVuePackage", strategyConfig.indexVue().getViewPath());
+        objectMap.put("deleteLogsVuePackage", strategyConfig.deleteLogsVue().getViewPath());
         GlobalConfig globalConfig = config.getGlobalConfig();
         objectMap.put("author", globalConfig.getAuthor());
         objectMap.put("kotlin", globalConfig.isKotlin());
