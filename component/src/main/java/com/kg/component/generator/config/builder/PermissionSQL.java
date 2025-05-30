@@ -6,8 +6,6 @@ import com.kg.component.generator.config.StrategyConfig;
 import com.kg.component.generator.config.po.TableInfo;
 import com.kg.component.utils.GuidUtils;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +17,6 @@ import java.util.Map;
  * @date 2022-08-19 20:37:06
  */
 public class PermissionSQL implements ITemplate {
-    private final static Logger LOGGER = LoggerFactory.getLogger(PermissionSQL.class);
 
     private PermissionSQL() {
     }

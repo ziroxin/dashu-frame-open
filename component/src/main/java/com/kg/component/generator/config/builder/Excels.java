@@ -4,8 +4,6 @@ import com.kg.component.generator.ITemplate;
 import com.kg.component.generator.config.StrategyConfig;
 import com.kg.component.generator.config.po.TableInfo;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +15,6 @@ import java.util.Map;
  * @date 2022-12-29 10:39:43
  */
 public class Excels implements ITemplate {
-    private final static Logger LOGGER = LoggerFactory.getLogger(Excels.class);
 
     private Excels() {
     }

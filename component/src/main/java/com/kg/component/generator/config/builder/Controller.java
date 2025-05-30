@@ -24,8 +24,6 @@ import com.kg.component.generator.function.ConverterFileName;
 import com.kg.component.generator.util.ClassUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,8 +35,6 @@ import java.util.Map;
  * @since 3.5.0
  */
 public class Controller implements ITemplate {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(Controller.class);
 
     private Controller() {
     }

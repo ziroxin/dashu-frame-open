@@ -24,8 +24,6 @@ import com.kg.component.generator.util.ClassUtils;
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.decorators.LoggingCache;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -38,8 +36,6 @@ import java.util.Map;
  * @since 3.5.0
  */
 public class Mapper implements ITemplate {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(Mapper.class);
 
     private Mapper() {
     }

@@ -30,8 +30,6 @@ import com.kg.component.generator.function.ConverterFileName;
 import com.kg.component.generator.util.ClassUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -44,8 +42,6 @@ import java.util.stream.Collectors;
  * @since 3.5.0
  */
 public class Entity implements ITemplate {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(Entity.class);
 
     private Entity() {
     }
@@ -630,7 +626,7 @@ public class Entity implements ITemplate {
                 tryLoadClass(superClass).ifPresent(this.entity::convertSuperEntityColumns);
             } else {
                 if (!this.entity.superEntityColumns.isEmpty()) {
-                    LOGGER.warn("Forgot to set entity supper class ?");
+                    System.out.println("未设置entity实体父类，请检查配置");
                 }
             }
             return this.entity;
