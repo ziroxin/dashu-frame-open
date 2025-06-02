@@ -1,28 +1,23 @@
 <template>
-  <div v-if="isExternal" :style="styleExternalIcon" class="svg-external-icon svg-icon" v-on="$listeners" />
+  <div v-if="isExternal" :style="styleExternalIcon" class="svg-external-icon svg-icon" v-on="$listeners"/>
   <svg v-else :class="svgClass" aria-hidden="true" v-on="$listeners">
-    <use :xlink:href="iconName" />
+    <use :xlink:href="iconName"/>
   </svg>
 </template>
 
 <script>
-// doc: https://panjiachen.github.io/vue-element-admin-site/zh/feature/component/svg-icon.html#usage
-import { isExternal } from '@/utils/validate'
+// 查看文档：https://panjiachen.github.io/vue-element-admin-site/zh/feature/component/svg-icon.html#usage
+import {isExternal} from '@/utils/validate'
 
 export default {
   name: 'SvgIcon',
   props: {
-    iconClass: {
-      type: String,
-      required: true
-    },
-    className: {
-      type: String,
-      default: ''
-    }
+    iconClass: {type: String, required: true},
+    className: {type: String, default: ''}
   },
   computed: {
     isExternal() {
+      // 判断是否为外部链接图标
       return isExternal(this.iconClass)
     },
     iconName() {
@@ -56,7 +51,7 @@ export default {
 
 .svg-external-icon {
   background-color: currentColor;
-  mask-size: cover!important;
+  mask-size: cover !important;
   display: inline-block;
 }
 </style>
