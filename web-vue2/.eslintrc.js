@@ -13,7 +13,8 @@ module.exports = {
     parser: 'babel-eslint'
   },
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',// 生产环境下禁止console.log
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',// 生产环境下禁止debugger
+    'no-unused-vars': 'off',// 不验证未使用的变量
   }
 }
