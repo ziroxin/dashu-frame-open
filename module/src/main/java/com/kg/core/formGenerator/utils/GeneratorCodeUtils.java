@@ -6,18 +6,22 @@ import com.kg.component.generator.FastAutoGenerator;
 import com.kg.component.generator.config.OutputFile;
 import com.kg.component.generator.engine.FreemarkerTemplateEngine;
 import com.kg.component.generator.fill.Column;
+import com.kg.component.utils.TimeUtils;
 import com.kg.core.base.dto.BaseDTO;
 import com.kg.core.base.model.BaseEntity;
 import com.kg.core.formGenerator.dto.TableDTO;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,6 +39,8 @@ public class GeneratorCodeUtils {
     private String dbUserName;
     @Value("${spring.datasource.password}")
     private String dbPassword;
+    @Resource
+    private JdbcTemplate jdbcTemplate;
 
     /**
      * 代码生成器 - 入口方法
@@ -80,13 +86,16 @@ public class GeneratorCodeUtils {
             IdType idType = idTypes.get(finalIndex);
             // 包名
             String packageStr = packages.get(finalIndex);
-            // ===== 生成主表代码 =====
+            // ========== 1. 生成主表代码 ==========
             generatorCode(author, javaPath, basePackage, pathInfo, tableName, indexViewPath, null,
                     idType, packageStr, tableDTO, childTableMap, hasDeleteLogs);
             // 是否生成删除日志，默认不生成
             if (hasDeleteLogs) {
-                // ===== 生成删除日志表代码 =====
+                // ========== 2. 生成删除日志表代码 ==========
                 String tableName2 = tableName + "_logs";
+                // 2.1 生成删除日志表
+                createDeleteLogsTable(tableName, tableName2);
+                // 2.2 生成删除日志功能代码
                 String deleteLogsViewPath = StringUtils.hasText(indexViewPath) ? indexViewPath + "/deleteLogs" : null;
                 generatorCode(author, javaPath, basePackage, pathInfo, tableName2, null, deleteLogsViewPath,
                         IdType.ASSIGN_UUID, packageStr, tableDTO, childTableMap, false);
@@ -96,6 +105,19 @@ public class GeneratorCodeUtils {
 
     /**
      * 生成删除日志表
+     *
+     * @param author             作者
+     * @param javaPath           生成java文件根路径
+     * @param basePackage        包路径（父包名），如：com.kg.module
+     * @param pathInfo           输出路径信息
+     * @param tableName          表名
+     * @param indexViewPath      前端文件路径
+     * @param deleteLogsViewPath 删除日志前端文件路径（只在生成删除日志表时有效）
+     * @param idType             主键类型
+     * @param packageStr         生成代码包名
+     * @param tableDTO           前端页面扩展代码（可视化代码生成器用）
+     * @param childTableMap      附件子表信息（可视化代码生成器用）
+     * @param isDeleteLogs       是否生成删除日志表（主表代码生成时，是否输出删除日志相关的代码）
      */
     private void generatorCode(String author, String javaPath, String basePackage,
                                Map<OutputFile, String> pathInfo,
@@ -195,5 +217,53 @@ public class GeneratorCodeUtils {
                 })
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板
                 .execute();
+    }
+
+    /**
+     * 生成[删除日志表]
+     *
+     * @param tableName  主表名
+     * @param tableName2 删除日志表名
+     */
+    private void createDeleteLogsTable(String tableName, String tableName2) {
+        // 1 检查是否有用重名的表，若存在，则备份该表
+        if (hasTables(tableName2)) {
+            // 获取原表的创建语句
+            String sql = jdbcTemplate.queryForMap("SHOW CREATE TABLE " + tableName2).get("Create Table").toString();
+            // 替换新表名
+            String newTblName = tableName2 + "_bak_" + TimeUtils.now().toFormat("yyyyMMddHHmmss");
+            sql = sql.replace("CREATE TABLE `" + tableName2, "CREATE TABLE `" + newTblName);
+            // 备份原表
+            jdbcTemplate.execute(sql);
+        }
+        // 2 删除表
+        jdbcTemplate.execute("DROP TABLE IF EXISTS " + tableName2 + ";");
+        // 3 复制主表结构
+        String sql1 = "CREATE TABLE " + tableName2 + " LIKE " + tableName + ";";
+        jdbcTemplate.execute(sql1);
+        // 4 增加[主键logs_id和删除时间delete_time]字段
+        String sql2 = "ALTER TABLE " + tableName2 +
+                " DROP PRIMARY KEY, " + // 删除原来的主键
+                " ADD COLUMN `logs_id` varchar(36) NOT NULL COMMENT '日志主键' FIRST, " + // 将logs_id放在表最前面
+                " ADD COLUMN `delete_time` datetime NOT NULL COMMENT '删除时间', " + // 添加delete_time字段到最后面
+                " ADD PRIMARY KEY (`logs_id`);"; // 将logs_id设置成主键
+        jdbcTemplate.execute(sql2);
+        // 5 修改表注释（在原表注释后面添加‘删除日志表’）
+        String comment = jdbcTemplate.queryForObject("SELECT TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ?",
+                String.class, tableName2);
+        String sql3 = "ALTER TABLE " + tableName2 + " COMMENT = '" + comment + "-删除日志表';";
+        jdbcTemplate.execute(sql3);
+    }
+
+    /**
+     * 检查是否有用重名的表
+     *
+     * @param tableName 表名
+     * @return 是否有用重名的表
+     */
+    public boolean hasTables(String tableName) {
+        String sql = "SHOW TABLES LIKE ?";
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, tableName);
+        return list != null && list.size() > 0;
     }
 }

@@ -38,6 +38,10 @@ public class TableDTO {
      * vue项目，views下的路径（同时用于生成权限sql）
      */
     private String viewPath;
+    /**
+     * 是否生成[删除日志]功能相关代码
+     */
+    private Boolean isDeleteLogs;
 
     /**
      * 字段信息

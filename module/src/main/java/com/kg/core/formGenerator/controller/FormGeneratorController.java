@@ -116,9 +116,7 @@ public class FormGeneratorController {
      */
     @GetMapping("generator/code/hasTables")
     public boolean hasTables(String tableName) {
-        String sql = "SHOW TABLES LIKE ?";
-        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, tableName);
-        return list != null && list.size() > 0;
+        return generatorCodeUtils.hasTables(tableName);
     }
 
     /**
@@ -176,10 +174,9 @@ public class FormGeneratorController {
             }
         }
         childTableMap.put(tableDTO.getTableName(), childTableList);// 只有主表存储子表信息
-        // ==================================开始执行生成=====================================
-        // todo: 在线表单生成删除日志代码
+        // ================================== 开始执行生成 =====================================
         generatorCodeUtils.start(basePath, "module", basePackage, author, "web-vue2",
-                tableNames, idTypes, packages, viewPaths, tableDTO, childTableMap, false);
+                tableNames, idTypes, packages, viewPaths, tableDTO, childTableMap, tableDTO.getIsDeleteLogs());
         // 打成压缩包
         String zipPath = basePath + ".zip";
         ZipUtil.zip(basePath, zipPath);
@@ -202,7 +199,7 @@ public class FormGeneratorController {
     // 生成表
     private void createTable(TableDTO tableDTO) throws BaseException {
         // 检查表是否存在，若存在，则备份该表
-        if (hasTables(tableDTO.getTableName())) {
+        if (generatorCodeUtils.hasTables(tableDTO.getTableName())) {
             // 获取原表的创建语句
             String oldTblName = tableDTO.getTableName();
             String sql = jdbcTemplate.queryForMap("SHOW CREATE TABLE " + oldTblName).get("Create Table").toString();
@@ -232,7 +229,7 @@ public class FormGeneratorController {
             // 附件子表
             if (StringUtils.hasText(field.getChildFileTable())) {
                 // 判断附件是否有此表
-                if (hasTables(field.getChildFileTable())) {
+                if (generatorCodeUtils.hasTables(field.getChildFileTable())) {
                     // 获取原表的创建语句
                     String oldTblName = field.getChildFileTable();
                     String sql = jdbcTemplate.queryForMap("SHOW CREATE TABLE " + oldTblName).get("Create Table").toString();
