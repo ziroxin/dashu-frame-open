@@ -52,6 +52,14 @@
         <if test="${field.propertyName}!= null and ${field.propertyName}!= ''">
             AND ${field.annotationColumnName} = ${'#{'+field.propertyName+'}'}
         </if>
+    <#elseif field.propertyName=='createTime'>
+        <if test="createTimeStart!= null and createTimeStart!= '' and createTimeEnd!= null and createTimeEnd!= ''">
+            AND create_time IS NOT NULL AND (create_time BETWEEN ${'#'}{createTimeStart} AND ${'#'}{createTimeEnd})
+        </if>
+    <#elseif field.propertyName=='updateTime'>
+        <if test="updateTimeStart!= null and updateTimeStart!= '' and updateTimeEnd!= null and updateTimeEnd!= ''">
+            AND update_time IS NOT NULL AND (update_time BETWEEN ${'#'}{updateTimeStart} AND ${'#'}{updateTimeEnd})
+        </if>
     </#if>
 </#list>
         <choose>
@@ -82,6 +90,14 @@
     <#if field.propertyName!=entityKeyName && field.propertyName!='orderIndex' && field.propertyName!='createTime' && field.propertyName!='updateTime'>
         <if test="${field.propertyName}!= null and ${field.propertyName}!= ''">
             AND ${field.annotationColumnName} = ${'#{'+field.propertyName+'}'}
+        </if>
+    <#elseif field.propertyName=='createTime'>
+        <if test="createTimeStart!= null and createTimeStart!= '' and createTimeEnd!= null and createTimeEnd!= ''">
+            AND create_time IS NOT NULL AND (create_time BETWEEN ${'#'}{createTimeStart} AND ${'#'}{createTimeEnd})
+        </if>
+    <#elseif field.propertyName=='updateTime'>
+        <if test="updateTimeStart!= null and updateTimeStart!= '' and updateTimeEnd!= null and updateTimeEnd!= ''">
+            AND update_time IS NOT NULL AND (update_time BETWEEN ${'#'}{updateTimeStart} AND ${'#'}{updateTimeEnd})
         </if>
     </#if>
 </#list>

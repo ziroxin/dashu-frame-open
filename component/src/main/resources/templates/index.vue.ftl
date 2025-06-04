@@ -8,7 +8,15 @@
   <#list table.fields as field>
     <#-- 只生成searchFields中指定的字段 -->
     <#if searchFields?seq_contains(field.annotationColumnName)>
-      <#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
+      <#if field.propertyName=='createTime'>
+        <el-date-picker v-model="searchData.createTimeRange" size="small" clearable class="searchInput"
+                        type="datetimerange" style="width:340px;" start-placeholder="开始时间"
+                        end-placeholder="结束时间" value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+      <#elseif field.propertyName=='updateTime'>
+        <el-date-picker v-model="searchData.updateTimeRange" size="small" clearable class="searchInput"
+                        type="datetimerange" style="width:340px;" start-placeholder="开始时间"
+                        end-placeholder="结束时间" value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+      <#elseif field.propertyType=='LocalDate' || field.propertyType=='Date'>
         <el-date-picker v-model="searchData.${field.propertyName}" size="small" type="date" clearable class="searchInput"
                         placeholder="${field.comment}" value-format="yyyy-MM-dd" format="yyyy-MM-dd"/>
       <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
@@ -35,6 +43,14 @@
       <#else>
         <el-input v-model="searchData.${field.propertyName}" size="small" clearable class="searchInput" placeholder="${field.comment}"/>
       </#if>
+    <#elseif field.propertyName=='createTime'>
+        <el-date-picker v-model="searchData.createTimeRange" size="small" clearable class="searchInput"
+                        type="datetimerange" style="width:340px;" start-placeholder="开始时间"
+                        end-placeholder="结束时间" value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+    <#elseif field.propertyName=='updateTime'>
+        <el-date-picker v-model="searchData.updateTimeRange" size="small" clearable class="searchInput"
+                        type="datetimerange" style="width:340px;" start-placeholder="开始时间"
+                        end-placeholder="结束时间" value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
     </#if>
   </#list>
 </#if>
@@ -299,11 +315,18 @@ export default {
     // 加载表格
     loadTableList() {
       this.isLoading = true
-      const params = {
-        ...this.pager,
-        params: JSON.stringify(this.searchData),
-        sorts: JSON.stringify(this.sortData)
-      };
+      let obj = {...this.searchData}
+      if (obj.createTimeRange && obj.createTimeRange.length > 0) {
+        obj.createTimeStart = obj.createTimeRange[0]
+        obj.createTimeEnd = obj.createTimeRange[1]
+        delete obj.createTimeRange
+      }
+      if (obj.updateTimeRange && obj.updateTimeRange.length > 0) {
+        obj.updateTimeStart = obj.updateTimeRange[0]
+        obj.updateTimeEnd = obj.updateTimeRange[1]
+        delete obj.updateTimeRange
+      }
+      const params = {...this.pager, params: JSON.stringify(obj), sorts: JSON.stringify(this.sortData)}
       request({url: '${controllerMapping}/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total

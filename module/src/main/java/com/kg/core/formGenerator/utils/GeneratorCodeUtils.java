@@ -202,8 +202,6 @@ public class GeneratorCodeUtils {
                                     .setExportFields(tableDTO.getExportFields())
                                     .enableFileOverride();
                         }
-                        // todo: ---create_time做成range查询（作为示例）
-                        // todo: 统一更新日期格式yyyy/MM/dd 改为 yyyy-MM-dd
                         // ==========更多配置
                         builder.permissionSQLBuilder()// ==========permissionSQL配置
                                 .enableFileOverride()
