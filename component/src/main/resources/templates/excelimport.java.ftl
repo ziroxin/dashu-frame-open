@@ -14,13 +14,25 @@ import lombok.Setter;
 @Setter
 public class ${entity}ExcelImportDTO implements BaseDTO {
     private static final long serialVersionUID = 1L;
-<#list table.fields as field>
-  <#if field.propertyName!=entityKeyName
-          && field.propertyName!='createUserId' && field.propertyName!='updateUserId'
-          && field.propertyName!='createTime' && field.propertyName!='updateTime'>
+<#if importFields??>
+<#-- 根据前端配置importFields - 生成导入Excel字段 -->
+  <#list table.fields as field>
+    <#if importFields?seq_contains(field.annotationColumnName)>
 
     /** ${field.comment} */
     private String ${field.propertyName};
-  </#if>
-</#list>
+    </#if>
+  </#list>
+<#else>
+<#-- 未配置importFields - 导入默认字段 -->
+  <#list table.fields as field>
+    <#if field.propertyName!=entityKeyName
+            && field.propertyName!='createUserId' && field.propertyName!='updateUserId'
+            && field.propertyName!='createTime' && field.propertyName!='updateTime'>
+
+    /** ${field.comment} */
+    private String ${field.propertyName};
+    </#if>
+  </#list>
+</#if>
 }

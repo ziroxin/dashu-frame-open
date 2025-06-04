@@ -20,17 +20,35 @@ import lombok.Setter;
 @Setter
 public class ${entity}ExcelOutDTO implements BaseDTO {
     private static final long serialVersionUID = 1L;
-<#list table.fields as field>
-  <#if field.propertyName!=entityKeyName>
+<#if exportFields??>
+<#-- 根据前端配置exportFields - 生成导出Excel字段 -->
+  <#list table.fields as field>
+    <#if exportFields?seq_contains(field.annotationColumnName)>
 
     /** ${field.comment} */
-	<#if field.propertyType=="LocalDateTime">
+      <#if field.propertyType=="LocalDateTime">
     @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
-	</#if>
-	<#if field.propertyType=="Date" || field.propertyType=="LocalDate">
+      </#if>
+      <#if field.propertyType=="Date" || field.propertyType=="LocalDate">
     @JsonFormat(pattern = "yyyy/MM/dd", timezone = "GMT+8")
-	</#if>
+      </#if>
     private ${field.propertyType} ${field.propertyName};
-  </#if>
-</#list>
+    </#if>
+  </#list>
+<#else>
+<#-- 未配置exportFields - 导出默认字段 -->
+  <#list table.fields as field>
+    <#if field.propertyName!=entityKeyName>
+
+    /** ${field.comment} */
+	  <#if field.propertyType=="LocalDateTime">
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+	  </#if>
+	  <#if field.propertyType=="Date" || field.propertyType=="LocalDate">
+    @JsonFormat(pattern = "yyyy/MM/dd", timezone = "GMT+8")
+	  </#if>
+    private ${field.propertyType} ${field.propertyName};
+    </#if>
+  </#list>
+</#if>
 }

@@ -3,21 +3,41 @@
     <!-- ${table.comment!}-管理按钮 -->
     <div class="searchPanel">
       <div class="searchForm">
-<#list table.fields as field>
-  <#if field.propertyName!=entityKeyName && field.propertyName!='orderIndex'
-            && field.propertyName!='createUserId' && field.propertyName!='updateUserId'
-            && field.propertyName!='createTime' && field.propertyName!='updateTime'>
-    <#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
+<#if searchFields??>
+  <#-- 根据前端配置searchFields - 生成查询字段 -->
+  <#list table.fields as field>
+    <#-- 只生成searchFields中指定的字段 -->
+    <#if searchFields?seq_contains(field.annotationColumnName)>
+      <#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
         <el-date-picker v-model="searchData.${field.propertyName}" size="small" type="date" clearable class="searchInput"
                         placeholder="${field.comment}" value-format="yyyy-MM-dd" format="yyyy-MM-dd"/>
-    <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
+      <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
         <el-date-picker v-model="searchData.${field.propertyName}" size="small" type="datetime" clearable class="searchInput"
                         placeholder="${field.comment}" value-format="yyyy/MM/dd HH:mm:ss" format="yyyy/MM/dd HH:mm:ss"/>
-    <#else>
+      <#else>
         <el-input v-model="searchData.${field.propertyName}" size="small" clearable class="searchInput" placeholder="${field.comment}"/>
+      </#if>
     </#if>
-  </#if>
-</#list>
+  </#list>
+<#else>
+  <#-- 没有配置searchFields的情况下，按照默认配置 - 生成查询字段 -->
+  <#list table.fields as field>
+    <#-- 忽略字段：主键、排序字段、创建时间、更新时间、创建用户、更新用户 -->
+    <#if field.propertyName!=entityKeyName && field.propertyName!='orderIndex'
+              && field.propertyName!='createUserId' && field.propertyName!='updateUserId'
+              && field.propertyName!='createTime' && field.propertyName!='updateTime'>
+      <#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
+        <el-date-picker v-model="searchData.${field.propertyName}" size="small" type="date" clearable class="searchInput"
+                        placeholder="${field.comment}" value-format="yyyy-MM-dd" format="yyyy-MM-dd"/>
+      <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
+        <el-date-picker v-model="searchData.${field.propertyName}" size="small" type="datetime" clearable class="searchInput"
+                        placeholder="${field.comment}" value-format="yyyy/MM/dd HH:mm:ss" format="yyyy/MM/dd HH:mm:ss"/>
+      <#else>
+        <el-input v-model="searchData.${field.propertyName}" size="small" clearable class="searchInput" placeholder="${field.comment}"/>
+      </#if>
+    </#if>
+  </#list>
+</#if>
         <el-button class="searchBtn" type="primary" size="small" icon="el-icon-search"
                    @click="searchBtnHandle">查询
         </el-button>
@@ -51,12 +71,23 @@
     <el-table ref="dataTable" :data="tableData" stripe border v-loading="isLoading"
               @selection-change="handleTableSelectChange" @sort-change="handleTableSortChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
-<#list table.fields as field>
+<#if listFields??>
+  <#-- 根据前端配置listFields - 生成列表字段 -->
+  <#list table.fields as field>
+    <#-- 只生成listFields中指定的字段 -->
+    <#if listFields?seq_contains(field.annotationColumnName)>
+      <el-table-column label="${field.comment}" prop="${field.propertyName}" align="center" sortable="custom"/>
+    </#if>
+  </#list>
+<#else>
+  <#list table.fields as field>
+    <#-- 忽略字段：主键、更新时间、创建用户、更新用户 -->
     <#if field.propertyName!=entityKeyName && field.propertyName!='updateTime'
             && field.propertyName!='createUserId' && field.propertyName!='updateUserId'>
       <el-table-column label="${field.comment}" prop="${field.propertyName}" align="center" sortable="custom"/>
     </#if>
-</#list>
+  </#list>
+</#if>
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template v-slot="scope">
           <el-button type="text" style="color: #13ce66;"

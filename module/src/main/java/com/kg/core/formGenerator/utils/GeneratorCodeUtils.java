@@ -98,7 +98,7 @@ public class GeneratorCodeUtils {
                 // 2.2 生成删除日志功能代码
                 String deleteLogsViewPath = StringUtils.hasText(indexViewPath) ? indexViewPath + "/deleteLogs" : null;
                 generatorCode(author, javaPath, basePackage, pathInfo, tableName2, null, deleteLogsViewPath,
-                        IdType.ASSIGN_UUID, packageStr, tableDTO, childTableMap, false);
+                        IdType.ASSIGN_UUID, packageStr, null, null, false);
             }
         }
     }
@@ -166,6 +166,8 @@ public class GeneratorCodeUtils {
                                         .jsCreated(URLDecoder.decode(tableDTO.getJsCreated(), "UTF-8"))
                                         .jsMethods(URLDecoder.decode(tableDTO.getJsMethods(), "UTF-8"))
                                         .templateCss(URLDecoder.decode(tableDTO.getCss(), "UTF-8"))
+                                        .searchFields(tableDTO.getSearchFields())
+                                        .listFields(tableDTO.getListFields())
                                         .enableFileOverride()
                                         .viewPath(indexViewPath);// 前端文件路径
                             }
@@ -190,6 +192,16 @@ public class GeneratorCodeUtils {
                                     .superClass(BaseDTO.class)
                                     .enableLombok();
                         }
+                        // ====================excel配置
+                        if (tableDTO == null) {
+                            builder.excelsBuilder()// =================excel配置
+                                    .enableFileOverride();
+                        } else {
+                            builder.excelsBuilder()// =================excel配置
+                                    .setImportFields(tableDTO.getImportFields())
+                                    .setExportFields(tableDTO.getExportFields())
+                                    .enableFileOverride();
+                        }
                         // ==========更多配置
                         builder.permissionSQLBuilder()// ==========permissionSQL配置
                                 .enableFileOverride()
@@ -200,8 +212,6 @@ public class GeneratorCodeUtils {
                                 .enableFileOverride()
                                 .hasDeleteLogs(isDeleteLogs)
                                 .mapperBuilder()// =================mapper配置
-                                .enableFileOverride()
-                                .excelsBuilder()// =================excel配置
                                 .enableFileOverride()
                                 .entityBuilder()// =================entity配置
                                 .enableFileOverride()

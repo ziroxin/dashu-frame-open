@@ -6,6 +6,7 @@ import com.kg.component.generator.config.po.TableInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,18 +20,32 @@ public class Excels implements ITemplate {
     private Excels() {
     }
 
+    // 是否覆盖代码
     private boolean fileOverride;
+    // 导入模板字段列表
+    private List<String> importFields;
+    // 导出模板字段列表
+    private List<String> exportFields;
 
     public boolean isFileOverride() {
         return fileOverride;
     }
 
+    public List<String> getImportFields() {
+        return importFields;
+    }
+
+    public List<String> getExportFields() {
+        return exportFields;
+    }
+
+
     @Override
     @NotNull
     public Map<String, Object> renderData(@NotNull ConfigBuilder config, @NotNull TableInfo tableInfo) {
         Map<String, Object> data = new HashMap<>();
-//        data.put("dtoName", tableInfo.getDTOName());
-//        data.put("dtoconvertName", tableInfo.getDtoconvertName());
+        data.put("importFields", getImportFields());
+        data.put("exportFields", getExportFields());
         return data;
     }
 
@@ -41,6 +56,16 @@ public class Excels implements ITemplate {
 
         public Builder(@NotNull StrategyConfig strategyConfig) {
             super(strategyConfig);
+        }
+
+        public Builder setImportFields(List<String> importFields) {
+            this.excels.importFields = importFields;
+            return this;
+        }
+
+        public Builder setExportFields(List<String> exportFields) {
+            this.excels.exportFields = exportFields;
+            return this;
         }
 
         /**

@@ -7,6 +7,7 @@ import com.kg.component.generator.config.po.TableInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,6 +35,10 @@ public class IndexVue implements ITemplate {
     private String jsMethods;
     // 生成代码-样式
     private String templateCss;
+    // 查询字段列表
+    private List<String> searchFields;
+    // 列表字段列表
+    private List<String> listFields;
 
     public String getViewPath() {
         return this.viewPath;
@@ -63,6 +68,14 @@ public class IndexVue implements ITemplate {
         return templateCss;
     }
 
+    public List<String> getSearchFields() {
+        return searchFields;
+    }
+
+    public List<String> getListFields() {
+        return listFields;
+    }
+
     @Override
     @NotNull
     public Map<String, Object> renderData(@NotNull ConfigBuilder config, @NotNull TableInfo tableInfo) {
@@ -82,6 +95,8 @@ public class IndexVue implements ITemplate {
         data.put("jsCreated", getJsCreated());
         data.put("jsMethods", getJsMethods());
         data.put("templateCss", getTemplateCss());
+        data.put("searchFields", getSearchFields());
+        data.put("listFields", getListFields());
         data.put("hasDeleteLog", config.getStrategyConfig().service().hasDeleteLog());
         return data;
     }
@@ -121,6 +136,16 @@ public class IndexVue implements ITemplate {
 
         public Builder templateCss(String templateCss) {
             this.indexVue.templateCss = templateCss;
+            return this;
+        }
+
+        public Builder searchFields(List<String> searchFields) {
+            this.indexVue.searchFields = searchFields;
+            return this;
+        }
+
+        public Builder listFields(List<String> listFields) {
+            this.indexVue.listFields = listFields;
             return this;
         }
 
