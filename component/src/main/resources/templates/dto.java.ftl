@@ -1,32 +1,32 @@
 package ${package.DTO};
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-<#list table.importPackages as pkg>
-    <#if !pkg?string?contains('com.baomidou.mybatisplus.annotation.') && !pkg?string?contains('BaseEntity')>
-import ${pkg};
-    </#if>
-</#list>
-<#if springdoc>
-import io.swagger.v3.oas.annotations.media.Schema;
-<#elseif swagger>
 <#if superDTOClassPackage??>
 import ${superDTOClassPackage};
 </#if>
+<#if springdoc>
+import io.swagger.v3.oas.annotations.media.Schema;
+<#elseif swagger>
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 </#if>
 <#if dtoLombokModel>
 import lombok.Getter;
 import lombok.Setter;
-
-    <#if chainModel>
+  <#if chainModel>
 import lombok.experimental.Accessors;
-    </#if>
+  </#if>
 </#if>
+
+<#list table.importPackages as pkg>
+  <#if !pkg?string?contains('com.baomidou.mybatisplus.annotation.') && !pkg?string?contains('BaseEntity')>
+import ${pkg};
+  </#if>
+</#list>
 <#if childTableList??>
-    <#list childTableList as child>
+  <#list childTableList as child>
 import ${packageBaseParent}.${child}.entity.${child?cap_first};
-    </#list>
+  </#list>
 import java.util.List;
 </#if>
 

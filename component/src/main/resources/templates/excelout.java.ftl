@@ -1,14 +1,15 @@
 package ${package.ExcelOut};
 
-<#list table.importPackages as pkg>
-    <#if !pkg?string?contains('com.baomidou.mybatisplus.annotation.') && !pkg?string?contains('BaseEntity')>
-import ${pkg};
-    </#if>
-</#list>
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kg.core.base.dto.BaseDTO;
 import lombok.Getter;
 import lombok.Setter;
+
+<#list table.importPackages as pkg>
+  <#if !pkg?string?contains('com.baomidou.mybatisplus.annotation.') && !pkg?string?contains('BaseEntity')>
+import ${pkg};
+  </#if>
+</#list>
 
 /**
  * 导出Excel实体 - ${table.comment!}

@@ -1,9 +1,8 @@
 package ${package.Entity};
 
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
-<#list table.importPackages as pkg>
-import ${pkg};
-</#list>
+import com.kg.core.base.model.BaseEntity;
 <#if springdoc>
 import io.swagger.v3.oas.annotations.media.Schema;
 <#elseif swagger>
@@ -13,10 +12,16 @@ import io.swagger.annotations.ApiModelProperty;
 <#if entityLombokModel>
 import lombok.Getter;
 import lombok.Setter;
-    <#if chainModel>
+  <#if chainModel>
 import lombok.experimental.Accessors;
-    </#if>
+  </#if>
 </#if>
+
+<#list table.importPackages as pkg>
+  <#if !pkg?string?contains('com.baomidou.mybatisplus.annotation.') && !pkg?string?contains('BaseEntity')>
+import ${pkg};
+  </#if>
+</#list>
 
 /**
  * <p>

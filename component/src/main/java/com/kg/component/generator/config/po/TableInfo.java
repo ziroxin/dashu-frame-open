@@ -217,28 +217,6 @@ public class TableInfo {
      * @since 3.5.0
      */
     public void importPackage() {
-        String superEntity = entity.getSuperClass();
-        if (StringUtils.isNotBlank(superEntity)) {
-            // 自定义父类
-            this.importPackages.add(superEntity);
-        } else {
-            if (entity.isActiveRecord()) {
-                // 无父类开启 AR 模式
-                this.importPackages.add(Model.class.getCanonicalName());
-            }
-        }
-        if (entity.isSerialVersionUID() || entity.isActiveRecord()) {
-            this.importPackages.add(Serializable.class.getCanonicalName());
-        }
-        if (this.isConvert()) {
-            this.importPackages.add(TableName.class.getCanonicalName());
-        }
-        IdType idType = entity.getIdType();
-        if (null != idType && this.isHavePrimaryKey()) {
-            // 指定需要 IdType 场景
-            this.importPackages.add(IdType.class.getCanonicalName());
-            this.importPackages.add(TableId.class.getCanonicalName());
-        }
         this.fields.forEach(field -> {
             IColumnType columnType = field.getColumnType();
             if (null != columnType && null != columnType.getPkg()) {
