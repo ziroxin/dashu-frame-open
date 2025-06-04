@@ -1,16 +1,14 @@
 package com.kg.module.filesStatic.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.kg.core.base.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 
 /**
@@ -55,11 +53,11 @@ public class ZFilesStaticDTO implements BaseDTO {
     private String fileType;
 
     @ApiModelProperty("创建时间")
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 
     @ApiModelProperty("修改时间")
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
 
     @ApiModelProperty("文件夹内文件列表")

@@ -44,7 +44,7 @@ public class ZMessageDTO implements BaseDTO {
     private String joinId;
 
     @ApiModelProperty("消息创建时间")
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 
     /** 从子表查出 */
@@ -53,6 +53,6 @@ public class ZMessageDTO implements BaseDTO {
 
     /** 从子表查出 */
     @ApiModelProperty("已读时间")
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime readTime;
 }

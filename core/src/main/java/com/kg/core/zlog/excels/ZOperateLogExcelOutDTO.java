@@ -1,12 +1,11 @@
 package com.kg.core.zlog.excels;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kg.core.base.dto.BaseDTO;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 /**
  * 导出Excel实体 - 操作日志表
@@ -64,7 +63,7 @@ public class ZOperateLogExcelOutDTO implements BaseDTO {
     /**
      * 操作时间
      */
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 
 }

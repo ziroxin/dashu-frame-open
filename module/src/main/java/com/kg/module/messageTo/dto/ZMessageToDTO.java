@@ -1,13 +1,13 @@
 package com.kg.module.messageTo.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import com.kg.core.base.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 
 /**
@@ -41,10 +41,10 @@ public class ZMessageToDTO implements BaseDTO {
     private String msgStatus;
 
     @ApiModelProperty("已读时间")
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime readTime;
 
     @ApiModelProperty("创建时间")
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 }

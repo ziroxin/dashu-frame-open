@@ -1,11 +1,11 @@
 package com.kg.module.generator.excels;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kg.core.base.dto.BaseDTO;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 /**
  * 导出Excel实体 - 代码生成器表单
@@ -78,13 +78,13 @@ public class ZFormGeneratorExcelOutDTO implements BaseDTO {
     /**
      * 添加时间
      */
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 
     /**
      * 修改时间
      */
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
 
 }

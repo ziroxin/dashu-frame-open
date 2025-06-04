@@ -1,14 +1,13 @@
 package com.kg.module.tradeRefund.dto;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import com.kg.core.base.dto.BaseDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 
 /**
@@ -45,7 +44,7 @@ public class BusTradeRefundDTO implements BaseDTO {
     private Integer refundStatus;
 
     @ApiModelProperty("退款成功时间")
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime refundSuccessTime;
 
     @ApiModelProperty("退款金额，单位：分")
@@ -55,10 +54,10 @@ public class BusTradeRefundDTO implements BaseDTO {
     private String refundResultJson;
 
     @ApiModelProperty("添加时间")
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 
     @ApiModelProperty("修改时间")
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
 }

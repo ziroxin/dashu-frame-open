@@ -95,14 +95,14 @@ public class TimeUtils {
     }
 
     /**
-     * 当天开始时间，格式：yyyy/MM/dd 00:00:00
+     * 当天开始时间，格式：yyyy-MM-dd 00:00:00
      */
     public TimeUtils startOfDay() {
         return TimeUtils.setTime(TimeUtils.setTime(this.timestamp).toFormat("yyyy-MM-dd 00:00:00"));
     }
 
     /**
-     * 当天结束时间，格式：yyyy/MM/dd 23:59:59
+     * 当天结束时间，格式：yyyy-MM-dd 23:59:59
      */
     public TimeUtils endOfDay() {
         return TimeUtils.setTime(TimeUtils.setTime(this.timestamp).toFormat("yyyy-MM-dd 23:59:59"));

@@ -1,11 +1,11 @@
 package com.kg.module.messageTo.excels;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kg.core.base.dto.BaseDTO;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 /**
  * 导出Excel实体 - 消息发送至
@@ -48,13 +48,13 @@ public class ZMessageToExcelOutDTO implements BaseDTO {
     /**
      * 已读时间
      */
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime readTime;
 
     /**
      * 创建时间
      */
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 
 }

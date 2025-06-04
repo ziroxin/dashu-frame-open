@@ -27,10 +27,10 @@ public class ${entity}ExcelOutDTO implements BaseDTO {
 
     /** ${field.comment} */
       <#if field.propertyType=="LocalDateTime">
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
       </#if>
       <#if field.propertyType=="Date" || field.propertyType=="LocalDate">
-    @JsonFormat(pattern = "yyyy/MM/dd", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
       </#if>
     private ${field.propertyType} ${field.propertyName};
     </#if>
@@ -42,10 +42,10 @@ public class ${entity}ExcelOutDTO implements BaseDTO {
 
     /** ${field.comment} */
 	  <#if field.propertyType=="LocalDateTime">
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	  </#if>
 	  <#if field.propertyType=="Date" || field.propertyType=="LocalDate">
-    @JsonFormat(pattern = "yyyy/MM/dd", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
 	  </#if>
     private ${field.propertyType} ${field.propertyName};
     </#if>

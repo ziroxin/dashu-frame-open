@@ -12,7 +12,7 @@
                         placeholder="${field.comment}" value-format="yyyy-MM-dd" format="yyyy-MM-dd"/>
       <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
         <el-date-picker v-model="searchData.${field.propertyName}" size="small" type="datetime" clearable class="searchInput"
-                        placeholder="${field.comment}" value-format="yyyy/MM/dd HH:mm:ss" format="yyyy/MM/dd HH:mm:ss"/>
+                        placeholder="${field.comment}" value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
       <#else>
         <el-input v-model="searchData.${field.propertyName}" size="small" clearable class="searchInput" placeholder="${field.comment}"/>
       </#if>
@@ -88,12 +88,12 @@
     <#elseif field.propertyType=='LocalDate' || field.propertyType=='Date'>
         <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
           <el-date-picker v-model="temp.${field.propertyName}" type="date" clearable placeholder="请选择${field.comment}"
-                          value-format="yyyy/MM/dd" format="yyyy/MM/dd"/>
+                          value-format="yyyy-MM-dd" format="yyyy-MM-dd"/>
         </el-form-item>
     <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
         <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
           <el-date-picker v-model="temp.${field.propertyName}" type="datetime" clearable placeholder="请选择${field.comment}"
-                          value-format="yyyy/MM/dd HH:mm:ss" format="yyyy/MM/dd HH:mm:ss"/>
+                          value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
         </el-form-item>
     <#else>
         <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">

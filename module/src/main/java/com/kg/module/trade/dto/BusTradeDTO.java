@@ -44,7 +44,7 @@ public class BusTradeDTO implements BaseDTO {
     private Integer tradeStatus;
 
     @ApiModelProperty("支付成功时间")
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime paySuccessTime;
 
     @ApiModelProperty("总金额，单位：分")
@@ -63,10 +63,10 @@ public class BusTradeDTO implements BaseDTO {
     private Integer refundTotalFee;
 
     @ApiModelProperty("添加时间")
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 
     @ApiModelProperty("修改时间")
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
 }
