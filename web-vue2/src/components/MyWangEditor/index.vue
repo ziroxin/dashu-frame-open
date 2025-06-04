@@ -71,7 +71,7 @@ export default {
   data() {
     return {
       editor: null,
-      html: this.value,
+      html: this.jsDecodeHtml(this.value),
       toolbarConfig: (this.toolbarKeys && this.toolbarKeys.length > 0) ? {toolbarKeys: this.toolbarKeys} : {},
       editorConfig: {
         placeholder: this.placeholder,
@@ -119,6 +119,15 @@ export default {
       this.editor = Object.seal(editor)
       // 获取全部 toolbarKeys
       // console.log(this.editor.getAllMenuKeys())
+    },
+    jsDecodeHtml(val) {
+      if (/&[a-z]+;|&#\d+;|&#x[a-f0-9]+;/i.test(val)) {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = val;
+        return tempDiv.textContent || tempDiv.innerText || '';
+      } else {
+        return val
+      }
     }
   }
 }
