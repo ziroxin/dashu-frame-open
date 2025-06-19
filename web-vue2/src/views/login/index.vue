@@ -92,10 +92,10 @@
 
 <script>
 import SocialSign from './components/SocialSignin'
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 import request from '@/utils/request';
-import {encryptRSA} from '@/utils/jsencrypt-util'
-import {imageAdeskVertical, imageUpsplash} from "@/utils/image-data-util";
+import { encryptRSA } from '@/utils/jsencrypt-util'
+import { imageAdeskVertical, imageUpsplash } from "@/utils/image-data-util";
 import defaultSettings from '@/settings'
 
 export default {
@@ -351,11 +351,9 @@ a:hover {
     height: 47px !important;
     line-height: 47px !important;
     font-size: 16px;
-
     .el-input__inner {
       height: 47px !important;
       line-height: 47px !important;
-
     }
   }
 
