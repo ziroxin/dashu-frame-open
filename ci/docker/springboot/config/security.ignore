@@ -1,47 +1,47 @@
-# 1.Ö§³ÖÓÃ#×¢ÊÍ£¬
-# 2.Ö§³ÖÓÃ**Ä£ºıÆ¥Åä
+# 1.æ”¯æŒç”¨#æ³¨é‡Šï¼Œ
+# 2.æ”¯æŒç”¨**æ¨¡ç³ŠåŒ¹é…
 
-# µÇÂ¼µÇ³ö½Ó¿Ú
+# ç™»å½•ç™»å‡ºæ¥å£
 /login/login
 /login/logout
-# ×¢²á½Ó¿Ú
+# æ³¨å†Œæ¥å£
 /register/**
-# Oauth2 Client(ÊÚÈ¨ÂëÄ£Ê½£¬´øcode»Øµ÷½Ó¿Ú)
+# Oauth2 Client(æˆæƒç æ¨¡å¼ï¼Œå¸¦codeå›è°ƒæ¥å£)
 /oauth2/client/login/code
 /oauth2/client/login/check
 /oauth2/client/login/userBind
 /oauth2/client/login/getOauthAuthorizationUrl
-# »ñÈ¡ÃÜÂë¹æÔòÓÃÓÚ×¢²á
+# è·å–å¯†ç è§„åˆ™ç”¨äºæ³¨å†Œ
 /zsafety/zSafety/getSafety
-# ÑéÖ¤Âë
+# éªŒè¯ç 
 /captcha/get
 
-# swagger api µØÖ·£¨×¢Òâ£ºÉú²ú»·¾³ÇëÉ¾³ı£©
+# swagger api åœ°å€ï¼ˆæ³¨æ„ï¼šç”Ÿäº§ç¯å¢ƒè¯·åˆ é™¤ï¼‰
 /v2/api-docs
 /swagger-resources
 /swagger-resources/**
 
-# ¾²Ì¬×ÊÔ´Ó³ÉäÂ·¾¶£¨ÉÏ´«ÎÄ¼ş£©
+# é™æ€èµ„æºæ˜ å°„è·¯å¾„ï¼ˆä¸Šä¼ æ–‡ä»¶ï¼‰
 /upload/**
 /favicon.ico
 
-# Oauth2 Í³Ò»ÈÏÖ¤µÇÂ¼Ò³
+# Oauth2 ç»Ÿä¸€è®¤è¯ç™»å½•é¡µ
 /oauth2/login.html
 /oauth2/js/**
 /oauth2/css/**
 
-# ²âÊÔ½Ó¿ÚÈ¨ÏŞ
+# æµ‹è¯•æ¥å£æƒé™
 /test/abc
 /test/abc3
 /test/abc4
 /test/abc5
 
-# Î¢ĞÅÖ§¸¶Í¨Öª½Ó¿Ú
+# å¾®ä¿¡æ”¯ä»˜é€šçŸ¥æ¥å£
 /pay/wechat/payNotify
-# Ö§¸¶±¦Ö§¸¶Í¨Öª½Ó¿Ú
+# æ”¯ä»˜å®æ”¯ä»˜é€šçŸ¥æ¥å£
 /pay/alipay/payNotify
 /pay/alipay/returnUrl
-# °¢ÀïÔÆOSS»Øµ÷½Ó¿Ú
+# é˜¿é‡Œäº‘OSSå›è°ƒæ¥å£
 /oss/client/upload/callback
-# Î¢ĞÅĞ¡³ÌĞòµÇÂ¼½Ó¿Ú
+# å¾®ä¿¡å°ç¨‹åºç™»å½•æ¥å£
 /applet/wechat/login/**
