@@ -1,12 +1,11 @@
 import { resolve } from 'path'
+import type { ConfigEnv, UserConfig } from 'vite'
 import { loadEnv } from 'vite'
-import type { UserConfig, ConfigEnv } from 'vite'
 import Vue from '@vitejs/plugin-vue'
 import VueJsx from '@vitejs/plugin-vue-jsx'
 import progress from 'vite-plugin-progress'
 import EslintPlugin from 'vite-plugin-eslint'
 import { ViteEjsPlugin } from 'vite-plugin-ejs'
-import { viteMockServe } from 'vite-plugin-mock'
 import PurgeIcons from 'vite-plugin-purge-icons'
 import ServerUrlCopy from 'vite-plugin-url-copy'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
@@ -18,11 +17,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
 // https://vitejs.dev/config/
 const root = process.cwd()
 
-function pathResolve(dir: string) {
-  return resolve(root, '.', dir)
-}
-
-export default ({ command, mode }: ConfigEnv): UserConfig => {
+export default ({command, mode}: ConfigEnv): UserConfig => {
   let env = {} as any
   const isBuild = command === 'build'
   if (!isBuild) {
@@ -35,66 +30,52 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
     plugins: [
       Vue({
         script: {
-          // 开启defineModel
+          // 开启defineModel，允许在Vue组件中使用defineModel语法糖来定义模型
           defineModel: true
         }
       }),
       VueJsx(),
       ServerUrlCopy(),
       progress(),
-      env.VITE_USE_ALL_ELEMENT_PLUS_STYLE === 'false'
-        ? createStyleImportPlugin({
-            resolves: [ElementPlusResolve()],
-            libs: [
-              {
-                libraryName: 'element-plus',
-                esModule: true,
-                resolveStyle: (name) => {
-                  if (name === 'click-outside') {
-                    return ''
-                  }
-                  return `element-plus/es/components/${name.replace(/^el-/, '')}/style/css`
-                }
-              }
-            ]
-          })
-        : undefined,
+      // 是否全量引入element-plus样式
+      env.VITE_USE_ALL_ELEMENT_PLUS_STYLE === 'true' ? undefined :
+        // 按需引入
+        createStyleImportPlugin({
+          resolves: [ElementPlusResolve()],
+          libs: [{
+            libraryName: 'element-plus',
+            esModule: true,
+            resolveStyle: (name) => {
+              return name === 'click-outside' ? '' : `element-plus/es/components/${name.replace(/^el-/, '')}/style/css`
+            }
+          }]
+        }),
+      // Eslint 代码检查
       EslintPlugin({
         cache: false,
         failOnWarning: false,
         failOnError: false,
         include: ['src/**/*.vue', 'src/**/*.ts', 'src/**/*.tsx'] // 检查的文件
       }),
+      // 国际化配置
       VueI18nPlugin({
         runtimeOnly: true,
         compositionOnly: true,
         include: [resolve(__dirname, 'src/locales/**')]
       }),
+      // svg图标
       createSvgIconsPlugin({
-        iconDirs: [pathResolve('src/assets/svgs')],
+        iconDirs: [resolve(root, '.', 'src/assets/svgs')],
         symbolId: 'icon-[dir]-[name]',
         svgoOptions: true
       }),
+      // 清除未使用的图标
       PurgeIcons(),
-      env.VITE_USE_MOCK === 'true'
-        ? viteMockServe({
-            ignore: /^\_/,
-            mockPath: 'mock',
-            localEnabled: !isBuild,
-            prodEnabled: isBuild,
-            injectCode: `
-          import { setupProdMockServer } from '../mock/_createProductionServer'
-
-          setupProdMockServer()
-          `
-          })
-        : undefined,
-      ViteEjsPlugin({
-        title: env.VITE_APP_TITLE
-      }),
+      // 使用环境变量设置页面标题
+      ViteEjsPlugin({title: env.VITE_APP_TITLE}),
+      // 使用UnoCSS进行样式处理
       UnoCSS()
     ],
-
     css: {
       preprocessorOptions: {
         less: {
@@ -105,27 +86,30 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
     },
     resolve: {
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.less', '.css'],
-      alias: [
-        {
-          find: 'vue-i18n',
-          replacement: 'vue-i18n/dist/vue-i18n.cjs.js'
-        },
-        {
-          find: /\@\//,
-          replacement: `${pathResolve('src')}/`
-        }
-      ]
+      alias: [{
+        find: 'vue-i18n',
+        replacement: 'vue-i18n/dist/vue-i18n.cjs.js'
+      }, {
+        find: /\@\//,
+        replacement: `${resolve(root, '.', 'src')}/`
+      }]
     },
     esbuild: {
+      // 是否删除console.log
       pure: env.VITE_DROP_CONSOLE === 'true' ? ['console.log'] : undefined,
+      // 是否删除debugger
       drop: env.VITE_DROP_DEBUGGER === 'true' ? ['debugger'] : undefined
     },
     build: {
+      // es2015=es6
       target: 'es2015',
+      // 输出目录
       outDir: env.VITE_OUT_DIR || 'dist',
+      // 是否sourcemap
       sourcemap: env.VITE_SOURCEMAP === 'true',
       // brotliSize: false,
       rollupOptions: {
+        // 是否包分析
         plugins: env.VITE_USE_BUNDLE_ANALYZER === 'true' ? [visualizer()] : undefined,
         // 拆包
         output: {
@@ -137,22 +121,28 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
           }
         }
       },
+      // 是否切割css
       cssCodeSplit: !(env.VITE_USE_CSS_SPLIT === 'false'),
       cssTarget: ['chrome31']
     },
     server: {
       port: 4000,
+      open: true,
+      // 代理
       proxy: {
-        // 选项写法
-        '/api': {
-          target: 'http://127.0.0.1:8000',
+        '/dashuserver': {
+          target: 'http://localhost:8125',
+          // target: 'https://yanshi.java119.cn/dashuserver',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, '')
+          rewrite: (path) => path.replace(/^\/dashuserver/, '')
         }
       },
+      // 热加载
       hmr: {
+        // 热加载出错时，是否显示一个覆盖层展示错误信息，false=不显示
         overlay: false
       },
+      // 监听ip访问0.0.0.0代表localhost或ip地址，默认是localhost
       host: '0.0.0.0'
     },
     optimizeDeps: {
@@ -169,7 +159,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
         'echarts',
         'echarts-wordcloud',
         'qrcode',
-        '@wangeditor/editor',
+        '@wangeditor/editor ',
         '@wangeditor/editor-for-vue',
         'vue-json-pretty',
         '@zxcvbn-ts/core',
