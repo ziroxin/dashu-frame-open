@@ -8,19 +8,18 @@ import { usePageLoading } from '@/hooks/web/usePageLoading'
 import { NO_REDIRECT_WHITE_LIST } from '@/constants'
 import { useUserStoreWithOut } from '@/store/modules/user'
 
-const { start, done } = useNProgress()
-
-const { loadStart, loadDone } = usePageLoading()
+const {start, done} = useNProgress()
+const {loadStart, loadDone} = usePageLoading()
 
 router.beforeEach(async (to, from, next) => {
   start()
   loadStart()
-  const permissionStore = usePermissionStoreWithOut()
+  const permissionStore = usePermissionStoreWithOut()// 加载动态路由
   const appStore = useAppStoreWithOut()
   const userStore = useUserStoreWithOut()
   if (userStore.getUserInfo) {
     if (to.path === '/login') {
-      next({ path: '/' })
+      next({path: '/'})
     } else {
       if (permissionStore.getIsAddRouters) {
         next()
@@ -44,7 +43,7 @@ router.beforeEach(async (to, from, next) => {
       })
       const redirectPath = from.query.redirect || to.path
       const redirect = decodeURIComponent(redirectPath as string)
-      const nextData = to.path === redirect ? { ...to, replace: true } : { path: redirect }
+      const nextData = to.path === redirect ? {...to, replace: true} : {path: redirect}
       permissionStore.setIsAddRouters(true)
       next(nextData)
     }

@@ -4,7 +4,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { Avatars, AvatarItem } from '@/components/Avatars'
 import { ref } from 'vue'
 
-const { t } = useI18n()
+const {t} = useI18n()
 
 const data = ref<AvatarItem[]>([
   {
@@ -48,6 +48,6 @@ const data = ref<AvatarItem[]>([
 
 <template>
   <ContentWrap :title="t('router.avatars')" :message="t('avatarsDemo.title')">
-    <Avatars :data="data" />
+    <Avatars :data="data"/>
   </ContentWrap>
 </template>

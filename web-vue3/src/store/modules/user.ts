@@ -62,19 +62,17 @@ export const useUserStore = defineStore('user', {
       this.roleRouters = roleRouters
     },
     logoutConfirm() {
-      const { t } = useI18n()
+      const {t} = useI18n()
       ElMessageBox.confirm(t('common.loginOutMessage'), t('common.reminder'), {
         confirmButtonText: t('common.ok'),
         cancelButtonText: t('common.cancel'),
         type: 'warning'
+      }).then(async () => {
+        const res = await loginOutApi()
+        if (res) {
+          this.reset()
+        }
       })
-        .then(async () => {
-          const res = await loginOutApi().catch(() => {})
-          if (res) {
-            this.reset()
-          }
-        })
-        .catch(() => {})
     },
     reset() {
       const tagsViewStore = useTagsViewStore()

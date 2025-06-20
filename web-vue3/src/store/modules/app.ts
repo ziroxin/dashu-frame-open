@@ -1,11 +1,10 @@
 import { defineStore } from 'pinia'
 import { store } from '../index'
-import { setCssVar, humpToUnderline } from '@/utils'
+import { humpToUnderline, setCssVar } from '@/utils'
 import { colorIsDark, hexToRGB, lighten, mix } from '@/utils/color'
-import { ElMessage, ComponentSize } from 'element-plus'
-import { useCssVar } from '@vueuse/core'
+import { ComponentSize, ElMessage } from 'element-plus'
+import { useCssVar, useDark } from '@vueuse/core'
 import { unref } from 'vue'
-import { useDark } from '@vueuse/core'
 
 interface AppState {
   breadcrumb: boolean
@@ -59,7 +58,6 @@ export const useAppStore = defineStore('app', {
       dynamicRouter: true, // 是否动态路由
       serverDynamicRouter: true, // 是否服务端渲染动态路由
       fixedMenu: false, // 是否固定菜单
-
       layout: 'classic', // layout布局
       isDark: false, // 是否是暗黑模式
       currentSize: 'default', // 组件尺寸
@@ -285,13 +283,9 @@ export const useAppStore = defineStore('app', {
         // 左侧菜单浅色背景颜色
         leftMenuBgLightColor: isDarkColor ? lighten(color!, 6) : color,
         // 左侧菜单选中背景颜色
-        leftMenuBgActiveColor: isDarkColor
-          ? 'var(--el-color-primary)'
-          : hexToRGB(unref(primaryColor) as string, 0.1),
+        leftMenuBgActiveColor: isDarkColor ? 'var(--el-color-primary)' : hexToRGB(unref(primaryColor) as string, 0.1),
         // 左侧菜单收起选中背景颜色
-        leftMenuCollapseBgActiveColor: isDarkColor
-          ? 'var(--el-color-primary)'
-          : hexToRGB(unref(primaryColor) as string, 0.1),
+        leftMenuCollapseBgActiveColor: isDarkColor ? 'var(--el-color-primary)' : hexToRGB(unref(primaryColor) as string, 0.1),
         // 左侧菜单字体颜色
         leftMenuTextColor: isDarkColor ? '#bfcbd9' : '#333',
         // 左侧菜单选中字体颜色

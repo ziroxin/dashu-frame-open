@@ -1,10 +1,6 @@
 import { defineStore } from 'pinia'
 import { asyncRouterMap, constantRouterMap } from '@/router'
-import {
-  generateRoutesByFrontEnd,
-  generateRoutesByServer,
-  flatMultiLevelRoutes
-} from '@/utils/routerHelper'
+import { flatMultiLevelRoutes, generateRoutesByFrontEnd, generateRoutesByServer } from '@/utils/routerHelper'
 import { store } from '../index'
 import { cloneDeep } from 'lodash-es'
 

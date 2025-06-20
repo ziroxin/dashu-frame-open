@@ -36,6 +36,7 @@ export default ({command, mode}: ConfigEnv): UserConfig => {
       }),
       VueJsx(),
       ServerUrlCopy(),
+      // 打包时显示打包进度
       progress(),
       // 是否全量引入element-plus样式
       env.VITE_USE_ALL_ELEMENT_PLUS_STYLE === 'true' ? undefined :

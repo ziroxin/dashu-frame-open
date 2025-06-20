@@ -7,7 +7,7 @@ import { useCssVar } from '@vueuse/core'
 const primaryColor = useCssVar('--el-color-primary', document.documentElement)
 
 export const useNProgress = () => {
-  NProgress.configure({ showSpinner: false } as NProgressOptions)
+  NProgress.configure({showSpinner: false} as NProgressOptions)
 
   const initColor = async () => {
     await nextTick()
