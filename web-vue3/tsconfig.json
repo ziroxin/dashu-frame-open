@@ -1,3 +1,7 @@
+/**
+ * typescript 配置文件
+ * 文档 @link https://ts.nodejs.cn/docs/
+ */
 {
   "compilerOptions": {
     "target": "esnext",

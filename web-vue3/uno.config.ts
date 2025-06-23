@@ -1,4 +1,9 @@
-import { defineConfig, toEscapedSelector as e, presetUno, presetIcons } from 'unocss'
+/**
+ * uno配置项（原子化css引擎）
+ * 中文文档 @link https://unocss.jiangruyi.com/
+ * 官方文档 @link https://unocss.dev/
+ */
+import { defineConfig, presetIcons, presetUno, toEscapedSelector as e } from 'unocss'
 import transformerVariantGroup from '@unocss/transformer-variant-group'
 import { loadEnv } from 'vite'
 import { ICON_PREFIX } from './src/constants'
@@ -31,7 +36,7 @@ export default defineConfig({
   rules: [
     [
       /^overflow-ellipsis$/,
-      ([], { rawSelector }) => {
+      ([], {rawSelector}) => {
         const selector = e(rawSelector)
         return `
 ${selector} {
@@ -42,7 +47,7 @@ ${selector} {
     ],
     [
       /^custom-hover$/,
-      ([], { rawSelector }) => {
+      ([], {rawSelector}) => {
         const selector = e(rawSelector)
         return `
 ${selector} {
@@ -53,7 +58,7 @@ ${selector} {
   align-items: center;
   transition: background var(--transition-time-02);
 }
-/* you can have multiple rules */
+/* 可以配置多个规则 */
 ${selector}:hover {
   background-color: var(--top-header-hover-color);
 }
@@ -65,7 +70,7 @@ ${selector}:hover {
     ],
     [
       /^layout-border__left$/,
-      ([], { rawSelector }) => {
+      ([], {rawSelector}) => {
         const selector = e(rawSelector)
         return `
 ${selector}:before {
@@ -83,7 +88,7 @@ ${selector}:before {
     ],
     [
       /^layout-border__right$/,
-      ([], { rawSelector }) => {
+      ([], {rawSelector}) => {
         const selector = e(rawSelector)
         return `
 ${selector}:after {
@@ -101,7 +106,7 @@ ${selector}:after {
     ],
     [
       /^layout-border__top$/,
-      ([], { rawSelector }) => {
+      ([], {rawSelector}) => {
         const selector = e(rawSelector)
         return `
 ${selector}:before {
@@ -119,7 +124,7 @@ ${selector}:before {
     ],
     [
       /^layout-border__bottom$/,
-      ([], { rawSelector }) => {
+      ([], {rawSelector}) => {
         const selector = e(rawSelector)
         return `
 ${selector}:after {
@@ -136,11 +141,7 @@ ${selector}:after {
       }
     ]
   ],
-  presets: [presetUno({ dark: 'class', attributify: false }), ...createPresetIcons()],
+  presets: [presetUno({dark: 'class', attributify: false}), ...createPresetIcons()],
   transformers: [transformerVariantGroup()],
-  content: {
-    pipeline: {
-      include: [/\.(vue|svelte|[jt]sx|mdx?|astro|elm|php|phtml|html|ts)($|\?)/]
-    }
-  }
+  content: {pipeline: {include: [/\.(vue|svelte|[jt]sx|mdx?|astro|elm|php|phtml|html|ts)($|\?)/]}}
 })
