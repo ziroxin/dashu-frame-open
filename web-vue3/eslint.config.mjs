@@ -5,10 +5,9 @@ import eslint from '@eslint/js'
 import tseslint from 'typescript-eslint'
 // vue文件解析器
 import vueParser from 'vue-eslint-parser'
-import prettier from 'eslint-plugin-prettier'
 
 export default tseslint.config({
-  // ignores: ['node_modules', 'prettier.config.cjs', 'dist*'],
+  // ignores: ['node_modules', 'dist*'],
   files: ['src/**/*.ts', 'src/**/*.tsx', 'src/**/*.vue'],
   // tseslint.config添加了extends扁平函数，直接用。否则是eslint9.0版本是没有extends的
   extends: [
@@ -16,9 +15,6 @@ export default tseslint.config({
     ...tseslint.configs.recommended,
     ...pluginVue.configs['flat/essential']
   ],
-  plugins: {
-    prettier
-  },
   languageOptions: {
     parser: vueParser, // 使用vue解析器，这个可以识别vue文件
     parserOptions: {
@@ -31,7 +27,6 @@ export default tseslint.config({
     }
   },
   rules: {
-    'prettier/prettier': 'error',
     'no-useless-escape': 0,
     'no-undef': 0,
     '@typescript-eslint/no-unused-expressions': 0,
