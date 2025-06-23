@@ -21,7 +21,6 @@ If you need a basic template, please switch to the `mini` branch. `mini` simply 
 - **TypeScript**: Application-level JavaScript language
 - **Theming**: Configurable themes
 - **International**：Built-in complete internationalization program
-- **Mock Server** Built-in mock data scheme
 - **Authority** Built-in complete dynamic routing permission generation scheme.
 - **Component** Multiple commonly used components are encapsulated twice
 - **Examples** Built-in rich examples
@@ -50,7 +49,6 @@ Online examples do not apply to menu filtering by default, but directly use Stat
 - [Es6+](http://es6.ruanyifeng.com/) - Familiar with es6 basic syntax
 - [Vue-Router-Next](https://next.router.vuejs.org/) - Familiar with the basic use of vue-router
 - [Element-Plus](https://element-plus.org/) - Familiar with the basic use of element-plus
-- [Mock.js](https://github.com/nuysoft/Mock) - mockjs basic syntax
 
 ## Install and use
 

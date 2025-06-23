@@ -21,7 +21,6 @@ vue-element-plus-admin 的定位是后台集成方案，不太适合当基础模
 - **TypeScript**: 应用程序级 JavaScript 的语言
 - **主题**: 可配置的主题
 - **国际化**：内置完善的国际化方案
-- **自定义数据** 内置 Mock 数据方案
 - **权限** 内置完善的动态路由权限生成方案
 - **组件** 二次封装了多个常用的组件
 - **示例** 内置丰富的示例
@@ -50,7 +49,6 @@ vue-element-plus-admin 的定位是后台集成方案，不太适合当基础模
 - [Es6+](http://es6.ruanyifeng.com/) - 熟悉 es6 基本语法
 - [Vue-Router-Next](https://next.router.vuejs.org/) - 熟悉 vue-router 基本使用
 - [Element-Plus](https://element-plus.org/) - element-plus 基本使用
-- [Mock.js](https://github.com/nuysoft/Mock) - mockjs 基本语法
 
 ## 安装和使用
 
