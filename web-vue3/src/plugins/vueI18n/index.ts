@@ -1,7 +1,7 @@
 import type { App } from 'vue'
+import type { I18n, I18nOptions } from 'vue-i18n'
 import { createI18n } from 'vue-i18n'
 import { useLocaleStoreWithOut } from '@/store/modules/locale'
-import type { I18n, I18nOptions } from 'vue-i18n'
 import { setHtmlPageLang } from './helper'
 
 export let i18n: ReturnType<typeof createI18n>
@@ -15,18 +15,13 @@ const createI18nOptions = async (): Promise<I18nOptions> => {
 
   setHtmlPageLang(locale.lang)
 
-  localeStore.setCurrentLocale({
-    lang: locale.lang
-    // elLocale: elLocal
-  })
+  localeStore.setCurrentLocale({lang: locale.lang})
 
   return {
     legacy: false,
     locale: locale.lang,
     fallbackLocale: locale.lang,
-    messages: {
-      [locale.lang]: message
-    },
+    messages: {[locale.lang]: message},
     availableLocales: localeMap.map((v) => v.lang),
     sync: true,
     silentTranslationWarn: true,

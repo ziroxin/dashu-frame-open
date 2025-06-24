@@ -1,5 +1,5 @@
 <template>
-  <Form :schema="schema" :rules="rules" label-position="top" hide-required-asterisk size="large"
+  <form :schema="schema" :rules="rules" label-position="top" hide-required-asterisk size="large"
         class="dark:(border-1 border-[var(--el-border-color)] border-solid)" @register="formRegister"/>
 </template>
 <script setup lang="tsx">
@@ -17,8 +17,6 @@ import { UserType } from '@/api/login/types'
 import { Icon } from '@/components/Icon'
 import { useUserStore } from '@/store/modules/user'
 import { BaseButton } from '@/components/Button'
-
-const emit = defineEmits(['to-register'])
 
 const appStore = useAppStore()
 
@@ -70,9 +68,7 @@ const schema = reactive<FormSchema[]>([
               <>
                 <div class="flex justify-between items-center w-[100%]">
                   <ElCheckbox v-model={remember.value} label={t('login.remember')} size="small"/>
-                  <ElLink type="primary" underline={false}>
-                    {t('login.forgetPassword')}
-                  </ElLink>
+                  <ElLink type="primary" underline={false}>{t('login.forgetPassword')}</ElLink>
                 </div>
               </>
           )
@@ -88,18 +84,8 @@ const schema = reactive<FormSchema[]>([
           return (
               <>
                 <div class="w-[100%]">
-                  <BaseButton
-                      loading={loading.value}
-                      type="primary"
-                      class="w-[100%]"
-                      onClick={signIn}
-                  >
+                  <BaseButton loading={loading.value} type="primary" class="w-[100%]" onClick={signIn}>
                     {t('login.login')}
-                  </BaseButton>
-                </div>
-                <div class="w-[100%] mt-15px">
-                  <BaseButton class="w-[100%]" onClick={toRegister}>
-                    {t('login.register')}
                   </BaseButton>
                 </div>
               </>
@@ -121,34 +107,14 @@ const schema = reactive<FormSchema[]>([
           return (
               <>
                 <div class="flex justify-between w-[100%]">
-                  <Icon
-                      icon="vi-ant-design:github-filled"
-                      size={iconSize}
-                      class="cursor-pointer ant-icon"
-                      color={iconColor}
-                      hoverColor={hoverColor}
-                  />
-                  <Icon
-                      icon="vi-ant-design:wechat-filled"
-                      size={iconSize}
-                      class="cursor-pointer ant-icon"
-                      color={iconColor}
-                      hoverColor={hoverColor}
-                  />
-                  <Icon
-                      icon="vi-ant-design:alipay-circle-filled"
-                      size={iconSize}
-                      color={iconColor}
-                      hoverColor={hoverColor}
-                      class="cursor-pointer ant-icon"
-                  />
-                  <Icon
-                      icon="vi-ant-design:weibo-circle-filled"
-                      size={iconSize}
-                      color={iconColor}
-                      hoverColor={hoverColor}
-                      class="cursor-pointer ant-icon"
-                  />
+                  <Icon icon="vi-ant-design:github-filled" size={iconSize}
+                        class="cursor-pointer ant-icon" color={iconColor} hoverColor={hoverColor}/>
+                  <Icon icon="vi-ant-design:wechat-filled" size={iconSize}
+                        class="cursor-pointer ant-icon" color={iconColor} hoverColor={hoverColor}/>
+                  <Icon icon="vi-ant-design:alipay-circle-filled" size={iconSize}
+                        color={iconColor} hoverColor={hoverColor} class="cursor-pointer ant-icon"/>
+                  <Icon icon="vi-ant-design:weibo-circle-filled" size={iconSize}
+                        color={iconColor} hoverColor={hoverColor} class="cursor-pointer ant-icon"/>
                 </div>
               </>
           )
@@ -240,11 +206,6 @@ const getRole = async () => {
     permissionStore.setIsAddRouters(true)
     push({path: redirect.value || permissionStore.addRouters[0].path})
   }
-}
-
-// 去注册页面
-const toRegister = () => {
-  emit('to-register')
 }
 </script>
 
