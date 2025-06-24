@@ -1,14 +1,18 @@
+<template>
+  <ElConfigProvider :namespace="variables.elNamespace" :message="{max: 1}" :size="size">
+    <slot></slot>
+  </ElConfigProvider>
+</template>
 <script setup lang="ts">
-import { provide, computed, watch, onMounted } from 'vue'
+import { onMounted, provide, watch } from 'vue'
 import { propTypes } from '@/utils/propTypes'
 import { ComponentSize, ElConfigProvider } from 'element-plus'
-import { useLocaleStore } from '@/store/modules/locale'
 import { useWindowSize } from '@vueuse/core'
 import { useAppStore } from '@/store/modules/app'
 import { setCssVar } from '@/utils'
 import { useDesign } from '@/hooks/web/useDesign'
 
-const { variables } = useDesign()
+const {variables} = useDesign()
 
 const appStore = useAppStore()
 
@@ -19,44 +23,21 @@ const props = defineProps({
 provide('configGlobal', props)
 
 // 初始化所有主题色
-onMounted(() => {
-  appStore.setCssVarTheme()
-})
+onMounted(() => { appStore.setCssVarTheme() })
 
-const { width } = useWindowSize()
+const {width} = useWindowSize()
 
 // 监听窗口变化
-watch(
-  () => width.value,
-  (width: number) => {
-    if (width < 768) {
-      !appStore.getMobile ? appStore.setMobile(true) : undefined
-      setCssVar('--left-menu-min-width', '0')
-      appStore.setCollapse(true)
-      appStore.getLayout !== 'classic' ? appStore.setLayout('classic') : undefined
-    } else {
-      appStore.getMobile ? appStore.setMobile(false) : undefined
-      setCssVar('--left-menu-min-width', '64px')
-    }
-  },
-  {
-    immediate: true
-  }
-)
-
-// 多语言相关
-const localeStore = useLocaleStore()
-
-const currentLocale = computed(() => localeStore.currentLocale)
+watch(() => width.value,
+    (width: number) => {
+      if (width < 768) {
+        !appStore.getMobile ? appStore.setMobile(true) : undefined
+        setCssVar('--left-menu-min-width', '0')
+        appStore.setCollapse(true)
+        appStore.getLayout !== 'classic' ? appStore.setLayout('classic') : undefined
+      } else {
+        appStore.getMobile ? appStore.setMobile(false) : undefined
+        setCssVar('--left-menu-min-width', '64px')
+      }
+    }, {immediate: true})
 </script>
-
-<template>
-  <ElConfigProvider
-    :namespace="variables.elNamespace"
-    :locale="currentLocale.elLocale"
-    :message="{ max: 1 }"
-    :size="size"
-  >
-    <slot></slot>
-  </ElConfigProvider>
-</template>

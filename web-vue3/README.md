@@ -1,146 +1,97 @@
-<div align="center"> <a href="https://github.com/kailong321200875/vue-element-plus-admin"> <img width="100" src="./public/logo.png"> </a> <br> <br>
+## 官网
 
-[![license](https://img.shields.io/github/license/kailong321200875/vue-element-plus-admin.svg)](LICENSE) [![repo-size](https://img.shields.io/github/repo-size/kailong321200875/vue-element-plus-admin.svg)](repo-size) [![last-commit](https://img.shields.io/github/last-commit/kailong321200875/vue-element-plus-admin.svg)](last-commit) [![stars](https://img.shields.io/github/stars/kailong321200875/vue-element-plus-admin.svg)](stars) [![forks](https://img.shields.io/github/forks/kailong321200875/vue-element-plus-admin.svg)](forks) [![release](https://img.shields.io/github/release/kailong321200875/vue-element-plus-admin.svg)](release) [![watchers](https://img.shields.io/github/watchers/kailong321200875/vue-element-plus-admin.svg)](watchers)
+https://element-plus-admin-doc.cn/
 
-<h1>vue-element-plus-admin</h1>
-</div>
 
-**English** | [中文](./README.zh-CN.md)
 
-## Introduction
+## 简介
+vue-element-plus-admin 是一个基于 `element-plus` 免费开源的中后台模版。使用了最新的`vue3`，`vite`，`TypeScript`等主流技术开发，开箱即用的中后台前端解决方案，可以用来作为项目的启动模版，也可用于学习参考。并且时刻关注着最新技术动向，尽可能的第一时间更新。
 
-vue-element-plus-admin is a free and open source middle and background template based on `element-plus`. Developed using the latest mainstream technologies such as `vue3`, `vite` and `typescript`, the out of the box middle and background front-end solution can be used as the starting template of the project and learning reference. And always pay attention to the latest technological trends and update them as soon as possible.
+vue-element-plus-admin 的定位是后台集成方案，不太适合当基础模板来进行二次开发。因为集成了很多你可能用不到的功能，会造成不少的代码冗余。如果你的项目不关注这方面的问题，也可以直接基于它进行二次开发。
 
-vue-element-plus-admin is positioned as a background integration scheme, which is not suitable for secondary development as a basic template. Because it integrates many functions that you may not use, it will cause a lot of code redundancy. If your project doesn't pay attention to this problem, you can also directly carry out secondary development based on it.
+如需要基础模版，请切换到 `mini` 分支，`mini` 只简单集成了一些如：布局、动态菜单等常用布局功能，更适合开发者进行二次开发。
 
-If you need a basic template, please switch to the `mini` branch. `mini` simply integrates some common layout functions such as layout and dynamic menu, which is more suitable for developers to carry out secondary development.
 
-## Feature
 
-- **State of The Art Development**：Use front-end front-end technology development such as Vue3/vite4
-- **TypeScript**: Application-level JavaScript language
-- **Theming**: Configurable themes
-- **International**：Built-in complete internationalization program
-- **Authority** Built-in complete dynamic routing permission generation scheme.
-- **Component** Multiple commonly used components are encapsulated twice
-- **Examples** Built-in rich examples
-
-## Preview
-
-- [vue-element-plus-admin](https://element-plus-admin.cn/) - Full version of the github site
-- [vue-element-plus-admin](https://kailong110120130.gitee.io/vue-element-plus-admin) - Full version of the gitee site
-
-account: **admin/admin**
-
-Online examples do not apply to menu filtering by default, but directly use Static routing
-
-## Documentation
-
-[Document Github](https://element-plus-admin-doc.cn/)
-
-[Document Gitee](https://kailong110120130.gitee.io/vue-element-plus-admin-doc)
-
-## Preparation
-
-- [node](http://nodejs.org/) and [git](https://git-scm.com/) - Project development environment
-- [Vite](https://vitejs.dev/) - Familiar with vite features
-- [Vue3](https://v3.vuejs.org/) - Familiar with Vue basic syntax
-- [TypeScript](https://www.typescriptlang.org/) - Familiar with the basic syntax of `TypeScript`
-- [Es6+](http://es6.ruanyifeng.com/) - Familiar with es6 basic syntax
-- [Vue-Router-Next](https://next.router.vuejs.org/) - Familiar with the basic use of vue-router
-- [Element-Plus](https://element-plus.org/) - Familiar with the basic use of element-plus
-
-## Install and use
-
-- Get the project code
-
+## 安装和使用
+- 安装依赖
 ```bash
-git clone https://github.com/kailong321200875/vue-element-plus-admin.git
-```
-
-- Installation dependencies
-
-```bash
-cd vue-element-plus-admin
-
+cd web-vue3
 pnpm install
-
 ```
-
-- run
-
+- 运行
 ```bash
 pnpm run dev
 ```
-
-- build
-
+- 打包
 ```bash
-pnpm run build:pro
+pnpm run build
 ```
 
-## Change Log
 
-[CHANGELOG](./CHANGELOG.md)
 
-## How to contribute
+## 目录结构
 
-<a href="https://github.com/kailong321200875/vue-element-plus-admin/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=kailong321200875/vue-element-plus-admin" />
-</a>
+```
+.
+├── mock # 自定义 mock 数据及配置
+├── public # 静态资源
+├── src # 项目代码
+│   ├── api # api接口管理
+│   ├── assets # 静态资源
+|   |── axios # axios配置
+│   ├── components # 公用组件
+│   ├── constants # 存放常量
+│   ├── directives # 自定义指令
+│   ├── hooks # 常用hooks
+│   ├── layout # 布局组件
+│   ├── locales # 语言文件
+│   ├── plugins # 外部插件
+│   ├── router # 路由配置
+│   ├── store # 状态管理
+│   ├── styles # 全局样式
+│   ├── utils # 全局工具类
+│   ├── views # 路由页面
+│   ├── App.vue # 入口vue文件
+│   ├── main.ts # 主入口文件
+│   └── permission.ts # 路由拦截
+├── types # 全局类型
+├── .browserslistrc # 浏览器兼容配置
+├── .env.development # 本地开发环境 环境变量配置
+├── .env.production # 打包到生产环境 环境变量配置
+├── .gitignore # git 跳过配置
+├── .pnpm-debug.log # pnpm 调试日志
+├── .stylelintignore # stylelint 跳过检测配置
+├── commitlint.config.js # git commit 提交规范配置
+├── eslint.config.mjs # eslint 配置
+├── index.html # 入口页面
+├── package.json # 项目依赖
+├── postcss.config.cjs # postcss 配置
+├── README.md
+├── stylelint.config.js # stylelint 配置
+├── tsconfig.json # typescript 配置
+└── uno.config.ts # unocss 配置
+├── vite.config.ts # vite 配置
+```
 
-You can [Raise an issue](https://github.com/kailong321200875/vue-element-plus-admin/issues/new) Or submit a Pull Request.
 
-**Pull Request:**
 
-1. Fork code
-2. Create your own branch: `git checkout -b feat/xxxx`
-3. Submit your changes: `git commit -am 'feat(function): add xxxxx'`
-4. Push your branch: `git push origin feat/xxxx`
-5. submit `pull request`
+## 技术栈
+- [node](http://nodejs.org/) 和 [git](https://git-scm.com/) - 项目开发环境
+- [Vite](https://vitejs.dev/) - 熟悉 vite 特性
+- [Vue3](https://v3.vuejs.org/) - 熟悉 Vue 基础语法
+- [TypeScript](https://www.typescriptlang.org/) - 熟悉 `TypeScript` 基本语法
+- [Es6+](http://es6.ruanyifeng.com/) - 熟悉 es6 基本语法
+- [Vue-Router-Next](https://next.router.vuejs.org/) - 熟悉 vue-router 基本使用
+- [Element-Plus](https://element-plus.org/) - element-plus 基本使用
 
-## Git Contribution submission specification
 
-- `feat` New features
-- `fix` Fix bugs
-- `docs` document
-- `style` Format and style (changes that do not affect code operation)
-- `refactor` Refactor
-- `perf` Optimize related, such as improving performance and experience
-- `test` Add test
-- `build` Compilation related modifications, changes to project construction or dependencies
-- `ci` Continuous integration modification
-- `chore` Changes in the construction process or auxiliary tools
-- `revert` Rollback to previous version
-- `workflow` Workflow improvement
-- `mod` Uncertain modification classification
-- `wip` Under development
-- `types` type
 
-## Browser support
+## 浏览器支持
+本地开发推荐使用 `Chrome 80+` 浏览器
 
-The `Chrome 80+` browser is recommended for local development
-
-Support modern browsers, not IE
+支持现代浏览器, 不支持 IE
 
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_48x48.png" alt=" Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt=" Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
 | :-: | :-: | :-: | :-: | :-: |
 | not support | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
-
-## Donate
-
-If you find this project helpful, welcome sponsorship to show your support~
-
-[Paypal Me](https://www.paypal.com/paypalme/ckl94)
-
-<img src="https://github.com/kailong321200875/my-image/raw/master/pay.jpg" />
-
-### My QR code
-
-If you have any project cooperation or outsourcing, please scan the code to add me as a friend and leave a note of your purpose.
-
-<img src="https://github.com/kailong321200875/my-image/raw/master/me.jpg" />
-
-## License
-
-[MIT](./LICENSE)
