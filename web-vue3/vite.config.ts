@@ -1,3 +1,4 @@
+import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import type { ConfigEnv, UserConfig } from 'vite'
 import { loadEnv } from 'vite'
@@ -13,11 +14,12 @@ import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import { createStyleImportPlugin, ElementPlusResolve } from 'vite-plugin-style-import'
 import UnoCSS from 'unocss/vite'
 import { visualizer } from 'rollup-plugin-visualizer'
+import AutoImport from 'unplugin-auto-import/vite'
 
 // https://vitejs.dev/config/
 const root = process.cwd()
 
-export default ({command, mode}: ConfigEnv): UserConfig => {
+export default defineConfig(({command, mode}: ConfigEnv): UserConfig => {
   let env = {} as any
   const isBuild = command === 'build'
   if (!isBuild) {
@@ -28,6 +30,12 @@ export default ({command, mode}: ConfigEnv): UserConfig => {
   return {
     base: env.VITE_BASE_PATH,
     plugins: [
+      AutoImport({
+        // 自动引入组合式 API，如 ref, reactive, computed, vue-router 等
+        imports: ['vue', 'vue-router'],
+        // 生成的自动引入的类型声明文件的路径
+        dts: '.unplugin-auto-imports.d.ts',
+      }),
       Vue({
         script: {
           // 开启defineModel，允许在Vue组件中使用defineModel语法糖来定义模型
@@ -169,4 +177,4 @@ export default ({command, mode}: ConfigEnv): UserConfig => {
       ]
     }
   }
-}
+})
