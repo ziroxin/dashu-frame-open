@@ -34,7 +34,7 @@ export default defineConfig(({command, mode}: ConfigEnv): UserConfig => {
         // 自动引入组合式 API，如 ref, reactive, computed, vue-router 等
         imports: ['vue', 'vue-router'],
         // 生成的自动引入的类型声明文件的路径
-        dts: '.unplugin-auto-imports.d.ts',
+        dts: 'src/unplugin-auto-imports.d.ts',
       }),
       Vue({
         script: {
