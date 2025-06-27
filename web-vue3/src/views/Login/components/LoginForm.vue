@@ -1,211 +1,142 @@
 <template>
-  <form :schema="schema" :rules="rules" label-position="top" hide-required-asterisk size="large"
-        class="dark:(border-1 border-[var(--el-border-color)] border-solid)" @register="formRegister"/>
+  <el-form ref="loginFormRef" :model="loginForm" label-position="top" hide-required-asterisk size="large"
+           class="dark:(border-1 border-[var(--el-border-color)] border-solid)">
+    <el-row>
+      <el-col :span="24">
+        <el-form-item>
+          <h2 class="text-2xl font-bold text-center w-[100%]" v-text="t('login.login')"></h2>
+        </el-form-item>
+      </el-col>
+      <el-col :span="24">
+        <el-form-item :label="t('login.username')" prop="userName"
+                      :rules="[{required: true, message: '用户名不能为空！'}]">
+          <el-input v-model="loginForm.userName" :prefix-icon="iconMap.user"
+                    :placeholder="t('login.usernamePlaceholder')" style="width: 100%"/>
+        </el-form-item>
+      </el-col>
+      <el-col :span="24">
+        <el-form-item :label="t('login.password')" prop="password"
+                      :rules="[{required: true, message: '密码不能为空！'}]">
+          <el-input type="password" v-model="loginForm.password" @keydown.enter.stop="signIn"
+                    :prefix-icon="iconMap.password"
+                    :placeholder="t('login.passwordPlaceholder')" style="width: 100%"/>
+        </el-form-item>
+      </el-col>
+      <el-col :span="24">
+        <el-form-item :label="t('login.code')" prop="yzm"
+                      :rules="[{required: true, message: '验证码不能为空！'}]">
+          <div class="flex justify-between items-center w-[100%]">
+            <el-input ref="yzm" v-model="loginForm.yzm" @keydown.enter.stop="signIn"
+                      :prefix-icon="iconMap.yzm"
+                      class="w-[50%]" :placeholder="t('login.codePlaceholder')"/>
+            <img :src="loginForm.codeBaseImage" @click="loadCaptcha"/>
+          </div>
+        </el-form-item>
+      </el-col>
+      <el-col :span="24">
+        <el-form-item>
+          <div class="flex justify-between items-center w-[100%]">
+            <el-checkbox v-model="loginForm.rememberMe" :label="t('login.remember')"/>
+            <el-link type="primary" :underline="false" v-text="t('login.forgetPassword')"/>
+          </div>
+        </el-form-item>
+      </el-col>
+      <el-col :span="24">
+        <el-form-item class="w-[100%]">
+          <el-button loading type="primary" class="w-[100%]" @click="signIn" v-text="t('login.login')"/>
+        </el-form-item>
+      </el-col>
+      <el-col :span="24">
+        <el-divider content-position="center" :content="t('login.otherLogin')"/>
+        <div class="flex justify-between w-[100%]">
+          <my-icon v-for="item in ['github-filled', 'wechat-filled','alipay-circle-filled','weibo-circle-filled']"
+                   :icon="'vi-ant-design:'+item" :key="item"
+                   class="cursor-pointer ant-icon" :size="30" color="#999" hoverColor="var(--el-color-primary)"/>
+        </div>
+      </el-col>
+    </el-row>
+  </el-form>
 </template>
-<script setup lang="tsx">
-import { onMounted, reactive, ref, unref, watch } from 'vue'
-import { Form, FormSchema } from '@/components/Form'
+<script setup lang="ts">
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElCheckbox, ElLink } from 'element-plus'
-import { useForm } from '@/hooks/web/useForm'
-import { getAdminRoleApi, getTestRoleApi, loginApi } from '@/api/login'
-import { useAppStore } from '@/store/modules/app'
-import { usePermissionStore } from '@/store/modules/permission'
-import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
-import { useRouter } from 'vue-router'
-import { UserType } from '@/api/login/types'
-import { Icon } from '@/components/Icon'
 import { useUserStore } from '@/store/modules/user'
-import { BaseButton } from '@/components/Button'
-
-const appStore = useAppStore()
-
-const userStore = useUserStore()
-
-const permissionStore = usePermissionStore()
-
-const {currentRoute, addRoute, push} = useRouter()
-
+import request from '@/utils/request'
+import { useIcon } from '@/hooks/web/useIcon'
+import { encryptRSA } from '@/utils/jsencrypt-util'
+import storageKeys from '@/utils/storage-keys'
+// 国际化
 const {t} = useI18n()
 
-const rules = {username: [{required: true, message: '用户名必填！'}], password: [{required: true, message: '密码必填！'}]}
-
-const schema = reactive<FormSchema[]>([
-  {
-    field: 'title', colProps: {span: 24},
-    formItemProps: {
-      slots: {
-        default: () => { return <h2 class="text-2xl font-bold text-center w-[100%]">{t('login.login')}</h2> }
-      }
-    }
-  }, {
-    field: 'username', label: t('login.username'), component: 'Input', colProps: {span: 24},
-    componentProps: {placeholder: '请输入用户名！'}
-  }, {
-    field: 'password',
-    label: t('login.password'),
-    // value: 'admin',
-    component: 'InputPassword',
-    colProps: {span: 24},
-    componentProps: {
-      style: {width: '100%'},
-      placeholder: 'admin or test',
-      // 按下enter键触发登录
-      onKeydown: (_e: any) => {
-        if (_e.key === 'Enter') {
-          _e.stopPropagation() // 阻止事件冒泡
-          signIn()
-        }
-      }
-    }
-  }, {
-    field: 'tool',
-    colProps: {span: 24},
-    formItemProps: {
-      slots: {
-        default: () => {
-          return (
-              <>
-                <div class="flex justify-between items-center w-[100%]">
-                  <ElCheckbox v-model={remember.value} label={t('login.remember')} size="small"/>
-                  <ElLink type="primary" underline={false}>{t('login.forgetPassword')}</ElLink>
-                </div>
-              </>
-          )
-        }
-      }
-    }
-  }, {
-    field: 'login',
-    colProps: {span: 24},
-    formItemProps: {
-      slots: {
-        default: () => {
-          return (
-              <>
-                <div class="w-[100%]">
-                  <BaseButton loading={loading.value} type="primary" class="w-[100%]" onClick={signIn}>
-                    {t('login.login')}
-                  </BaseButton>
-                </div>
-              </>
-          )
-        }
-      }
-    }
-  }, {
-    field: 'other',
-    component: 'Divider',
-    label: t('login.otherLogin'),
-    componentProps: {contentPosition: 'center'}
-  }, {
-    field: 'otherIcon',
-    colProps: {span: 24},
-    formItemProps: {
-      slots: {
-        default: () => {
-          return (
-              <>
-                <div class="flex justify-between w-[100%]">
-                  <Icon icon="vi-ant-design:github-filled" size={iconSize}
-                        class="cursor-pointer ant-icon" color={iconColor} hoverColor={hoverColor}/>
-                  <Icon icon="vi-ant-design:wechat-filled" size={iconSize}
-                        class="cursor-pointer ant-icon" color={iconColor} hoverColor={hoverColor}/>
-                  <Icon icon="vi-ant-design:alipay-circle-filled" size={iconSize}
-                        color={iconColor} hoverColor={hoverColor} class="cursor-pointer ant-icon"/>
-                  <Icon icon="vi-ant-design:weibo-circle-filled" size={iconSize}
-                        color={iconColor} hoverColor={hoverColor} class="cursor-pointer ant-icon"/>
-                </div>
-              </>
-          )
-        }
-      }
-    }
-  }])
-
-const iconSize = 30
-
-const remember = ref(userStore.getRememberMe)
-
-const initLoginInfo = () => {
-  const loginInfo = userStore.getLoginInfo
-  if (loginInfo) {
-    const {username, password} = loginInfo
-    setValues({username, password})
+// 登录表单数据
+const isLoading = ref(true)
+const loginFormRef = ref()
+const loginForm = ref({
+  userName: '', password: '', yzm: '', codeUuid: '', codeBaseImage: '', rememberMe: false
+})
+// 页面初始化
+onMounted(() => {
+  // 记住密码
+  if (localStorage.getItem(storageKeys.l_rememberMeData)) {
+    const userData = JSON.parse(localStorage.getItem(storageKeys.l_rememberMeData) as string)
+    loginForm.value.userName = userData.userName
+    loginForm.value.password = userData.password
+    loginForm.value.rememberMe = true
   }
+  // 加载验证码
+  loadCaptcha()
+})
+
+// 验证码
+const loadCaptcha = () => {
+  request({url: '/captcha/get', method: 'get'}).then((response) => {
+    const {data} = response
+    loginForm.value.codeUuid = data.codeUuid
+    loginForm.value.codeBaseImage = data.codeBaseImage
+  })
 }
-onMounted(() => { initLoginInfo() })
 
-const {formRegister, formMethods} = useForm()
-const {getFormData, getElFormExpose, setValues} = formMethods
-
-const loading = ref(false)
-
-const iconColor = '#999'
-
-const hoverColor = 'var(--el-color-primary)'
-
-const redirect = ref<string>('')
-
-watch(() => currentRoute.value,
-    (route: RouteLocationNormalizedLoaded) => { redirect.value = route?.query?.redirect as string},
-    {immediate: true})
+const userStore = useUserStore()
 // 登录
-const signIn = async () => {
-  const formRef = await getElFormExpose()
-  await formRef?.validate(async (isValid) => {
+const signIn = () => {
+  loginFormRef.value.validate((isValid) => {
     if (isValid) {
-      loading.value = true
-      const formData = await getFormData<UserType>()
+      isLoading.value = true
       try {
-        const res = await loginApi(formData)
-        if (res) {
+        const data: any = {...loginForm.value}
+        // 加密传输设置为true，并对用户名密码加密（不设置或设置false，默认为不加密传输）
+        data.isEncrypt = true
+        data.userName = encryptRSA(data.userName)
+        data.password = encryptRSA(data.password)
+        data.codeBaseImage = ''// 验证码base64图片不传递
+        console.log('isL', isLoading.value)
+        // 登录
+        userStore.login(data).then(() => {
           // 是否记住我
-          if (unref(remember)) {
-            userStore.setLoginInfo({username: formData.username, password: formData.password})
+          if (data.rememberMe) {
+            localStorage.setItem(storageKeys.l_rememberMeData,
+                JSON.stringify({userName: loginForm.value.userName, password: loginForm.value.password}))
           } else {
-            userStore.setLoginInfo(undefined)
+            localStorage.removeItem(storageKeys.l_rememberMeData)
           }
-          userStore.setRememberMe(unref(remember))
-          userStore.setUserInfo(res.data)
-          // 是否使用动态路由
-          if (appStore.getDynamicRouter) {
-            getRole()
-          } else {
-            await permissionStore.generateRoutes('static').catch(() => {})
-            permissionStore.getAddRouters.forEach((route) => {
-              addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
-            })
-            permissionStore.setIsAddRouters(true)
-            push({path: redirect.value || permissionStore.addRouters[0].path})
-          }
-        }
+          // 跳转页面
+          const router = useRouter()
+          router.push({path: router.currentRoute.value?.query?.redirect as string})
+        }).catch(() => {
+          console.log('login error!')
+          loadCaptcha()
+        })
       } finally {
-        loading.value = false
+        isLoading.value = false
       }
     }
   })
 }
 
-// 获取角色信息
-const getRole = async () => {
-  const formData = await getFormData<UserType>()
-  const params = {roleName: formData.username}
-  const res = appStore.getDynamicRouter && appStore.getServerDynamicRouter
-      ? await getAdminRoleApi(params) : await getTestRoleApi(params)
-  if (res) {
-    const routers = res.data || []
-    userStore.setRoleRouters(routers)
-    appStore.getDynamicRouter && appStore.getServerDynamicRouter
-        ? await permissionStore.generateRoutes('server', routers).catch(() => {})
-        : await permissionStore.generateRoutes('frontEnd', routers).catch(() => {})
-
-    permissionStore.getAddRouters.forEach((route) => {
-      addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
-    })
-    permissionStore.setIsAddRouters(true)
-    push({path: redirect.value || permissionStore.addRouters[0].path})
-  }
+// 输入框图标
+const iconMap = {
+  user: useIcon({icon: 'user'}),
+  password: useIcon({icon: 'lock'}),
+  yzm: useIcon({icon: 'yzm', size: 20, color: '#777'})
 }
 </script>
 

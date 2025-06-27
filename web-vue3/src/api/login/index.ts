@@ -1,26 +1,16 @@
-import request from '@/axios'
-import type { UserType } from './types'
+import request from '@/utils/request'
 
-interface RoleParams {
-  roleName: string
+export function loginApi(data: any) {
+  return request({
+    url: '/login/login',
+    method: 'post',
+    data
+  })
 }
 
-export const loginApi = (data: UserType): Promise<IResponse<UserType>> => {
-  return request.post({url: '/mock/user/login', data})
-}
-
-export const loginOutApi = (): Promise<IResponse> => {
-  return request.get({url: '/mock/user/loginOut'})
-}
-
-export const getUserListApi = ({params}: AxiosConfig) => {
-  return request.get<{ code: string, data: { list: UserType[], total: number } }>({url: '/mock/user/list', params})
-}
-
-export const getAdminRoleApi = (params: RoleParams): Promise<IResponse<AppCustomRouteRecordRaw[]>> => {
-  return request.get({url: '/mock/role/list', params})
-}
-
-export const getTestRoleApi = (params: RoleParams): Promise<IResponse<string[]>> => {
-  return request.get({url: '/mock/role/list2', params})
+export function logoutApi() {
+  return request({
+    url: '/login/logout',
+    method: 'get'
+  })
 }

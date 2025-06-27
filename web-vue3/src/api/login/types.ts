@@ -1,10 +1,10 @@
 export interface UserLoginType {
-  username: string
+  userName: string
   password: string
 }
 
 export interface UserType {
-  username: string
+  userName: string
   password: string
   role: string
   roleId: string
