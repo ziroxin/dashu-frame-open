@@ -1,10 +1,11 @@
 import type { App } from 'vue'
-import { setupPermissionDirective } from './permission/hasPermi'
+import permission from "@/directives/permission";
 
 /**
- * 导出指令：v-xxx
- * @methods hasPermi 按钮权限，用法: v-hasPermi
+ * 注册全局指令 v-xxx
+ * @param app Vue实例
  */
-export const setupPermission = (app: App<Element>) => {
-  setupPermissionDirective(app)
+export const setupDirectives = (app: App<Element>) => {
+  // permission 按钮权限，用法: v-permission
+  app.directive('permission', permission)
 }

@@ -16,10 +16,13 @@ import { setupElementPlus } from '@/plugins/elementPlus'
 import '@/styles/index.less'
 // 引入动画
 import '@/plugins/animate.css'
-// 路由
+// 路由初始化
 import { setupRouter } from './router'
-// 权限
-import { setupPermission } from './directives'
+// 注册全局指令（例如：v-permission）
+import { setupDirectives } from './directives'
+// 注册全局变量
+import { setupGlobalProperties } from '@/utils/global-properties'
+// 引入App组件
 import { createApp } from 'vue'
 import App from './App.vue'
 import './permission'
@@ -37,8 +40,10 @@ const setupAll = async () => {
   setupElementPlus(app, 'all')
   // 路由
   setupRouter(app)
-  // 权限
-  setupPermission(app)
+  // 注册全局指令（例如：v-permission）
+  setupDirectives(app)
+  // 注册全局变量
+  setupGlobalProperties(app)
   // 挂载
   app.mount('#app')
 }
