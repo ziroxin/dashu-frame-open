@@ -17,8 +17,7 @@
     "lint:eslint": "eslint . --fix \"src/**/*.{js,ts,tsx,vue,html}\"",
     "lint:style": "stylelint --fix \"**/*.{vue,less,postcss,css,scss}\" --cache --cache-location node_modules/.cache/stylelint/",
     "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.cjs",
-    "prepare": "husky install",
-    "icon": "esno ./scripts/icon.ts"
+    "prepare": "husky install"
   },
   "dependencies": {
     "@iconify/iconify": "^3.1.1",
@@ -35,6 +34,8 @@
     "echarts": "^5.6.0",
     "echarts-wordcloud": "^2.1.0",
     "element-plus": "2.9.2",
+    "js-cookie": "2.2.0",
+    "jsencrypt": "^3.3.2",
     "lodash-es": "^4.17.21",
     "mitt": "^3.0.1",
     "monaco-editor": "^0.52.2",
@@ -112,7 +113,7 @@
   "packageManager": "pnpm@9.15.3",
   "engines": {
     "node": ">=18.0.0",
-    "pnpm": ">=8.1.0"
+    "pnpm": ">=9.15.3"
   },
   "license": "MIT",
   "repository": {
