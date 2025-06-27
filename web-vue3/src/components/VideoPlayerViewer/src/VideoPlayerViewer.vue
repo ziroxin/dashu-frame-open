@@ -1,8 +1,19 @@
+<template>
+  <el-overlay v-show="visible" @click="close">
+    <div class="w-full h-full flex justify-center items-center relative" @click="close">
+      <div
+          class="w-44px h-44px color-[#fff] bg-[var(--el-text-color-regular)] rounded-full border-[#fff] flex justify-center items-center cursor-pointer absolute top-40px right-40px"
+          @click="close"
+      >
+        <my-icon icon="vi-ep:close" :size="24" />
+      </div>
+      <video-player :url="url" :poster="poster" />
+    </div>
+  </el-overlay>
+</template>
+
 <script setup lang="ts">
 import { VideoPlayer } from '@/components/VideoPlayer'
-import { ElOverlay } from 'element-plus'
-import { ref, nextTick } from 'vue'
-import { Icon } from '@/components/Icon'
 
 const props = defineProps({
   show: {
@@ -34,16 +45,3 @@ const close = async () => {
   document.body.removeChild(wrap)
 }
 </script>
-<template>
-  <ElOverlay v-show="visible" @click="close">
-    <div class="w-full h-full flex justify-center items-center relative" @click="close">
-      <div
-        class="w-44px h-44px color-[#fff] bg-[var(--el-text-color-regular)] rounded-full border-[#fff] flex justify-center items-center cursor-pointer absolute top-40px right-40px"
-        @click="close"
-      >
-        <Icon icon="vi-ep:close" :size="24" />
-      </div>
-      <VideoPlayer :url="url" :poster="poster" />
-    </div>
-  </ElOverlay>
-</template>

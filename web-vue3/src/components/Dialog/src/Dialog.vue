@@ -82,7 +82,7 @@ const dialogStyle = computed(() => {
         <div
           class="h-54px flex justify-between items-center absolute top-[50%] right-15px translate-y-[-50%]"
         >
-          <Icon
+          <my-icon
             v-if="fullscreen"
             class="cursor-pointer is-hover !h-54px mr-10px"
             :icon="
@@ -92,7 +92,7 @@ const dialogStyle = computed(() => {
             hover-color="var(--el-color-primary)"
             @click="toggleFull"
           />
-          <Icon
+          <my-icon
             class="cursor-pointer is-hover !h-54px"
             icon="vi-ep:close"
             hover-color="var(--el-color-primary)"

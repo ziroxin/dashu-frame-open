@@ -1,6 +1,6 @@
 declare module 'vue' {
   export interface GlobalComponents {
-    Icon: (typeof import('../src/components/Icon/index'))['Icon']
+    MyIcon: (typeof import('../src/components/MyIcon/index'))['MyIcon']
     Permission: (typeof import('../src/components/Permission/index'))['Permission']
     BaseButton: (typeof import('../src/components/Button/index'))['BaseButton']
   }

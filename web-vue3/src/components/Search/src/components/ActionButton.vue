@@ -1,11 +1,25 @@
+<template>
+  <el-button v-if="showSearch" type="primary" :loading="searchLoading" @click="onSearch">
+    <my-icon icon="vi-ep:search"/>
+    {{ t('common.query') }}
+  </el-button>
+  <el-button v-if="showReset" :loading="resetLoading" plain @click="onReset">
+    <my-icon icon="vi-ep:refresh-right"/>
+    {{ t('common.reset') }}
+  </el-button>
+  <el-button v-if="showExpand" text @click="onExpand">
+    <my-icon :icon=" visible ? 'vi-ep:arrow-up' : 'vi-ep:arrow-down'"/>
+    {{ t(visible ? 'common.shrink' : 'common.expand') }}
+  </el-button>
+</template>
+
 <script setup lang="ts">
-import { useIcon } from '@/hooks/web/useIcon'
 import { propTypes } from '@/utils/propTypes'
 import { useI18n } from '@/hooks/web/useI18n'
 
 const emit = defineEmits(['search', 'reset', 'expand'])
 
-const { t } = useI18n()
+const {t} = useI18n()
 
 defineProps({
   showSearch: propTypes.bool.def(true),
@@ -28,32 +42,3 @@ const onExpand = () => {
   emit('expand')
 }
 </script>
-
-<template>
-  <BaseButton
-    v-if="showSearch"
-    type="primary"
-    :loading="searchLoading"
-    :icon="useIcon({ icon: 'vi-ep:search' })"
-    @click="onSearch"
-  >
-    {{ t('common.query') }}
-  </BaseButton>
-  <BaseButton
-    v-if="showReset"
-    :loading="resetLoading"
-    plain
-    :icon="useIcon({ icon: 'vi-ep:refresh-right' })"
-    @click="onReset"
-  >
-    {{ t('common.reset') }}
-  </BaseButton>
-  <BaseButton
-    v-if="showExpand"
-    :icon="useIcon({ icon: visible ? 'vi-ep:arrow-up' : 'vi-ep:arrow-down' })"
-    text
-    @click="onExpand"
-  >
-    {{ t(visible ? 'common.shrink' : 'common.expand') }}
-  </BaseButton>
-</template>

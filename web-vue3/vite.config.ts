@@ -1,7 +1,6 @@
-import { defineConfig } from 'vite'
-import { resolve } from 'path'
 import type { ConfigEnv, UserConfig } from 'vite'
-import { loadEnv } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
+import { resolve } from 'path'
 import Vue from '@vitejs/plugin-vue'
 import VueJsx from '@vitejs/plugin-vue-jsx'
 import progress from 'vite-plugin-progress'
@@ -34,7 +33,7 @@ export default defineConfig(({command, mode}: ConfigEnv): UserConfig => {
         // 自动引入组合式 API，如 ref, reactive, computed, vue-router 等
         imports: ['vue', 'vue-router'],
         // 生成的自动引入的类型声明文件的路径
-        dts: 'src/unplugin-auto-imports.d.ts',
+        dts: 'src/unplugin-auto-imports.d.ts'
       }),
       Vue({
         script: {

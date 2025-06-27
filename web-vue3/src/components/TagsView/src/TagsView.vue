@@ -280,7 +280,7 @@ watch(
       class="w-[var(--tags-view-height)] h-[var(--tags-view-height)] flex items-center justify-center cursor-pointer"
       @click="move(-200)"
     >
-      <Icon
+      <my-icon
         icon="vi-ep:d-arrow-left"
         color="var(--el-text-color-placeholder)"
         :hover-color="isDark ? '#fff' : 'var(--el-color-black)'"
@@ -366,14 +366,14 @@ watch(
                   @click="navigate"
                   class="h-full flex justify-center items-center whitespace-nowrap pl-15px"
                 >
-                  <Icon
+                  <my-icon
                     v-if="canShowIcon(item)"
                     :icon="item?.matched?.[1]?.meta?.icon || item?.meta?.icon"
                     :size="12"
                     class="mr-5px"
                   />
                   {{ t(item?.meta?.title as string) }}
-                  <Icon
+                  <my-icon
                     :class="`${prefixCls}__item--close`"
                     color="#333"
                     icon="vi-ant-design:close-outlined"
@@ -392,7 +392,7 @@ watch(
       class="w-[var(--tags-view-height)] h-[var(--tags-view-height)] flex items-center justify-center cursor-pointer"
       @click="move(200)"
     >
-      <Icon
+      <my-icon
         icon="vi-ep:d-arrow-right"
         color="var(--el-text-color-placeholder)"
         :hover-color="isDark ? '#fff' : 'var(--el-color-black)'"
@@ -403,7 +403,7 @@ watch(
       class="w-[var(--tags-view-height)] h-[var(--tags-view-height)] flex items-center justify-center cursor-pointer"
       @click="refreshSelectedTag(selectedTag)"
     >
-      <Icon
+      <my-icon
         icon="vi-ant-design:reload-outlined"
         color="var(--el-text-color-placeholder)"
         :hover-color="isDark ? '#fff' : 'var(--el-color-black)'"
@@ -467,7 +467,7 @@ watch(
         :class="`${prefixCls}__tool`"
         class="w-[var(--tags-view-height)] h-[var(--tags-view-height)] flex items-center justify-center cursor-pointer block"
       >
-        <Icon
+        <my-icon
           icon="vi-ant-design:setting-outlined"
           color="var(--el-text-color-placeholder)"
           :hover-color="isDark ? '#fff' : 'var(--el-color-black)'"

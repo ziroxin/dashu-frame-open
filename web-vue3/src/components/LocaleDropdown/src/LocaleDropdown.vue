@@ -34,7 +34,7 @@ const setLang = (lang: LocaleType) => {
 
 <template>
   <ElDropdown :class="prefixCls" trigger="click" @command="setLang">
-    <Icon
+    <my-icon
       :size="18"
       icon="vi-ion:language-sharp"
       class="cursor-pointer !p-0"

@@ -6,7 +6,6 @@
 import { defineConfig, presetIcons, presetUno, toEscapedSelector as e } from 'unocss'
 import transformerVariantGroup from '@unocss/transformer-variant-group'
 import { loadEnv } from 'vite'
-import { ICON_PREFIX } from './src/constants'
 
 const root = process.cwd()
 
@@ -25,7 +24,7 @@ const createPresetIcons = () => {
     return [
       presetIcons({
         autoInstall: false,
-        prefix: ICON_PREFIX
+        prefix: 'vi-'
       })
     ]
   }

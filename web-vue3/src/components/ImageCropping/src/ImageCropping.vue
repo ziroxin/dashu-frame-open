@@ -199,7 +199,7 @@ defineExpose({
               :on-change="uploadChange"
             >
               <BaseButton size="small" type="primary" class="mt-2px"
-                ><Icon icon="vi-ep:upload-filled"
+                ><my-icon icon="vi-ep:upload-filled"
               /></BaseButton>
             </ElUpload>
           </ElTooltip>
@@ -207,37 +207,37 @@ defineExpose({
         <div class="flex items-center justify-end flex-1">
           <ElTooltip content="重置" placement="bottom">
             <BaseButton size="small" type="primary" @click="reset"
-              ><Icon icon="vi-ep:refresh"
+              ><my-icon icon="vi-ep:refresh"
             /></BaseButton>
           </ElTooltip>
           <ElTooltip content="逆时针旋转" placement="bottom">
             <BaseButton size="small" type="primary" @click="rotate(-45)"
-              ><Icon icon="vi-ant-design:rotate-left-outlined"
+              ><my-icon icon="vi-ant-design:rotate-left-outlined"
             /></BaseButton>
           </ElTooltip>
           <ElTooltip content="顺时针旋转" placement="bottom">
             <BaseButton size="small" type="primary" @click="rotate(45)"
-              ><Icon icon="vi-ant-design:rotate-right-outlined"
+              ><my-icon icon="vi-ant-design:rotate-right-outlined"
             /></BaseButton>
           </ElTooltip>
           <ElTooltip content="水平翻转" placement="bottom">
             <BaseButton size="small" type="primary" @click="scale('scaleX')"
-              ><Icon icon="vi-vaadin:arrows-long-h"
+              ><my-icon icon="vi-vaadin:arrows-long-h"
             /></BaseButton>
           </ElTooltip>
           <ElTooltip content="垂直翻转" placement="bottom">
             <BaseButton size="small" type="primary" @click="scale('scaleY')"
-              ><Icon icon="vi-vaadin:arrows-long-v"
+              ><my-icon icon="vi-vaadin:arrows-long-v"
             /></BaseButton>
           </ElTooltip>
           <ElTooltip content="放大" placement="bottom">
             <BaseButton size="small" type="primary" @click="zoom(0.1)"
-              ><Icon icon="vi-ant-design:zoom-in-outlined"
+              ><my-icon icon="vi-ant-design:zoom-in-outlined"
             /></BaseButton>
           </ElTooltip>
           <ElTooltip content="缩小" placement="bottom">
             <BaseButton size="small" type="primary" @click="zoom(-0.1)"
-              ><Icon icon="vi-ant-design:zoom-out-outlined"
+              ><my-icon icon="vi-ant-design:zoom-out-outlined"
             /></BaseButton>
           </ElTooltip>
         </div>

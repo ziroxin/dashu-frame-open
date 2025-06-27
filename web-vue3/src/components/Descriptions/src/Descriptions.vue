@@ -5,7 +5,6 @@ import { propTypes } from '@/utils/propTypes'
 import { ref, unref, PropType, computed, defineComponent } from 'vue'
 import { useAppStore } from '@/store/modules/app'
 import { DescriptionsSchema } from './types'
-import { Icon } from '@/components/Icon'
 import { get } from 'lodash-es'
 
 const appStore = useAppStore()
@@ -97,13 +96,13 @@ export default defineComponent({
                   {props.title}
                   {props.message ? (
                     <ElTooltip content={props.message} placement="right">
-                      <Icon icon="vi-bi:question-circle-fill" class="ml-5px" size={14} />
+                      <my-icon icon="vi-bi:question-circle-fill" class="ml-5px" size={14} />
                     </ElTooltip>
                   ) : null}
                 </div>
               </div>
               {props.collapse ? (
-                <Icon icon={show.value ? 'vi-ep:arrow-down' : 'vi-ep:arrow-up'} />
+                <my-icon icon={show.value ? 'vi-ep:arrow-down' : 'vi-ep:arrow-up'} />
               ) : null}
             </div>
           ) : null}

@@ -1,7 +1,6 @@
 <script lang="tsx">
 import { defineComponent, unref, computed, PropType, ref } from 'vue'
 import { ElDropdown, ElDropdownMenu, ElDropdownItem, ComponentSize } from 'element-plus'
-import { Icon } from '@/components/Icon'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useAppStore } from '@/store/modules/app'
 import { TableColumn } from '../types'
@@ -45,7 +44,7 @@ export default defineComponent({
       <>
         <div class="text-right h-28px flex items-center justify-end">
           <div title="刷新" class="w-30px h-20px flex items-center justify-end" onClick={refresh}>
-            <Icon
+            <my-icon
               icon="vi-ant-design:sync-outlined"
               class="cursor-pointer"
               hover-color="var(--el-color-primary)"
@@ -57,7 +56,7 @@ export default defineComponent({
               default: () => {
                 return (
                   <div title="尺寸" class="w-30px h-20px flex items-center justify-end">
-                    <Icon
+                    <my-icon
                       icon="vi-ant-design:column-height-outlined"
                       class="cursor-pointer"
                       hover-color="var(--el-color-primary)"
@@ -90,7 +89,7 @@ export default defineComponent({
             class="w-30px h-20px flex items-center justify-end"
             onClick={showColumnSetting}
           >
-            <Icon
+            <my-icon
               icon="vi-ant-design:setting-outlined"
               class="cursor-pointer"
               hover-color="var(--el-color-primary)"

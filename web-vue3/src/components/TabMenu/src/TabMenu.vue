@@ -4,7 +4,6 @@ import { useAppStore } from '@/store/modules/app'
 import { computed, unref, defineComponent, watch, ref, onMounted } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElScrollbar, ClickOutside } from 'element-plus'
-import { Icon } from '@/components/Icon'
 import { Menu } from '@/components/Menu'
 import { useRouter } from 'vue-router'
 import { pathResolve } from '@/utils/routerHelper'
@@ -183,7 +182,7 @@ export default defineComponent({
                     }}
                   >
                     <div>
-                      <Icon icon={item?.meta?.icon}></Icon>
+                      <my-icon icon={item?.meta?.icon}></my-icon>
                     </div>
                     {!unref(showTitle) ? undefined : (
                       <p class="break-words mt-5px px-2px">{t(item.meta?.title || '')}</p>
@@ -201,7 +200,7 @@ export default defineComponent({
           ]}
           onClick={setCollapse}
         >
-          <Icon icon={unref(collapse) ? 'ep:d-arrow-right' : 'ep:d-arrow-left'}></Icon>
+          <my-icon icon={unref(collapse) ? 'ep:d-arrow-right' : 'ep:d-arrow-left'}></my-icon>
         </div>
         <Menu
           class={[

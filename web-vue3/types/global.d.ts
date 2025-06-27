@@ -1,5 +1,4 @@
-import type {CSSProperties} from 'vue'
-import {RawAxiosRequestHeaders} from 'axios'
+import { RawAxiosRequestHeaders } from 'axios'
 
 declare global {
   declare interface Fn<T = any> {
@@ -68,6 +67,7 @@ declare global {
   declare interface ImportMetaEnv {
     readonly VITE_NODE_ENV: string
     readonly VITE_APP_TITLE: string
+    readonly VITE_APP_KEY_PREFIX: string
     readonly VITE_API_BASE_PATH: string
     readonly VITE_BASE_PATH: string
     readonly VITE_DROP_DEBUGGER: string

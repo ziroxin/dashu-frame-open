@@ -7,7 +7,6 @@ import { filterBreadcrumb } from './helper'
 import { filter, treeToList } from '@/utils/tree'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { useI18n } from '@/hooks/web/useI18n'
-import { Icon } from '@/components/Icon'
 import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
 
@@ -52,7 +51,7 @@ export default defineComponent({
           <ElBreadcrumbItem to={{ path: disabled ? '' : v.path }} key={v.name}>
             {meta?.icon && breadcrumbIcon.value ? (
               <>
-                <Icon icon={meta.icon} class="mr-[5px]"></Icon> {t(v?.meta?.title || '')}
+                <my-icon icon={meta.icon} class="mr-[5px]"></my-icon> {t(v?.meta?.title || '')}
               </>
             ) : (
               t(v?.meta?.title || '')

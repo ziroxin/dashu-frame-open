@@ -18,7 +18,6 @@ import { CSSProperties } from 'vue'
 import { getSlot } from '@/utils/tsxHelper'
 import TableActions from './components/TableActions.vue'
 import { createVideoViewer } from '@/components/VideoPlayer'
-import { Icon } from '@/components/Icon'
 import { BaseButton } from '@/components/Button'
 
 export default defineComponent({
@@ -406,7 +405,7 @@ export default defineComponent({
           ) : videoPreview.includes(field) ? (
             <BaseButton
               type="primary"
-              icon={<Icon icon="vi-ep:video-play" />}
+              icon={<my-icon icon="vi-ep:video-play" />}
               onClick={() => {
                 createVideoViewer({
                   url

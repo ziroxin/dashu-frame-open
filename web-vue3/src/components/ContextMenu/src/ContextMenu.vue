@@ -64,7 +64,7 @@ defineExpose({
           :disabled="item.disabled"
           :command="item"
         >
-          <Icon :icon="item.icon" /> {{ t(item.label) }}
+          <my-icon :icon="item.icon" /> {{ t(item.label) }}
         </ElDropdownItem>
       </ElDropdownMenu>
     </template>
