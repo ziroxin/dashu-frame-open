@@ -19,17 +19,13 @@ export const setupElementPlus = (app: App<Element>, type: string) => {
   if (import.meta.env.VITE_USE_ALL_ELEMENT_PLUS_STYLE === 'true') {
     import('element-plus/dist/index.css')
   }
+  // 然后根据type参数选择引入方式
   if (type === 'all') {
     // 方式一：全局引入所有组件
     app.use(ElementPlus)
-    return
   } else {
     // 方式二：按需引入组件（这里只引入部分必须的组件，其他组件在页面内按需引入）
-    plugins.forEach((plugin) => {
-      app.use(plugin)
-    })
-    components.forEach((component) => {
-      app.component(component.name!, component)
-    })
+    plugins.forEach((plugin) => { app.use(plugin) })
+    components.forEach((component) => { app.component(component.name!, component) })
   }
 }
