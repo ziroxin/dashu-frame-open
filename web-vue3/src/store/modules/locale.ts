@@ -5,7 +5,7 @@ import en from 'element-plus/es/locale/lang/en'
 import { useStorage } from '@/hooks/web/useStorage'
 import { LocaleDropdownType } from '@/components/LocaleDropdown'
 
-const { getStorage, setStorage } = useStorage('localStorage')
+const {getStorage, setStorage} = useStorage('localStorage')
 
 const elLocaleMap = {
   'zh-CN': zhCn,
@@ -24,16 +24,7 @@ export const useLocaleStore = defineStore('locales', {
         elLocale: elLocaleMap[getStorage('lang') || 'zh-CN']
       },
       // 多语言
-      localeMap: [
-        {
-          lang: 'zh-CN',
-          name: '简体中文'
-        },
-        {
-          lang: 'en',
-          name: 'English'
-        }
-      ]
+      localeMap: [{lang: 'zh-CN', name: '简体中文'}, {lang: 'en', name: 'English'}]
     }
   },
   getters: {
@@ -46,7 +37,6 @@ export const useLocaleStore = defineStore('locales', {
   },
   actions: {
     setCurrentLocale(localeMap: LocaleDropdownType) {
-      // this.locale = Object.assign(this.locale, localeMap)
       this.currentLocale.lang = localeMap?.lang
       this.currentLocale.elLocale = elLocaleMap[localeMap?.lang]
       setStorage('lang', localeMap?.lang)

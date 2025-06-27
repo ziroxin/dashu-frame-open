@@ -10,6 +10,7 @@ const createI18nOptions = async (): Promise<I18nOptions> => {
   const localeStore = useLocaleStoreWithOut()
   const locale = localeStore.getCurrentLocale
   const localeMap = localeStore.getLocaleMap
+  // 支持远程读取语言数据（在这里改成api请求即可）
   const defaultLocal = await import(`../../locales/${locale.lang}.ts`)
   const message = defaultLocal.default ?? {}
 

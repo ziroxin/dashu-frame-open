@@ -113,7 +113,7 @@ export default {
     checkPassword: '确认密码',
     login: '登录',
     otherLogin: '其它登录方式',
-    remember: '记住我',
+    remember: '记住密码',
     hasUser: '已有账号？去登录',
     forgetPassword: '忘记密码',
     usernamePlaceholder: '请输入用户名',
@@ -190,7 +190,7 @@ export default {
     tree: 'Tree 树形控件'
   },
   permission: {
-    hasPermission: '请设置操作权限值'
+    hasPermission: '权限值不能为空'
   },
   analysis: {
     newUser: '新增用户',

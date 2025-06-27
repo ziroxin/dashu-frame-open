@@ -194,7 +194,7 @@ export default {
     tree: 'Tree'
   },
   permission: {
-    hasPermission: 'Please set the operation permission value'
+    hasPermission: 'Permission value cannot be empty'
   },
   analysis: {
     newUser: 'New user',
