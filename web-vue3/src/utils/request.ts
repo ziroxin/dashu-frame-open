@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getToken, getTokenRefreshInterval, getTokenValidTime } from '@/utils/auth'
+import { getToken, getTokenRefreshInterval, getTokenValidTime, refreshToken } from '@/utils/auth'
 import { isWhiteList } from '@/router/white-list'
 import errorCode, { notLoginError } from '@/utils/error-code'
 import { encryptRSA, isEncrypt } from '@/utils/jsencrypt-util'
@@ -19,18 +19,22 @@ const service = axios.create({
 
 // 请求拦截器
 service.interceptors.request.use(
-  config => {
+  async config => {
     // 发送请求前，统一拦截操作
     // 1、处理TOKEN：（请求头添加token；请求前定时刷新token）
-    const hasToken = getToken()
+    let hasToken = getToken()
     if (hasToken) {
       if (config.url !== '/login/refresh/token' && !isWhiteList(config.url)) {
         // 判断token的有效期
         const tokenValidTime = getTokenValidTime()
         if (new Date().getTime() < new Date(tokenValidTime).getTime() &&
           (new Date().getTime() + getTokenRefreshInterval()) > new Date(tokenValidTime).getTime()) {
-          // token失效前60分钟，刷新token
-          useUserStore().refreshToken()
+          try {
+            // token失效前60分钟（约定时间根据需要执行修改），刷新token
+            hasToken = await refreshToken()
+          } catch (err) {
+            return Promise.reject(err)
+          }
         }
       }
       // 给每个请求头，加上TOKEN：UserJwtToken（key和后台api相对应，不要修改）

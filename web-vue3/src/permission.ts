@@ -8,17 +8,18 @@ import { getToken } from '@/utils/auth'
 import { isWhiteList } from '@/router/white-list'
 import { saveLastedRoutes } from '@/utils/lasted-routes'
 import request from '@/utils/request'
+import { loginRoute } from '@/router/constant-routes'
 
 const {start, done} = useNProgress()
 const {loadStart, loadDone} = usePageLoading()
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to, from, next) => {
   // 开启进度条
   start()
   loadStart()
 
   // 单独判断login
-  if (to.path === '/login') {
+  if (to.path === loginRoute.path) {
     if (getToken()) {
       // 已登录的话，直接进入首页
       next({path: '/'})
@@ -31,37 +32,46 @@ router.beforeEach(async (to, from, next) => {
   } else {
     // 出现错误跳转到登录页
     const errorToLogin = `/login?redirect=${to.path}`
+    console.log(errorToLogin)
     // 判断用户是否登录（有token代表登录）
     const hasToken = getToken()
     if (hasToken) {
+      console.log(1)
       // 登录后，跳转到原来打开的页面
       const permissionStore = usePermissionStoreWithOut()
       const hasRoutes = permissionStore.getRoutes && permissionStore.getRoutes.length > 0
       // 跳转前，先判断：store里是否有角色相关信息（路由等）
       if (hasRoutes) {
+        console.log(2)
         saveLastedRoutes(to.path)
         next()
       } else {
+        console.log(3)
         // 查询登录用户信息、角色信息、路由信息、权限信息
-        const {data} = await request({url: '/permission/user/all', method: 'get'})
-        if (data) {
-          // 查询成功，组装路由
-          const {permissions, perRouters} = data
-          if (perRouters?.length > 0) {
-            const userStore = useUserStoreWithOut()
-            // 保存用户登录信息
-            userStore.setUserData(data.user, perRouters, permissions)
-            // 生成用户路由
-            await permissionStore.generateRoutes(perRouters)
-            // 加载路由完成，跳转
-            const redirect = decodeURIComponent((from.query.redirect || to.path) as string)
-            next(to.path === redirect ? {...to, replace: true} : {path: redirect})
+        request({url: '/permission/user/all', method: 'get'}).then(response => {
+          console.log(4, response)
+          const {data} = response
+          if (data) {
+            // 查询成功，组装路由
+            const {permissions, perRouters} = data
+            if (perRouters?.length > 0) {
+              const userStore = useUserStoreWithOut()
+              // 保存用户登录信息
+              userStore.setUserData(data.user, perRouters, permissions)
+              // 生成用户路由
+              permissionStore.generateRoutes(perRouters).then(() => {
+                // 加载路由完成，跳转
+                const redirect = decodeURIComponent((from.query.redirect || to.path) as string)
+                next(to.path === redirect ? {...to, replace: true} : {path: redirect})
+              })
+            }
           }
-        }
-        // 未正常跳转，跳转到登录页
-        next(errorToLogin)
+          // 未正常跳转，跳转到登录页
+          next(errorToLogin)
+        })
       }
     } else {
+      console.log(6)
       // 无token
       // 无权限，跳到登录页
       next(errorToLogin)

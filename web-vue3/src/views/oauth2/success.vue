@@ -5,7 +5,7 @@
   </div>
 </template>
 <script>
-import {setToken, setTokenValidTime} from '@/utils/auth';
+import { setToken } from '@/utils/auth'
 
 export default {
   name: 'oauth2Success',
@@ -13,13 +13,12 @@ export default {
     const params = {loginId: this.$route.query.loginId}
     this.$request({url: '/oauth2/client/login/check', method: 'get', params}).then((response) => {
       const {data} = response
-      let errArr = data.successMsg.split('|');
+      let errArr = data.successMsg.split('|')
       if (errArr && errArr.length === 2 && errArr[0] === 'error') {
         this.$router.push({path: '/oauth2/error', query: {err: errArr[1]}})
       } else {
         // 写入登录状态（同/store/modules/user.js:login）
         setToken(data.accessToken, new Date(data.accessTokenValidTime))
-        setTokenValidTime(new Date(data.accessTokenValidTime))
         this.$store.commit('user/SET_TOKEN', data.accessToken)
         sessionStorage.setItem(this.$storageKeys.isDefaultPassword, data.defaultPassword)
         sessionStorage.setItem(this.$storageKeys.isInvalidPassword, data.invalidPassword)

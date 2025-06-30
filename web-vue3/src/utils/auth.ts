@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie'
 import storageKeys from '@/utils/storage-keys'
+import request from '@/utils/request'
 
 // token到期前多久，刷新token（默认：60分钟；每次请求api前检测request.js中）
 // 注意：该时间必须小于后台配置的jwtToken有效期！！！
@@ -13,8 +14,9 @@ export function getToken() {
 }
 
 export function setToken(token, validTime) {
-  if (IsTokenRemember) {
-    if (validTime) {
+  if (validTime) {
+    setTokenValidTime(validTime)
+    if (IsTokenRemember) {
       return Cookies.set(storageKeys.c_token, token, {expires: validTime})
     }
   }
@@ -26,7 +28,8 @@ export function getTokenHeader() {
 }
 
 export function removeToken() {
-  return Cookies.remove(storageKeys.c_token)
+  Cookies.remove(storageKeys.c_token)
+  Cookies.remove(storageKeys.c_tokenValidTime)
 }
 
 export function getTokenValidTime() {
@@ -42,4 +45,20 @@ export function setTokenValidTime(validTime) {
 
 export function getTokenRefreshInterval() {
   return TokenRefreshInterval
+}
+
+export function refreshToken() {
+  return new Promise<string>((resolve, reject) => {
+    request({url: '/login/refresh/token', method: 'post'}).then(response => {
+      const {data} = response
+      if (data && data.accessToken && data.accessTokenValidTime) {
+        setToken(data.accessToken, new Date(data.accessTokenValidTime))
+      } else {
+        reject(new Error('Token刷新失败')) // 如果数据不正确，拒绝Promise
+      }
+      resolve('success')
+    }).catch(error => {
+      reject(error)
+    })
+  })
 }

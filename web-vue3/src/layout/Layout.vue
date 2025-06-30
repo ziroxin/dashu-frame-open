@@ -1,77 +1,37 @@
-<script lang="tsx">
-import { computed, defineComponent, unref } from 'vue'
+<template>
+  <section :class="[prefixCls,`${prefixCls}__${layoutType}`,'w-[100%] h-[100%] relative']">
+    <div v-if="mobile&&!collapse" @click="handleClickOutside"
+         class="absolute top-0 left-0 w-full h-full opacity-30 z-99 bg-[var(--el-color-black)]"></div>
+    <render-layout :layout-type="layoutType"/>
+    <Backtop></Backtop>
+    <Setting v-if="!hideSetting"></Setting>
+  </section>
+</template>
+
+<script setup lang="ts">
 import { useAppStore } from '@/store/modules/app'
 import { Backtop } from '@/components/Backtop'
 import { Setting } from '@/components/Setting'
-import { useRenderLayout } from './components/useRenderLayout'
+import RenderLayout from './components/RenderLayout.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 
-const { getPrefixCls } = useDesign()
-
-const prefixCls = getPrefixCls('layout')
-
+const prefixCls = useDesign().getPrefixCls('layout')
 const appStore = useAppStore()
 
 // 是否是移动端
 const mobile = computed(() => appStore.getMobile)
+// 是否隐藏设置选项
+const hideSetting = computed(() => import.meta.env.VITE_HIDE_GLOBAL_SETTING === 'true')
+// 布局类型
+const layoutType = computed(() => appStore.getLayout)
 
 // 菜单折叠
 const collapse = computed(() => appStore.getCollapse)
-
-const layout = computed(() => appStore.getLayout)
-
-const hideSetting = computed(() => import.meta.env.VITE_HIDE_GLOBAL_SETTING === 'true')
-
-const handleClickOutside = () => {
-  appStore.setCollapse(true)
-}
-
-const renderLayout = () => {
-  const { renderClassic, renderTopLeft, renderTop, renderCutMenu } = useRenderLayout()
-  switch (unref(layout)) {
-    case 'classic':
-      // 经典布局
-      return renderClassic()
-    case 'topLeft':
-      // 顶部左侧布局
-      return renderTopLeft()
-    case 'top':
-      // 顶部布局
-      return renderTop()
-    case 'cutMenu':
-      // 分栏菜单布局
-      return renderCutMenu()
-    default:
-      break
-  }
-}
-
-export default defineComponent({
-  name: 'Layout',
-  setup() {
-    return () => (
-      <section class={[prefixCls, `${prefixCls}__${layout.value}`, 'w-[100%] h-[100%] relative']}>
-        {mobile.value && !collapse.value ? (
-          <div
-            class="absolute top-0 left-0 w-full h-full opacity-30 z-99 bg-[var(--el-color-black)]"
-            onClick={handleClickOutside}
-          ></div>
-        ) : undefined}
-
-        {renderLayout()}
-
-        <Backtop></Backtop>
-
-        {!unref(hideSetting) && <Setting></Setting>}
-      </section>
-    )
-  }
-})
+const handleClickOutside = () => { appStore.setCollapse(true) }
 </script>
 
 <style lang="less" scoped>
 @prefix-cls: ~'@{adminNamespace}-layout';
-
 .@{prefix-cls} {
   background-color: var(--app-content-bg-color);
 }

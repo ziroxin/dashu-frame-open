@@ -3,19 +3,22 @@
     <h1>统一认证中心 · 授权失败</h1>
     <div class="error-info">{{ errorInfo }}</div>
     <div style="width: 100%; text-align: center;margin:30px auto;">
-      <el-button @click="$router.go(-1)" type="primary" icon="el-icon-back"
-                 plain>返回上一页
-      </el-button>
-      <el-button @click="$router.push({path: '/login'})"
-                 type="danger" icon="el-icon-s-home" plain>
-        返回登录页
+      <el-button @click="$router.go(-1)" type="primary" icon="el-icon-back" plain>返回上一页</el-button>
+      <el-button @click="$router.push({path: loginRoute.path})" type="danger" icon="el-icon-s-home" plain> 返回登录页
       </el-button>
     </div>
   </div>
 </template>
 <script>
+import { loginRoute } from '@/router/constant-routes.js'
+
 export default {
   name: 'oauth2Error',
+  computed: {
+    loginRoute() {
+      return loginRoute
+    }
+  },
   data() {
     return {
       errorInfo: '统一认证出现异常，请重试或联系管理员。'
@@ -23,7 +26,7 @@ export default {
   },
   created() {
     if (this.$route.query.err) {
-      this.errorInfo = this.$route.query.err;
+      this.errorInfo = this.$route.query.err
     }
   }
 }

@@ -18,7 +18,7 @@
         <el-form-item :label="t('login.password')" prop="password"
                       :rules="[{required: true, message: '密码不能为空！'}]">
           <el-input type="password" v-model="loginForm.password" @keydown.enter.stop="signIn"
-                    :prefix-icon="iconMap.password"
+                    :prefix-icon="iconMap.password" show-password
                     :placeholder="t('login.passwordPlaceholder')" style="width: 100%"/>
         </el-form-item>
       </el-col>
@@ -66,7 +66,7 @@ import { useIcon } from '@/hooks/web/useIcon'
 import { encryptRSA } from '@/utils/jsencrypt-util'
 import storageKeys from '@/utils/storage-keys'
 import { loginApi } from '@/api/login'
-import { setToken, setTokenValidTime } from '@/utils/auth'
+import { setToken } from '@/utils/auth'
 // 国际化
 const {t} = useI18n()
 
@@ -114,7 +114,6 @@ const signIn = () => {
         // 登录成功，处理登录逻辑
         const {data} = response
         setToken(data.accessToken, new Date(data.accessTokenValidTime))
-        setTokenValidTime(new Date(data.accessTokenValidTime))
         // 是否默认密码
         sessionStorage.setItem(storageKeys.s_isDefaultPassword, data.defaultPassword)
         // 密码是否过期
@@ -129,6 +128,7 @@ const signIn = () => {
         // 跳转页面
         replace({path: currentRoute.value?.query?.redirect as string || '/'})
         isLoading.value = false
+        location.reload()
       }).catch(err => {
         console.log('login error!', err)
         isLoading.value = false

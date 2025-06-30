@@ -5,7 +5,11 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { logoutApi } from '@/api/login'
 import { useTagsViewStore } from './tagsView'
 import router from '@/router'
+import { removeToken } from '@/utils/auth'
+import { usePermissionStoreWithOut } from '@/store/modules/permission'
+import { loginRoute } from '@/router/constant-routes'
 
+// 定义用户信息类型
 interface UserType {
   name?: string,
   avatar?: string,
@@ -60,15 +64,21 @@ export const useUserStore = defineStore('user', {
       })
     },
     reset() {
-      const tagsViewStore = useTagsViewStore()
-      tagsViewStore.delAllViews()
+      removeToken()
+      usePermissionStoreWithOut().resetPermission()
+      useTagsViewStore().delAllViews()
       this.userInfo = undefined
       this.perRoutes = []
       this.permissions = []
-      router.replace('/login')
+      router.replace(loginRoute.path)
     },
     logout() {
-      this.reset()
+      return new Promise((resolve) => {
+        logoutApi().then(() => {
+          this.reset()
+          resolve(true)
+        })
+      })
     }
   },
   persist: true

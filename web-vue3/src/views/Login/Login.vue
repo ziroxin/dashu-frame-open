@@ -66,7 +66,6 @@ const prefixCls = useDesign().getPrefixCls('login')
 
 <style lang="less" scoped>
 @prefix-cls: ~'@{adminNamespace}-login';
-
 .@{prefix-cls} {
   overflow: auto;
   &__left {

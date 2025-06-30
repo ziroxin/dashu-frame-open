@@ -34,8 +34,8 @@
 </template>
 
 <script>
-import {encryptRSA} from "@/utils/jsencrypt-util";
-import {setToken, setTokenValidTime} from "@/utils/auth";
+import { encryptRSA } from '@/utils/jsencrypt-util'
+import { setToken } from '@/utils/auth'
 
 export default {
   data() {
@@ -83,13 +83,13 @@ export default {
         if (valid) {
           this.loading = true
           let data = {...this.loginForm}
-          data.codeBaseImage = null;
+          data.codeBaseImage = null
           data.isEncrypt = true
           data.userName = encryptRSA(this.loginForm.userName)
           data.password = encryptRSA(this.loginForm.password)
           this.$request({url: '/oauth2/client/login/userBind', method: 'post', data}).then(response => {
             const {data} = response
-            let errArr = data.successMsg.split('|');
+            let errArr = data.successMsg.split('|')
             if (errArr && errArr.length === 2 && errArr[0] === 'error') {
               // 绑定失败
               this.$router.push({path: '/oauth2/error', query: {err: errArr[1]}})
@@ -98,7 +98,6 @@ export default {
               this.$message({type: 'success', message: '绑定成功！正在为您跳转，请稍等...'})
               // 写入登录状态（同/store/modules/user.js:login）
               setToken(data.accessToken, new Date(data.accessTokenValidTime))
-              setTokenValidTime(new Date(data.accessTokenValidTime))
               this.$store.commit('user/SET_TOKEN', data.accessToken)
               sessionStorage.setItem(this.$storageKeys.isDefaultPassword, data.defaultPassword)
               sessionStorage.setItem(this.$storageKeys.isInvalidPassword, data.invalidPassword)

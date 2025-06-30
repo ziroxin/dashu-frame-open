@@ -26,9 +26,8 @@ export const usePermissionStore = defineStore('permission', {
   actions: {
     generateRoutes(perRoutes: any[]): Promise<void> {
       return new Promise((resolve) => {
-        console.log(perRoutes)
         // 加载动态路由（非隐藏路由）
-        let accessedRoutes: AppRouteRecordRaw[] = generateRoutesByServer(perRoutes as any, true)
+        const accessedRoutes: AppRouteRecordRaw[] = generateRoutesByServer(perRoutes as any, true)
         // 单独加载隐藏路由
         accessedRoutes.push(...generateRoutes4HiddenByServer(perRoutes as any))
         // 加载404路由（必须放在最后）
@@ -40,24 +39,21 @@ export const usePermissionStore = defineStore('permission', {
             router.hasRoute(route.name) && router.removeRoute(route.name)
           }
         })
-
         this.routes = [...accessedRoutes]
         resolve()
       })
     },
     setMenuTabRoutes(routes: AppRouteRecordRaw[]): void {
       this.menuTabRoutes = routes
+    },
+    resetPermission() {
+      this.routes = []
+      this.menuTabRoutes = []
     }
   },
   persist: [
-    {
-      pick: ['routes'],
-      storage: localStorage
-    },
-    {
-      pick: ['menuTabRoutes'],
-      storage: localStorage
-    }
+    {pick: ['routes'], storage: localStorage},
+    {pick: ['menuTabRoutes'], storage: localStorage}
   ]
 })
 
