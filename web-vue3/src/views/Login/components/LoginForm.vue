@@ -43,7 +43,9 @@
       </el-col>
       <el-col :span="24">
         <el-form-item class="w-[100%]">
-          <el-button loading type="primary" class="w-[100%]" @click="signIn" v-text="t('login.login')"/>
+          <el-button :loading="isLoading" type="primary" class="w-[100%]" @click="signIn">
+            {{ t('login.login') }}
+          </el-button>
         </el-form-item>
       </el-col>
       <el-col :span="24">
@@ -59,16 +61,17 @@
 </template>
 <script setup lang="ts">
 import { useI18n } from '@/hooks/web/useI18n'
-import { useUserStore } from '@/store/modules/user'
 import request from '@/utils/request'
 import { useIcon } from '@/hooks/web/useIcon'
 import { encryptRSA } from '@/utils/jsencrypt-util'
 import storageKeys from '@/utils/storage-keys'
+import { loginApi } from '@/api/login'
+import { setToken, setTokenValidTime } from '@/utils/auth'
 // 国际化
 const {t} = useI18n()
 
 // 登录表单数据
-const isLoading = ref(true)
+const isLoading = ref(false)
 const loginFormRef = ref()
 const loginForm = ref({
   userName: '', password: '', yzm: '', codeUuid: '', codeBaseImage: '', rememberMe: false
@@ -95,39 +98,42 @@ const loadCaptcha = () => {
   })
 }
 
-const userStore = useUserStore()
+const {replace, currentRoute} = useRouter()
 // 登录
 const signIn = () => {
   loginFormRef.value.validate((isValid) => {
     if (isValid) {
       isLoading.value = true
-      try {
-        const data: any = {...loginForm.value}
-        // 加密传输设置为true，并对用户名密码加密（不设置或设置false，默认为不加密传输）
-        data.isEncrypt = true
-        data.userName = encryptRSA(data.userName)
-        data.password = encryptRSA(data.password)
-        data.codeBaseImage = ''// 验证码base64图片不传递
-        console.log('isL', isLoading.value)
-        // 登录
-        userStore.login(data).then(() => {
-          // 是否记住我
-          if (data.rememberMe) {
-            localStorage.setItem(storageKeys.l_rememberMeData,
-                JSON.stringify({userName: loginForm.value.userName, password: loginForm.value.password}))
-          } else {
-            localStorage.removeItem(storageKeys.l_rememberMeData)
-          }
-          // 跳转页面
-          const router = useRouter()
-          router.push({path: router.currentRoute.value?.query?.redirect as string})
-        }).catch(() => {
-          console.log('login error!')
-          loadCaptcha()
-        })
-      } finally {
+      const data: any = {...loginForm.value}
+      // 加密传输设置为true，并对用户名密码加密（不设置或设置false，默认为不加密传输）
+      data.isEncrypt = true
+      data.userName = encryptRSA(data.userName)
+      data.password = encryptRSA(data.password)
+      data.codeBaseImage = ''// 验证码base64图片不传递
+      loginApi(data).then(response => {
+        // 登录成功，处理登录逻辑
+        const {data} = response
+        setToken(data.accessToken, new Date(data.accessTokenValidTime))
+        setTokenValidTime(new Date(data.accessTokenValidTime))
+        // 是否默认密码
+        sessionStorage.setItem(storageKeys.s_isDefaultPassword, data.defaultPassword)
+        // 密码是否过期
+        sessionStorage.setItem(storageKeys.s_isInvalidPassword, data.invalidPassword)
+        // 是否记住我
+        if (data.rememberMe) {
+          localStorage.setItem(storageKeys.l_rememberMeData,
+              JSON.stringify({userName: loginForm.value.userName, password: loginForm.value.password}))
+        } else {
+          localStorage.removeItem(storageKeys.l_rememberMeData)
+        }
+        // 跳转页面
+        replace({path: currentRoute.value?.query?.redirect as string || '/'})
         isLoading.value = false
-      }
+      }).catch(err => {
+        console.log('login error!', err)
+        isLoading.value = false
+        loadCaptcha()
+      })
     }
   })
 }
