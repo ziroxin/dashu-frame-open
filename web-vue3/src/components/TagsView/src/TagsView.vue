@@ -27,7 +27,7 @@ const { closeAll, closeLeft, closeRight, closeOther, closeCurrent, refreshPage }
 
 const permissionStore = usePermissionStore()
 
-const routers = computed(() => permissionStore.getRouters)
+const routes = computed(() => permissionStore.getRoutes)
 
 const tagsViewStore = useTagsViewStore()
 
@@ -47,7 +47,7 @@ const isDark = computed(() => appStore.getIsDark)
 
 // 初始化tag
 const initTags = () => {
-  affixTagArr.value = filterAffixTags(unref(routers))
+  affixTagArr.value = filterAffixTags(unref(routes))
   for (const tag of unref(affixTagArr)) {
     // Must have tag name
     if (tag.name) {
@@ -82,14 +82,13 @@ const toLastView = () => {
     push(latestView)
   } else {
     if (
-      unref(currentRoute).path === permissionStore.getAddRouters[0].path ||
-      unref(currentRoute).path === permissionStore.getAddRouters[0].redirect
+      unref(currentRoute).path === permissionStore.getRoutes[0].path ||
+      unref(currentRoute).path === permissionStore.getRoutes[0].redirect
     ) {
       addTags()
       return
     }
-    // You can set another route
-    push(permissionStore.getAddRouters[0].path)
+    push(permissionStore.getRoutes[0].path)
   }
 }
 

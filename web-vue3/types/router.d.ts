@@ -52,17 +52,11 @@ declare global {
     name: string
     meta: RouteMetaCustom
     component?: Component | string
+    path?: string
+    redirect?: string
     children?: AppRouteRecordRaw[]
     props?: Recordable
     fullPath?: string
-  }
-
-  declare interface AppCustomRouteRecordRaw extends Omit<RouteRecordRaw, 'meta' | 'component' | 'children'> {
-    name: string
-    meta: RouteMetaCustom
-    component: string
-    path: string
-    redirect: string
-    children?: AppCustomRouteRecordRaw[]
+    alwaysShow?: boolean
   }
 }

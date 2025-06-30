@@ -40,8 +40,8 @@ export default defineComponent({
       }
     })
 
-    const routers = computed(() =>
-      unref(layout) === 'cutMenu' ? permissionStore.getMenuTabRouters : permissionStore.getRouters
+    const routes = computed(() =>
+      unref(layout) === 'cutMenu' ? permissionStore.getMenuTabRoutes : permissionStore.getRoutes
     )
 
     const collapse = computed(() => appStore.getCollapse)
@@ -99,7 +99,7 @@ export default defineComponent({
           {{
             default: () => {
               const { renderMenuItem } = useRenderMenuItem(menuMode)
-              return renderMenuItem(unref(routers))
+              return renderMenuItem(unref(routes))
             }
           }}
         </ElMenu>

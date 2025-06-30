@@ -30,12 +30,16 @@ const renderLayout = () => {
   const { renderClassic, renderTopLeft, renderTop, renderCutMenu } = useRenderLayout()
   switch (unref(layout)) {
     case 'classic':
+      // 经典布局
       return renderClassic()
     case 'topLeft':
+      // 顶部左侧布局
       return renderTopLeft()
     case 'top':
+      // 顶部布局
       return renderTop()
     case 'cutMenu':
+      // 分栏菜单布局
       return renderCutMenu()
     default:
       break

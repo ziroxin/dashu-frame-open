@@ -30,14 +30,14 @@ export default defineComponent({
 
     const permissionStore = usePermissionStore()
 
-    const menuRouters = computed(() => {
-      const routers = permissionStore.getRouters
-      return filterBreadcrumb(routers)
+    const menuRoutes = computed(() => {
+      const routes = permissionStore.getRoutes
+      return filterBreadcrumb(routes)
     })
 
     const getBreadcrumb = () => {
       const currentPath = currentRoute.value.matched.slice(-1)[0].path
-      levelList.value = filter<AppRouteRecordRaw>(unref(menuRouters), (node: AppRouteRecordRaw) => {
+      levelList.value = filter<AppRouteRecordRaw>(unref(menuRoutes), (node: AppRouteRecordRaw) => {
         return node.path === currentPath
       })
     }

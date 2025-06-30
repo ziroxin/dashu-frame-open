@@ -19,11 +19,6 @@ export const REQUEST_TIMEOUT = 60000
 export const NO_REDIRECT_WHITE_LIST = ['/login']
 
 /**
- * 不重置路由白名单
- */
-export const NO_RESET_WHITE_LIST = ['Redirect', 'RedirectWrap', 'Login', 'NoFind', 'Root']
-
-/**
  * 表格默认过滤列设置字段
  */
 export const DEFAULT_FILTER_COLUMN = ['expand', 'selection']
