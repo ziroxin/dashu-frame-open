@@ -1,10 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import type {
-  Router,
-  RouteLocationNormalized,
-  RouteRecordNormalized,
-  RouteRecordRaw
-} from 'vue-router'
+import type { Router, RouteLocationNormalized, RouteRecordNormalized, RouteRecordRaw } from 'vue-router'
 import { isUrl } from '@/utils/is'
 import { omit, cloneDeep } from 'lodash-es'
 
@@ -24,25 +19,17 @@ export const getParentLayout = () => {
 
 export const getRawRoute = (route: RouteLocationNormalized): RouteLocationNormalized => {
   if (!route) return route
-  const { matched, ...opt } = route
+  const {matched, ...opt} = route
   return {
     ...opt,
     matched: (matched
-      ? matched.map((item) => ({
-          meta: item.meta,
-          name: item.name,
-          path: item.path
-        }))
+      ? matched.map((item) => ({meta: item.meta, name: item.name, path: item.path}))
       : undefined) as RouteRecordNormalized[]
   }
 }
 
 // 前端控制路由生成
-export const generateRoutesByFrontEnd = (
-  routes: AppRouteRecordRaw[],
-  keys: string[],
-  basePath = '/'
-): AppRouteRecordRaw[] => {
+export const generateRoutesByFrontEnd = (routes: AppRouteRecordRaw[], keys: string[], basePath = '/'): AppRouteRecordRaw[] => {
   const res: AppRouteRecordRaw[] = []
 
   for (const route of routes) {
@@ -56,11 +43,8 @@ export const generateRoutesByFrontEnd = (
 
     let onlyOneChild: Nullable<string> = null
     if (route.children && route.children.length === 1 && !meta.alwaysShow) {
-      onlyOneChild = (
-        isUrl(route.children[0].path)
-          ? route.children[0].path
-          : pathResolve(pathResolve(basePath, route.path), route.children[0].path)
-      ) as string
+      onlyOneChild = (isUrl(route.children[0].path) ? route.children[0].path
+        : pathResolve(pathResolve(basePath, route.path), route.children[0].path)) as string
     }
 
     // 开发者可以根据实际情况进行扩展
@@ -78,11 +62,7 @@ export const generateRoutesByFrontEnd = (
 
     // recursive child routes
     if (route.children && data) {
-      data.children = generateRoutesByFrontEnd(
-        route.children,
-        keys,
-        pathResolve(basePath, data.path)
-      )
+      data.children = generateRoutesByFrontEnd(route.children, keys, pathResolve(basePath, data.path))
     }
     if (data) {
       res.push(data as AppRouteRecordRaw)

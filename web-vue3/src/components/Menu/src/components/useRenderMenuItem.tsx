@@ -3,7 +3,7 @@ import { unref } from 'vue'
 import { hasOneShowingChild } from '../helper'
 import { isUrl } from '@/utils/is'
 import { useRenderMenuTitle } from './useRenderMenuTitle'
-import { pathResolve } from '@/utils/routerHelper'
+import { pathResolve } from '@/utils/router-helper'
 import { useDesign } from '@/hooks/web/useDesign'
 
 const { getPrefixCls } = useDesign()
