@@ -1,35 +1,8 @@
-<script setup lang="ts">
-import { ElCard, ElCol, ElRow, ElSkeleton } from 'element-plus'
-import { CountTo } from '@/components/CountTo'
-import { useDesign } from '@/hooks/web/useDesign'
-import { useI18n } from '@/hooks/web/useI18n'
-import { reactive, ref } from 'vue'
-import { getCountApi } from '@/api/dashboard/analysis'
-import type { AnalysisTotalTypes } from '@/api/dashboard/analysis/types'
-
-const {t} = useI18n()
-
-const {getPrefixCls} = useDesign()
-
-const prefixCls = getPrefixCls('panel')
-
-const loading = ref(true)
-
-let totalState = reactive<AnalysisTotalTypes>({users: 0, messages: 0, moneys: 0, shoppings: 0})
-
-const getCount = async () => {
-  const res = await getCountApi().finally(() => { loading.value = false })
-  totalState = Object.assign(totalState, res?.data || {})
-}
-
-getCount()
-</script>
-
 <template>
-  <ElRow :gutter="20" justify="space-between" :class="prefixCls">
-    <ElCol :xl="6" :lg="6" :md="12" :sm="12" :xs="24">
-      <ElCard shadow="hover" class="mb-20px">
-        <ElSkeleton :loading="loading" animated :rows="2">
+  <el-row :gutter="20" justify="space-between" :class="prefixCls">
+    <el-col :xl="6" :lg="6" :md="12" :sm="12" :xs="24">
+      <el-card shadow="hover" class="mb-20px">
+        <el-skeleton :loading="isLoading" animated :rows="2">
           <template #default>
             <div :class="`${prefixCls}__item flex justify-between`">
               <div>
@@ -41,17 +14,18 @@ getCount()
                 <div :class="`${prefixCls}__item--text text-16px text-gray-500 text-right`">
                   {{ t('analysis.newUser') }}
                 </div>
-                <CountTo class="text-20px font-700 text-right" :start-val="0" :end-val="102400" :duration="2600"/>
+                <count-to class="text-20px font-700 text-right" :start-val="0" :end-val="totalState.users"
+                          :duration="2600"/>
               </div>
             </div>
           </template>
-        </ElSkeleton>
-      </ElCard>
-    </ElCol>
+        </el-skeleton>
+      </el-card>
+    </el-col>
 
-    <ElCol :xl="6" :lg="6" :md="12" :sm="12" :xs="24">
-      <ElCard shadow="hover" class="mb-20px">
-        <ElSkeleton :loading="loading" animated :rows="2">
+    <el-col :xl="6" :lg="6" :md="12" :sm="12" :xs="24">
+      <el-card shadow="hover" class="mb-20px">
+        <el-skeleton :loading="isLoading" animated :rows="2">
           <template #default>
             <div :class="`${prefixCls}__item flex justify-between`">
               <div>
@@ -63,17 +37,18 @@ getCount()
                 <div :class="`${prefixCls}__item--text text-16px text-gray-500 text-right`">
                   {{ t('analysis.unreadInformation') }}
                 </div>
-                <CountTo class="text-20px font-700 text-right" :start-val="0" :end-val="81212" :duration="2600"/>
+                <count-to class="text-20px font-700 text-right" :start-val="0" :end-val="totalState.messages"
+                          :duration="2600"/>
               </div>
             </div>
           </template>
-        </ElSkeleton>
-      </ElCard>
-    </ElCol>
+        </el-skeleton>
+      </el-card>
+    </el-col>
 
-    <ElCol :xl="6" :lg="6" :md="12" :sm="12" :xs="24">
-      <ElCard shadow="hover" class="mb-20px">
-        <ElSkeleton :loading="loading" animated :rows="2">
+    <el-col :xl="6" :lg="6" :md="12" :sm="12" :xs="24">
+      <el-card shadow="hover" class="mb-20px">
+        <el-skeleton :loading="isLoading" animated :rows="2">
           <template #default>
             <div :class="`${prefixCls}__item flex justify-between`">
               <div>
@@ -85,17 +60,18 @@ getCount()
                 <div :class="`${prefixCls}__item--text text-16px text-gray-500 text-right`">
                   {{ t('analysis.transactionAmount') }}
                 </div>
-                <CountTo class="text-20px font-700 text-right" :start-val="0" :end-val="9280" :duration="2600"/>
+                <count-to class="text-20px font-700 text-right" :start-val="0" :end-val="totalState.moneys"
+                          :duration="2600"/>
               </div>
             </div>
           </template>
-        </ElSkeleton>
-      </ElCard>
-    </ElCol>
+        </el-skeleton>
+      </el-card>
+    </el-col>
 
-    <ElCol :xl="6" :lg="6" :md="12" :sm="12" :xs="24">
-      <ElCard shadow="hover" class="mb-20px">
-        <ElSkeleton :loading="loading" animated :rows="2">
+    <el-col :xl="6" :lg="6" :md="12" :sm="12" :xs="24">
+      <el-card shadow="hover" class="mb-20px">
+        <el-skeleton :loading="isLoading" animated :rows="2">
           <template #default>
             <div :class="`${prefixCls}__item flex justify-between`">
               <div>
@@ -107,15 +83,33 @@ getCount()
                 <div :class="`${prefixCls}__item--text text-16px text-gray-500 text-right`">
                   {{ t('analysis.totalShopping') }}
                 </div>
-                <CountTo class="text-20px font-700 text-right" :start-val="0" :end-val="13600" :duration="2600"/>
+                <count-to class="text-20px font-700 text-right" :start-val="0" :end-val="totalState.shoppings"
+                          :duration="2600"/>
               </div>
             </div>
           </template>
-        </ElSkeleton>
-      </ElCard>
-    </ElCol>
-  </ElRow>
+        </el-skeleton>
+      </el-card>
+    </el-col>
+  </el-row>
 </template>
+
+<script setup lang="ts">
+import { CountTo } from '@/components/CountTo'
+import { useDesign } from '@/hooks/web/useDesign'
+import { useI18n } from '@/hooks/web/useI18n'
+// 国际化
+const {t} = useI18n()
+const prefixCls = useDesign().getPrefixCls('panel')
+
+// 数据
+const totalState = ref({users: 102400, messages: 81212, moneys: 9280, shoppings: 13600})
+// 是否加载中
+const isLoading = ref(true)
+setTimeout(() => {
+  isLoading.value = false// 模拟延迟加载数据
+}, 1000)
+</script>
 
 <style lang="less" scoped>
 @prefix-cls: ~'@{adminNamespace}-panel';
