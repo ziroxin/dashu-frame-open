@@ -3,11 +3,12 @@ import { store } from '../index'
 import { ElMessageBox } from 'element-plus'
 import { useI18n } from '@/hooks/web/useI18n'
 import { logoutApi } from '@/api/login'
-import { useTagsViewStore } from './tagsView'
-import router from '@/router'
+import { useTagsViewStoreWithOut } from './tagsView'
+import router, { resetRouter } from '@/router'
 import { removeToken } from '@/utils/auth'
 import { usePermissionStoreWithOut } from '@/store/modules/permission'
 import { loginRoute } from '@/router/constant-routes'
+import { storageClear4Logout } from '@/utils/storage-keys'
 
 // 定义用户信息类型
 interface UserType {
@@ -64,24 +65,35 @@ export const useUserStore = defineStore('user', {
       })
     },
     reset() {
+      console.log('logout reset')
+      // 删除token
       removeToken()
-      usePermissionStoreWithOut().resetPermission()
-      useTagsViewStore().delAllViews()
+      // 重置用户信息
       this.userInfo = undefined
       this.perRoutes = []
       this.permissions = []
+      // 重置路由信息
+      usePermissionStoreWithOut().resetPermission()
+      resetRouter()
+      // 删除所有页面缓存和tag
+      useTagsViewStoreWithOut().delAllViews()
+      // 清理Cookie、localStorage、sessionStorage中的相关存储
+      storageClear4Logout()
+      // 跳转到登录页面
       router.replace(loginRoute.path)
     },
+    // 统一退出方法
     logout() {
+      console.log('logout')
       return new Promise((resolve) => {
         logoutApi().then(() => {
-          this.reset()
+          console.log('logout success')
+          this.reset() // 重置所有登录相关信息
           resolve(true)
         })
       })
     }
-  },
-  persist: true
+  }
 })
 
 export const useUserStoreWithOut = () => {

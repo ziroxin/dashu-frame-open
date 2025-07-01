@@ -5,7 +5,7 @@ import { isWhiteList } from '@/router/white-list'
 import errorCode, { notLoginError } from '@/utils/error-code'
 import { encryptRSA, isEncrypt } from '@/utils/jsencrypt-util'
 import storageKeys from '@/utils/storage-keys'
-import { useUserStore } from '@/store/modules/user'
+import { useUserStoreWithOut } from '@/store/modules/user'
 
 // 创建axios
 const service = axios.create({
@@ -159,7 +159,7 @@ service.interceptors.response.use(
         ElMessageBox.confirm(res.message, '登录错误',
           {confirmButtonText: '刷新', cancelButtonText: '取消', type: 'error', center: true}
         ).then(() => {
-          useUserStore().logout()
+          useUserStoreWithOut().logout()
           location.reload()
         })
       } else {

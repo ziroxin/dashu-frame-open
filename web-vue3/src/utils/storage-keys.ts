@@ -15,7 +15,7 @@ Cookies.set('key_prefix', key_prefix)
  * 1. 请不要随意修改key值，以免造成其他功能异常
  * 2. Cookie以 c_ 开头，localStorage以 l_ 开头，sessionStorage以 s_ 开头
  */
-export default {
+const storageKeys = {
   // auth权限相关的key
   c_token: `${key_prefix}_admin_token`,
   c_tokenValidTime: `${key_prefix}_admin_token_valid_time`,
@@ -29,6 +29,8 @@ export default {
   l_rememberMeData: `${key_prefix}_remember_me_data`,
   // 最近访问的路由记录的key
   l_lastedRoutesKey: `${key_prefix}_lasted_routes_key`,
+  // 国际化lang的key
+  l_lang: `${key_prefix}_lang`,
   // 主题配置的key
   themeSetting: `${key_prefix}_settings`,
   // 侧边栏状态的key
@@ -41,4 +43,20 @@ export default {
   activeTopMenu: `${key_prefix}_active_top_menu`,
   // 支付相关数据缓存的key
   payData: `${key_prefix}_pay_data`
+}
+
+export default storageKeys
+
+/**
+ * 退出时，清理所有相关的key
+ */
+export function storageClear4Logout() {
+  // cookie
+  Cookies.remove(storageKeys.c_token)
+  Cookies.remove(storageKeys.c_tokenValidTime)
+  // sessionStorage
+  sessionStorage.removeItem(storageKeys.s_isDefaultPassword)
+  sessionStorage.removeItem(storageKeys.s_isInvalidPassword)
+  sessionStorage.removeItem(storageKeys.s_oldReqObj)
+  // localStorage
 }

@@ -10,6 +10,12 @@ const TokenRefreshInterval = 60 * 60 * 1000
 const IsTokenRemember = false
 
 export function getToken() {
+  // 若token已过期，则清空token
+  if (getTokenValidTime() && new Date().getTime() > new Date(getTokenValidTime()).getTime()) {
+    console.log('Token已过期，清空token')
+    removeToken()
+    return null
+  }
   return Cookies.get(storageKeys.c_token)
 }
 

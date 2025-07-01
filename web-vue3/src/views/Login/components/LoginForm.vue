@@ -119,7 +119,7 @@ const signIn = () => {
         // 密码是否过期
         sessionStorage.setItem(storageKeys.s_isInvalidPassword, data.invalidPassword)
         // 是否记住我
-        if (data.rememberMe) {
+        if (loginForm.value.rememberMe) {
           localStorage.setItem(storageKeys.l_rememberMeData,
               JSON.stringify({userName: loginForm.value.userName, password: loginForm.value.password}))
         } else {

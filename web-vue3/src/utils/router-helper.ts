@@ -107,7 +107,7 @@ export const generateRoutes4HiddenByServer = (routes: Array<any>): AppRouteRecor
       // 是否显示
       if (!route.permissionIsShow) {
         // 普通路由属性
-        let temp: AppRouteRecordRaw = {
+        const temp: AppRouteRecordRaw = {
           path: route.permissionRouter,
           // 父级name加Hidden-前缀，防止与children中name冲突
           name: 'Hidden-' + route.permissionName || '',

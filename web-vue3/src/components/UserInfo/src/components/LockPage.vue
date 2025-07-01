@@ -103,16 +103,10 @@ async function unLock() {
 // 返回登录（退出）
 function goLogin() {
   useUserStoreWithOut().logout().then(() => {
-    // todo: 清理数据，待处理
-    clear()
-    // 删除所有缓存和tag
-    tagsViewStore.delAllViews()
-    // 重置路由
-    resetRouter()
     // 重置锁定信息
     lockStore.resetLockInfo()
-    // 跳转登录页
-    replace(loginRoute.path)
+    // 调用统一退出方法
+    useUserStoreWithOut().logout()
   })
 }
 
