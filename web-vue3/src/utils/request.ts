@@ -159,8 +159,9 @@ service.interceptors.response.use(
         ElMessageBox.confirm(res.message, '登录错误',
           {confirmButtonText: '刷新', cancelButtonText: '取消', type: 'error', center: true}
         ).then(() => {
-          useUserStoreWithOut().logout()
-          location.reload()
+          useUserStoreWithOut().logout().then(() => {
+            location.reload()
+          })
         })
       } else {
         const logErr = errorCode[res.code] || errorCode['default']

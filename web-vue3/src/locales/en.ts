@@ -63,9 +63,11 @@ export default {
     message: 'Lock screen password error'
   },
   error: {
-    noPermission: `Sorry, you don't have permission to access this page.`,
-    pageError: 'Sorry, the page you visited does not exist.',
-    networkError: 'Sorry, the server reported an error.',
+    error401: `Sorry, you don't have permission to access this page. Unauthorized.`,
+    error403: `Sorry, you don't have permission to access this page. Forbidden.`,
+    error404: 'Sorry, the page you visited does not exist.',
+    error500: 'Sorry, an error occurred on the server side.',
+    returnBack: 'Return back',
     returnToHome: 'Return to home'
   },
   setting: {

@@ -19,21 +19,26 @@ export const constantRoutes: AppRouteRecordRaw[] = [
   },
   loginRoute,// 登录页路由
   {
+    path: '/401',
+    name: 'Unauthorized',
+    component: () => import('@/views/Error/401.vue'),
+    meta: {hidden: true, title: '401', noTagsView: true}
+  }, {
+    path: '/403',
+    name: 'Forbidden',
+    component: () => import('@/views/Error/403.vue'),
+    meta: {hidden: true, title: '403', noTagsView: true}
+  }, {
     path: '/404',
     name: 'NoFind',
     component: () => import('@/views/Error/404.vue'),
     meta: {hidden: true, title: '404', noTagsView: true}
   }, {
-    path: '/403',
-    name: 'NoAccess',
-    component: () => import('@/views/Error/403.vue'),
-    meta: {hidden: true, title: '403', noTagsView: true}
-  }, {
     path: '/500',
     name: 'ServerError',
     component: () => import('@/views/Error/500.vue'),
     meta: {hidden: true, title: '500', noTagsView: true}
-    // todo: 401/register等其他路由
+    // todo: register等其他路由
   }, {
     path: '/',
     redirect: '/dashboard/index',
@@ -70,7 +75,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   strict: true,
   // 配置默认加载的静态路由
-  routes: constantRoutes as RouteRecordRaw[],
+  routes: [...constantRoutes, errorRoute] as RouteRecordRaw[],
   scrollBehavior: () => ({left: 0, top: 0})
 })
 

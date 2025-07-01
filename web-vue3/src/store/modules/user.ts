@@ -8,7 +8,7 @@ import router, { resetRouter } from '@/router'
 import { removeToken } from '@/utils/auth'
 import { usePermissionStoreWithOut } from '@/store/modules/permission'
 import { loginRoute } from '@/router/constant-routes'
-import { storageClear4Logout } from '@/utils/storage-keys'
+import storageKeys, { storageClear4Logout } from '@/utils/storage-keys'
 
 // 定义用户信息类型
 interface UserType {
@@ -93,7 +93,8 @@ export const useUserStore = defineStore('user', {
         })
       })
     }
-  }
+  },
+  persist: {key: storageKeys.l_userStore}
 })
 
 export const useUserStoreWithOut = () => {

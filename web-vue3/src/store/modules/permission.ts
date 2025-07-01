@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { store } from '../index'
 import { generateRoutes4HiddenByServer, generateRoutesByServer } from '@/utils/router-helper'
 import router, { errorRoute } from '@/router'
+import storageKeys from '@/utils/storage-keys'
 
 export interface PermissionState {
   routes: AppRouteRecordRaw[]
@@ -36,8 +37,11 @@ export const usePermissionStore = defineStore('permission', {
         // 将 accessedRoutes 挂在到 router 上
         accessedRoutes.forEach((route) => {
           if (route.name) {
+            // 检查路由对象的名称是否已存在于路由中，如果存在则移除该路由
             router.hasRoute(route.name) && router.removeRoute(route.name)
           }
+          // 动态添加路由
+          router.addRoute(route as any)
         })
         this.routes = [...accessedRoutes]
         resolve()
@@ -50,7 +54,8 @@ export const usePermissionStore = defineStore('permission', {
       this.routes = []
       this.menuTabRoutes = []
     }
-  }
+  },
+  persist: {key: storageKeys.l_permissionStore}
 })
 
 export const usePermissionStoreWithOut = () => {

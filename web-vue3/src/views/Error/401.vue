@@ -1,5 +1,5 @@
 <template>
-  <error error-type="500"/>
+  <error error-type="401"/>
 </template>
 
 <script setup lang="ts">

@@ -32,8 +32,14 @@ const storageKeys = {
   l_lastedRoutesKey: `${key_prefix}_lasted_routes_key`,
   // 国际化lang的key
   l_lang: `${key_prefix}_lang`,
-  // 主题配置的key
+  // app主题的store持久化key（主题配置）
   l_themeSetting: `${key_prefix}_app_theme_settings`,
+  // permission的store持久化key
+  l_permissionStore: `${key_prefix}_store_permission`,
+  // 用户信息的store持久化key
+  l_userStore: `${key_prefix}_store_user`,
+  // lock锁屏的store持久化key
+  l_lockStore: `${key_prefix}_store_lock`,
   // 侧边栏状态的key
   sidebarStatus: `${key_prefix}_sidebar_status`,
   // 系统整体大小（字体等：default、medium、small、mini）的key
@@ -60,4 +66,7 @@ export function storageClear4Logout() {
   sessionStorage.removeItem(storageKeys.s_isInvalidPassword)
   sessionStorage.removeItem(storageKeys.s_oldReqObj)
   // localStorage
+  localStorage.removeItem(storageKeys.l_permissionStore)
+  localStorage.removeItem(storageKeys.l_userStore)
+  localStorage.removeItem(storageKeys.l_lockStore)
 }

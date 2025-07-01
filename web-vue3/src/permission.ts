@@ -39,9 +39,9 @@ router.beforeEach((to, from, next) => {
       console.log(1)
       // 登录后，跳转到原来打开的页面
       const permissionStore = usePermissionStoreWithOut()
-      const hasRoutes = permissionStore.getRoutes && permissionStore.getRoutes.length > 0
+      const hasRoutes = permissionStore.getRoutes
       // 跳转前，先判断：store里是否有角色相关信息（路由等）
-      if (hasRoutes) {
+      if (hasRoutes && hasRoutes.length > 0) {
         console.log(2)
         saveLastedRoutes(to.path)
         next()

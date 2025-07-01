@@ -38,7 +38,7 @@
         <tool-header class="flex-1"/>
       </div>
       <div class="absolute top-[var(--logo-height)+1px] left-0 w-full h-[calc(100%-1px-var(--logo-height))] flex">
-        <Menu class="!h-full relative layout-border__right"></Menu>
+        <Menu class="!h-full relative layout-border__right"/>
         <div style="transition: all var(--transition-time-02);"
              :class="[prefixCls+'-content','h-[100%]',
                     {'w-[calc(100%-var(--left-menu-min-width))] left-[var(--left-menu-min-width)]':collapse,
@@ -105,8 +105,7 @@
                                '!fixed top-0 !left-[var(--tab-menu-min-width)+var(--left-menu-max-width)] z-10':fixedHeader&&fixedMenu,
                                'w-[calc(100%-var(--tab-menu-min-width)-var(--left-menu-max-width))] !left-[var(--tab-menu-min-width)+var(--left-menu-max-width)] mt-[var(--logo-height)]':collapse&&fixedHeader&&fixedMenu,
                                'w-[calc(100%-var(--tab-menu-max-width)-var(--left-menu-max-width))] !left-[var(--tab-menu-max-width)+var(--left-menu-max-width)] mt-[var(--logo-height)]':!collapse&&fixedHeader&&fixedMenu}]"
-                       style="transition: width var(--transition-time-02), left var(--transition-time-02);">
-            </tags-view>
+                       style="transition: width var(--transition-time-02), left var(--transition-time-02);"/>
             <app-view/>
           </el-scrollbar>
         </div>

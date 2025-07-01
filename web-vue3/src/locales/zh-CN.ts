@@ -62,9 +62,11 @@ export default {
     message: '锁屏密码错误'
   },
   error: {
-    noPermission: `抱歉，您无权访问此页面。`,
-    pageError: '抱歉，您访问的页面不存在。',
-    networkError: '抱歉，服务器报告错误。',
+    error401: `抱歉，您无权访问此页面，服务器未授权。`,
+    error403: `抱歉，您无权访问此页面，服务器拒绝访问。`,
+    error404: '抱歉，您访问的页面不存在。',
+    error500: '抱歉，服务器端发生了错误。',
+    returnBack: '返回上一页',
     returnToHome: '返回首页'
   },
   setting: {

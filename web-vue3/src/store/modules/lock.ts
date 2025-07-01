@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { store } from '../index'
+import storageKeys from '@/utils/storage-keys'
 
 interface lockInfo {
   isLock?: boolean
@@ -40,7 +41,7 @@ export const useLockStore = defineStore('lock', {
       }
     }
   },
-  persist: true
+  persist: {key: storageKeys.l_lockStore}
 })
 
 export const useLockStoreWithOut = () => {
