@@ -16,6 +16,7 @@ Cookies.set('key_prefix', key_prefix)
  * 2. Cookie以 c_ 开头，localStorage以 l_ 开头，sessionStorage以 s_ 开头
  */
 const storageKeys = {
+  key_prefix: key_prefix,
   // auth权限相关的key
   c_token: `${key_prefix}_admin_token`,
   c_tokenValidTime: `${key_prefix}_admin_token_valid_time`,
@@ -32,7 +33,7 @@ const storageKeys = {
   // 国际化lang的key
   l_lang: `${key_prefix}_lang`,
   // 主题配置的key
-  themeSetting: `${key_prefix}_settings`,
+  l_themeSetting: `${key_prefix}_app_theme_settings`,
   // 侧边栏状态的key
   sidebarStatus: `${key_prefix}_sidebar_status`,
   // 系统整体大小（字体等：default、medium、small、mini）的key

@@ -5,6 +5,7 @@ import { colorIsDark, hexToRGB, lighten, mix } from '@/utils/color'
 import { ComponentSize, ElMessage } from 'element-plus'
 import { useCssVar, useDark } from '@vueuse/core'
 import { unref } from 'vue'
+import storageKeys from '@/utils/storage-keys'
 
 interface AppState {
   breadcrumb: boolean
@@ -326,7 +327,7 @@ export const useAppStore = defineStore('app', {
       newTitle !== this.getTitle && this.setTitle(newTitle)
     }
   },
-  persist: true
+  persist: {key: storageKeys.l_themeSetting}
 })
 
 export const useAppStoreWithOut = () => {

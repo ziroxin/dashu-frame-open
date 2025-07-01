@@ -54,36 +54,23 @@
 </template>
 
 <script lang="ts" setup>
-import { resetRouter } from '@/router'
-import { useStorage } from '@/hooks/web/useStorage'
 import { useLockStore } from '@/store/modules/lock'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useNow } from '@/hooks/web/useNow'
 import { useDesign } from '@/hooks/web/useDesign'
-import { logoutApi } from '@/api/login'
-import { useTagsViewStore } from '@/store/modules/tagsView'
-import { loginRoute } from '@/router/constant-routes'
 import { useUserStoreWithOut } from '@/store/modules/user'
 
-const tagsViewStore = useTagsViewStore()
-
-const {clear} = useStorage()
-
-const {replace} = useRouter()
+const {t} = useI18n()
+const prefixCls = useDesign().getPrefixCls('lock-page')
 
 const password = ref('')
 const loading = ref(false)
 const errMsg = ref(false)
 const showDate = ref(true)
 
-const {getPrefixCls} = useDesign()
-const prefixCls = getPrefixCls('lock-page')
-
 const lockStore = useLockStore()
 
 const {hour, month, minute, meridiem, year, day, week} = useNow(true)
-
-const {t} = useI18n()
 
 // 解锁
 async function unLock() {
@@ -102,12 +89,10 @@ async function unLock() {
 
 // 返回登录（退出）
 function goLogin() {
-  useUserStoreWithOut().logout().then(() => {
-    // 重置锁定信息
-    lockStore.resetLockInfo()
-    // 调用统一退出方法
-    useUserStoreWithOut().logout()
-  })
+  // 重置锁定信息
+  lockStore.resetLockInfo()
+  // 调用统一退出方法
+  useUserStoreWithOut().logout()
 }
 
 const passwordInputRef = ref()
