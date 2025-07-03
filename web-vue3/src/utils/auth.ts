@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie'
 import storageKeys from '@/utils/storage-keys'
 import request from '@/utils/request'
+import { useUserStoreWithOut } from '@/store/modules/user'
 
 // token到期前多久，刷新token（默认：60分钟；每次请求api前检测request.js中）
 // 注意：该时间必须小于后台配置的jwtToken有效期！！！
@@ -12,8 +13,8 @@ const IsTokenRemember = false
 export function getToken() {
   // 若token已过期，则清空token
   if (getTokenValidTime() && new Date().getTime() > new Date(getTokenValidTime()).getTime()) {
-    console.log('Token已过期，清空token')
-    removeToken()
+    console.log('Token已过期，退出登录')
+    useUserStoreWithOut().reset()
     return null
   }
   return Cookies.get(storageKeys.c_token)

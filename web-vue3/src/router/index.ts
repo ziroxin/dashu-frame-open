@@ -41,13 +41,14 @@ export const constantRoutes: AppRouteRecordRaw[] = [
     // todo: register等其他路由
   }, {
     path: '/',
-    redirect: '/dashboard/index',
     name: 'Root',
-    meta: {}
+    redirect: '/dashboard/index',
+    component: Layout,
+    meta: {hidden: true}
   },
+  homeRoute,
   ...oauth2Routes,// todo: oauth客户端相关路由
-  ...otherRoutes,// todo: 其他路由
-  homeRoute
+  ...otherRoutes// todo: 其他路由
 ]
 
 // 错误页跳转404
@@ -58,9 +59,9 @@ export const errorRoute: AppRouteRecordRaw = {
   meta: {hidden: true, breadcrumb: false}
 }
 
-
 // 重置路由（锁定屏幕、退出时使用）
 export const resetRouter = (): void => {
+  console.log('reset  router')
   router.getRoutes().forEach(({name}) => {
     if (name && !constantRoutes.map(i => i.name).includes(name as string)) {
       router.hasRoute(name) && router.removeRoute(name)
@@ -75,7 +76,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   strict: true,
   // 配置默认加载的静态路由
-  routes: [...constantRoutes, errorRoute] as RouteRecordRaw[],
+  routes: constantRoutes as RouteRecordRaw[],
   scrollBehavior: () => ({left: 0, top: 0})
 })
 

@@ -24,7 +24,7 @@ service.interceptors.request.use(
     // 1、处理TOKEN：（请求头添加token；请求前定时刷新token）
     let hasToken = getToken()
     if (hasToken) {
-      if (config.url !== '/login/refresh/token' && !isWhiteList(config.url)) {
+      if (config.url !== '/login/refresh/token' && config.url !== '/login/logout' && !isWhiteList(config.url)) {
         // 判断token的有效期
         const tokenValidTime = getTokenValidTime()
         if (new Date().getTime() < new Date(tokenValidTime).getTime() &&

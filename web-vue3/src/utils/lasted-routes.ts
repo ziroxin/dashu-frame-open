@@ -11,7 +11,7 @@ const saveLength = 10
  * 保存最近访问的n个路由
  */
 export function saveLastedRoutes(path) {
-  let lastedRoutes = getLastedRoutes()
+  const lastedRoutes = getLastedRoutes()
   if (lastedRoutes.length > 0 && path === lastedRoutes[0]) {
     return // 最新路由重复（一般是刷新页面），不再添加
   }

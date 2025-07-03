@@ -2,14 +2,31 @@ import type { RouteLocationNormalized, Router, RouteRecordNormalized, RouteRecor
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { isUrl } from '@/utils/is'
 import { cloneDeep, omit } from 'lodash-es'
+import ErrorComponent from '@/views/Error/ErrorComponent.vue'
 
-const modules = import.meta.glob('../views/**/*.{vue,tsx}')
-
-/* Layout */
+// 顶级菜单使用：Layout组件
 export const Layout = () => import('@/layout/Layout.vue')
 
-export const getParentLayout = () => {
-  return () => new Promise((resolve) => { resolve({name: 'ParentLayout'}) })
+const modules = import.meta.glob('../views/**/*.{vue,tsx}')
+// 模块 - 动态导入
+const convertToComponent = (componentName, childrenLength = 0) => {
+  // 空/有子路由，直接返回
+  if (!componentName || childrenLength > 0) {
+    return () => new Promise((resolve) => { resolve({name: 'ParentLayout'}) })
+  }
+  // 加载其他路由
+  if (componentName === 'Layout') {
+    return Layout // 返回Layout组件
+  }
+  // 转换组件
+  const view = componentName.startsWith('/') ? componentName.substring(1) : componentName
+  const componentModule = modules[`../views/${view}.vue`] || modules[`../views/${view}.tsx`]
+  if (componentModule) {
+    return componentModule
+  } else {
+    console.error('路由加载出错了，组件不存在！')
+    return ErrorComponent
+  }
 }
 
 export const getRawRoute = (route: RouteLocationNormalized): RouteLocationNormalized => {
@@ -35,18 +52,17 @@ export const generateRoutesByServer = (routes: Array<any>, isTop: boolean): AppR
     // 是否禁用，是否显示
     if (route.permissionIsEnabled && route.permissionIsShow) {
       // 遍历子路由
-      let thisChild
+      let thisChild: AppRouteRecordRaw[] = []
       if (route.children) {
         thisChild = generateRoutesByServer(route.children, false)
       }
       // 普通路由属性
       let temp: AppRouteRecordRaw = {
-        path: route.permissionRouter,
+        path: (thisChild.length > 0 ? '/Parent' : '') + route.permissionRouter,
         // 顶部路由加Top-前缀，防止与children中name冲突
         name: (isTop ? 'Top-' : '') + route.permissionName || '',
         // 顶级路由默认使用Layout；非顶级路由，若有子路由，则使用ParentLayout；若无子路由，则使用该组件
-        component: isTop ? Layout :
-          (thisChild?.length > 0 ? getParentLayout() : modules['../views' + route.permissionComponent + '.vue']),
+        component: isTop ? Layout : convertToComponent(route.permissionComponent, thisChild.length),
         meta: {
           hidden: !route.permissionIsShow,
           title: route.permissionTitle,
@@ -75,7 +91,7 @@ export const generateRoutesByServer = (routes: Array<any>, isTop: boolean): AppR
             children: [{
               path: 'index',
               name: route.permissionName || '',
-              component: modules['../views' + route.permissionComponent + '.vue'],
+              component: convertToComponent(route.permissionComponent, 0),
               meta: {
                 title: route.permissionTitle,
                 icon: route.permissionIcon || '',
@@ -117,7 +133,7 @@ export const generateRoutes4HiddenByServer = (routes: Array<any>): AppRouteRecor
           children: [{
             path: route.permissionRouter,
             name: route.permissionName || '',
-            component: modules['../views' + route.permissionComponent + '.vue'],
+            component: convertToComponent(route.permissionComponent, 0),
             meta: {
               title: route.permissionTitle,
               icon: route.permissionIcon || '',
@@ -141,8 +157,10 @@ export const generateRoutes4HiddenByServer = (routes: Array<any>): AppRouteRecor
 
 export const pathResolve = (parentPath: string, path: string) => {
   if (isUrl(path)) return path
-  const childPath = path.startsWith('/') || !path ? path : `/${path}`
-  return `${parentPath}${childPath}`.replace(/\/\//g, '/').trim()
+  if (parentPath.includes(path)) return path
+  const resolveParentPath = parentPath ? parentPath : '/'
+  const childPath = path ? (path.startsWith('/') ? path : `/${path}`) : ''
+  return `${resolveParentPath}${childPath}`.replace(/\/\//g, '/').trim()
 }
 
 // 路由降级

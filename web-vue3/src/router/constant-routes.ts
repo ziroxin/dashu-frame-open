@@ -1,4 +1,3 @@
-import { t } from '@/hooks/web/useI18n'
 import { Layout } from '@/utils/router-helper'
 
 /**
@@ -9,7 +8,7 @@ export const loginRoute = {
   name: 'Login',
   title: '登录页',
   component: () => import('@/views/Login/Login.vue'),
-  meta: {hidden: true, title: t('router.login'), noTagsView: true}
+  meta: {hidden: true, title: '登录页', noTagsView: true}
 }
 
 /**
@@ -18,15 +17,14 @@ export const loginRoute = {
 export const homeRoute = {
   path: '/dashboard/index',
   name: 'Dashboard',
-  title: t('router.dashboard'),
   component: Layout,
   meta: {},
   children: [{
-    path: '/dashboard/index',
+    path: '',
     name: 'DashboardIndex',
     component: () => import('@/views/Dashboard/Index.vue'),
     meta: {
-      title: t('router.dashboard'),
+      title: '首页',
       icon: 'vi-ant-design:dashboard-filled',
       alwaysShow: true,
       noCache: true,

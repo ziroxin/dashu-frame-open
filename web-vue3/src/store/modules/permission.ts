@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia'
 import { store } from '../index'
 import { generateRoutes4HiddenByServer, generateRoutesByServer } from '@/utils/router-helper'
-import router, { errorRoute } from '@/router'
+import router, { constantRoutes, errorRoute } from '@/router'
 import storageKeys from '@/utils/storage-keys'
+import type { RouteRecordRaw } from 'vue-router'
 
 export interface PermissionState {
   routes: AppRouteRecordRaw[]
   menuTabRoutes: AppRouteRecordRaw[]
+  routesLoaded: boolean
 }
 
 export const usePermissionStore = defineStore('permission', {
@@ -14,7 +16,9 @@ export const usePermissionStore = defineStore('permission', {
     // 全部路由
     routes: [],
     // 子路由（只在分栏布局时使用）
-    menuTabRoutes: []
+    menuTabRoutes: [],
+    // 路由是否已加载完成
+    routesLoaded: false
   }),
   getters: {
     getRoutes(): AppRouteRecordRaw[] {
@@ -22,11 +26,14 @@ export const usePermissionStore = defineStore('permission', {
     },
     getMenuTabRoutes(): AppRouteRecordRaw[] {
       return this.menuTabRoutes
+    },
+    getRoutesLoaded(): boolean {
+      return this.routesLoaded
     }
   },
   actions: {
-    generateRoutes(perRoutes: any[]): Promise<void> {
-      return new Promise((resolve) => {
+    generateRoutes(perRoutes: any[]) {
+      return new Promise<void>((resolve) => {
         // 加载动态路由（非隐藏路由）
         const accessedRoutes: AppRouteRecordRaw[] = generateRoutesByServer(perRoutes as any, true)
         // 单独加载隐藏路由
@@ -34,28 +41,31 @@ export const usePermissionStore = defineStore('permission', {
         // 加载404路由（必须放在最后）
         accessedRoutes.push(errorRoute)
 
-        // 将 accessedRoutes 挂在到 router 上
-        accessedRoutes.forEach((route) => {
-          if (route.name) {
-            // 检查路由对象的名称是否已存在于路由中，如果存在则移除该路由
-            router.hasRoute(route.name) && router.removeRoute(route.name)
-          }
-          // 动态添加路由
-          router.addRoute(route as any)
+        // 绑定到router上
+        accessedRoutes.forEach(route => {
+          router.addRoute(route as RouteRecordRaw)
         })
-        this.routes = [...accessedRoutes]
+        // 赋值到state上
+        this.setRoutes(constantRoutes.concat(accessedRoutes))
+        this.setRoutesLoaded(true)
         resolve()
       })
     },
+    setRoutes(routes: AppRouteRecordRaw[]): void {
+      this.routes = routes
+    },
     setMenuTabRoutes(routes: AppRouteRecordRaw[]): void {
       this.menuTabRoutes = routes
+    },
+    setRoutesLoaded(loaded: boolean): void {
+      this.routesLoaded = loaded
     },
     resetPermission() {
       this.routes = []
       this.menuTabRoutes = []
     }
   },
-  persist: {key: storageKeys.l_permissionStore}
+  persist: [{key: storageKeys.l_permissionStore, pick: ['routes', 'menuTabRoutes']}]
 })
 
 export const usePermissionStoreWithOut = () => {

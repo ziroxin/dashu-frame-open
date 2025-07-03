@@ -1,128 +1,80 @@
-<script lang="tsx">
-import { computed, defineComponent, unref, PropType } from 'vue'
-import { ElMenu, ElScrollbar } from 'element-plus'
+<template>
+  <div :id="prefixCls"
+       :class="[`${prefixCls} ${prefixCls}__${menuMode}`,'h-[100%] overflow-hidden flex-col bg-[var(--left-menu-bg-color)]',
+       {'w-[var(--left-menu-min-width)]': collapse && layout !== 'cutMenu',
+       'w-[var(--left-menu-max-width)]': !collapse && layout !== 'cutMenu' }]">
+    <el-scrollbar v-if="layout!=='top'">
+      <el-menu :default-active="activeMenu"
+               :mode="menuMode"
+               :collapse="(layout==='top'||layout==='cutMenu')?false:collapse"
+               :unique-opened="layout==='top'?false:uniqueOpened"
+               background-color="var(--left-menu-bg-color)"
+               text-color="var(--left-menu-text-color)"
+               active-text-color="var(--left-menu-text-active-color)"
+               :popper-class="`${prefixCls}-popper--${menuMode}`"
+               @select="handleMenuSelect">
+        <render-menu-item :menu-mode="menuMode" :route-list="routeList"/>
+      </el-menu>
+    </el-scrollbar>
+    <el-menu v-else :default-active="activeMenu"
+             :mode="menuMode"
+             :collapse="(layout==='top'||layout==='cutMenu')?false:collapse"
+             :unique-opened="layout==='top'?false:uniqueOpened"
+             background-color="var(--left-menu-bg-color)"
+             text-color="var(--left-menu-text-color)"
+             active-text-color="var(--left-menu-text-active-color)"
+             :popper-class="`${prefixCls}-popper--${menuMode}`"
+             @select="handleMenuSelect">
+      <render-menu-item :menu-mode="menuMode" :route-list="routeList"/>
+    </el-menu>
+  </div>
+</template>
+
+<script setup lang="ts">
 import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
-import { useRenderMenuItem } from './components/useRenderMenuItem'
+import RenderMenuItem from './components/RenderMenuItem.vue'
 import { useRouter } from 'vue-router'
 import { isUrl } from '@/utils/is'
 import { useDesign } from '@/hooks/web/useDesign'
 
-const { getPrefixCls } = useDesign()
+const prefixCls = useDesign().getPrefixCls('menu')
 
-const prefixCls = getPrefixCls('menu')
-
-export default defineComponent({
-  name: 'Menu',
-  props: {
-    menuSelect: {
-      type: Function as PropType<(index: string) => void>,
-      default: undefined
-    }
-  },
-  setup(props) {
-    const appStore = useAppStore()
-
-    const layout = computed(() => appStore.getLayout)
-
-    const { push, currentRoute } = useRouter()
-
-    const permissionStore = usePermissionStore()
-
-    const menuMode = computed((): 'vertical' | 'horizontal' => {
-      // 竖
-      const vertical: LayoutType[] = ['classic', 'topLeft', 'cutMenu']
-
-      if (vertical.includes(unref(layout))) {
-        return 'vertical'
-      } else {
-        return 'horizontal'
-      }
-    })
-
-    const routes = computed(() =>
-      unref(layout) === 'cutMenu' ? permissionStore.getMenuTabRoutes : permissionStore.getRoutes
-    )
-
-    const collapse = computed(() => appStore.getCollapse)
-
-    const uniqueOpened = computed(() => appStore.getUniqueOpened)
-
-    const activeMenu = computed(() => {
-      const { meta, path } = unref(currentRoute)
-      // if set path, the sidebar will highlight the path you set
-      if (meta.activeMenu) {
-        return meta.activeMenu as string
-      }
-      return path
-    })
-
-    const menuSelect = (index: string) => {
-      if (props.menuSelect) {
-        props.menuSelect(index)
-      }
-      // 自定义事件
-      if (isUrl(index)) {
-        window.open(index)
-      } else {
-        push(index)
-      }
-    }
-
-    const renderMenuWrap = () => {
-      if (unref(layout) === 'top') {
-        return renderMenu()
-      } else {
-        return <ElScrollbar>{renderMenu()}</ElScrollbar>
-      }
-    }
-
-    const renderMenu = () => {
-      return (
-        <ElMenu
-          defaultActive={unref(activeMenu)}
-          mode={unref(menuMode)}
-          collapse={
-            unref(layout) === 'top' || unref(layout) === 'cutMenu' ? false : unref(collapse)
-          }
-          uniqueOpened={unref(layout) === 'top' ? false : unref(uniqueOpened)}
-          backgroundColor="var(--left-menu-bg-color)"
-          textColor="var(--left-menu-text-color)"
-          activeTextColor="var(--left-menu-text-active-color)"
-          popperClass={
-            unref(menuMode) === 'vertical'
-              ? `${prefixCls}-popper--vertical`
-              : `${prefixCls}-popper--horizontal`
-          }
-          onSelect={menuSelect}
-        >
-          {{
-            default: () => {
-              const { renderMenuItem } = useRenderMenuItem(menuMode)
-              return renderMenuItem(unref(routes))
-            }
-          }}
-        </ElMenu>
-      )
-    }
-
-    return () => (
-      <div
-        id={prefixCls}
-        class={[
-          `${prefixCls} ${prefixCls}__${unref(menuMode)}`,
-          'h-[100%] overflow-hidden flex-col bg-[var(--left-menu-bg-color)]',
-          {
-            'w-[var(--left-menu-min-width)]': unref(collapse) && unref(layout) !== 'cutMenu',
-            'w-[var(--left-menu-max-width)]': !unref(collapse) && unref(layout) !== 'cutMenu'
-          }
-        ]}
-      >
-        {renderMenuWrap()}
-      </div>
-    )
-  }
+const {menuSelect} = defineProps({
+  menuSelect: {type: Function as PropType<(index: string) => void>, default: undefined}
 })
+
+const appStore = useAppStore()
+const permissionStore = usePermissionStore()
+const {push, currentRoute} = useRouter()
+
+// 计算相关属性
+const layout = computed(() => appStore.getLayout)
+const menuMode = computed(() => ['classic', 'topLeft', 'cutMenu'].includes(unref(layout)) ? 'vertical' : 'horizontal')
+const routeList = computed(() => unref(layout) === 'cutMenu' ? permissionStore.getMenuTabRoutes : permissionStore.getRoutes)
+const collapse = computed(() => appStore.getCollapse)
+const uniqueOpened = computed(() => appStore.getUniqueOpened)
+
+const activeMenu = computed(() => {
+  const {meta, path} = unref(currentRoute)
+  return meta.activeMenu ? meta.activeMenu as string : path
+})
+
+// 菜单选中方法
+const handleMenuSelect = (index: string) => {
+  if (menuSelect) {
+    // 父级传入菜单选中function，则优先调用父级
+    menuSelect(index)
+  } else {
+    if (isUrl(index)) {
+      // 外链跳转
+      window.open(index)
+    } else {
+      // 内部跳转
+      push(index)
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>

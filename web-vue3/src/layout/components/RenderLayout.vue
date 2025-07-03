@@ -3,12 +3,10 @@
     <!-- 经典布局 -->
     <div v-if="layoutType === 'classic'">
       <div :class="['absolute top-0 left-0 h-full layout-border__right',{'!fixed z-3000':mobile}]">
-        <Logo v-if="logo" style="transition: all var(--transition-time-02);"
+        <my-logo v-if="logo" style="transition: all var(--transition-time-02);"
               :class="['bg-[var(--left-menu-bg-color)] relative',
-                      {'!pl-0':mobile&&collapse,
-                      'w-[var(--left-menu-min-width)]':collapse,
-                      'w-[var(--left-menu-max-width)]':!collapse}]"/>
-        <Menu :class="[{'!h-[calc(100%-var(--logo-height))]':logo}]"/>
+                        {'!pl-0':mobile&&collapse,'w-[var(--left-menu-min-width)]':collapse,'w-[var(--left-menu-max-width)]':!collapse}]"/>
+        <my-menu :class="[{'!h-[calc(100%-var(--logo-height))]':logo}]"/>
       </div>
       <div style="transition: all var(--transition-time-02);"
            :class="[prefixCls+'-content','absolute top-0 h-[100%]',
@@ -34,11 +32,11 @@
     <div v-else-if="layoutType === 'topLeft'">
       <div
           class="flex items-center bg-[var(--top-header-bg-color)] relative layout-border__bottom dark:bg-[var(--el-bg-color)]">
-        <Logo v-if="logo" class="custom-hover"/>
+        <my-logo v-if="logo" class="custom-hover"/>
         <tool-header class="flex-1"/>
       </div>
       <div class="absolute top-[var(--logo-height)+1px] left-0 w-full h-[calc(100%-1px-var(--logo-height))] flex">
-        <Menu class="!h-full relative layout-border__right"/>
+        <my-menu class="!h-full relative layout-border__right"/>
         <div style="transition: all var(--transition-time-02);"
              :class="[prefixCls+'-content','h-[100%]',
                     {'w-[calc(100%-var(--left-menu-min-width))] left-[var(--left-menu-min-width)]':collapse,
@@ -60,8 +58,8 @@
     <div v-else-if="layoutType === 'top'">
       <div :class="['flex items-center justify-between bg-[var(--top-header-bg-color)] relative',
                    {'layout-border__bottom':!tagsView}]">
-        <Logo v-if="logo" class="custom-hover"/>
-        <Menu class="flex-1 px-10px h-[var(--top-tool-height)]"/>
+        <my-logo v-if="logo" class="custom-hover"/>
+        <my-menu class="flex-1 px-10px h-[var(--top-tool-height)]"/>
         <tool-header/>
       </div>
       <div :class="[prefixCls+'-content','w-full',{'h-[calc(100%-var(--top-tool-height))]':!fixedHeader,
@@ -83,7 +81,7 @@
     <!-- 分栏菜单布局 -->
     <div v-else-if="layoutType === 'cutMenu'">
       <div class="flex items-center bg-[var(--top-header-bg-color)] relative layout-border__bottom">
-        <Logo v-if="logo" class="custom-hover !pr-15px"/>
+        <my-logo v-if="logo" class="custom-hover !pr-15px"/>
         <tool-header class="flex-1"/>
       </div>
       <div class="absolute top-[var(--logo-height)] left-0 w-[calc(100%-2px)] h-[calc(100%-var(--logo-height))] flex">
@@ -116,13 +114,13 @@
 
 <script setup lang="ts">
 import { useAppStore } from '@/store/modules/app'
-import { Menu } from '@/components/Menu'
 import { TabMenu } from '@/components/TabMenu'
 import { TagsView } from '@/components/TagsView'
-import { Logo } from '@/components/Logo'
 import AppView from './AppView.vue'
 import ToolHeader from './ToolHeader.vue'
 import { useDesign } from '@/hooks/web/useDesign'
+import { MyLogo } from '@/components/MyLogo'
+import { MyMenu } from '@/components/MyMenu'
 
 // 传参
 const {layoutType} = defineProps({layoutType: {type: String, default: 'classic'}})

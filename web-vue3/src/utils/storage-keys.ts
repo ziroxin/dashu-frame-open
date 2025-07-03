@@ -58,6 +58,7 @@ export default storageKeys
  * 退出时，清理所有相关的key
  */
 export function storageClear4Logout() {
+  console.log('clear storage')
   // cookie
   Cookies.remove(storageKeys.c_token)
   Cookies.remove(storageKeys.c_tokenValidTime)
