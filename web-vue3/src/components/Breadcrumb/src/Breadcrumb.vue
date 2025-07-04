@@ -49,7 +49,6 @@ const toPath = (v: AppRouteRecordRaw) => {
 }
 </script>
 
-
 <style lang="less" scoped>
 @prefix-cls: ~'@{elNamespace}-breadcrumb';
 
