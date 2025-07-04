@@ -1,89 +1,54 @@
-<script lang="tsx">
-import { ElBreadcrumb, ElBreadcrumbItem } from 'element-plus'
-import { ref, watch, computed, unref, defineComponent, TransitionGroup } from 'vue'
-import { useRouter } from 'vue-router'
+<template>
+  <el-breadcrumb separator="/" :class="[prefixCls, 'flex items-center h-full ml-10']">
+    <transition-group appear enter-active-class="animate__animated animate__fadeInRight">
+      <el-breadcrumb-item v-for="v in breadcrumbList" :key="v.name" :to="{path:toPath(v)}">
+        <template v-if="v.meta?.icon && showIcon">
+          <my-icon :icon="v.meta.icon" class="mr-[5px]"/>
+        </template>
+        {{ t(v.meta.title || '') }}
+      </el-breadcrumb-item>
+    </transition-group>
+  </el-breadcrumb>
+</template>
+
+<script setup lang="ts">
 import { usePermissionStore } from '@/store/modules/permission'
 import { filterBreadcrumb } from './helper'
 import { filter, treeToList } from '@/utils/tree'
-import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
 
-const { getPrefixCls } = useDesign()
+const {t} = useI18n()
+const prefixCls = useDesign().getPrefixCls('breadcrumb')
 
-const prefixCls = getPrefixCls('breadcrumb')
+const showIcon = computed(() => useAppStore().getBreadcrumbIcon)
 
-const appStore = useAppStore()
+// 加载路由数据
+const menuRoutes = computed(() => { return filterBreadcrumb(usePermissionStore().getRoutes)})
+// 解析面包屑列表
+const breadcrumbList = ref<AppRouteRecordRaw[]>([])
+const getBreadcrumb = (route) => {
+  const currentPath = route.matched.slice(-1)[0].path
+  const treeRoutes = filter<AppRouteRecordRaw>(unref(menuRoutes), node => node.path === currentPath)
+  breadcrumbList.value = treeToList(treeRoutes)
+}
 
-// 面包屑图标
-const breadcrumbIcon = computed(() => appStore.getBreadcrumbIcon)
-
-export default defineComponent({
-  name: 'Breadcrumb',
-  setup() {
-    const { currentRoute } = useRouter()
-
-    const { t } = useI18n()
-
-    const levelList = ref<AppRouteRecordRaw[]>([])
-
-    const permissionStore = usePermissionStore()
-
-    const menuRoutes = computed(() => {
-      const routes = permissionStore.getRoutes
-      return filterBreadcrumb(routes)
-    })
-
-    const getBreadcrumb = () => {
-      const currentPath = currentRoute.value.matched.slice(-1)[0].path
-      levelList.value = filter<AppRouteRecordRaw>(unref(menuRoutes), (node: AppRouteRecordRaw) => {
-        return node.path === currentPath
-      })
-    }
-
-    const renderBreadcrumb = () => {
-      const breadcrumbList = treeToList<AppRouteRecordRaw[]>(unref(levelList))
-      return breadcrumbList.map((v) => {
-        const disabled = !v.redirect || v.redirect === 'noredirect'
-        const meta = v.meta
-        return (
-          <ElBreadcrumbItem to={{ path: disabled ? '' : v.path }} key={v.name}>
-            {meta?.icon && breadcrumbIcon.value ? (
-              <>
-                <my-icon icon={meta.icon} class="mr-[5px]"></my-icon> {t(v?.meta?.title || '')}
-              </>
-            ) : (
-              t(v?.meta?.title || '')
-            )}
-          </ElBreadcrumbItem>
-        )
-      })
-    }
-
-    watch(
-      () => currentRoute.value,
-      (route: RouteLocationNormalizedLoaded) => {
-        if (route.path.startsWith('/redirect/')) {
-          return
-        }
-        getBreadcrumb()
-      },
-      {
-        immediate: true
-      }
-    )
-
-    return () => (
-      <ElBreadcrumb separator="/" class={`${prefixCls} flex items-center h-full ml-[10px]`}>
-        <TransitionGroup appear enter-active-class="animate__animated animate__fadeInRight">
-          {renderBreadcrumb()}
-        </TransitionGroup>
-      </ElBreadcrumb>
-    )
+// 监听路由变化
+const {currentRoute} = useRouter()
+watch(currentRoute, (route) => {
+  if (!route.path.startsWith('/redirect/')) {
+    getBreadcrumb(route) // 初始化面包屑路由数据
   }
-})
+}, {immediate: true})
+
+
+// 解析跳转地址
+const toPath = (v: AppRouteRecordRaw) => {
+  return !v.redirect || v.redirect === 'noRedirect' ? '' : v.path
+}
 </script>
+
 
 <style lang="less" scoped>
 @prefix-cls: ~'@{elNamespace}-breadcrumb';

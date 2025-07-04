@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 15.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="52px" height="45px" viewBox="0 0 52 45" enable-background="new 0 0 52 45" xml:space="preserve">
+<filter  y="-2.5%" x="-4.2%" height="110.0%" width="108.3%" id="filter-4" filterUnits="objectBoundingBox">
+	<feOffset  result="shadowOffsetOuter1" in="SourceAlpha" dy="1" dx="0"></feOffset>
+	<feGaussianBlur  result="shadowBlurOuter1" in="shadowOffsetOuter1" stdDeviation="0.5"></feGaussianBlur>
+	<feColorMatrix  type="matrix" values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.1 0" in="shadowBlurOuter1"></feColorMatrix>
+</filter>
+<g>
+	<g>
+		<g>
+			<g>
+				<g id="Rectangle-18">
+					<g filter="url(#filter-4)">
+						<path d="M4-1h40c2.209,0,4,1.791,4,4v32c0,2.209-1.791,4-4,4H4c-2.209,0-4-1.791-4-4V3C0,0.791,1.791-1,4-1z"/>
+					</g>
+					<g>
+						<path id="path-2_2_" fill="#F0F2F5" d="M4-1h40c2.209,0,4,1.791,4,4v32c0,2.209-1.791,4-4,4H4c-2.209,0-4-1.791-4-4V3
+							C0,0.791,1.791-1,4-1z"/>
+					</g>
+				</g>
+				<defs>
+					<filter id="Adobe_OpacityMaskFilter" filterUnits="userSpaceOnUse" x="0" y="-1" width="48" height="10">
+						<feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+					</filter>
+				</defs>
+				<mask maskUnits="userSpaceOnUse" x="0" y="-1" width="48" height="10" id="mask-3">
+					<g filter="url(#Adobe_OpacityMaskFilter)">
+						<path id="path-2" fill="#FFFFFF" d="M4-1h40c2.209,0,4,1.791,4,4v32c0,2.209-1.791,4-4,4H4c-2.209,0-4-1.791-4-4V3
+							C0,0.791,1.791-1,4-1z"/>
+					</g>
+				</mask>
+				<rect id="Rectangle-11" y="-1" mask="url(#mask-3)" fill="#303648" width="48" height="10"/>
+				<rect x="2.577" fill="#303648" width="13.423" height="40.793"/>
+			</g>
+		</g>
+	</g>
+</g>
+<defs>
+	<filter id="Adobe_OpacityMaskFilter_1_" filterUnits="userSpaceOnUse" x="0" y="0" width="10" height="40.96">
+		<feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+	</filter>
+</defs>
+<mask maskUnits="userSpaceOnUse" x="0" y="0" width="10" height="40.96" id="mask-3_8_">
+	<g filter="url(#Adobe_OpacityMaskFilter_1_)">
+		<path id="path-2_10_" fill="#FFFFFF" d="M0,37.546V3.413C0,1.528,1.791,0,4,0h32c2.209,0,4,1.528,4,3.413v34.133
+			c0,1.885-1.791,3.414-4,3.414H4C1.791,40.96,0,39.432,0,37.546z"/>
+	</g>
+</mask>
+<rect id="Rectangle-11_8_" mask="url(#mask-3_8_)" fill="#303648" width="10" height="40.96"/>
+</svg>
