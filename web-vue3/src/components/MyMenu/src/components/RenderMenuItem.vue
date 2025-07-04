@@ -1,4 +1,3 @@
-<!-- RenderMenuItem.vue -->
 <template>
   <div>
     <template v-for="item in routeListNew" :key="item.name">
@@ -46,7 +45,4 @@ const routeListNew = computed(() => {
   })
   return result
 })
-
-console.log('routeListNew', routeListNew.value)
-
 </script>

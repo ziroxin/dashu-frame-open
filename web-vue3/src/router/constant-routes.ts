@@ -26,7 +26,6 @@ export const homeRoute = {
     meta: {
       title: '首页',
       icon: 'vi-ant-design:dashboard-filled',
-      alwaysShow: true,
       noCache: true,
       affix: true
     }

@@ -8,8 +8,8 @@ interface HasOneShowingChild {
 }
 
 export const getAllParentPath = <T = Recordable>(treeData: T[], path: string) => {
-  const menuList = findPath(treeData, (n) => n.path === path) as AppRouteRecordRaw[]
-  return (menuList || []).map((item) => item.path)
+  const menuList = findPath(treeData, n => n.path === path)
+  return (menuList || []).map(v => v.path)
 }
 
 export const hasOneShowingChild = (children: AppRouteRecordRaw[] = [], parent: AppRouteRecordRaw): HasOneShowingChild => {

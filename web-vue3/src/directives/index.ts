@@ -1,5 +1,6 @@
 import type { App } from 'vue'
-import permission from "@/directives/permission";
+import permission from '@/directives/permission'
+import { ClickOutside } from 'element-plus'
 
 /**
  * 注册全局指令 v-xxx
@@ -8,4 +9,6 @@ import permission from "@/directives/permission";
 export const setupDirectives = (app: App<Element>) => {
   // permission 按钮权限，用法: v-permission
   app.directive('permission', permission)
+  // click-outside 点击外部区域指令
+  app.directive('click-outside', ClickOutside)
 }

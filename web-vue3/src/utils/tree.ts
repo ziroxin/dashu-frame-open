@@ -65,11 +65,10 @@ export const findNodeAll = <T = any>(tree: any, func: Fn, config: Partial<TreeHe
 }
 
 export const findPath = <T = any>(tree: any, func: Fn, config: Partial<TreeHelperConfig> = {}): T | T[] | null => {
-  config = getConfig(config)
   const path: T[] = []
   const list = [...tree]
   const visitedSet = new Set()
-  const {children} = config
+  const {children} = getConfig(config)
   while (list.length) {
     const node = list[0]
     if (visitedSet.has(node)) {
