@@ -19,7 +19,6 @@ import { defineComponent } from 'vue'
  *     affix: true               如果设置为true，则会一直固定在tag项中(默认 false)
  *     noTagsView: true          如果设置为true，则不会出现在tag中(默认 false)
  *     activeMenu: '/dashboard'  显示高亮的路由路径
- *     canTo: true               设置为true即使hidden为true，也依然可以进行路由跳转(默认 false)
  *     permission: ['edit','add', 'delete']    设置该路由的权限
  * }
  **/
@@ -33,7 +32,6 @@ interface RouteMetaCustom extends Record<string | number | symbol, unknown> {
   affix?: boolean
   activeMenu?: string
   noTagsView?: boolean
-  canTo?: boolean
   permission?: string[]
 }
 

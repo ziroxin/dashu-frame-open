@@ -556,7 +556,6 @@ export default {
     affix: '是否固定在标签页',
     noTagsView: '是否隐藏标签页',
     activeMenu: '高亮菜单',
-    canTo: '是否可跳转',
     name: '组件名称'
   },
   role: {

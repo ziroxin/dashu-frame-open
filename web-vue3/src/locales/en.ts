@@ -566,7 +566,6 @@ export default {
     affix: 'Affix',
     noTagsView: 'No tags view',
     activeMenu: 'Active menu',
-    canTo: 'Can to',
     name: 'Name'
   },
   role: {

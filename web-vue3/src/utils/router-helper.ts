@@ -157,7 +157,7 @@ export const generateRoutes4HiddenByServer = (routes: Array<any>): AppRouteRecor
 
 export const pathResolve = (parentPath: string, path: string) => {
   if (isUrl(path)) return path
-  if (parentPath.includes(path)) return path
+  if (parentPath.includes(path) && path) return path
   const resolveParentPath = parentPath ? parentPath : '/'
   const childPath = path ? (path.startsWith('/') ? path : `/${path}`) : ''
   return `${resolveParentPath}${childPath}`.replace(/\/\//g, '/').trim()

@@ -20,7 +20,7 @@ export const homeRoute = {
   component: Layout,
   meta: {},
   children: [{
-    path: '',
+    path: '/dashboard/index',
     name: 'DashboardIndex',
     component: () => import('@/views/Dashboard/Index.vue'),
     meta: {
