@@ -75,7 +75,7 @@
     />
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-               :visible.sync="dialogFormVisible" width="660px" @close="resetTemp">
+               v-model="dialogFormVisible" width="660px" @close="resetTemp">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px"
                style="width: 500px; margin-left: 50px;" :disabled="dialogType==='view'"
       >
@@ -184,6 +184,7 @@ export default {
     // 清空表单temp数据
     resetTemp() {
       this.temp = {orderIndex: 0}
+      this.dialogFormVisible = false
     },
     // 打开添加窗口
     openAdd() {

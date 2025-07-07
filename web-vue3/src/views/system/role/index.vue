@@ -36,7 +36,7 @@
                        :total="totalCount" @current-change="handleCurrentChange"/>
         <!-- 添加修改弹窗 -->
         <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-                   :visible.sync="dialogFormVisible" width="650px" @close="resetTemp">
+                   v-model="dialogFormVisible" width="650px" @close="resetTemp">
           <el-form ref="roleDateForm" :model="temp" label-position="left" label-width="100px"
                    style="width: 500px; margin-left: 50px;">
             <el-form-item label="角色名称" prop="roleName" :rules="{required: true, message: '角色名称不能为空'}">
@@ -164,6 +164,7 @@ export default {
     //清空temp数据
     resetTemp() {
       this.temp = {roleId: '', roleName: '', roleDescription: '', roleOrder: 1}
+      this.dialogFormVisible = false
     },
     //角色管理
     roleAdd() {

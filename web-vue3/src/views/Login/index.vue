@@ -84,7 +84,7 @@
         </div>
       </div>
     </main>
-    <el-dialog title="第三方登录" :visible.sync="showDialog" :append-to-body="true" top="30vh">
+    <el-dialog title="第三方登录" v-model="showDialog" :append-to-body="true" top="30vh">
       <social-sign/>
     </el-dialog>
   </div>

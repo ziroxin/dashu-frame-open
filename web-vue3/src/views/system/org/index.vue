@@ -50,7 +50,7 @@
     </el-table>
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-               :visible.sync="dialogFormVisible" width="680px" @close="resetTemp">
+               v-model="dialogFormVisible" width="680px" @close="resetTemp">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="120px"
                style="width: 600px;" :disabled="dialogType==='view'">
         <el-form-item label="组织机构名称" prop="orgName"
@@ -84,7 +84,7 @@
     </el-dialog>
 
     <!-- 批量导入弹窗 -->
-    <el-dialog title="批量导入" :close-on-click-modal="false" :visible.sync="dialogImportVisible"
+    <el-dialog title="批量导入" :close-on-click-modal="false" v-model="dialogImportVisible"
                @close="dialogIndex++" width="600px" :key="'importDialog'+dialogIndex">
       <el-form ref="importForm" label-width="120px" v-loading="isImportLoading">
         <el-form-item label="下载模板：">
@@ -196,6 +196,7 @@ export default {
     // 清空表单temp数据
     resetTemp() {
       this.temp = {orderIndex: 0}
+      this.dialogFormVisible = false
     },
     // 打开添加窗口
     openAdd(row) {

@@ -60,7 +60,7 @@
     />
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-               :visible.sync="dialogFormVisible" @close="resetTemp" width="600px" :key="'myDialog'+dialogIndex">
+               v-model="dialogFormVisible" @close="resetTemp" width="600px" :key="'myDialog'+dialogIndex">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="110px" :disabled="dialogType==='view'">
         <el-form-item label="参数名称" prop="cfgName"
                       :rules="[{required: true, message: '参数名称不能为空'}]">
@@ -178,6 +178,7 @@ export default {
     resetTemp() {
       this.temp = {orderIndex: 0, cfgIsSys: '1'}
       this.dialogIndex++
+      this.dialogFormVisible = false
     },
     // 打开添加窗口
     openAdd() {

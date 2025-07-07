@@ -5,7 +5,7 @@
  -->
 <template>
   <!--修改密码-->
-  <el-dialog title="修改密码" :visible.sync="innerVisible" width="600px"
+  <el-dialog title="修改密码" v-model="innerVisible" width="600px"
              :close-on-click-modal="false" :show-close="showCloseBtn"
              :close-on-press-escape="false">
     <div v-if="info.length>0" style="text-align: center;font-size: 1em;color: red;margin: -10px auto 20px auto;">

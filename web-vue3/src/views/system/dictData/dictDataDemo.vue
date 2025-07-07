@@ -3,7 +3,7 @@
     <el-form-item label="数据字典示例">
       <el-select v-model="sex">
         <el-option v-for="item in dict.dict.sys_user_sex" :key="item.value"
-                   :value="item.value" :label="item.label"></el-option>
+                   :value="item.value" :label="item.label"/>
       </el-select>
     </el-form-item>
   </el-form>

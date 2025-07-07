@@ -87,7 +87,7 @@
         </div>
       </el-col>
     </el-row>
-    <el-dialog :visible.sync="groupDialogShow">
+    <el-dialog v-model="groupDialogShow">
       <el-form ref="groupDataForm" :model="temp" :rules="rules" label-position="right" label-width="100px"
                style="width: 500px; margin-left: 50px;"
       >

@@ -66,7 +66,7 @@
     />
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-               :visible.sync="dialogFormVisible" @close="resetTemp" width="90%">
+               v-model="dialogFormVisible" @close="resetTemp" width="90%">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="150px" :disabled="dialogType==='view'">
         <el-form-item label="表单名称" prop="formName"
                       :rules="[{required: true, message: '表单名称不能为空'}]">
@@ -194,6 +194,7 @@ export default {
     // 清空表单temp数据
     resetTemp() {
       this.temp = {orderIndex: 0}
+      this.dialogFormVisible = false
     },
     // 打开添加窗口
     openAdd() {

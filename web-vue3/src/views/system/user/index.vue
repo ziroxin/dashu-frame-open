@@ -94,7 +94,7 @@
 
     <!--  弹窗  -->
     <el-dialog :title="textMap[dialogStatus]" top="5vh" :close-on-click-modal="false" @close="closeDialog"
-               :visible.sync="dialogFormVisible" width="680px" :key="'myDialog'+dialogIndex">
+               v-model="dialogFormVisible" width="680px" :key="'myDialog'+dialogIndex">
       <el-form ref="userDataForm" :model="temp" label-position="right"
                label-width="100px" style="width: 500px; margin-left: 50px;">
         <el-form-item label="用户名" prop="userName"
@@ -271,6 +271,7 @@ export default {
       if (this.searchData && this.searchData.orgId) {
         this.$refs.orgTreeRef.setCurrentKey(this.searchData.orgId)
       }
+      this.dialogFormVisible = false
     },
     userAdd() {
       this.resetTemp()

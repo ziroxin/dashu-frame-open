@@ -66,7 +66,7 @@
         />
         <!-- 添加修改弹窗 -->
         <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-                   :visible.sync="dialogFormVisible" @close="resetTemp" width="600px">
+                   v-model="dialogFormVisible" @close="resetTemp" width="600px">
           <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px"
                    :disabled="dialogType==='view'">
             <el-form-item label="字典名称" prop="typeName"
@@ -103,7 +103,7 @@
         <dict-data v-else :current-dict-type="currentDictType"></dict-data>
       </el-col>
     </el-row>
-    <el-dialog title="字典数据Demo" :visible.sync="dialogDictDataVisible" width="400px">
+    <el-dialog title="字典数据Demo" v-model="dialogDictDataVisible" width="400px">
       <dict-data-demo></dict-data-demo>
     </el-dialog>
   </div>
@@ -194,6 +194,7 @@ export default {
     // 清空表单temp数据
     resetTemp() {
       this.temp = {status: '1'}
+      this.dialogFormVisible = false
     },
     // 打开添加窗口
     openAdd() {

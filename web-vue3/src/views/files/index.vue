@@ -58,7 +58,7 @@
     />
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-               :visible.sync="dialogFormVisible" @close="loadTableList();resetTemp();dialogIndex++;" width="600px"
+               v-model="dialogFormVisible" @close="loadTableList();resetTemp();dialogIndex++;" width="600px"
                :key="'upload' + dialogIndex">
       <div v-if="dialogType !== 'view'">
         <div
@@ -188,6 +188,7 @@ export default {
     // 清空表单temp数据
     resetTemp() {
       this.temp = {orderIndex: 0}
+      this.dialogFormVisible = false
     },
     // 打开添加窗口
     openAdd() {

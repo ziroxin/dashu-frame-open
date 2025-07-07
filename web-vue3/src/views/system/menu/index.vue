@@ -97,7 +97,7 @@
       </el-col>
     </el-row>
     <!--    添加和修改菜单窗口-->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="700px"
+    <el-dialog :title="textMap[dialogStatus]" v-model="dialogFormVisible" width="700px"
                :close-on-click-modal="false">
       <el-form ref="dataForm" :model="temp" :rules="rules" label-position="right" label-width="110px"
                style="width: 600px; margin-left: 30px;">
@@ -179,7 +179,7 @@
     </el-dialog>
 
     <!-- 修改上下级菜单 -->
-    <el-dialog title="修改上下级关系" :visible.sync="parentDialogVisible" width="500px" top="5px">
+    <el-dialog title="修改上下级关系" v-model="parentDialogVisible" width="500px" top="5px">
       <el-form ref="parentDataForm" :model="temp2">
         <el-form-item label="顶级菜单：">
           <el-button v-if="temp2.parentId==='-1'" type="primary" icon="el-icon-check">顶级菜单</el-button>

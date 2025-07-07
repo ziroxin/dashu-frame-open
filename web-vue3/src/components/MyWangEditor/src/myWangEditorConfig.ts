@@ -1,3 +1,5 @@
+import { ElMessage } from 'element-plus'
+
 /**
  * 图片上传配置
  * @param server 图片上传地址
@@ -14,15 +16,15 @@ export function imagesDefaultOptions(server, limit, Message) {
     // 单个文件上传失败
     onFailed(file, res) {
       console.log('onFailed', file, res)
-      this.$message.error(res.message)
+      ElMessage.error(res.message)
     },
     // 上传错误，或者触发 timeout 超时
     onError(file, err, res) {
       if (err.message.indexOf('exceeds maximum allowed size of') >= 0) {
         let errStr = `${file.name} 上传出错！文件大小超出限制`
-        let errArr = err.message.split('exceeds maximum allowed size of')
+        const errArr = err.message.split('exceeds maximum allowed size of')
         if (errArr.length === 2) {
-          errStr += '，最大上传' + errArr[1];
+          errStr += '，最大上传' + errArr[1]
         }
         Message.error(errStr)
       }
@@ -39,15 +41,15 @@ export function videosDefaultOptions(server, limit, Message) {
     // 单个文件上传失败
     onFailed(file, res) {
       console.log('onFailed', file, res)
-      this.$message.error(res.message)
+      ElMessage.error(res.message)
     },
     // 上传错误，或者触发 timeout 超时
     onError(file, err, res) {
       if (err.message.indexOf('exceeds maximum allowed size of') >= 0) {
         let errStr = `${file.name} 上传出错！文件大小超出限制`
-        let errArr = err.message.split('exceeds maximum allowed size of')
+        const errArr = err.message.split('exceeds maximum allowed size of')
         if (errArr.length === 2) {
-          errStr += '，最大上传' + errArr[1];
+          errStr += '，最大上传' + errArr[1]
         }
         Message.error(errStr)
       }
@@ -61,7 +63,7 @@ export function customParseVideoSrc(src) {
   if (src) {
     // todo 可作其他处理，比如外部视频链接处理
     // 视频文件地址
-    return process.env.VUE_APP_BASE_API + src
+    return inject('$baseServer') + src
   }
   return src
 }
@@ -70,7 +72,7 @@ export function customParseVideoSrc(src) {
 export function customParseImageSrc(src) {
   if (src && src.indexOf('data:image/png;base64,') === -1) {
     // 非base64地址，要追加$baseServer路径
-    return process.env.VUE_APP_BASE_API + src
+    return inject('$baseServer') + src
   }
   return src
 }

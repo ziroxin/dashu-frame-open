@@ -48,7 +48,7 @@
     />
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-               :visible.sync="dialogFormVisible" @close="resetTemp" width="600px">
+               v-model="dialogFormVisible" @close="resetTemp" width="600px">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
         <el-form-item label="用户id" prop="userId"
                       :rules="[{required: true, message: '用户id不能为空'}]">
@@ -140,6 +140,7 @@ export default {
     // 清空表单temp数据
     resetTemp() {
       this.temp = {orderIndex: 0}
+      this.dialogFormVisible = false
     },
     // 打开添加窗口
     openAdd() {

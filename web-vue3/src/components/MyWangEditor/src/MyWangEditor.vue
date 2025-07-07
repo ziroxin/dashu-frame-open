@@ -43,7 +43,7 @@ import {
   customParseVideoSrc,
   imagesDefaultOptions,
   videosDefaultOptions
-} from 'myWangEditorConfig.js'
+} from 'myWangEditorConfig.ts'
 
 export default {
   name: 'MyWangEditor',
@@ -54,11 +54,11 @@ export default {
     // 空白提示
     placeholder: {type: String, default: '请输入...'},
     // 上传图片地址
-    imageServer: {type: String, default: process.env.VUE_APP_BASE_API + '/upload/wang/images'},
+    imageServer: {type: String, default: inject('$baseServer') + '/upload/wang/images'},
     // 上传图片大小限制（默认：2MB，2*1024*1024）
     imageSizeLimit: {type: Number, default: 2 * 1024 * 1024},
     // 上传视频地址
-    videoServer: {type: String, default: process.env.VUE_APP_BASE_API + '/upload/wang/videos'},
+    videoServer: {type: String, default: inject('$baseServer') + '/upload/wang/videos'},
     // 上传视频大小限制（默认：50MB，2*1024*1024）
     videoSizeLimit: {type: Number, default: 50 * 1024 * 1024},
     // 更多配置 @see:https://www.wangeditor.com/v5/toolbar-config.html#toolbarkeys

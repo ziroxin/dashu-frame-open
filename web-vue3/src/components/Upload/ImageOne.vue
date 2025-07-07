@@ -13,7 +13,7 @@
 <template>
   <div>
     <!-- 图片预览 -->
-    <el-dialog :visible.sync="dialogVisible" :fullscreen="true" @click.native="dialogVisible=false"
+    <el-dialog v-model="dialogVisible" :fullscreen="true" @click.native="dialogVisible=false"
                append-to-body custom-class="img-preview-dialog">
       <img width="100%" :src="dialogImageUrl" alt="" @click.stop="dialogVisible=true"/>
       <div class="img-text-info">按ESC键或点击遮罩可关闭预览</div>

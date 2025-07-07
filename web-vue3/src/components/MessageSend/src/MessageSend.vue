@@ -4,18 +4,18 @@
                   label="通知用户" prop="ids" :label-width="labelWidth">
       <el-select v-model="ids" :style="{width: width}" multiple clearable
                  @change="handleUserChange">
-        <el-option label="全部" key="userAll" value="all"></el-option>
+        <el-option label="全部" key="userAll" value="all"/>
         <el-option v-for="item in userList" :key="item.userId"
-                   :label="item.userName" :value="item.userId"></el-option>
+                   :label="item.userName" :value="item.userId"/>
       </el-select>
     </el-form-item>
     <el-form-item v-if="type === 'role'"
                   label="通知角色" prop="ids" :label-width="labelWidth">
       <el-select v-model="ids" :style="{width: width}" multiple clearable
                  @change="handleRoleChange">
-        <el-option label="全部" key="roleAll" value="all"></el-option>
+        <el-option label="全部" key="roleAll" value="all"/>
         <el-option v-for="item in roleList" :key="item.roleId"
-                   :label="item.roleName" :value="item.roleId"></el-option>
+                   :label="item.roleName" :value="item.roleId"/>
       </el-select>
     </el-form-item>
     <el-form-item v-if="type === 'org'"

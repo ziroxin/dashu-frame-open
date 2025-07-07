@@ -50,7 +50,7 @@
                    @size-change="handleSizeChange"/>
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-               :visible.sync="dialogFormVisible" @close="closeDialog" width="600px" :key="'myDialog'+dialogIndex">
+               v-model="dialogFormVisible" @close="closeDialog" width="600px" :key="'myDialog'+dialogIndex">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
         <el-form-item label="文件夹名称" prop="fileOldName" :rules="[{required: true, message: '文件夹名称不能为空！'}]">
           <el-input v-model="temp.fileOldName" placeholder="请输入文件夹名称"/>
@@ -67,7 +67,7 @@
       </div>
     </el-dialog>
     <!-- 管理文件夹弹窗 -->
-    <el-dialog title="管理文件夹" :visible.sync="folderDialogVisible" @close="dialogIndex++"
+    <el-dialog title="管理文件夹" v-model="folderDialogVisible" @close="dialogIndex++"
                :close-on-click-modal="false" width="80%" :key="'folder'+dialogIndex">
       <folder-views :currentParentId="currentParentId" v-if="folderDialogVisible"/>
     </el-dialog>
@@ -158,6 +158,7 @@ export default {
     closeDialog() {
       this.temp = this.$options.data().temp
       this.dialogIndex++
+      this.dialogFormVisible = false
     },
     // 打开添加窗口
     openAdd() {

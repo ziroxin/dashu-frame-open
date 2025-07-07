@@ -1,6 +1,6 @@
 <template>
   <div>
-    <my-icon v-if="meta?.icon" :icon="meta.icon"></my-icon>
+    <my-icon v-if="meta?.icon" :icon="meta.icon"/>
     <span class="v-menu__title overflow-hidden overflow-ellipsis whitespace-nowrap">
       {{ t(meta?.title) || '标题未配置' }}
     </span>

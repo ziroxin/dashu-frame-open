@@ -73,7 +73,7 @@
     />
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-               :visible.sync="dialogFormVisible" @close="resetTemp" width="600px">
+               v-model="dialogFormVisible" @close="resetTemp" width="600px">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
         <el-form-item label="当前字典">
           <el-tag size="small" style="width: 100%;height: 60px;line-height: 30px;">
@@ -108,7 +108,7 @@
     </el-dialog>
 
     <!-- 批量导入弹窗 -->
-    <el-dialog title="批量导入" :close-on-click-modal="false" :visible.sync="dialogImportVisible"
+    <el-dialog title="批量导入" :close-on-click-modal="false" v-model="dialogImportVisible"
                @close="dialogIndex++" width="600px" :key="'importDialog'+dialogIndex">
       <el-form ref="importForm" label-width="120px" v-loading="isImportLoading">
         <el-form-item label="下载模板：">
@@ -225,6 +225,7 @@ export default {
     // 清空表单temp数据
     resetTemp() {
       this.temp = {orderIndex: 0, status: '1'}
+      this.dialogFormVisible = false
     },
     // 打开添加窗口
     openAdd() {

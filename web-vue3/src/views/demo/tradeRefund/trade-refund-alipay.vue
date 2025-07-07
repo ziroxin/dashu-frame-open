@@ -56,7 +56,7 @@
     />
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-               :visible.sync="dialogFormVisible" @close="closeDialog" width="600px" :modal="false">
+               v-model="dialogFormVisible" @close="closeDialog" width="600px" :modal="false">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px">
         <el-form-item label="退款金额" prop="refundFee"
                       :rules="[{required: true, message: '退款金额不能为空'}, {type: 'number', message: '必须为数字'}]">
@@ -208,6 +208,7 @@ export default {
     closeDialog() {
       this.isLoading = false
       clearInterval(this.intervalIndex)
+      this.dialogFormVisible = false
       this.loadTableList()
       this.resetTemp()
     },

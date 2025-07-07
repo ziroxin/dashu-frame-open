@@ -4,15 +4,15 @@
     <div style="margin-bottom: 10px;">
       <el-select v-model="searchData.payType" size="small" style="width: 120px;margin-right: 10px;"
                  class="filter-item" placeholder="支付方式">
-        <el-option label="全部" value=""></el-option>
-        <el-option label="微信支付" value="0"></el-option>
-        <el-option label="支付宝支付" value="1"></el-option>
+        <el-option label="全部" value=""/>
+        <el-option label="微信支付" value="0"/>
+        <el-option label="支付宝支付" value="1"/>
       </el-select>
       <el-select v-model="searchData.tradeStatus" size="small" style="width: 100px;margin-right: 10px;"
                  class="filter-item" placeholder="支付状态">
-        <el-option label="全部" value=""></el-option>
-        <el-option label="未支付" value="0"></el-option>
-        <el-option label="已支付" value="1"></el-option>
+        <el-option label="全部" value=""/>
+        <el-option label="未支付" value="0"/>
+        <el-option label="已支付" value="1"/>
       </el-select>
       <el-date-picker v-model="searchData.paySuccessTime" size="small" style="width: 150px;margin-right: 10px;"
                       type="date" class="filter-item" placeholder="支付成功日期"/>
@@ -80,7 +80,7 @@
                    @size-change="handleSizeChange"
     />
     <!-- 支付弹窗 -->
-    <el-dialog title="支付窗口" :visible.sync="dialogFormVisible" width="600px"
+    <el-dialog title="支付窗口" v-model="dialogFormVisible" width="600px"
                @closed="closePayDialog">
       <el-form>
         <el-form-item label="选择支付方式" prop="openPayType">
@@ -102,7 +102,7 @@
       </div>
     </el-dialog>
     <!-- 退款弹窗 -->
-    <el-dialog title="退款窗口" :visible.sync="dialogRefundFormVisible" width="95%" top="5vh" @closed="loadTableList">
+    <el-dialog title="退款窗口" v-model="dialogRefundFormVisible" width="95%" top="5vh" @closed="loadTableList">
       <trade-refund v-if="refundTradeInfo.payType===0" title="微信退款" :current-trade-info="refundTradeInfo"
                     :refund-refresh-index="refundRefreshIndex"
                     ref="tradeRefund"></trade-refund>

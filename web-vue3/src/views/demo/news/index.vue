@@ -3,29 +3,33 @@
     <!-- 新闻表-测试-管理按钮 -->
     <div style="margin-bottom: 10px;">
       <el-input v-model="searchData.newsTitle" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入新闻标题查询" size="small"
-      />
+                class="filter-item" placeholder="请输入新闻标题查询"/>
       <el-input v-model="searchData.newsContent" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入新闻内容查询" size="small"
-      />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search"
-                 size="small" @click="searchBtnHandle">查询
+                class="filter-item" placeholder="请输入新闻内容查询"/>
+      <el-button v-waves class="filter-item" type="primary" @click="searchBtnHandle">
+        <my-icon icon="el-icon-search" class="mr-[5px]"/>
+        查询
       </el-button>
-      <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh"
-                 size="small" @click="resetTableList">重置
+      <el-button v-waves class="filter-item" type="info" @click="resetTableList">
+        <my-icon icon="el-icon-refresh" class="mr-[5px]"/>
+        重置
       </el-button>
       <div style="float: right;">
-        <el-button v-waves v-permission="'news-news-add'" type="primary" icon="el-icon-plus"
-                   @click="openAdd" size="small">新增
+        <el-button v-permission="'news-news-add'" type="primary" @click="openAdd">
+          <my-icon icon="el-icon-plus" class="mr-[5px]"/>
+          新增
         </el-button>
-        <el-button v-waves v-permission="'news-news-update'" type="info" icon="el-icon-edit"
-                   @click="openUpdate(null)" size="small">修改
+        <el-button v-permission="'news-news-update'" type="info" @click="openUpdate(null)">
+          <my-icon icon="el-icon-edit" class="mr-[5px]"/>
+          修改
         </el-button>
-        <el-button v-waves v-permission="'news-news-delete'" type="danger" icon="el-icon-delete"
-                   @click="deleteByIds(null)" size="small">删除
+        <el-button v-permission="'news-news-delete'" type="danger" @click="deleteByIds(null)">
+          <my-icon icon="el-icon-delete" class="mr-[5px]"/>
+          删除
         </el-button>
-        <el-button v-waves v-permission="'news-news-exportExcel'" type="success" icon="el-icon-printer"
-                   @click="exportExcel" size="small">导出Excel
+        <el-button v-permission="'news-news-exportExcel'" type="success" @click="exportExcel">
+          <my-icon icon="el-icon-printer" class="mr-[5px]"/>
+          导出Excel
         </el-button>
       </div>
     </div>
@@ -38,7 +42,7 @@
       <el-table-column label="修改时间" prop="updateTime" align="center"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template v-slot="scope">
-          <el-button type="text" size="mini" style="color: #4dd219;"
+          <el-button type="text" style="color: #4dd219;" class="text-12px"
                      @click="openView(scope.row)">详情
           </el-button>
           <el-button v-permission="'news-news-update'" size="mini"
@@ -61,7 +65,7 @@
                    @size-change="handleSizeChange"
     />
     <!-- 添加修改弹窗 -->
-    <el-dialog :title="titleMap[dialogType]" :visible.sync="dialogFormVisible" width="900px"
+    <el-dialog :title="titleMap[dialogType]" v-model="dialogFormVisible" width="900px"
                :close-on-click-modal="dialogType !== 'view' ? false : true"
                @close="resetTemp" :key="'myDialog'+dialogIndex">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="50px" :disabled="dialogType==='view'">
@@ -72,7 +76,7 @@
         </el-form-item>
         <el-form-item label-width="0px" prop="newsContent"
                       :rules="[{required: true, message: '新闻内容不能为空'}]">
-          <my-wang-editor ref="myEditor" v-model="temp.newsContent" height="300px" :key="dialogFormVisible"
+          <my-wang-editor ref="myEditor" v-model="temp.newsContent" height="300px" :key="'myWangEditor'+dialogIndex"
                           placeholder="请输入新闻内容"/>
         </el-form-item>
         <el-row>
@@ -86,9 +90,9 @@
             <!-- 选择消息发送的用户 -->
             <el-form-item label="" prop="messageSend" label-width="50px">
               <el-select v-model="messageSendData.type" placeholder="请选择消息发送类型">
-                <el-option label="选择用户" value="user"></el-option>
-                <el-option label="选择组织机构" value="org"></el-option>
-                <el-option label="选择角色" value="role"></el-option>
+                <el-option label="选择用户" value="user"/>
+                <el-option label="选择组织机构" value="org"/>
+                <el-option label="选择角色" value="role"/>
               </el-select>
             </el-form-item>
           </el-col>
@@ -98,10 +102,12 @@
           </el-col>
         </el-row>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button v-if="dialogType !== 'view'" v-waves type="primary" @click="saveData">保存</el-button>
-        <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button v-if="dialogType !== 'view'" type="primary" @click="saveData">保存</el-button>
+          <el-button @click="dialogFormVisible=false">取消</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>
@@ -139,7 +145,7 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     this.loadTableList()
     this.resetTemp()
   },
@@ -182,6 +188,7 @@ export default {
     resetTemp() {
       this.temp = {orderIndex: 0}
       this.messageSendData.ids = []
+      this.dialogFormVisible = false
       this.dialogIndex++
     },
     // 打开添加窗口

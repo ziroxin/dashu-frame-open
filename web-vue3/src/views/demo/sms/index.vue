@@ -68,7 +68,7 @@
     />
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-               :visible.sync="dialogFormVisible" @close="resetTemp" width="600px" :key="'myDialog'+dialogIndex">
+               v-model="dialogFormVisible" @close="resetTemp" width="600px" :key="'myDialog'+dialogIndex">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
         <el-form-item label="手机号" prop="smsPhones"
                       :rules="[{required: true, message: '手机号不能为空'}]">
@@ -135,13 +135,13 @@ export default {
       temp: {},
       isLoading: false,
       dialogIndex: 0,
-      smsTemplateFields: [],// 短信模板中的字段
+      smsTemplateFields: []// 短信模板中的字段
     }
   },
   watch: {
     'temp.smsTemplate'(newVal) {
       if (newVal) {
-        this.smsTemplateFields = this.extractFieldNames(newVal);
+        this.smsTemplateFields = this.extractFieldNames(newVal)
       }
     }
   },
@@ -164,7 +164,7 @@ export default {
     // 加载表格
     loadTableList() {
       this.isLoading = true
-      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      const params = {...this.pager, params: JSON.stringify(this.searchData)}
       request({url: '/sms/demoSms/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
@@ -190,6 +190,7 @@ export default {
     resetTemp() {
       this.temp = {orderIndex: 0, sendJson: {}}
       this.dialogIndex++
+      this.dialogFormVisible = false
     },
     // 打开添加窗口
     openAdd() {
@@ -240,12 +241,12 @@ export default {
     },
     // 提取字段
     extractFieldNames(str) {
-      const regex = /\${(.*?)}/g;
-      const matches = str.match(regex);
+      const regex = /\${(.*?)}/g
+      const matches = str.match(regex)
       if (matches) {
-        return matches.map(match => match.substring(2, match.length - 1));
+        return matches.map(match => match.substring(2, match.length - 1))
       } else {
-        return [];
+        return []
       }
     }
   }

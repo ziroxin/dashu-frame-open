@@ -64,7 +64,7 @@
     />
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-               :visible.sync="dialogFormVisible" @close="resetTemp" width="660px">
+               v-model="dialogFormVisible" @close="resetTemp" width="660px">
       <!-- 重置Secret -->
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="150px"
                v-if="dialogType === 'resetSecret'">
@@ -219,6 +219,7 @@ export default {
         refreshTokenValidity: 3600,
         autoapprove: true
       }
+      this.dialogFormVisible = false
     },
     // 打开添加窗口
     openAdd() {
