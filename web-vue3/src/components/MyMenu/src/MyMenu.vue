@@ -1,8 +1,8 @@
 <template>
   <div :id="prefixCls"
        :class="[`${prefixCls} ${prefixCls}__${menuMode}`,'h-[100%] overflow-hidden flex-col bg-[var(--left-menu-bg-color)]',
-       {'w-[var(--left-menu-min-width)]': collapse && layout !== 'cutMenu',
-       'w-[var(--left-menu-max-width)]': !collapse && layout !== 'cutMenu' }]">
+                {'w-[var(--left-menu-min-width)]':collapse && layout!=='cutMenu',
+                 'w-[var(--left-menu-max-width)]':!collapse && layout!=='cutMenu'}]">
     <el-scrollbar v-if="layout!=='top'">
       <el-menu :default-active="activeMenu"
                :mode="menuMode"
@@ -38,28 +38,30 @@ import { isUrl } from '@/utils/is'
 import { useDesign } from '@/hooks/web/useDesign'
 
 const prefixCls = useDesign().getPrefixCls('menu')
-
-const {menuSelect} = defineProps({
-  menuSelect: {type: Function as PropType<(index: string) => void>, default: undefined}
-})
-
 const appStore = useAppStore()
 const permissionStore = usePermissionStore()
 const {push, currentRoute} = useRouter()
 
-// 计算相关属性
-const layout = computed(() => appStore.getLayout)
-const menuMode = computed(() => ['classic', 'topLeft', 'cutMenu'].includes(unref(layout)) ? 'vertical' : 'horizontal')
-const routeList = computed(() => unref(layout) === 'cutMenu' ? permissionStore.getMenuTabRoutes : permissionStore.getRoutes)
-const collapse = computed(() => appStore.getCollapse)
-const uniqueOpened = computed(() => appStore.getUniqueOpened)
-
-const activeMenu = computed(() => {
-  const {meta, path} = unref(currentRoute)
-  return meta.activeMenu ? meta.activeMenu as string : path
+// 参数：菜单选中方法（非必填，若传入，优先调用该方法）
+const {menuSelect} = defineProps({
+  menuSelect: {type: Function as PropType<(index: string) => void>, default: undefined}
 })
 
-// 菜单选中方法
+// layout布局：'classic'=经典左右布局 | 'topLeft'=顶部左侧布局 | 'top'=顶部菜单布局 | 'cutMenu'=分栏菜单布局
+const layout: any = computed(() => appStore.getLayout)
+// 菜单模式：'vertical'=垂直菜单 | 'horizontal'=水平菜单
+const menuMode = computed(() => ['classic', 'topLeft', 'cutMenu'].includes(unref(layout)) ? 'vertical' : 'horizontal')
+// 路由列表（分栏模式时特殊处理）
+const routeList = computed(() => unref(layout) === 'cutMenu' ? permissionStore.getMenuTabRoutes : permissionStore.getRoutes)
+console.log('routeList', routeList.value)
+// 菜单展开/收起状态
+const collapse = computed(() => appStore.getCollapse)
+// 是否只保持一个子菜单的展开
+const uniqueOpened = computed(() => appStore.getUniqueOpened)
+// 当前激活菜单
+const activeMenu = computed(() => currentRoute.value.meta.activeMenu || currentRoute.value.path)
+
+// 菜单选中（点击）方法
 const handleMenuSelect = (index: string) => {
   if (menuSelect) {
     // 父级传入菜单选中function，则优先调用父级

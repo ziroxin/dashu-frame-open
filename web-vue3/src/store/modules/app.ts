@@ -59,7 +59,7 @@ export const useAppStore = defineStore('app', {
       dynamicRouter: true, // 是否动态路由
       serverDynamicRouter: true, // 是否服务端渲染动态路由
       fixedMenu: false, // 是否固定菜单
-      layout: 'classic', // layout布局
+      layout: 'classic', // layout布局：'classic'=经典左右布局 | 'topLeft'=顶部左侧布局 | 'top'=顶部菜单布局 | 'cutMenu'=分栏菜单布局
       isDark: false, // 是否是暗黑模式
       currentSize: 'default', // 组件尺寸
       theme: {
