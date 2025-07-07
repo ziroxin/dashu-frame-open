@@ -62,6 +62,8 @@
   </div>
 </template>
 <script>
+import request from '@/utils/request'
+
 export default {
   data() {
     return {
@@ -88,7 +90,7 @@ export default {
     saveFileTypeMap() {
       this.isLoading = true
       const data = this.fileTypeMap.split('\n')
-      this.$request({url: '/upload/fileType/write', method: 'post', data}).then((response) => {
+      request({url: '/upload/fileType/write', method: 'post', data}).then((response) => {
         this.isLoading = false
         this.$message({type: 'success', message: '保存成功！'})
       })
@@ -96,7 +98,7 @@ export default {
     // 刷新
     refreshFileTypeMap() {
       this.isLoading = true
-      this.$request({url: '/upload/fileType/read', method: 'get'}).then((response) => {
+      request({url: '/upload/fileType/read', method: 'get'}).then((response) => {
         this.isLoading = false
         const {data} = response
         this.fileTypeMap = [...data].join('\n')

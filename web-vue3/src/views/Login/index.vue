@@ -93,9 +93,9 @@
 <script>
 import SocialSign from './components/SocialSignin'
 import { mapState } from 'vuex'
-import request from '@/utils/request';
+import request from '@/utils/request'
 import { encryptRSA } from '@/utils/jsencrypt-util'
-import { imageAdeskVertical, imageUpsplash } from "@/utils/image-data-util";
+import { imageAdeskVertical, imageUpsplash } from '@/utils/image-data-util'
 import defaultSettings from '@/settings'
 
 export default {
@@ -136,7 +136,7 @@ export default {
       otherQuery: {},
       intervalIndex: 0,
       autoRefresh: false,
-      isRegisterOpen: false,// 是否允许注册
+      isRegisterOpen: false// 是否允许注册
     }
   },
   watch: {
@@ -170,7 +170,7 @@ export default {
     // 动态壁纸 - 远程图库
     this.loadRemoteWallpaper()
     // 是否允许注册
-    this.$request({url: '/register/config/reg', method: 'get'}).then((response) => {
+    request({url: '/register/config/reg', method: 'get'}).then((response) => {
       this.isRegisterOpen = response.data
     })
   },
@@ -226,10 +226,10 @@ export default {
             } else {
               localStorage.removeItem(this.$storageKeys.currentLoginUserData)
             }
-            const routerMode = this.$router.mode;
+            const routerMode = this.$router.mode
             if (defaultSettings.showSettings) {
               // 登录成功，加载用户主题配置
-              this.$request({url: '/userTheme/zUserTheme/getByUser', method: 'get'}).then((response) => {
+              request({url: '/userTheme/zUserTheme/getByUser', method: 'get'}).then((response) => {
                 // 跳转
                 if (routerMode === 'history') {
                   location.href = location.href.split('/login')[0] + (this.redirect || '/') +
@@ -280,8 +280,8 @@ export default {
     loadCaptcha() {
       request({url: '/captcha/get', method: 'get'}).then((response) => {
         const {data} = response
-        this.loginForm.codeUuid = data.codeUuid;
-        this.loginForm.codeBaseImage = data.codeBaseImage;
+        this.loginForm.codeUuid = data.codeUuid
+        this.loginForm.codeBaseImage = data.codeBaseImage
       })
     },
     // 动态壁纸
@@ -328,7 +328,7 @@ export default {
     },
     handleImageError(event) {
       event.target.src = require('@/assets/images/loginbg.jpg')
-    },
+    }
   }
 }
 </script>

@@ -87,7 +87,7 @@
 <script>
 import waves from '@/directive/waves'
 import request from '@/utils/request'
-import downloadUtil from '@/utils/download-util';
+import downloadUtil from '@/utils/download-util'
 
 export default {
   name: 'MessageList',
@@ -112,7 +112,7 @@ export default {
       // 表单临时数据
       temp: {},
       isLoading: false,
-      dialogIndex: 0,
+      dialogIndex: 0
     }
   },
   created() {
@@ -133,9 +133,9 @@ export default {
     },
     // 加载表格
     loadTableList() {
-      this.$emit('refresh');// 刷新数量
+      this.$emit('refresh')// 刷新数量
       this.isLoading = true
-      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      const params = {...this.pager, params: JSON.stringify(this.searchData)}
       request({url: '/message/zMessage/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
@@ -196,8 +196,8 @@ export default {
       // 标记已读
       if (row.msgStatus === '0') {
         const params = {msgId: row.msgId, msgStatus: row.msgStatus}
-        this.$request({url: '/message/zMessage/read', method: 'get', params}).then((response) => {
-          this.loadTableList();
+        request({url: '/message/zMessage/read', method: 'get', params}).then((response) => {
+          this.loadTableList()
         })
       }
       // 显示内容
@@ -255,8 +255,8 @@ export default {
       this.$confirm('确定要全部标记为已读吗?', '标记提醒', {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
-        this.$request({url: '/message/zMessage/readAll', method: 'get'}).then((response) => {
-          this.loadTableList();
+        request({url: '/message/zMessage/readAll', method: 'get'}).then((response) => {
+          this.loadTableList()
         })
       })
     },
@@ -264,7 +264,7 @@ export default {
     exportExcel() {
       const params = {params: JSON.stringify(this.searchData)}
       downloadUtil.download('/message/zMessage/export/excel', params, '消息中心.xlsx')
-    },
+    }
   }
 }
 </script>

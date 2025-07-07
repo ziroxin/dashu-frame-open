@@ -54,8 +54,9 @@
 </template>
 <script>
 import SparkMD5 from 'spark-md5'
-import IconShow from "@/components/IconShow/index.vue";
-import {generateUUID} from '@/utils/tools'
+import IconShow from '@/components/IconShow/index.vue'
+import { generateUUID } from '@/utils/tools'
+import request from '@/utils/request'
 
 export default {
   name: 'FileUploadBreakpointResume',
@@ -129,7 +130,7 @@ export default {
           // 上传分片：分2步
           await this.getChunkFileMd5(cFile, async md5 => {
             // 1. 只传递文件分片的MD5值，服务端根据MD5值判断分片是否已上传过，若已上传过，则直接返回已上传的分片信息
-            await this.$request({
+            await request({
               url: '/upload/chunks/resume/first', method: 'get', headers: {skipRepeatSubmitCheck: true},
               params: {
                 chunkNumber: i,// 分片索引
@@ -138,7 +139,7 @@ export default {
                 uploadId: uId,// 文件ID（断点续传唯一标识，用于合并分片文件等）
                 path: this.folder,// 服务端存储路径，可为空
                 chunkMD5: md5,// 分片文件MD5值
-                ...this.paramsData,// 其他参数
+                ...this.paramsData// 其他参数
               }
             }).then(async res1 => {
               // 2. 判断是否返回分片信息
@@ -147,7 +148,7 @@ export default {
                 this.uploadProcess(res1.data, i, chunks, uId)
               } else {
                 // 2.2 后台返回null，说明分片不存在，则带着文件上传该分片
-                await this.$request({
+                await request({
                   url: '/upload/chunks/resume/second', method: 'post',
                   headers: {skipRepeatSubmitCheck: true, 'Content-Type': 'multipart/form-data'},
                   data: {
@@ -157,7 +158,7 @@ export default {
                     uploadId: uId,// 文件ID（断点续传唯一标识，用于合并分片文件等）
                     path: this.folder,// 服务端存储路径，可为空
                     file: cFile,// 分片文件
-                    ...this.paramsData,// 其他参数
+                    ...this.paramsData// 其他参数
                   }
                 }).then(async res2 => {
                   this.uploadProcess(res2.data, i, chunks, uId)
@@ -197,7 +198,7 @@ export default {
     handleRemove(file) {
       try {
         let params = {fileUrl: file.fileUrl}
-        this.$request({url: 'upload/deleteFile', method: 'get', params})
+        request({url: 'upload/deleteFile', method: 'get', params})
       } catch (e) {
       }
       this.fileList = this.fileList.filter(item => item.fileId !== file.fileId)
@@ -205,8 +206,8 @@ export default {
     },
     // 获取分片文件MD5值
     async getChunkFileMd5(chunkFile, callback) {
-      const fileReader = new FileReader();
-      const spark = new SparkMD5.ArrayBuffer();
+      const fileReader = new FileReader()
+      const spark = new SparkMD5.ArrayBuffer()
       fileReader.onload = function (e) {
         spark.append(e.target.result) // 将文件块内容添加到MD5计算中
         callback(spark.end()) // 计算完成，调用回调函数返回MD5值
@@ -222,13 +223,13 @@ export default {
       // 判断文件大小
       let isRightSize = file.size < this.limitSize
       if (!isRightSize) {
-        this.$message.error('文件大小不能超过' + this.formatSize(this.limitSize));
+        this.$message.error('文件大小不能超过' + this.formatSize(this.limitSize))
       }
       // 判断文件扩展名
       const fileExt = file.name.slice(file.name.lastIndexOf('.')).toLowerCase()
       let isAccept = this.accept.split(',').some(ext => ext.toLowerCase() === fileExt)
       if (!isAccept) {
-        this.$message.error('上传文件格式错误！只能上传' + this.accept + '格式的文件');
+        this.$message.error('上传文件格式错误！只能上传' + this.accept + '格式的文件')
       }
       // 判断上传个数
       let isLimitCount = this.limitCount <= 0 || this.fileList.length < this.limitCount
@@ -240,7 +241,7 @@ export default {
     // 格式化文件大小
     formatSize(size) {
       if (!size) return ''
-      let sizeStr = size + 'B';
+      let sizeStr = size + 'B'
       if (size >= 1024 * 1024 * 1024) {
         sizeStr = (size / 1024 / 1024 / 1024).toFixed(2) + 'GB'
       } else if (size >= 1024 * 1024) {
@@ -250,7 +251,7 @@ export default {
       } else {
         sizeStr = size + 'B'
       }
-      return sizeStr;
+      return sizeStr
     }
   }
 }

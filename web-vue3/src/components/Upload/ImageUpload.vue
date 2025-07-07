@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import request from '@/utils/request'
+
 export default {
   name: 'ImageUpload',
   props: {
@@ -47,14 +49,14 @@ export default {
     // 上传文件大小限制，单位：b（默认10mb）
     limitSize: {type: Number, default: 1024 * 1024 * 10},
     // 上传个数限制（0表示不限制）
-    limitCount: {type: Number, default: 0},
+    limitCount: {type: Number, default: 0}
   },
   data() {
     return {
       // 图片列表
       fileList: [],
       // 回显图片列表
-      fileShowList: [],
+      fileShowList: []
     }
   },
   mounted() {
@@ -111,14 +113,14 @@ export default {
         } else {
           params.fileUrl = file.fileUrl
         }
-        this.$request({url: 'upload/deleteFile', method: 'get', params})
+        request({url: 'upload/deleteFile', method: 'get', params})
       } catch (e) {
       }
       this.fileList = fileList.map(o => o.response && o.response.data.length > 0 ? o.response.data[0] : o)
       this.$emit('input', this.fileList)
     },
     formatSize(size) {
-      let sizeStr = size + 'B';
+      let sizeStr = size + 'B'
       if (size >= 1024 * 1024 * 1024) {
         sizeStr = (size / 1024 / 1024 / 1024).toFixed(2) + 'GB'
       } else if (size >= 1024 * 1024) {
@@ -128,7 +130,7 @@ export default {
       } else {
         sizeStr = size + 'B'
       }
-      return sizeStr;
+      return sizeStr
     }
   }
 }

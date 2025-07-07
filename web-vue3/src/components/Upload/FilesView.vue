@@ -120,23 +120,24 @@
   <el-empty v-else/>
 </template>
 <script>
-import downloadUtil from "@/utils/download-util";
+import downloadUtil from '@/utils/download-util'
+import request from '@/utils/request'
 
 export default {
-  name: "FilesView",
+  name: 'FilesView',
   props: {
     // 显示文件列表
     fileList: {type: Array, default: () => []},
     // 是否可选择
     showCheck: {type: Boolean, default: false},
     // 默认选中的列表（当showCheck为true时有效）
-    value: {type: Array, default: () => []},
+    value: {type: Array, default: () => []}
   },
   data() {
     return {
       isLoading: false,
       // 选中的文件列表
-      selectedFileList: [],
+      selectedFileList: []
     }
   },
   computed: {
@@ -176,7 +177,7 @@ export default {
       } else if (fileExtend === 'docx' || fileExtend === 'xlsx') {
         this.isLoading = true
         const params = {fileUrl: file.fileUrl, fileExtend: fileExtend}
-        this.$request({url: '/upload/preview', method: 'get', params}).then((response) => {
+        request({url: '/upload/preview', method: 'get', params}).then((response) => {
           window.open(this.$baseServer + response.data)
         }).finally(() => {
           this.isLoading = false

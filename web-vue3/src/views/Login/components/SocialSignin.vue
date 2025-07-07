@@ -14,6 +14,7 @@
   </div>
 </template>
 <script>
+import request from '@/utils/request'
 
 export default {
   name: 'SocialSignin',
@@ -25,11 +26,11 @@ export default {
       alert('ok')
     },
     oauth2HandleClick() {
-      this.$request({
+      request({
         url: '/oauth2/client/login/getOauthAuthorizationUrl', method: 'get', params: {state: 'myState'}
       }).then((response) => {
         const {data} = response
-        location.href = data;
+        location.href = data
       })
     }
   }

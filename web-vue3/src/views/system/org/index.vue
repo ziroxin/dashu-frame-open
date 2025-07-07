@@ -119,8 +119,8 @@
 <script>
 import waves from '@/directive/waves'
 import request from '@/utils/request'
-import SelectTree from '@/components/SelectTree';
-import downloadUtil from '@/utils/download-util';
+import SelectTree from '@/components/SelectTree'
+import downloadUtil from '@/utils/download-util'
 
 export default {
   components: {SelectTree},
@@ -151,7 +151,7 @@ export default {
       dialogIndex: 0,
       // 导入弹窗
       dialogImportVisible: false,
-      isImportLoading: false,
+      isImportLoading: false
     }
   },
   created() {
@@ -161,7 +161,7 @@ export default {
   },
   methods: {
     loadMaxLevel() {
-      this.$request({url: '/zorg/zOrganization/getMaxLevel', method: 'get'}).then((response) => {
+      request({url: '/zorg/zOrganization/getMaxLevel', method: 'get'}).then((response) => {
         this.maxLevel = response.data.maxLevel
         this.currentOrgId = response.data.currentOrgId
       })
@@ -174,7 +174,7 @@ export default {
     // 加载表格
     loadTableList() {
       this.isLoading = true
-      const params = {...this.searchData};
+      const params = {...this.searchData}
       request({url: '/zorg/zOrganization/tree', method: 'get', params}).then((response) => {
         this.tableData = response.data
         this.isLoading = false
@@ -248,7 +248,7 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          var data = this.temp;
+          var data = this.temp
           if (this.dialogType === 'update') {
             request({url: '/zorg/zOrganization/update', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
@@ -288,18 +288,18 @@ export default {
     },
     // 导出Excel文件
     exportExcel() {
-      const params = {params: JSON.stringify(this.searchData)};
+      const params = {params: JSON.stringify(this.searchData)}
       request({url: '/zorg/zOrganization/export/excel', method: 'get', params}).then(response => {
         // 创建a标签
-        const link = document.createElement('a');
+        const link = document.createElement('a')
         // 组装下载地址
-        link.href = this.$baseServer + response.data;
+        link.href = this.$baseServer + response.data
         // 修改文件名
-        link.setAttribute('download', '组织机构表.xlsx');
+        link.setAttribute('download', '组织机构表.xlsx')
         // 开始下载
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
+        link.style.display = 'none'
+        document.body.appendChild(link)
+        link.click()
       })
     },
     // 导入Excel成功，提示
@@ -310,8 +310,8 @@ export default {
         this.dialogImportVisible = false
         this.loadTableList()
       } else {
-        this.$alert(response.message, "提示",
-            {confirmButtonText: "确定", dangerouslyUseHTMLString: true, customClass: 'width800'});
+        this.$alert(response.message, '提示',
+            {confirmButtonText: '确定', dangerouslyUseHTMLString: true, customClass: 'width800'})
       }
     },
     // 导入Excel之前，显示loading
@@ -325,7 +325,7 @@ export default {
     // 下载模板
     downloadExcelTemplate() {
       downloadUtil.download('/zorg/zOrganization/import/downloadTemplate', {}, '组织机构-导入模板.xlsx')
-    },
+    }
   }
 }
 </script>

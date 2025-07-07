@@ -53,7 +53,6 @@ const layout: any = computed(() => appStore.getLayout)
 const menuMode = computed(() => ['classic', 'topLeft', 'cutMenu'].includes(unref(layout)) ? 'vertical' : 'horizontal')
 // 路由列表（分栏模式时特殊处理）
 const routeList = computed(() => unref(layout) === 'cutMenu' ? permissionStore.getMenuTabRoutes : permissionStore.getRoutes)
-console.log('routeList', routeList.value)
 // 菜单展开/收起状态
 const collapse = computed(() => appStore.getCollapse)
 // 是否只保持一个子菜单的展开

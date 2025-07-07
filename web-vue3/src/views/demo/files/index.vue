@@ -164,12 +164,13 @@
   </div>
 </template>
 <script>
-import FileOssUpload from "@/components/Upload/FileOssUpload.vue";
+import FileOssUpload from '@/components/Upload/FileOssUpload.vue'
 import JsonViewer from 'vue-json-viewer'
-import FileUpload from "@/components/Upload/FileUpload.vue";
-import FileSecond from "@/views/demo/files/FileSecond.vue";
-import PluploadChunk from "@/views/demo/files/PluploadChunk.vue";
-import FileUploadBreakpointResume from "@/components/Upload/FileUploadBreakpointResume.vue";
+import FileUpload from '@/components/Upload/FileUpload.vue'
+import FileSecond from '@/views/demo/files/FileSecond.vue'
+import PluploadChunk from '@/views/demo/files/PluploadChunk.vue'
+import FileUploadBreakpointResume from '@/components/Upload/FileUploadBreakpointResume.vue'
+import request from '@/utils/request'
 
 export default {
   components: {FileUploadBreakpointResume, PluploadChunk, FileSecond, FileUpload, FileOssUpload, JsonViewer},
@@ -182,13 +183,13 @@ export default {
       // oss上传的文件id
       ossFileIds: [],
       demoJson: {
-        "fileName": "demo/xxx.jpg",
-        "fileSize": "1024",
-        "fileOldName": "xx.jpg",
-        "md5": "xxx",
-        "fileId": "xxx",
-        "fileUrl": "https://xxx.oss-xxx.aliyuncs.com/demo/xxx.jpg",
-        "fileExtend": "jpg"
+        'fileName': 'demo/xxx.jpg',
+        'fileSize': '1024',
+        'fileOldName': 'xx.jpg',
+        'md5': 'xxx',
+        'fileId': 'xxx',
+        'fileUrl': 'https://xxx.oss-xxx.aliyuncs.com/demo/xxx.jpg',
+        'fileExtend': 'jpg'
       },
       ossDemoFileName: '',
       ossDemoStsUrl: '',
@@ -196,31 +197,31 @@ export default {
       // 文件上传列表（测试回显数据）
       uploadFileList: [
         {
-          "fileUrl": "/upload/files/20241214/2d0e2c8b4eee4250a53df3c9340041d0.jpg",
-          "fileOldName": "111.jpg",
-          "fileName": "2d0e2c8b4eee4250a53df3c9340041d0.jpg",
-          "fileExtend": "jpg",
-          "fileSize": 148522
+          'fileUrl': '/upload/files/20241214/2d0e2c8b4eee4250a53df3c9340041d0.jpg',
+          'fileOldName': '111.jpg',
+          'fileName': '2d0e2c8b4eee4250a53df3c9340041d0.jpg',
+          'fileExtend': 'jpg',
+          'fileSize': 148522
         }, {
-          "fileUrl": "/upload/files/20241214/2d0e2c8b4eee4250a53df3c9340041d0.jpg",
-          "fileOldName": "222.jpg",
-          "fileName": "2d0e2c8b4eee4250a53df3c9340041d0.jpg",
-          "fileExtend": "jpg",
-          "fileSize": 148522
+          'fileUrl': '/upload/files/20241214/2d0e2c8b4eee4250a53df3c9340041d0.jpg',
+          'fileOldName': '222.jpg',
+          'fileName': '2d0e2c8b4eee4250a53df3c9340041d0.jpg',
+          'fileExtend': 'jpg',
+          'fileSize': 148522
         }, {
-          "fileUrl": "/upload/files/20241214/2d0e2c8b4eee4250a53df3c9340041d0.jpg",
-          "fileOldName": "333.jpg",
-          "fileName": "2d0e2c8b4eee4250a53df3c9340041d0.jpg",
-          "fileExtend": "jpg",
-          "fileSize": 148522
-        },
+          'fileUrl': '/upload/files/20241214/2d0e2c8b4eee4250a53df3c9340041d0.jpg',
+          'fileOldName': '333.jpg',
+          'fileName': '2d0e2c8b4eee4250a53df3c9340041d0.jpg',
+          'fileExtend': 'jpg',
+          'fileSize': 148522
+        }
       ]
     }
   },
   watch: {
     ossDemoFileName(val) {
-      this.ossDemoStsUrl = '';
-      this.ossDemoStsType = val.endsWith('.jpg') || val.endsWith('.png') ? 'img' : (val.endsWith('.mp4') ? 'video' : 'other');
+      this.ossDemoStsUrl = ''
+      this.ossDemoStsType = val.endsWith('.jpg') || val.endsWith('.png') ? 'img' : (val.endsWith('.mp4') ? 'video' : 'other')
     }
   },
   methods: {
@@ -234,8 +235,8 @@ export default {
     },
     openStsFile() {
       const params = {fileName: this.ossDemoFileName}
-      this.$request({url: '/oss/file/read/sts/url', method: 'get', params}).then(({data}) => {
-        this.ossDemoStsUrl = data;
+      request({url: '/oss/file/read/sts/url', method: 'get', params}).then(({data}) => {
+        this.ossDemoStsUrl = data
       })
     }
   }

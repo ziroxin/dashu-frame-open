@@ -36,6 +36,7 @@
 <script>
 import { encryptRSA } from '@/utils/jsencrypt-util'
 import { setToken } from '@/utils/auth'
+import request from '@/utils/request'
 
 export default {
   data() {
@@ -72,7 +73,7 @@ export default {
       })
     },
     loadCaptacha() {
-      this.$request({url: '/captcha/get', method: 'get'})
+      request({url: '/captcha/get', method: 'get'})
           .then(response => {
             this.loginForm.codeUuid = response.data.codeUuid
             this.loginForm.codeBaseImage = response.data.codeBaseImage
@@ -87,7 +88,7 @@ export default {
           data.isEncrypt = true
           data.userName = encryptRSA(this.loginForm.userName)
           data.password = encryptRSA(this.loginForm.password)
-          this.$request({url: '/oauth2/client/login/userBind', method: 'post', data}).then(response => {
+          request({url: '/oauth2/client/login/userBind', method: 'post', data}).then(response => {
             const {data} = response
             let errArr = data.successMsg.split('|')
             if (errArr && errArr.length === 2 && errArr[0] === 'error') {

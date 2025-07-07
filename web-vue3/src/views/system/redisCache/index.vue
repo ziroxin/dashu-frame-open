@@ -67,6 +67,8 @@
   </div>
 </template>
 <script>
+import request from '@/utils/request'
+
 export default {
   data() {
     return {
@@ -81,7 +83,7 @@ export default {
   methods: {
     loadRedisCacheList() {
       this.isLoading = true
-      this.$request({url: '/redis/cache/keys/list', method: 'get'})
+      request({url: '/redis/cache/keys/list', method: 'get'})
           .then((response) => {
             const {data} = response
             this.cacheList = data
@@ -94,7 +96,7 @@ export default {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
         const params = {key: this.cacheForm.key}
-        this.$request({url: '/redis/cache/delete', method: 'get', params}).then((response) => {
+        request({url: '/redis/cache/delete', method: 'get', params}).then((response) => {
           this.$message({type: 'success', message: '删除成功!'})
           this.loadRedisCacheList()
         })

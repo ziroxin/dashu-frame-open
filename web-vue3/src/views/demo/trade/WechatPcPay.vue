@@ -19,9 +19,9 @@
 
 <script>
 import QRCode from 'qrcode'
+import request from '@/utils/request'
 
 let intervalIndex
-
 export default {
   name: 'WechatPcPay',
   data() {
@@ -52,20 +52,20 @@ export default {
       this.payData = {...JSON.parse(window.sessionStorage.getItem(this.$storageKeys.payData))}
       // 调用微信支付
       let data = {...this.payData}
-      this.$request({url: '/pay/wechat/getPayNative', method: 'post', data})
-        .then((response) => {
-          // 二维码url，转成二维码图片
-          QRCode.toDataURL(response.data.qrCodeUrl).then(url => {
-            this.tradePayQRCodeUrl = url
+      request({url: '/pay/wechat/getPayNative', method: 'post', data})
+          .then((response) => {
+            // 二维码url，转成二维码图片
+            QRCode.toDataURL(response.data.qrCodeUrl).then(url => {
+              this.tradePayQRCodeUrl = url
+            })
+            // 更新微信支付状态
+            this.wechatPayUpdateStatus(response.data.tradeId)
           })
-          // 更新微信支付状态
-          this.wechatPayUpdateStatus(response.data.tradeId)
-        })
     },
     wechatPayUpdateStatus(tradeId) {
       let params = {tradeId: tradeId}
       intervalIndex = setInterval(() => {
-        this.$request({url: '/pay/wechat/getPayResult', method: 'get', params}).then((response) => {
+        request({url: '/pay/wechat/getPayResult', method: 'get', params}).then((response) => {
           if (response.data.tradeStatus === 1) {
             this.$message({type: 'success', message: '您已支付成功!', duration: 5000, showClose: true})
             this.clearBack()

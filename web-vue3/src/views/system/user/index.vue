@@ -147,12 +147,12 @@
   </div>
 </template>
 <script>
-import {getUserList, userAdd, userDelete, userResetPassword, userUpdate} from '@/api/user'
-import {getRoleList} from '@/api/role';
-import ImageAvatar from '@/components/Upload/ImageAvatar';
-import request from '@/utils/request';
-import SelectTree from '@/components/SelectTree';
-import waves from '@/directive/waves';
+import { getUserList, userAdd, userDelete, userResetPassword, userUpdate } from '@/api/user'
+import { getRoleList } from '@/api/role'
+import ImageAvatar from '@/components/Upload/ImageAvatar'
+import request from '@/utils/request'
+import SelectTree from '@/components/SelectTree'
+import waves from '@/directive/waves'
 
 export default {
   components: {ImageAvatar, SelectTree},
@@ -181,13 +181,13 @@ export default {
       filterText: '',
       leftTreeData: [],
       // 默认密码
-      defaultPassword: 'ABCabc@123',
+      defaultPassword: 'ABCabc@123'
     }
   },
   watch: {
     filterText(val) {
       // 左侧组织机构树过滤
-      this.$refs.orgTreeRef.filter(val);
+      this.$refs.orgTreeRef.filter(val)
     }
   },
   created() {
@@ -198,14 +198,14 @@ export default {
   },
   methods: {
     loadDefaultPassword() {
-      this.$request({url: '/zsafety/zSafety/getSafety', method: 'get'}).then((res) => {
+      request({url: '/zsafety/zSafety/getSafety', method: 'get'}).then((res) => {
         this.defaultPassword = res.data.defaultPassword
       })
     },
     // 左侧树过滤
     filterNode(value, data) {
-      if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
     },
     // 点击左侧树
     treeNodeClick(row) {
@@ -244,7 +244,7 @@ export default {
     },
     //查询用户列表
     getUserList() {
-      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      const params = {...this.pager, params: JSON.stringify(this.searchData)}
       getUserList(params).then(response => {
         this.userTable = response.data.records
         this.pager.totalCount = response.data.total

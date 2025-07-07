@@ -104,6 +104,7 @@
 </template>
 <script>
 import JsonViewer from 'vue-json-viewer'
+import request from '@/utils/request'
 
 export default {
   components: {JsonViewer},
@@ -132,7 +133,7 @@ export default {
       error: null,
       data: null,
       historyUrl: '',
-      historyUrlList: [],
+      historyUrlList: []
     }
   },
   created() {
@@ -145,23 +146,23 @@ export default {
         this.$message({type: 'error', message: '请求地址不能为空'})
         return
       }
-      this.saveHistory();
+      this.saveHistory()
       // 处理请求头，返回一个{key:value}格式的对象
       let headerParams = {}
       this.headers.filter(item => item.select && item.key).forEach(item => {
         headerParams[item.key] = item.value
       })
-      this.data = this.error = null;
+      this.data = this.error = null
       // 发送请求
       if (this.method === 'GET') {
-        this.$request({url: this.url, method: 'get', headers: headerParams}).then((response) => {
+        request({url: this.url, method: 'get', headers: headerParams}).then((response) => {
           this.data = this.checkJsonType(response.data)
         }).catch(error => {
           this.error = this.checkJsonType(error)
         })
       } else {
         // 处理body
-        let bodyParams, data;
+        let bodyParams, data
         if (this.dataType === 'json') {
           bodyParams = {}
           this.bodys.filter(item => item.select && item.key).forEach(item => {
@@ -172,14 +173,14 @@ export default {
           bodyParams = JSON.parse(this.bodyText)
           data = bodyParams
         } else if (this.dataType === 'x-www-form-urlencoded') {
-          let params = new URLSearchParams();
+          let params = new URLSearchParams()
           this.bodys.filter(item => item.select && item.key).forEach(item => {
             params.append(item.key, item.value)
           })
           bodyParams = params.toString()
           data = {...bodyParams}
         } else if (this.dataType === 'form-data') {
-          bodyParams = new FormData();
+          bodyParams = new FormData()
           // 把myfile文件，循环放入bodyParams中
           console.log(this.$refs.myfile.files.length)
           if (this.$refs.myfile.files.length > 0) {
@@ -194,19 +195,19 @@ export default {
         // 请求头增加文件类型
         headerParams['Content-Type'] = this.dataTypeContent[this.dataType]
         if (this.method === 'POST') {
-          this.$request({url: this.url, method: 'post', data, headers: headerParams}).then((response) => {
+          request({url: this.url, method: 'post', data, headers: headerParams}).then((response) => {
             this.data = this.checkJsonType(response.data)
           }).catch((error) => {
             this.error = this.checkJsonType(error)
           })
         } else if (this.method === 'PUT') {
-          this.$request({url: this.url, method: 'put', data, headers: headerParams}).then((response) => {
+          request({url: this.url, method: 'put', data, headers: headerParams}).then((response) => {
             this.data = this.checkJsonType(response.data)
           }).catch(error => {
             this.error = this.checkJsonType(error)
           })
         } else if (this.method === 'DELETE') {
-          this.$request({url: this.url, method: 'delete', data, headers: headerParams}).then((response) => {
+          request({url: this.url, method: 'delete', data, headers: headerParams}).then((response) => {
             this.data = this.checkJsonType(response.data)
           }).catch(error => {
             this.error = this.checkJsonType(error)
@@ -241,14 +242,14 @@ export default {
     },
     checkJsonType(str) {
       try {
-        const value1 = JSON.parse(str);
-        return {isJson: true, value: value1};
+        const value1 = JSON.parse(str)
+        return {isJson: true, value: value1}
       } catch (error) {
         try {
-          const value2 = JSON.parse(JSON.stringify(str));
-          return {isJson: true, value: value2};
+          const value2 = JSON.parse(JSON.stringify(str))
+          return {isJson: true, value: value2}
         } catch (error) {
-          return {isJson: false, value: str};
+          return {isJson: false, value: str}
         }
       }
     },
@@ -282,7 +283,7 @@ export default {
       }
     },
     saveHistory() {
-      const key = '[' + this.method + ']' + this.url;
+      const key = '[' + this.method + ']' + this.url
       const value = {
         url: this.url,
         method: this.method,
@@ -290,38 +291,38 @@ export default {
         bodys: this.bodys,
         bodyText: this.bodyText,
         dataType: this.dataType
-      };
-      localStorage.setItem(key, JSON.stringify(value));// 保存新的key
-      this.historyUrlList.push(key);// 添加上新key
+      }
+      localStorage.setItem(key, JSON.stringify(value))// 保存新的key
+      this.historyUrlList.push(key)// 添加上新key
       this.historyUrlList = [...new Set(this.historyUrlList)]// 去重
-      localStorage.setItem(this.$storageKeys.historyKeys, JSON.stringify(this.historyUrlList));
+      localStorage.setItem(this.$storageKeys.historyKeys, JSON.stringify(this.historyUrlList))
     },
     loadHistoryFromCookie() {
       this.historyUrl = ''
-      const allKeys = localStorage.getItem(this.$storageKeys.historyKeys);
+      const allKeys = localStorage.getItem(this.$storageKeys.historyKeys)
       if (allKeys) {
-        this.historyUrlList = JSON.parse(allKeys);
+        this.historyUrlList = JSON.parse(allKeys)
       }
     },
     removeHistory(key) {
       this.$confirm('确定要删除吗?', '删除提醒', {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
-        localStorage.removeItem(key);
-        this.historyUrlList = this.historyUrlList.filter(item => item !== key);
-        localStorage.setItem(this.$storageKeys.historyKeys, JSON.stringify(this.historyUrlList));
+        localStorage.removeItem(key)
+        this.historyUrlList = this.historyUrlList.filter(item => item !== key)
+        localStorage.setItem(this.$storageKeys.historyKeys, JSON.stringify(this.historyUrlList))
       })
     },
     changeHistoryUrl(url) {
-      let value = localStorage.getItem(url);
+      let value = localStorage.getItem(url)
       if (value) {
-        value = JSON.parse(value);
-        this.url = value.url;
-        this.method = value.method;
-        this.headers = value.headers;
-        this.bodys = value.bodys;
-        this.bodyText = value.bodyText;
-        this.dataType = value.dataType;
+        value = JSON.parse(value)
+        this.url = value.url
+        this.method = value.method
+        this.headers = value.headers
+        this.bodys = value.bodys
+        this.bodyText = value.bodyText
+        this.dataType = value.dataType
       }
     }
   }

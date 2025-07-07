@@ -39,8 +39,10 @@
 </template>
 
 <script>
+import request from '@/utils/request'
+
 export default {
-  name: "FileOssUpload",
+  name: 'FileOssUpload',
   props: {
     // oss上传文件夹
     ossFolder: {type: String, default: '', required: true},
@@ -67,7 +69,7 @@ export default {
     return {
       // oss上传token数据
       ossTokenData: {
-        host: '',
+        host: ''
       },
       // 上传文件id列表
       fileIds: []
@@ -77,7 +79,7 @@ export default {
     beforeUpload(file) {
       if (!this.accept.toLowerCase().split(',')
           .includes(file.name.substring(file.name.lastIndexOf('.')).toLowerCase())) {
-        this.$message.error('只能上传' + this.accept + '格式的文件!');
+        this.$message.error('只能上传' + this.accept + '格式的文件!')
         return false
       }
       const max = this.getMaxFileSize()
@@ -88,7 +90,7 @@ export default {
       // 上传前的钩子函数，调用api获取oss上传token
       return new Promise((resolve, reject) => {
         let params = {path: this.ossFolder, oldFileName: file.name, maxSize: max}
-        this.$request({url: '/oss/client/upload/token', method: 'get', params}).then((response) => {
+        request({url: '/oss/client/upload/token', method: 'get', params}).then((response) => {
           this.ossTokenData = {...response.data, ...response.data.callbackVar}
           resolve(true)
         }).catch((error) => {
@@ -100,7 +102,7 @@ export default {
       if (res.data.success) {
         this.$message({type: 'success', message: res.data.msg})
         this.fileIds.push({fid: res.data.id, uid: file.uid})
-        this.$emit('input', this.fileIds.map(o => o.fid));
+        this.$emit('input', this.fileIds.map(o => o.fid))
       } else {
         this.$message({type: 'error', message: res.data.msg})
         this.fileList.splice(fileList.indexOf(file), 1)
@@ -109,12 +111,12 @@ export default {
     handleRemove(file, fileList) {
       // 尝试删除oss文件
       let params = {fileId: this.fileIds.find(o => o.uid === file.uid).fid}
-      this.$request({url: '/oss/client/upload/deleteFromCache', method: 'post', params}).then((response) => {
+      request({url: '/oss/client/upload/deleteFromCache', method: 'post', params}).then((response) => {
         console.log(response)
       })
       // 移除fileId
       this.fileIds = this.fileIds.filter(o => o.uid !== file.uid)
-      this.$emit('input', this.fileIds.map(o => o.fid));
+      this.$emit('input', this.fileIds.map(o => o.fid))
     },
     handleError(error) {
       console.log(error)
@@ -133,11 +135,11 @@ export default {
         'mb': 1024 * 1024,
         'gb': 1024 * 1024 * 1024,
         'tb': 1024 * 1024 * 1024 * 1024
-      };
-      const maxSizeStr = this.maxSize.toLowerCase();
-      const unit = maxSizeStr.match(/[a-z]+$/)[0];
-      const value = parseInt(maxSizeStr.replace(unit, ''));
-      return value * units[unit];
+      }
+      const maxSizeStr = this.maxSize.toLowerCase()
+      const unit = maxSizeStr.match(/[a-z]+$/)[0]
+      const value = parseInt(maxSizeStr.replace(unit, ''))
+      return value * units[unit]
     }
   }
 }

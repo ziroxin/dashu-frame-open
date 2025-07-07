@@ -115,9 +115,10 @@
 </template>
 
 <script>
-import {encryptRSA} from '@/utils/jsencrypt-util'
-import {imageAdeskVertical} from "@/utils/image-data-util";
-import SelectTree from "@/components/SelectTree/index.vue";
+import { encryptRSA } from '@/utils/jsencrypt-util'
+import { imageAdeskVertical } from '@/utils/image-data-util'
+import SelectTree from '@/components/SelectTree/index.vue'
+import request from '@/utils/request'
 
 export default {
   name: 'Login',
@@ -177,8 +178,8 @@ export default {
   },
   methods: {
     loadOrgList() {
-      this.$request({url: '/register/org/list', method: 'get'}).then((rep) => {
-        this.orgList = rep.data;
+      request({url: '/register/org/list', method: 'get'}).then((rep) => {
+        this.orgList = rep.data
       })
     },
     checkCapslock(e) {
@@ -213,7 +214,7 @@ export default {
           data.isEncrypt = true
           data.userName = encryptRSA(this.regForm.userName)
           data.password = encryptRSA(this.regForm.password)
-          this.$request({url: 'register/new', method: 'post', data}).then((rep) => {
+          request({url: 'register/new', method: 'post', data}).then((rep) => {
             this.$message({type: 'success', message: '注册成功！'})
             this.$router.push({path: 'login'})
             this.loading = false
@@ -230,9 +231,9 @@ export default {
     },
     //验证码
     loadCaptcha() {
-      this.$request({url: '/captcha/get', method: 'get'}).then((rep) => {
-        this.regForm.codeUuid = rep.data.codeUuid;
-        this.regForm.codeBaseImage = rep.data.codeBaseImage;
+      request({url: '/captcha/get', method: 'get'}).then((rep) => {
+        this.regForm.codeUuid = rep.data.codeUuid
+        this.regForm.codeBaseImage = rep.data.codeBaseImage
       })
     },
     // 动态壁纸
@@ -266,7 +267,7 @@ export default {
     },
     handleImageError(event) {
       event.target.src = require('@/assets/images/loginbg.jpg')
-    },
+    }
   }
 }
 </script>

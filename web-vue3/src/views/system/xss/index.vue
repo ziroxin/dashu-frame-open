@@ -14,6 +14,8 @@
   </div>
 </template>
 <script>
+import request from '@/utils/request'
+
 export default {
   data() {
     return {
@@ -23,27 +25,27 @@ export default {
   },
   mounted() {
     this.readXssIgnoreList()
-    document.addEventListener('keydown', this.handleKeyDown);
+    document.addEventListener('keydown', this.handleKeyDown)
   },
   beforeDestroy() {
-    document.removeEventListener('keydown', this.handleKeyDown);
+    document.removeEventListener('keydown', this.handleKeyDown)
   },
   methods: {
     // 重新加载Xss忽略列表
     reloadXss() {
-      this.$request({url: '/xss/ignore/reload', method: 'get'}).then((response) => {
+      request({url: '/xss/ignore/reload', method: 'get'}).then((response) => {
         this.$message({type: 'success', message: 'Xss忽略列表重新加载成功！'})
       })
     },
     // 监听 ctrl+s 快捷键，保存
     handleKeyDown(event) {
       if (event.ctrlKey && event.key === 's') {
-        event.preventDefault(); // 阻止浏览器默认的保存操作
+        event.preventDefault() // 阻止浏览器默认的保存操作
         // 在这里执行你的自定义操作
         this.isLoading = true
-        console.log('Ctrl + S 被按下');
+        console.log('Ctrl + S 被按下')
         const data = this.ignoreContent.split('\n')
-        this.$request({url: '/xss/ignore/write', method: 'post', data}).then((response) => {
+        request({url: '/xss/ignore/write', method: 'post', data}).then((response) => {
           this.isLoading = false
           this.$message({type: 'success', message: '保存成功！（只用于生产环境，需要重启服务才能生效）'})
         })
@@ -52,12 +54,12 @@ export default {
     // 读取忽略名单
     readXssIgnoreList() {
       this.isLoading = true
-      this.$request({url: '/xss/ignore/read', method: 'get'}).then((response) => {
+      request({url: '/xss/ignore/read', method: 'get'}).then((response) => {
         this.isLoading = false
         const {data} = response
         this.ignoreContent = [...data].join('\n')
       })
-    },
+    }
   }
 }
 </script>

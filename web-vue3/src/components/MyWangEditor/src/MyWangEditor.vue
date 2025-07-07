@@ -36,14 +36,14 @@
   </div>
 </template>
 <script>
-import {Editor, Toolbar} from '@wangeditor/editor-for-vue'
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import '@wangeditor/editor/dist/css/style.css'
 import {
   customParseImageSrc,
   customParseVideoSrc,
   imagesDefaultOptions,
   videosDefaultOptions
-} from '@/components/MyWangEditor/myWangEditorConfig';
+} from 'myWangEditorConfig.js'
 
 export default {
   name: 'MyWangEditor',
@@ -66,7 +66,7 @@ export default {
     // 下方onCreated()方法中，可以获取全部key
     toolbarKeys: {type: Array, default: () => []},
     // 编辑器内容区高度
-    height: {type: String, default: '400px'},
+    height: {type: String, default: '400px'}
   },
   data() {
     return {
@@ -107,7 +107,7 @@ export default {
       this.html = this.value ? this.value : '' // 防止value为空时报错
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     const editor = this.editor
     if (editor === null) return
     editor.destroy() // 组件销毁时，及时销毁编辑器
@@ -122,9 +122,9 @@ export default {
     },
     jsDecodeHtml(val) {
       if (/&[a-z]+;|&#\d+;|&#x[a-f0-9]+;/i.test(val)) {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = val;
-        return tempDiv.textContent || tempDiv.innerText || '';
+        const tempDiv = document.createElement('div')
+        tempDiv.innerHTML = val
+        return tempDiv.textContent || tempDiv.innerText || ''
       } else {
         return val
       }

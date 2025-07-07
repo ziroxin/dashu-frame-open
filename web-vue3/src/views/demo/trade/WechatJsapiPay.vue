@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import request from '@/utils/request'
+
 let intervalIndex
 export default {
   name: 'WechatJsapiPay',
@@ -30,7 +32,7 @@ export default {
         totalFee: 1,
         // 附加内容（在查询API和支付通知中原样返回，最长127个字符）
         attach: ''
-      },
+      }
     }
   },
   methods: {
@@ -45,25 +47,25 @@ export default {
 
       // let data = {...this.payData, openId: 'o_IQK5AvUyFUouVr5byhnXocxKU4'}
       let data = {...this.payData, openId: 'oA1uP6Q6ByzfrUpXr_N4dPuXmuQk'}
-      this.$request({url: '/pay/wechat/getPayJsapi', method: 'post', data})
-        .then((response) => {
-          let data = JSON.parse(response.data.payInfo);
-          if (typeof WeixinJSBridge === 'undefined') {
-            if (document.addEventListener) {
-              document.addEventListener('WeixinJSBridgeReady',
-                this.onBridgeReady(data), false);
-            } else if (document.attachEvent) {
-              document.attachEvent('WeixinJSBridgeReady',
-                this.onBridgeReady(data));
-              document.attachEvent('onWeixinJSBridgeReady',
-                this.onBridgeReady(data));
+      request({url: '/pay/wechat/getPayJsapi', method: 'post', data})
+          .then((response) => {
+            let data = JSON.parse(response.data.payInfo)
+            if (typeof WeixinJSBridge === 'undefined') {
+              if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady',
+                    this.onBridgeReady(data), false)
+              } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady',
+                    this.onBridgeReady(data))
+                document.attachEvent('onWeixinJSBridgeReady',
+                    this.onBridgeReady(data))
+              }
+            } else {
+              this.onBridgeReady(data)
             }
-          } else {
-            this.onBridgeReady(data);
-          }
-          // 更新微信支付状态
-          this.wechatPayUpdateStatus(response.data.tradeId)
-        })
+            // 更新微信支付状态
+            this.wechatPayUpdateStatus(response.data.tradeId)
+          })
     },
     // jsapi微信内支付结果
     onBridgeReady(json) {
@@ -75,12 +77,12 @@ export default {
         } else {
           this.$message({type: 'error', message: '支付失败!'})
         }
-      });
+      })
     },
     wechatPayUpdateStatus(tradeId) {
       let params = {tradeId: tradeId}
       intervalIndex = setInterval(() => {
-        this.$request({url: '/pay/wechat/getPayResult', method: 'get', params}).then((response) => {
+        request({url: '/pay/wechat/getPayResult', method: 'get', params}).then((response) => {
           if (response.data.tradeStatus === 1) {
             this.$message({type: 'success', message: '您已支付成功!', duration: 5000, showClose: true})
             this.clearBack()

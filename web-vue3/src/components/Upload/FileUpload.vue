@@ -38,6 +38,8 @@
 </template>
 
 <script>
+import request from '@/utils/request'
+
 export default {
   name: 'FileUpload',
   props: {
@@ -75,7 +77,7 @@ export default {
       // 文件列表
       fileList: [],
       // 回显文件列表
-      fileShowList: [],
+      fileShowList: []
     }
   },
   mounted() {
@@ -105,7 +107,7 @@ export default {
       const fileExt = file.name.slice(file.name.lastIndexOf('.')).toLowerCase()
       let isAccept = this.accept.split(',').some(ext => ext.toLowerCase() === fileExt)
       if (!isAccept) {
-        this.$message.error('上传文件格式错误！只能上传' + this.accept + '格式的文件');
+        this.$message.error('上传文件格式错误！只能上传' + this.accept + '格式的文件')
       }
       // 判断上传个数
       let isLimitCount = this.limitCount <= 0 || this.fileList.length < this.limitCount
@@ -133,14 +135,14 @@ export default {
         } else {
           params.fileUrl = file.fileUrl
         }
-        this.$request({url: 'upload/deleteFile', method: 'get', params})
+        request({url: 'upload/deleteFile', method: 'get', params})
       } catch (e) {
       }
       this.fileList = fileList.map(o => o.response && o.response.data.length > 0 ? o.response.data[0] : o)
       this.$emit('input', this.fileList)
     },
     formatSize(size) {
-      let sizeStr = size + 'B';
+      let sizeStr = size + 'B'
       if (size >= 1024 * 1024 * 1024) {
         sizeStr = (size / 1024 / 1024 / 1024).toFixed(2) + 'GB'
       } else if (size >= 1024 * 1024) {
@@ -150,7 +152,7 @@ export default {
       } else {
         sizeStr = size + 'B'
       }
-      return sizeStr;
+      return sizeStr
     }
   }
 }

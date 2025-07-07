@@ -130,7 +130,7 @@ export default {
       // 表单临时数据
       temp: {},
       // 退款状态定时任务
-      intervalIndex: null,
+      intervalIndex: null
     }
   },
   created() {
@@ -151,7 +151,7 @@ export default {
       // 查询退款状态
       this.isLoading = true
       const params = {refundId: row.refundId}
-      this.$request({url: '/pay/wechat/queryRefund', method: 'get', params})
+      request({url: '/pay/wechat/queryRefund', method: 'get', params})
           .then((resp) => {
             if (resp.data.refundStatus === 1) {
               this.$message({type: 'success', message: '退款成功'})
@@ -179,7 +179,7 @@ export default {
     // 加载表格
     loadTableList() {
       this.searchData = {...this.searchData, tradeId: this.currentTradeInfo.tradeId}
-      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      const params = {...this.pager, params: JSON.stringify(this.searchData)}
       request({url: '/tradeRefund/busTradeRefund/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
@@ -268,7 +268,7 @@ export default {
                   this.intervalIndex = setInterval(() => {
                     // 查询退款状态
                     const params = {refundId: response.data.refundId}
-                    this.$request({url: '/pay/wechat/queryRefund', method: 'get', params})
+                    request({url: '/pay/wechat/queryRefund', method: 'get', params})
                         .then((resp) => {
                           if (resp.data.refundStatus === 1) {
                             this.$message({type: 'success', message: '退款成功'})
@@ -308,18 +308,18 @@ export default {
     },
     // 导出Excel文件
     exportExcel() {
-      const params = {params: JSON.stringify(this.searchData)};
+      const params = {params: JSON.stringify(this.searchData)}
       request({url: '/tradeRefund/busTradeRefund/export/excel', method: 'get', params}).then(response => {
         // 创建a标签
-        const link = document.createElement('a');
+        const link = document.createElement('a')
         // 组装下载地址
-        link.href = this.$baseServer + response.data;
+        link.href = this.$baseServer + response.data
         // 修改文件名
-        link.setAttribute('download', '退款 - 支付demo.xlsx');
+        link.setAttribute('download', '退款 - 支付demo.xlsx')
         // 开始下载
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
+        link.style.display = 'none'
+        document.body.appendChild(link)
+        link.click()
       })
     },
     // 导入Excel成功，提示
@@ -330,7 +330,7 @@ export default {
       } else {
         this.$message({type: 'error', message: response.message})
       }
-    },
+    }
   }
 }
 </script>

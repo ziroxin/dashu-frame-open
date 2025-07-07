@@ -33,8 +33,9 @@
 </template>
 <script>
 import SparkMD5 from 'spark-md5'
-import IconShow from "@/components/IconShow/index.vue";
-import {generateUUID} from '@/utils/tools'
+import IconShow from '@/components/IconShow/index.vue'
+import { generateUUID } from '@/utils/tools'
+import request from '@/utils/request'
 
 export default {
   name: 'FileSecond',
@@ -64,7 +65,7 @@ export default {
       // 已上传完成内容
       uploadData: null,
       // 是否正在上传
-      isLoading: false,
+      isLoading: false
     }
   },
   methods: {
@@ -84,7 +85,7 @@ export default {
       // 上传前，校验文件秒传表
       await this.getChunkFileMd5(this.currentFile, async secondMd5 => {
         const params = {secondMd5: secondMd5, isCopy: this.isCopy, path: this.uploadDir}
-        this.$request({url: this.secondMd5Url, method: 'get', params})
+        request({url: this.secondMd5Url, method: 'get', params})
             .then((response) => {
               if (response.code === '200' && response.data) {
                 // 文件已存在，秒传完成
@@ -101,11 +102,11 @@ export default {
     },
     async chunkFile(newFile, uploadId) {
       // 把文件分片
-      const chunks = Math.ceil(newFile.size / this.chunkSize); // 计算分片数量
+      const chunks = Math.ceil(newFile.size / this.chunkSize) // 计算分片数量
       for (let i = 0; i < chunks; i++) {
-        const start = i * this.chunkSize;
-        const end = start + this.chunkSize;
-        const chunkFile = newFile.slice(start, end); // 使用slice方法获取分片
+        const start = i * this.chunkSize
+        const end = start + this.chunkSize
+        const chunkFile = newFile.slice(start, end) // 使用slice方法获取分片
         // 上传分片
         await new Promise(async (resolve, reject) => {
           await this.getChunkFileMd5(chunkFile, async md5 => {
@@ -118,7 +119,7 @@ export default {
               isCopy: this.isCopy,
               path: this.uploadDir
             }
-            await this.$request({
+            await request({
               url: this.secondServerUrl, method: 'post', params, headers: {skipRepeatSubmitCheck: true}
             }).then(async (response) => {
               if (response.code === '200') {
@@ -136,7 +137,7 @@ export default {
                     isCopy: this.isCopy,
                     path: this.uploadDir
                   }
-                  await this.$request({
+                  await request({
                     url: this.secondServerUrl, method: 'post', data,
                     headers: {skipRepeatSubmitCheck: true, 'Content-Type': 'multipart/form-data'}
                   }).then(async (response) => {
@@ -172,8 +173,8 @@ export default {
       }
     },
     async getChunkFileMd5(chunkFile, callback) {
-      const fileReader = new FileReader();
-      const spark = new SparkMD5.ArrayBuffer();
+      const fileReader = new FileReader()
+      const spark = new SparkMD5.ArrayBuffer()
       fileReader.onload = function (e) {
         spark.append(e.target.result) // 将文件块内容添加到MD5计算中
         callback(spark.end())// 计算完成，调用回调函数返回MD5值
@@ -185,19 +186,19 @@ export default {
       fileReader.readAsArrayBuffer(chunkFile) // 读取文件块内容
     },
     beforeUpload(file) {
-      const fileExtension = file.name.slice(file.name.lastIndexOf('.'));
+      const fileExtension = file.name.slice(file.name.lastIndexOf('.'))
       if (!this.mimeTypes.split(',').includes(fileExtension)) {
-        this.$message.error('只能上传' + this.mimeTypes + '格式的文件');
+        this.$message.error('只能上传' + this.mimeTypes + '格式的文件')
         return false
       }
       if (file.size > this.maxFileSize) {
-        this.$message.error('文件大小不能超过' + this.formatSize(this.maxFileSize));
+        this.$message.error('文件大小不能超过' + this.formatSize(this.maxFileSize))
         return false
       }
       return true
     },
     formatSize(size) {
-      let sizeStr = size + 'B';
+      let sizeStr = size + 'B'
       if (size >= 1024 * 1024 * 1024) {
         sizeStr = (size / 1024 / 1024 / 1024).toFixed(2) + 'GB'
       } else if (size >= 1024 * 1024) {
@@ -207,7 +208,7 @@ export default {
       } else {
         sizeStr = size + 'B'
       }
-      return sizeStr;
+      return sizeStr
     }
   }
 }
