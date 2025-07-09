@@ -1,10 +1,9 @@
 import type { App } from 'vue'
 
 // 全部引入element-plus
-import ElementPlus from 'element-plus'
-
 // 常用组件全局引入（如ElScrollbar，不然一些下拉项样式有问题），其他按需引入
-import { ElLoading, ElScrollbar } from 'element-plus'
+import ElementPlus, { ElLoading, ElScrollbar } from 'element-plus'
+import zhCN from 'element-plus/es/locale/lang/zh-cn'
 
 const plugins = [ElLoading]
 const components = [ElScrollbar]
@@ -19,12 +18,17 @@ export const setupElementPlus = (app: App<Element>, type: string) => {
   if (import.meta.env.VITE_USE_ALL_ELEMENT_PLUS_STYLE === 'true') {
     import('element-plus/dist/index.css')
   }
+  // 设置语言和尺寸
+  const options = {locale: zhCN, size: 'medium'}
   // 然后根据type参数选择引入方式
   if (type === 'all') {
     // 方式一：全局引入所有组件
-    app.use(ElementPlus)
+    app.use(ElementPlus, options)
   } else {
     // 方式二：按需引入组件（这里只引入部分必须的组件，其他组件在页面内按需引入）
+    // 手动设置全局配置
+    app.config.globalProperties.$ELEMENT = options
+    // 按需引入
     plugins.forEach((plugin) => { app.use(plugin) })
     components.forEach((component) => { app.component(component.name!, component) })
   }
