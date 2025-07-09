@@ -1,28 +1,30 @@
 <template>
-  <panel-group/>
-  <el-row :gutter="20" justify="space-between">
-    <el-col :xl="10" :lg="10" :md="24" :sm="24" :xs="24">
-      <el-card shadow="hover" class="mb-20px">
-        <el-skeleton :loading="isLoading" animated>
-          <Echart :options="pieOptionsData" :height="300"/>
-        </el-skeleton>
-      </el-card>
-    </el-col>
-    <el-col :xl="14" :lg="14" :md="24" :sm="24" :xs="24">
-      <el-card shadow="hover" class="mb-20px">
-        <el-skeleton :loading="isLoading" animated>
-          <Echart :options="barOptionsData" :height="300"/>
-        </el-skeleton>
-      </el-card>
-    </el-col>
-    <el-col :span="24">
-      <el-card shadow="hover" class="mb-20px">
-        <el-skeleton :loading="isLoading" animated :rows="4">
-          <Echart :options="lineOptionsData" :height="350"/>
-        </el-skeleton>
-      </el-card>
-    </el-col>
-  </el-row>
+  <div class="m-[var(--app-content-margin)]">
+    <panel-group/>
+    <el-row :gutter="20" justify="space-between">
+      <el-col :xl="10" :lg="10" :md="24" :sm="24" :xs="24">
+        <el-card shadow="hover" class="mb-20px">
+          <el-skeleton :loading="isLoading" animated>
+            <Echart :options="pieOptionsData" :height="300"/>
+          </el-skeleton>
+        </el-card>
+      </el-col>
+      <el-col :xl="14" :lg="14" :md="24" :sm="24" :xs="24">
+        <el-card shadow="hover" class="mb-20px">
+          <el-skeleton :loading="isLoading" animated>
+            <Echart :options="barOptionsData" :height="300"/>
+          </el-skeleton>
+        </el-card>
+      </el-col>
+      <el-col :span="24">
+        <el-card shadow="hover" class="mb-20px">
+          <el-skeleton :loading="isLoading" animated :rows="4">
+            <Echart :options="lineOptionsData" :height="350"/>
+          </el-skeleton>
+        </el-card>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 <script setup lang="ts">
 import PanelGroup from './components/PanelGroup.vue'
@@ -34,7 +36,6 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { useAppStore } from '@/store/modules/app'
 
 const {t} = useI18n()
-
 
 const isDark = computed(() => useAppStore().getIsDark)
 // 是否加载中
