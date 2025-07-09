@@ -1,39 +1,28 @@
+<template>
+  <el-dropdown :class="prefixCls" trigger="click" @command="setCurrentSize">
+    <my-icon :size="18" icon="vi-mdi:format-size" :color="color" class="cursor-pointer"/>
+    <template #dropdown>
+      <el-dropdown-menu>
+        <el-dropdown-item v-for="item in sizeMap" :key="item" :command="item">
+          {{ t(`size.${item}`) }}
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </template>
+  </el-dropdown>
+</template>
+
 <script setup lang="ts">
-import { computed } from 'vue'
-import { ElDropdown, ElDropdownMenu, ElDropdownItem, ComponentSize } from 'element-plus'
 import { useAppStore } from '@/store/modules/app'
 import { useI18n } from '@/hooks/web/useI18n'
 import { propTypes } from '@/utils/propTypes'
 import { useDesign } from '@/hooks/web/useDesign'
 
-const { getPrefixCls } = useDesign()
+const {t} = useI18n()
+const prefixCls = useDesign().getPrefixCls('size-dropdown')
 
-const prefixCls = getPrefixCls('size-dropdown')
-
-defineProps({
-  color: propTypes.string.def('')
-})
-
-const { t } = useI18n()
+defineProps({color: propTypes.string.def('')})
 
 const appStore = useAppStore()
-
 const sizeMap = computed(() => appStore.sizeMap)
-
-const setCurrentSize = (size: ComponentSize) => {
-  appStore.setCurrentSize(size)
-}
+const setCurrentSize = (size) => { appStore.setCurrentSize(size) }
 </script>
-
-<template>
-  <ElDropdown :class="prefixCls" trigger="click" @command="setCurrentSize">
-    <my-icon :size="18" icon="vi-mdi:format-size" :color="color" class="cursor-pointer" />
-    <template #dropdown>
-      <ElDropdownMenu>
-        <ElDropdownItem v-for="item in sizeMap" :key="item" :command="item">
-          {{ t(`size.${item}`) }}
-        </ElDropdownItem>
-      </ElDropdownMenu>
-    </template>
-  </ElDropdown>
-</template>

@@ -1,16 +1,14 @@
 <template>
-  <div>
-    <router-link to="/"
-                 :class="[prefixCls,layout!=='classic'?`${prefixCls}__Top`:'',
+  <router-link to="/"
+               :class="[prefixCls,layout!=='classic'?`${prefixCls}__Top`:'',
                           'flex !h-[var(--logo-height)] items-center cursor-pointer pl-8px relative decoration-none overflow-hidden']">
-      <img src="@/assets/imgs/logo.png" class="w-[calc(var(--logo-height)-10px)] h-[calc(var(--logo-height)-10px)]"/>
-      <div v-if="show"
-           :class="['ml-10px text-16px font-700',
-                   layout==='classic'?'text-[var(--logo-title-text-color)]':'text-[var(--top-header-text-color)]']">
-        {{ title }}
-      </div>
-    </router-link>
-  </div>
+    <img src="@/assets/imgs/logo.png" class="w-[calc(var(--logo-height)-10px)] h-[calc(var(--logo-height)-10px)]"/>
+    <div v-if="show"
+         :class="['ml-10px text-16px font-700',
+                 layout==='classic'?'text-[var(--logo-title-text-color)]':'text-[var(--top-header-text-color)]']">
+      {{ title }}
+    </div>
+  </router-link>
 </template>
 
 <script setup lang="ts">

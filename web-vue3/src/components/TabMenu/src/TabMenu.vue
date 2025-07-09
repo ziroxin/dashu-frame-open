@@ -1,15 +1,15 @@
 <template>
   <div :id="`${variables.namespace}-menu`" v-click-outside="clickOut"
-       :class="[prefixCls,'relative bg-[var(--left-menu-bg-color)] top-1px layout-border__right',
+       :class="[prefixCls,'relative bg-[var(--left-menu-bg-color)] layout-border__right',
                {'w-[var(--tab-menu-max-width)]':!collapse,'w-[var(--tab-menu-min-width)]':collapse}]">
     <!-- 一级菜单 -->
-    <el-scrollbar class="!h-[calc(100%-var(--tab-menu-collapse-height)-1px)]">
+    <el-scrollbar class="!h-[calc(100%-var(--tab-menu-collapse-height))]">
       <div>
         <div v-for="item in tabFirstRoutes" :key="item.path" @click="tabClick(item)"
              :class="[`${prefixCls}__item`,
                      'text-center text-12px relative py-12px cursor-pointer',
                      {'is-active':item.path&&isActive(item.path)}]">
-          <my-icon v-if="item.meta&&item.meta.icon" :icon="item.meta?.icon"/>
+          <my-icon v-if="item.meta&&item.meta.icon" :icon="item.meta?.icon" :size="collapse?20:16"/>
           <p v-if="showTitle" class="break-words mt-5px px-2px">{{ t(item.meta?.title || '') }}</p>
         </div>
       </div>

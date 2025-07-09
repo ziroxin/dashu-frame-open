@@ -3,8 +3,8 @@
     <div v-if="mobile&&!collapse" @click="handleClickOutside"
          class="absolute top-0 left-0 w-full h-full opacity-30 z-99 bg-[var(--el-color-black)]"></div>
     <render-layout :layout-type="layoutType"/>
-    <Backtop/>
-    <Setting v-if="!hideSetting"/>
+    <backtop/>
+    <setting v-if="!hideSetting"/>
   </section>
 </template>
 

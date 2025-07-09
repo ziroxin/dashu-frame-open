@@ -16,7 +16,7 @@ export const setupGlobalProperties = (app: App<Element>) => {
 }
 
 const setGlobalPropertie = (app: App<Element>, key: string, value: any) => {
-  // 1. 在html中使用，例如：<div :label="$baseServer">{{ key }}</div>
+  // 1. 在html中使用，例如：<div :label="$baseServer">{{ $baseServer }}</div>
   app.config.globalProperties[key] = value
   // 2. 在setup中使用，例如：inject('$baseServer')
   app.provide(key, value)

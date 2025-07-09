@@ -14,7 +14,11 @@ import storageKeys, { storageClear4Logout } from '@/utils/storage-keys'
 interface UserType {
   name?: string,
   avatar?: string,
-  introduction?: string
+  introduce?: string,
+  nickName?: string,
+  userName?: string,
+  phone?: string,
+  status?: string,
 }
 
 interface UserState {

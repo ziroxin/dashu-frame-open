@@ -1,81 +1,67 @@
-<script lang="tsx">
-import { defineComponent, computed } from 'vue'
-import { Collapse } from '@/components/Collapse'
+<template>
+  <!-- 顶部工具栏 -->
+  <div :id="`${variables.namespace}-tool-header`"
+       :class="[prefixCls,'h-[var(--top-tool-height)] relative px-[var(--top-tool-p-x)] flex items-center justify-between']">
+    <!-- 左侧按钮 -->
+    <div v-if="layout !== 'top'" class="h-full flex items-center">
+      <!-- 展开/收起菜单按钮 -->
+      <div v-if="hamburger&&layout!=='cutMenu'" :class="prefixClsCollapse" class="custom-hover" @click="toggleCollapse">
+        <my-icon :size="18" color="var(--top-header-text-color)"
+                 class="cursor-pointer"
+                 :icon="collapse?'vi-ant-design:menu-unfold-outlined':'vi-ant-design:menu-fold-outlined'"/>
+      </div>
+      <!-- 面包屑 -->
+      <Breadcrumb v-if="breadcrumb" class="<md:hidden"/>
+    </div>
+    <!-- 右侧按钮 -->
+    <div class="h-full flex items-center">
+      <!-- 全屏按钮 -->
+      <div v-if="screenFull" :class="prefixClsScreenfull" class="custom-hover" @click="toggleFullscreen">
+        <my-icon :size="18" color="var(--top-header-text-color)"
+                 :icon="isFullscreen?'vi-zmdi:fullscreen-exit':'vi-zmdi:fullscreen'"/>
+      </div>
+      <!-- 字体大小切换按钮 -->
+      <size-dropdown v-if="size" class="custom-hover" color="var(--top-header-text-color)"/>
+      <!-- 语言切换按钮 -->
+      <locale-dropdown v-if="locale" class="custom-hover" color="var(--top-header-text-color)"/>
+      <!-- 用户信息按钮 -->
+      <user-info/>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
 import { LocaleDropdown } from '@/components/LocaleDropdown'
 import { SizeDropdown } from '@/components/SizeDropdown'
 import { UserInfo } from '@/components/UserInfo'
-import { Screenfull } from '@/components/Screenfull'
 import { Breadcrumb } from '@/components/Breadcrumb'
+import { useFullscreen } from '@vueuse/core'
 import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
 
-const { getPrefixCls, variables } = useDesign()
-
+const {getPrefixCls, variables} = useDesign()
 const prefixCls = getPrefixCls('tool-header')
+const prefixClsCollapse = getPrefixCls('collapse')
+const prefixClsScreenfull = getPrefixCls('screenfull')
 
 const appStore = useAppStore()
-
-// 面包屑
 const breadcrumb = computed(() => appStore.getBreadcrumb)
-
-// 折叠图标
 const hamburger = computed(() => appStore.getHamburger)
-
-// 全屏图标
-const screenfull = computed(() => appStore.getScreenfull)
-
-// 尺寸图标
+const screenFull = computed(() => appStore.getScreenfull)
 const size = computed(() => appStore.getSize)
-
-// 布局
 const layout = computed(() => appStore.getLayout)
-
-// 多语言图标
 const locale = computed(() => appStore.getLocale)
 
-export default defineComponent({
-  name: 'ToolHeader',
-  setup() {
-    return () => (
-      <div
-        id={`${variables.namespace}-tool-header`}
-        class={[
-          prefixCls,
-          'h-[var(--top-tool-height)] relative px-[var(--top-tool-p-x)] flex items-center justify-between'
-        ]}
-      >
-        {layout.value !== 'top' ? (
-          <div class="h-full flex items-center">
-            {hamburger.value && layout.value !== 'cutMenu' ? (
-              <Collapse class="custom-hover" color="var(--top-header-text-color)"></Collapse>
-            ) : undefined}
-            {breadcrumb.value ? <Breadcrumb class="<md:hidden"></Breadcrumb> : undefined}
-          </div>
-        ) : undefined}
-        <div class="h-full flex items-center">
-          {screenfull.value ? (
-            <Screenfull class="custom-hover" color="var(--top-header-text-color)"></Screenfull>
-          ) : undefined}
-          {size.value ? (
-            <SizeDropdown class="custom-hover" color="var(--top-header-text-color)"></SizeDropdown>
-          ) : undefined}
-          {locale.value ? (
-            <LocaleDropdown
-              class="custom-hover"
-              color="var(--top-header-text-color)"
-            ></LocaleDropdown>
-          ) : undefined}
-          <UserInfo></UserInfo>
-        </div>
-      </div>
-    )
-  }
-})
+// 菜单展开/收起
+const collapse = computed(() => appStore.getCollapse)
+const toggleCollapse = () => { appStore.setCollapse(!unref(collapse)) }
+// 全屏/退出全屏
+const {toggle, isFullscreen} = useFullscreen()
+const toggleFullscreen = () => { toggle() }
 </script>
 
 <style lang="less" scoped>
 @prefix-cls: ~'@{adminNamespace}-tool-header';
-
 .@{prefix-cls} {
   transition: left var(--transition-time-02);
 }

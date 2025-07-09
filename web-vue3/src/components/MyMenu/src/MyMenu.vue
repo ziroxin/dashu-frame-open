@@ -1,8 +1,8 @@
 <template>
   <div :id="prefixCls"
        :class="[`${prefixCls} ${prefixCls}__${menuMode}`,'h-[100%] overflow-hidden flex-col bg-[var(--left-menu-bg-color)]',
-                {'w-[var(--left-menu-min-width)]':collapse && layout!=='cutMenu',
-                 'w-[var(--left-menu-max-width)]':!collapse && layout!=='cutMenu'}]">
+                {'w-[var(--left-menu-min-width)]':collapse&&layout!=='cutMenu',
+                 'w-[var(--left-menu-max-width)]':!collapse&&layout!=='cutMenu'}]">
     <el-scrollbar v-if="layout!=='top'">
       <el-menu :default-active="activeMenu"
                :mode="menuMode"
@@ -13,10 +13,11 @@
                active-text-color="var(--left-menu-text-active-color)"
                :popper-class="`${prefixCls}-popper--${menuMode}`"
                @select="handleMenuSelect">
-        <render-menu-item :menu-mode="menuMode" :route-list="routeList"/>
+        <render-menu-item :menu-mode="menuMode"
+                          v-for="item in routeList" :route-data="item" :key="item.name"/>
       </el-menu>
     </el-scrollbar>
-    <el-menu v-else :default-active="activeMenu"
+    <el-menu :default-active="activeMenu"
              :mode="menuMode"
              :collapse="(layout==='top'||layout==='cutMenu')?false:collapse"
              :unique-opened="layout==='top'?false:uniqueOpened"
@@ -25,7 +26,8 @@
              active-text-color="var(--left-menu-text-active-color)"
              :popper-class="`${prefixCls}-popper--${menuMode}`"
              @select="handleMenuSelect">
-      <render-menu-item :menu-mode="menuMode" :route-list="routeList"/>
+      <render-menu-item :menu-mode="menuMode"
+                        v-for="item in routeList" :route-data="item" :key="item.name"/>
     </el-menu>
   </div>
 </template>
@@ -36,6 +38,7 @@ import { usePermissionStore } from '@/store/modules/permission'
 import RenderMenuItem from './components/RenderMenuItem.vue'
 import { isUrl } from '@/utils/is'
 import { useDesign } from '@/hooks/web/useDesign'
+import { hasOneShowingChild } from './helper'
 
 const prefixCls = useDesign().getPrefixCls('menu')
 const appStore = useAppStore()
@@ -51,8 +54,24 @@ const {menuSelect} = defineProps({
 const layout: any = computed(() => appStore.getLayout)
 // 菜单模式：'vertical'=垂直菜单 | 'horizontal'=水平菜单
 const menuMode = computed(() => ['classic', 'topLeft', 'cutMenu'].includes(unref(layout)) ? 'vertical' : 'horizontal')
-// 路由列表（分栏模式时特殊处理）
-const routeList = computed(() => unref(layout) === 'cutMenu' ? permissionStore.getMenuTabRoutes : permissionStore.getRoutes)
+// 路由列表
+const routeList = computed(() => {
+  // 路由列表（分栏模式时特殊处理）
+  const list = unref(layout) === 'cutMenu' ? permissionStore.getMenuTabRoutes : permissionStore.getRoutes
+  const result: any[] = []
+  list.forEach((v: any) => {
+    if (!v.meta?.hidden) {
+      const item = {...v}
+      item.meta = item.meta ?? {}
+      const {childCount, onlyOneChild} = hasOneShowingChild(item.children)
+      item.childCount = childCount
+      item.onlyOneChild = onlyOneChild
+      result.push(item)
+    }
+  })
+  return result
+})
+console.log(routeList.value)
 // 菜单展开/收起状态
 const collapse = computed(() => appStore.getCollapse)
 // 是否只保持一个子菜单的展开
