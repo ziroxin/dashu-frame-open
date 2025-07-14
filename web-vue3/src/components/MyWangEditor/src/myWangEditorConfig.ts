@@ -1,12 +1,12 @@
 import { ElMessage } from 'element-plus'
+import { useMyGP } from '@/hooks/web/useMyGlobalProperties'
 
 /**
  * 图片上传配置
  * @param server 图片上传地址
  * @param limit 图片上传大小限制
- * @param Message 弹窗
  */
-export function imagesDefaultOptions(server, limit, Message) {
+export function imagesOptions(server, limit) {
   return {
     server: server,
     // 单个文件的最大体积限制，默认为 2M
@@ -26,14 +26,14 @@ export function imagesDefaultOptions(server, limit, Message) {
         if (errArr.length === 2) {
           errStr += '，最大上传' + errArr[1]
         }
-        Message.error(errStr)
+        ElMessage.error(errStr)
       }
       console.log(`${file.name} 上传出错`, err, res)
     }
   }
 }
 
-export function videosDefaultOptions(server, limit, Message) {
+export function videosOptions(server, limit) {
   return {
     server: server,
     // 单个文件的最大体积限制，默认为 50M
@@ -51,7 +51,7 @@ export function videosDefaultOptions(server, limit, Message) {
         if (errArr.length === 2) {
           errStr += '，最大上传' + errArr[1]
         }
-        Message.error(errStr)
+        ElMessage.error(errStr)
       }
       console.log(`${file.name} 上传出错`, err, res)
     }
@@ -63,7 +63,7 @@ export function customParseVideoSrc(src) {
   if (src) {
     // todo 可作其他处理，比如外部视频链接处理
     // 视频文件地址
-    return inject('$baseServer') + src
+    return useMyGP().gp.$baseServer + src
   }
   return src
 }
@@ -72,7 +72,7 @@ export function customParseVideoSrc(src) {
 export function customParseImageSrc(src) {
   if (src && src.indexOf('data:image/png;base64,') === -1) {
     // 非base64地址，要追加$baseServer路径
-    return inject('$baseServer') + src
+    return useMyGP().gp.$baseServer + src
   }
   return src
 }

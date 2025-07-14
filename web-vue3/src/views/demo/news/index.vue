@@ -40,26 +40,24 @@
       <el-table-column label="顺序" prop="orderIndex" align="center"/>
       <el-table-column label="添加时间" prop="createTime" align="center"/>
       <el-table-column label="修改时间" prop="updateTime" align="center"/>
-      <el-table-column fixed="right" label="操作" width="120" align="center">
+      <el-table-column fixed="right" label="操作" width="140" align="center">
         <template v-slot="scope">
-          <el-button type="text" style="color: #4dd219;" class="text-12px"
-                     @click="openView(scope.row)">详情
+          <el-button size="small" link style="color: #4dd219;" @click="openView(scope.row)">详情
           </el-button>
-          <el-button v-permission="'news-news-update'" size="mini"
-                     type="text" @click="openUpdate(scope.row)">修改
+          <el-button v-permission="'news-news-update'" size="small" link @click="openUpdate(scope.row)">修改
           </el-button>
-          <el-button v-permission="'news-news-delete'" size="mini" style="color: #f56c6c;"
-                     type="text" @click="deleteByIds(scope.row)">删除
+          <el-button v-permission="'news-news-delete'" size="small" link style="color: #f56c6c;"
+                     @click="deleteByIds(scope.row)">删除
           </el-button>
           <br/>
-          <el-button size="mini" v-if="scope.row.msgId" style="color: red;"
-                     type="text" @click="messageRead(scope.row)">[标记已读]
+          <el-button v-if="scope.row.msgId" size="small" link style="color: red;"
+                     @click="messageRead(scope.row)">[标记已读]
           </el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 新闻表-测试-分页 -->
-    <el-pagination style="text-align: center;margin-top:10px;" layout="total,prev,pager,next,sizes,jumper"
+    <el-pagination class="flex justify-center mt-10px" layout="total,prev,pager,next,sizes,jumper"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
                    @size-change="handleSizeChange"
@@ -68,7 +66,7 @@
     <el-dialog :title="titleMap[dialogType]" v-model="dialogFormVisible" width="900px"
                :close-on-click-modal="dialogType !== 'view' ? false : true"
                @close="resetTemp" :key="'myDialog'+dialogIndex">
-      <el-form ref="dataForm" :model="temp" label-position="right" label-width="50px" :disabled="dialogType==='view'">
+      <el-form ref="dataForm" :model="temp" label-position="right" label-width="60px" :disabled="dialogType==='view'">
         <el-form-item label-width="0px" prop="newsTitle"
                       :rules="[{required: true, message: '新闻标题不能为空'}]">
           <el-input v-model="temp.newsTitle" maxlength="30" :show-word-limit="true"
@@ -86,20 +84,22 @@
               <el-input-number v-model="temp.orderIndex" :min="0" step-strictly/>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <!-- 选择消息发送的用户 -->
-            <el-form-item label="" prop="messageSend" label-width="50px">
-              <el-select v-model="messageSendData.type" placeholder="请选择消息发送类型">
-                <el-option label="选择用户" value="user"/>
-                <el-option label="选择组织机构" value="org"/>
-                <el-option label="选择角色" value="role"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="10">
-            <message-send v-model="messageSendData.ids" label-width="80px"
-                          :scope="messageSendData.scope" :type="messageSendData.type"/>
-          </el-col>
+          <template v-if="dialogType==='add'">
+            <el-col :span="6">
+              <!-- 选择消息发送的用户 -->
+              <el-form-item label="" prop="messageSend" label-width="50px">
+                <el-select v-model="messageSendData.type" placeholder="请选择消息发送类型">
+                  <el-option label="选择用户" value="user"/>
+                  <el-option label="选择组织机构" value="org"/>
+                  <el-option label="选择角色" value="role"/>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="10">
+              <message-send v-model="messageSendData.ids" label-width="80px"
+                            :scope="messageSendData.scope" :type="messageSendData.type"/>
+            </el-col>
+          </template>
         </el-row>
       </el-form>
       <template #footer>
@@ -112,202 +112,215 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import request from '@/utils/request'
 import { MyWangEditor } from '@/components/MyWangEditor'
 import { MessageSend } from '@/components/MessageSend'
+import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
+import { useMyGP } from '@/hooks/web/useMyGlobalProperties'
 
-export default {
-  components: {MessageSend, MyWangEditor},
-  data() {
-    return {
-      // 分页数据
-      pager: {page: 1, limit: 10, totalCount: 0},
-      // 表格
-      tableData: [],
-      // 查询表单数据
-      searchData: {},
-      // 选中行
-      tableSelectRows: [],
-      // 弹窗标题
-      titleMap: {add: '添加新闻表-测试', update: '修改新闻表-测试', view: '查看详情'},
-      // 添加/修改模式（add/update）
-      dialogType: '',
-      // 弹窗显示隐藏
-      dialogFormVisible: false,
-      // 表单临时数据
-      temp: {},
-      dialogIndex: 0,
-      messageSendData: {
-        ids: [],// 根据用户选择自动获取
-        type: 'user',// 发送用户类型：user=用户；org=组织机构；role=角色（不根据scope查询）
-        scope: 'all'// all=全部；children=下级；selfAndChildren=本机构及下级
-      }
-    }
-  },
-  mounted() {
-    this.loadTableList()
-    this.resetTemp()
-  },
-  methods: {
-    // 查询按钮
-    searchBtnHandle() {
-      this.pager.page = 1
-      this.loadTableList()
-    },
-    // 重置
-    resetTableList() {
-      this.pager.page = 1
-      this.searchData = this.$options.data().searchData
-      this.loadTableList()
-    },
-    // 加载表格
-    loadTableList() {
-      const params = {...this.pager, params: JSON.stringify(this.searchData)}
-      request({url: '/news/news/list', method: 'get', params}).then((response) => {
-        const {data} = response
-        this.pager.totalCount = data.total
-        this.tableData = data.records
-      })
-    },
-    // 监听选中行
-    handleTableSelectChange(rows) {
-      this.tableSelectRows = rows
-    },
-    // 监听分页
-    handleCurrentChange(page) {
-      this.pager.page = page
-      this.loadTableList()
-    },
-    // 分页条数改变
-    handleSizeChange(size) {
-      this.pager.limit = size
-      this.loadTableList()
-    },
-    // 清空表单temp数据
-    resetTemp() {
-      this.temp = {orderIndex: 0}
-      this.messageSendData.ids = []
-      this.dialogFormVisible = false
-      this.dialogIndex++
-    },
-    // 打开添加窗口
-    openAdd() {
-      this.resetTemp()
-      this.dialogFormVisible = true
-      this.dialogType = 'add'
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    // 打开修改窗口
-    openUpdate(row) {
-      if (row) {
-        this.$refs.dataTable.clearSelection()
-        this.$refs.dataTable.toggleRowSelection(row, true)
-      }
-      if (this.tableSelectRows.length <= 0) {
-        this.$message({message: '请选择一条数据修改！', type: 'warning'})
-      } else if (this.tableSelectRows.length > 1) {
-        this.$message({message: '修改时，只允许选择一条数据！', type: 'warning'})
-      } else {
-        // 修改弹窗
-        this.temp = Object.assign({}, this.tableSelectRows[0])
-        this.dialogType = 'update'
-        this.dialogFormVisible = true
-        this.$nextTick(() => {
-          this.$refs['dataForm'].clearValidate()
-        })
-      }
-    },
-    // 打开查看窗口
-    openView(row) {
-      this.temp = Object.assign({}, row)
-      this.dialogType = 'view'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    // 添加/修改，保存事件
-    saveData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          let data = {...this.temp}
-          if (this.dialogType === 'update') {
-            request({url: '/news/news/update', method: 'post', data}).then(response => {
-              this.$message({type: 'success', message: '修改成功！'})
-              this.loadTableList()
-              this.dialogFormVisible = false
-            })
-          } else {
-            if (this.messageSendData.ids.length > 0) {
-              // 有选择消息，则填充消息实体字段
-              data = {
-                ...data,
-                msgTitle: '发表了新闻《' + data.newsTitle + '》',
-                msgContent: '发表了新闻《' + data.newsTitle + '》',
-                msgRouter: '/demo/news',// 菜单管理-修改-菜单地址
-                permissionName: 'news-news',// 菜单管理-修改-菜单标记
-                toType: this.messageSendData.type,
-                toIds: this.messageSendData.ids
-              }
-            }
-            // 添加信息时，增加通知用户字段
-            request({url: '/news/news/add', method: 'post', data}).then(response => {
-              this.$message({type: 'success', message: '添加成功！'})
-              this.loadTableList()
-              this.dialogFormVisible = false
-            })
-          }
-        }
-      })
-    },
-    // 删除
-    deleteByIds(row) {
-      if (row) {
-        this.$refs.dataTable.clearSelection()
-        this.$refs.dataTable.toggleRowSelection(row, true)
-      }
-      if (this.tableSelectRows.length <= 0) {
-        this.$message({message: '请选择一条数据删除！', type: 'warning'})
-      } else {
-        this.$confirm('确定要删除吗?', '删除提醒', {
-          confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
-        }).then(() => {
-          // 执行删除
-          const data = this.tableSelectRows.map(r => r.newsId)
-          request({url: '/news/news/delete', method: 'post', data}).then(response => {
-            this.$message({type: 'success', message: '删除成功！'})
-            this.loadTableList()
-          })
-        })
-      }
-    },
-    // 标记消息已读
-    messageRead(row) {
-      const params = {msgId: row.msgId}
-      request({url: '/message/zMessage/read', method: 'get', params}).then((response) => {
-        this.$store.dispatch('message/refreshMessageCount')
-        this.loadTableList()
-      })
-    },
-    // 导出Excel文件
-    exportExcel() {
-      const params = {params: JSON.stringify(this.searchData)}
-      request({url: '/news/news/export/excel', method: 'get', params}).then(response => {
-        // 创建a标签
-        const link = document.createElement('a')
-        // 组装下载地址
-        link.href = this.$baseServer + response.data
-        // 修改文件名
-        link.setAttribute('download', '新闻表-测试.xlsx')
-        // 开始下载
-        link.style.display = 'none'
-        document.body.appendChild(link)
-        link.click()
-      })
-    }
+// 分页数据
+const pager = ref({page: 1, limit: 10, totalCount: 0})
+// 表格
+const tableData = ref([])
+// 查询表单数据
+const searchData = ref({})
+// 选中行
+const tableSelectRows = ref([])
+// 弹窗标题
+const titleMap = {add: '添加新闻表-测试', update: '修改新闻表-测试', view: '查看详情'}
+// 添加/修改模式（add/update）
+const dialogType = ref('')
+// 弹窗显示隐藏
+const dialogFormVisible = ref(false)
+// 表单临时数据
+const temp = ref({orderIndex: 0})
+const dialogIndex = ref(0)
+const messageSendData = reactive({
+  ids: [], // 根据用户选择自动获取
+  type: 'user', // 发送用户类型：user=用户；org=组织机构；role=角色（不根据scope查询）
+  scope: 'all' // all=全部；children=下级；selfAndChildren=本机构及下级
+})
+
+onMounted(() => {
+  loadTableList()
+  resetTemp()
+})
+
+// 查询按钮
+const searchBtnHandle = () => {
+  pager.value.page = 1
+  loadTableList()
+}
+
+// 重置
+const resetTableList = () => {
+  pager.value.page = 1
+  Object.assign(searchData.value, {})
+  loadTableList()
+}
+
+// 加载表格
+const loadTableList = () => {
+  const params = {...pager.value, params: JSON.stringify(searchData.value)}
+  request({url: '/news/news/list', method: 'get', params}).then((response) => {
+    const {data} = response
+    pager.value.totalCount = data.total
+    tableData.value = data.records
+  })
+}
+
+// 监听选中行
+const handleTableSelectChange = (rows) => {
+  tableSelectRows.value = rows
+}
+
+// 监听分页
+const handleCurrentChange = (page) => {
+  pager.value.page = page
+  loadTableList()
+}
+
+// 分页条数改变
+const handleSizeChange = (size) => {
+  pager.value.limit = size
+  loadTableList()
+}
+
+// 清空表单temp数据
+const resetTemp = () => {
+  temp.value = {orderIndex: 0}
+  messageSendData.ids = []
+  dialogFormVisible.value = false
+  dialogIndex.value++
+}
+
+// 打开添加窗口
+const openAdd = () => {
+  resetTemp()
+  dialogFormVisible.value = true
+  dialogType.value = 'add'
+  nextTick(() => {
+    dataForm.value.clearValidate()
+  })
+}
+
+// 打开修改窗口
+const openUpdate = (row) => {
+  if (row) {
+    dataTable.value.clearSelection()
+    dataTable.value.toggleRowSelection(row, true)
+  }
+  if (tableSelectRows.value.length <= 0) {
+    ElMessage({message: '请选择一条数据修改！', type: 'warning', grouping: true})
+  } else if (tableSelectRows.value.length > 1) {
+    ElMessage({message: '修改时，只允许选择一条数据！！', type: 'warning', grouping: true})
+  } else {
+    // 修改弹窗
+    Object.assign(temp.value, tableSelectRows.value[0])
+    dialogType.value = 'update'
+    dialogFormVisible.value = true
+    nextTick(() => {
+      dataForm.value.clearValidate()
+    })
   }
 }
+
+// 打开查看窗口
+const openView = (row) => {
+  Object.assign(temp.value, row)
+  dialogType.value = 'view'
+  dialogFormVisible.value = true
+  nextTick(() => {
+    dataForm.value.clearValidate()
+  })
+}
+
+// 添加/修改，保存事件
+const saveData = () => {
+  dataForm.value.validate((valid) => {
+    if (valid) {
+      let data = {...temp.value}
+      if (dialogType.value === 'update') {
+        request({url: '/news/news/update', method: 'post', data}).then(response => {
+          ElNotification({message: '修改成功！', title: '操作成功', type: 'success'})
+          loadTableList()
+          dialogFormVisible.value = false
+        })
+      } else {
+        if (messageSendData.ids.length > 0) {
+          // 有选择消息，则填充消息实体字段
+          data = {
+            ...data,
+            msgTitle: '发表了新闻《' + data.newsTitle + '》',
+            msgContent: '发表了新闻《' + data.newsTitle + '》',
+            msgRouter: '/demo/news', // 菜单管理-修改-菜单地址
+            permissionName: 'news-news', // 菜单管理-修改-菜单标记
+            toType: messageSendData.type,
+            toIds: messageSendData.ids
+          }
+        }
+        // 添加信息时，增加通知用户字段
+        request({url: '/news/news/add', method: 'post', data}).then(response => {
+          ElNotification({message: '添加成功！', title: '操作成功', type: 'success'})
+          loadTableList()
+          dialogFormVisible.value = false
+        })
+      }
+    }
+  })
+}
+
+// 删除
+const deleteByIds = (row) => {
+  if (row) {
+    dataTable.value.clearSelection()
+    dataTable.value.toggleRowSelection(row, true)
+  }
+  if (tableSelectRows.value.length <= 0) {
+    ElMessage({message: '请选择一条数据删除！', type: 'warning', grouping: true})
+  } else {
+    ElMessageBox.confirm('确定要删除吗?', '删除提醒', {
+      confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+    }).then(() => {
+      // 执行删除
+      const data = tableSelectRows.value.map(r => r.newsId)
+      request({url: '/news/news/delete', method: 'post', data}).then(response => {
+        ElNotification({message: '删除成功！', title: '操作成功', type: 'success'})
+        loadTableList()
+      })
+    })
+  }
+}
+
+// 标记消息已读
+const messageRead = (row) => {
+  const params = {msgId: row.msgId}
+  request({url: '/message/zMessage/read', method: 'get', params}).then((response) => {
+    // 假设这里有一个方法来刷新消息计数
+    // this.$store.dispatch('message/refreshMessageCount')
+    loadTableList()
+  })
+}
+
+// 导出Excel文件
+const exportExcel = () => {
+  const params = {params: JSON.stringify(searchData.value)}
+  request({url: '/news/news/export/excel', method: 'get', params}).then(response => {
+    // 创建a标签
+    const link = document.createElement('a')
+    // 组装下载地址
+    link.href = useMyGP().gp.$baseServer + response.data
+    // 修改文件名
+    link.setAttribute('download', '新闻表-测试.xlsx')
+    // 开始下载
+    link.style.display = 'none'
+    document.body.appendChild(link)
+    link.click()
+  })
+}
+
+// 引用
+const dataTable = ref(null)
+const dataForm = ref(null)
 </script>
