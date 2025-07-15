@@ -6,31 +6,25 @@
                 class="filter-item" placeholder="请输入新闻标题查询"/>
       <el-input v-model="searchData.newsContent" style="width: 150px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入新闻内容查询"/>
-      <el-button v-waves class="filter-item" type="primary" @click="searchBtnHandle">
-        <my-icon icon="el-icon-search" class="mr-[5px]"/>
-        查询
-      </el-button>
-      <el-button v-waves class="filter-item" type="info" @click="resetTableList">
-        <my-icon icon="el-icon-refresh" class="mr-[5px]"/>
-        重置
-      </el-button>
+      <base-button v-waves class="filter-item" type="primary"
+                   icon="el-icon-search" @click="searchBtnHandle">查询
+      </base-button>
+      <base-button v-waves class="filter-item" type="info"
+                   icon="el-icon-refresh" @click="resetTableList">重置
+      </base-button>
       <div style="float: right;">
-        <el-button v-permission="'news-news-add'" type="primary" @click="openAdd">
-          <my-icon icon="el-icon-plus" class="mr-[5px]"/>
-          新增
-        </el-button>
-        <el-button v-permission="'news-news-update'" type="info" @click="openUpdate(null)">
-          <my-icon icon="el-icon-edit" class="mr-[5px]"/>
-          修改
-        </el-button>
-        <el-button v-permission="'news-news-delete'" type="danger" @click="deleteByIds(null)">
-          <my-icon icon="el-icon-delete" class="mr-[5px]"/>
-          删除
-        </el-button>
-        <el-button v-permission="'news-news-exportExcel'" type="success" @click="exportExcel">
-          <my-icon icon="el-icon-printer" class="mr-[5px]"/>
-          导出Excel
-        </el-button>
+        <base-button v-permission="'news-news-add'" type="primary"
+                     icon="el-icon-plus" @click="openAdd">新增
+        </base-button>
+        <base-button v-permission="'news-news-update'" type="info"
+                     icon="el-icon-edit" @click="openUpdate(null)">修改
+        </base-button>
+        <base-button v-permission="'news-news-delete'" type="danger"
+                     icon="el-icon-delete" @click="deleteByIds(null)">删除
+        </base-button>
+        <base-button v-permission="'news-news-exportExcel'" type="success"
+                     icon="el-icon-printer" @click="exportExcel">导出Excel
+        </base-button>
       </div>
     </div>
     <!-- 新闻表-测试-列表 -->
