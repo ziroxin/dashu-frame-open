@@ -1,7 +1,7 @@
 import type { App } from 'vue'
 import { MyIcon } from './MyIcon'
 import { Permission } from './Permission'
-import { BaseButton } from './Button'
+import { BaseButton } from './BaseButton'
 
 /**
  * 常用自定义组件全局引入，无需在每个vue文件中单独引入

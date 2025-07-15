@@ -18,7 +18,6 @@ import { CSSProperties } from 'vue'
 import { getSlot } from '@/utils/tsxHelper'
 import TableActions from './components/TableActions.vue'
 import { createVideoViewer } from '@/components/VideoPlayer'
-import { BaseButton } from '@/components/Button'
 
 export default defineComponent({
   name: 'Table',

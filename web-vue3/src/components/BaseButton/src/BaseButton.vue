@@ -1,18 +1,17 @@
 <template>
-  <el-button :class="`${prefixCls} color-#fff`" v-bind="{ ...props }"
-             :color="color" :style="style" @click="() => emits('click')">
+  <el-button :class="`${prefixCls}`" v-bind="{ ...props,icon:null }" @click="handleClick">
+    <my-icon v-if="icon" :icon="icon" class="mr-5px"/>
     <slot></slot>
-    <slot name="icon"></slot>
     <slot name="loading"></slot>
   </el-button>
 </template>
 <script setup lang="ts">
+import type { ButtonType, ComponentSize } from 'element-plus'
+import { MyIcon } from '@/components/MyIcon'
 import { useDesign } from '@/hooks/web/useDesign'
-import { useAppStore } from '@/store/modules/app'
-import { ButtonType, ComponentSize } from 'element-plus'
 
 const prefixCls = useDesign().getPrefixCls('button')
-
+// 传参
 const props = defineProps({
   size: {type: String as PropType<ComponentSize>, default: undefined},
   type: {type: String as PropType<ButtonType>, default: 'default'},
@@ -25,7 +24,7 @@ const props = defineProps({
   circle: {type: Boolean, default: false},
   loading: {type: Boolean, default: false},
   loadingIcon: {type: [String, Object] as PropType<string | Component>, default: undefined},
-  icon: {type: [String, Object] as PropType<string | Component>, default: undefined},
+  icon: {type: String, default: undefined},
   autofocus: {type: Boolean, default: false},
   nativeType: {type: String as PropType<'button' | 'submit' | 'reset'>, default: 'button'},
   autoInsertSpace: {type: Boolean, default: false},
@@ -34,10 +33,7 @@ const props = defineProps({
   tag: {type: [String, Object] as PropType<string | Component>, default: 'button'}
 })
 
+// 触发父级组件的点击事件
 const emits = defineEmits(['click'])
-
-const getTheme = computed(() => useAppStore().getTheme)
-const color = computed(() => (props.type === 'primary' && !props.link) ? unref(getTheme).elColorPrimary : '')
-const style = computed(() => (props.type === 'primary' && !props.link) ?
-    '--el-button-text-color: #fff;--el-button-hover-text-color: #fff;' : '')
+const handleClick = () => { emits('click') }
 </script>
