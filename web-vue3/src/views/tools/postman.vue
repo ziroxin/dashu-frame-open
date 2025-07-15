@@ -90,24 +90,23 @@
     <div style="margin-top: 20px;letter-spacing: 0px;">
       <div v-if="error">
         <div style="color: #d7000f;margin: 10px 0px;">请求错误，错误信息：</div>
-        <json-viewer v-if="error.isJson" :value="error.value" :expand-depth="2" boxed sort></json-viewer>
+        <vue-json-pretty v-if="error.isJson" :data="error.value"/>
         <div v-else style="color: #d7000f;margin: 10px 0px;">{{ error.value }}</div>
       </div>
       <div v-if="data">
         <div style="color: #2C7EEA;margin: 10px 0px;">请求成功，响应信息：</div>
-        <json-viewer v-if="data.isJson" :value="data.value||'返回值为null'"
-                     :expand-depth="2" boxed sort></json-viewer>
+        <vue-json-pretty v-if="data.isJson" :data="data.value||'返回值为null'"/>
         <p v-else style="color: #2C7EEA;margin: 10px 0px;">{{ data.value }}</p>
       </div>
     </div>
   </div>
 </template>
 <script>
-import JsonViewer from 'vue-json-viewer'
+import VueJsonPretty from 'vue-json-pretty'
 import request from '@/utils/request'
 
 export default {
-  components: {JsonViewer},
+  components: {VueJsonPretty},
   data() {
     return {
       url: '',
@@ -328,7 +327,7 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .el-checkbox__inner {
   width: 28px !important;
   height: 28px !important;
@@ -342,7 +341,7 @@ export default {
   }
 }
 </style>
-<style scoped lang="scss">
+<style scoped lang="less">
 .postman1 {
   overflow: auto;
 
