@@ -180,7 +180,7 @@ export default {
   }
 }
 </script>
-<style scoped lang="scss">
+<style scoped lang="less">
 .app-container {
   .title {
     font-size: 20px;

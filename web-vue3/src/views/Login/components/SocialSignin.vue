@@ -36,7 +36,7 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .social-signup-container {
   margin: 20px 0;
   text-align: center;

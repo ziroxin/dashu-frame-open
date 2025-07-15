@@ -336,7 +336,7 @@ export default {
 @import '~@/assets/css/bootstrap.min.css';
 @import '~@/assets/css/login.css';
 </style>
-<style lang="scss" scoped>
+<style lang="less" scoped>
 a:hover {
   text-decoration: underline;
 }

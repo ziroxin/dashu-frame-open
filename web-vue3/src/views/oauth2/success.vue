@@ -30,7 +30,7 @@ export default {
   }
 }
 </script>
-<style scoped lang="scss">
+<style scoped lang="less">
 .success-panel {
   margin-top: -80px;
   height: 100%;

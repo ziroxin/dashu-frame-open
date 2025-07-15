@@ -316,7 +316,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 ::v-deep .el-collapse-item {
   .el-collapse-item__header {
     background-color: #4080ff01 !important;

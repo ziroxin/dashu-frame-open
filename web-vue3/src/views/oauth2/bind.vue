@@ -113,7 +113,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 .bind-panel {
   margin-top: -80px;
   height: 100%;

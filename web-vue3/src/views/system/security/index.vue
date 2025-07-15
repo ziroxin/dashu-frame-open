@@ -75,7 +75,7 @@ export default {
   }
 }
 </script>
-<style scoped lang="scss">
+<style scoped lang="less">
 .app-container {
   .title {
     line-height: 40px;

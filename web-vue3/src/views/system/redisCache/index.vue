@@ -105,7 +105,7 @@ export default {
   }
 }
 </script>
-<style scoped lang="scss">
+<style scoped lang="less">
 .cacheInfo {
   color: #D7000F;
   text-align: center;

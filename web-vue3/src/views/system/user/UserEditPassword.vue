@@ -149,7 +149,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="less">
 /* reset element-ui css */
 .password-container {
   .el-input {
@@ -174,7 +174,7 @@ export default {
   }
 }
 </style>
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .password-container {
   min-height: 100%;
   width: 100%;

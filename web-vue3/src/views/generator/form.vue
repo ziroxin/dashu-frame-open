@@ -37,7 +37,7 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .home {
   overflow: hidden;
   background: #FFFFFF;

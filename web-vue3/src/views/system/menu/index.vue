@@ -556,7 +556,7 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .app-container {
   .data-table-permission {
     ::v-deep .menu-item {

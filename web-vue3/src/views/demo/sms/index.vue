@@ -252,7 +252,7 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .smsInfo {
   margin-bottom: 10px;
   line-height: 30px;

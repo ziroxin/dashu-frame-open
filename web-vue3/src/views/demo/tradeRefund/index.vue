@@ -335,7 +335,7 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .filter-container {
   span {
     margin-right: 10px;
