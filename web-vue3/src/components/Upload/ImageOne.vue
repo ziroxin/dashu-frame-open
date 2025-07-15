@@ -1,7 +1,7 @@
 <!--
  * 上传单图 - 有预览和删除按钮，删除后可重新上传
  * 参数说明：
-       value: 可选，上传图片路径（通过v-model双向绑定），默认为空，传入正确路径可回显
+       modelValue: 可选，上传图片路径（通过v-model双向绑定），默认为空，传入正确路径可回显
        paramsData: 可选，调用上传接口时传入后台的参数（JSON格式）
        name: 可选，file表单的name属性，默认：filename
        action: 可选，上传接口地址，默认：/upload/images
@@ -43,7 +43,7 @@ export default {
   name: 'ImageOne',
   props: {
     // 上传图片路径
-    value: {type: String, default: ''},
+    modelValue: {type: String, default: ''},
     // 传入参数
     paramsData: {type: Object, default: () => ({})},
     // 表单名称
@@ -65,7 +65,7 @@ export default {
     }
   },
   watch: {
-    value() {
+    modelValue() {
       this.loadImg()
     }
   },
@@ -75,19 +75,19 @@ export default {
   methods: {
     loadImg() {
       this.imgList = []
-      if (this.value && this.value !== null && this.value !== '') {
-        this.imgList[0] = {url: this.$baseServer + this.value}
+      if (this.modelValue && this.modelValue !== null && this.modelValue !== '') {
+        this.imgList[0] = {url: this.$baseServer + this.modelValue}
       } else {
-        this.$emit('input', '')
+        this.$emit('update:modelValue', '')
       }
     },
     imgUploadSuccess(response, file, fileList) {
       // 给value赋值
-      this.$emit('input', response.data[0].fileUrl)
+      this.$emit('update:modelValue', response.data[0].fileUrl)
     },
     imgRemove(file, fileList) {
       // 清空value
-      this.$emit('input', '')
+      this.$emit('update:modelValue', '')
     },
     // 图片大小和格式限制
     imgBeforeUpload(file) {
@@ -124,7 +124,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="less">
 .hidden-btn .el-upload--picture-card {
   display: none;
 }

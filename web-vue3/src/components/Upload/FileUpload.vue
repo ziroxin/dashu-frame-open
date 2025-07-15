@@ -1,7 +1,7 @@
 <!--
  * 上传多文件组件
  * 参数说明：
-       value: 可选，上传文件路径（通过v-model双向绑定），默认为空，传入正确路径可回显
+       modelValue: 可选，上传文件路径（通过v-model双向绑定），默认为空，传入正确路径可回显
        paramsData: 可选，调用上传接口时传入后台的参数（JSON格式）
        name: 可选，file表单的name属性，默认：filename
        action: 可选，上传接口地址，默认：/upload/files
@@ -21,7 +21,7 @@
  -->
 <template>
   <el-upload ref="fileUploader" :name="name"
-             :headers="$store.getters.headerToken"
+             :headers="getTokenHeader()"
              :data="{'path':folder,...paramsData}"
              :action="action===''?$baseServer+'/upload/files':action"
              :show-file-list="showFileList"
@@ -32,19 +32,22 @@
              :on-remove="handleRemove"
              :accept="accept"
              :auto-upload="autoUpload">
-    <el-button type="primary" icon="el-icon-upload2" size="small">{{ btnTitle }}</el-button>
-    <el-tag slot="tip" size="small" type="info" style="margin-left:10px" v-if="showTip">{{ tipInfo }}</el-tag>
+    <base-button type="primary" icon="el-icon-upload2">{{ btnTitle }}</base-button>
+    <template #tip v-if="showTip">
+      <el-tag size="small" type="info" class="ml-10px">{{ tipInfo }}</el-tag>
+    </template>
   </el-upload>
 </template>
 
 <script>
 import request from '@/utils/request'
+import { getTokenHeader } from '@/utils/auth'
 
 export default {
   name: 'FileUpload',
   props: {
     // 绑定值
-    value: {type: Array, default: () => []},
+    modelValue: {type: Array, default: () => []},
     // 传入参数
     paramsData: {type: Object, default: () => ({})},
     // file表单名称
@@ -85,11 +88,12 @@ export default {
     this.loadFileShowList()
   },
   methods: {
+    getTokenHeader,
     // 加载回显文件列表
     loadFileShowList() {
-      if (this.value && this.value.length > 0) {
-        this.fileList = [...this.value]
-        this.fileShowList = [...this.value.map(item => ({
+      if (this.modelValue && this.modelValue.length > 0) {
+        this.fileList = [...this.modelValue]
+        this.fileShowList = [...this.modelValue.map(item => ({
           ...item,
           name: item.fileOldName,
           url: this.$baseServer + item.fileUrl
@@ -99,18 +103,18 @@ export default {
     // 文件上传前，校验文件大小和类型
     handleBeforeUpload(file) {
       // 判断文件大小
-      let isRightSize = file.size < this.limitSize
+      const isRightSize = file.size < this.limitSize
       if (!isRightSize) {
         this.$message.error('文件大小不能超过' + this.formatSize(this.limitSize))
       }
       // 判断文件扩展名
       const fileExt = file.name.slice(file.name.lastIndexOf('.')).toLowerCase()
-      let isAccept = this.accept.split(',').some(ext => ext.toLowerCase() === fileExt)
+      const isAccept = this.accept.split(',').some(ext => ext.toLowerCase() === fileExt)
       if (!isAccept) {
         this.$message.error('上传文件格式错误！只能上传' + this.accept + '格式的文件')
       }
       // 判断上传个数
-      let isLimitCount = this.limitCount <= 0 || this.fileList.length < this.limitCount
+      const isLimitCount = this.limitCount <= 0 || this.fileList.length < this.limitCount
       if (!isLimitCount) {
         this.$message.error('上传数量超过限制！最多上传' + this.limitCount + '个文件！')
       }
@@ -125,11 +129,11 @@ export default {
         fileList.splice(fileList.indexOf(file), 1)
       }
       this.fileList = fileList.map(o => o.response && o.response.data.length > 0 ? o.response.data[0] : o)
-      this.$emit('input', this.fileList)
+      this.$emit('update:modelValue', this.fileList)
     },
     handleRemove(file, fileList) {
       try {
-        let params = {}
+        const params = {}
         if (file.response && file.response.data.length > 0) {
           params.fileUrl = file.response.data[0].fileUrl
         } else {
@@ -137,9 +141,10 @@ export default {
         }
         request({url: 'upload/deleteFile', method: 'get', params})
       } catch (e) {
+        console.log(e)
       }
       this.fileList = fileList.map(o => o.response && o.response.data.length > 0 ? o.response.data[0] : o)
-      this.$emit('input', this.fileList)
+      this.$emit('update:modelValue', this.fileList)
     },
     formatSize(size) {
       let sizeStr = size + 'B'

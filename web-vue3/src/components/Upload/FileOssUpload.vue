@@ -20,7 +20,7 @@
  -->
 <template>
   <el-upload class="upload-oss"
-             :headers="$store.getters.headerToken"
+             :headers="getTokenHeader()"
              :data="ossTokenData"
              :action="ossTokenData.host"
              :before-upload="beforeUpload"
@@ -33,13 +33,16 @@
              :show-file-list="showFileList"
              :on-exceed="handleExceed"
              :file-list="fileList">
-    <el-button size="small" type="primary">{{ btnTitle }}</el-button>
-    <div slot="tip" class="el-upload__tip" v-if="showTip">{{ tipInfo }}</div>
+    <el-button type="primary">{{ btnTitle }}</el-button>
+    <template #tip v-if="showTip">
+      <el-tag size="small" type="info" class="ml-10px">{{ tipInfo }}</el-tag>
+    </template>
   </el-upload>
 </template>
 
 <script>
 import request from '@/utils/request'
+import { getTokenHeader } from '@/utils/auth'
 
 export default {
   name: 'FileOssUpload',
@@ -48,8 +51,6 @@ export default {
     ossFolder: {type: String, default: '', required: true},
     // 限制上传文件数量，0表示不限制
     limit: {type: Number, default: 0, required: false},
-    // 上传文件列表（已上传的文件列表，回显时需传入）
-    fileList: {type: Array, default: () => [], required: false},
     // 是否多选
     multiple: {type: Boolean, default: true, required: false},
     // 是否显示已上传文件列表
@@ -72,10 +73,12 @@ export default {
         host: ''
       },
       // 上传文件id列表
-      fileIds: []
+      fileIds: [],
+      fileList: []
     }
   },
   methods: {
+    getTokenHeader,
     beforeUpload(file) {
       if (!this.accept.toLowerCase().split(',')
           .includes(file.name.substring(file.name.lastIndexOf('.')).toLowerCase())) {
@@ -89,7 +92,7 @@ export default {
       }
       // 上传前的钩子函数，调用api获取oss上传token
       return new Promise((resolve, reject) => {
-        let params = {path: this.ossFolder, oldFileName: file.name, maxSize: max}
+        const params = {path: this.ossFolder, oldFileName: file.name, maxSize: max}
         request({url: '/oss/client/upload/token', method: 'get', params}).then((response) => {
           this.ossTokenData = {...response.data, ...response.data.callbackVar}
           resolve(true)
@@ -102,7 +105,7 @@ export default {
       if (res.data.success) {
         this.$message({type: 'success', message: res.data.msg})
         this.fileIds.push({fid: res.data.id, uid: file.uid})
-        this.$emit('input', this.fileIds.map(o => o.fid))
+        this.$emit('update:modelValue', this.fileIds.map(o => o.fid))
       } else {
         this.$message({type: 'error', message: res.data.msg})
         this.fileList.splice(fileList.indexOf(file), 1)
@@ -110,13 +113,13 @@ export default {
     },
     handleRemove(file, fileList) {
       // 尝试删除oss文件
-      let params = {fileId: this.fileIds.find(o => o.uid === file.uid).fid}
+      const params = {fileId: this.fileIds.find(o => o.uid === file.uid).fid}
       request({url: '/oss/client/upload/deleteFromCache', method: 'post', params}).then((response) => {
         console.log(response)
       })
       // 移除fileId
       this.fileIds = this.fileIds.filter(o => o.uid !== file.uid)
-      this.$emit('input', this.fileIds.map(o => o.fid))
+      this.$emit('update:modelValue', this.fileIds.map(o => o.fid))
     },
     handleError(error) {
       console.log(error)
@@ -144,6 +147,3 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-
-</style>

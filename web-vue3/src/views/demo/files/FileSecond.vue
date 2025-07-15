@@ -6,7 +6,7 @@
 <template>
   <div>
     <div v-if="uploadData">
-      <el-button type="danger" icon="el-icon-refresh" size="small" @click="reloadUpload">重新上传</el-button>
+      <base-button type="danger" icon="el-icon-refresh" @click="reloadUpload">重新上传</base-button>
       <div class="uploadDataInfo">
         <div>上传成功 <a :href="$baseServer+uploadData.fileUrl" target="_blank">[点击下载]</a> 其他文件信息：</div>
         <div>原文件名:{{ uploadData.fileOldName }}</div>
@@ -17,29 +17,29 @@
       </div>
     </div>
     <div v-show="!uploadData" class="upload" v-loading="isLoading">
-      <label for="fileInput" class="fileInputButton">
-        <icon-show icon="el-icon-plus"></icon-show>
+      <label for="fileInput" class="el-button el-button--primary el-button--default is-plain">
+        <my-icon icon="el-icon-plus"/>
         选择文件
-        <input type="file" id="fileInput" ref="fileInput" @change="handleFileChange" style="display:none"
-               :accept="mimeTypes">
+        <input type="file" id="fileInput" ref="fileInput" @change="handleFileChange" class="hidden"
+               :accept="mimeTypes"/>
       </label>
-      <el-button type="primary" icon="el-icon-upload2" size="small" @click="submitUpload">开始上传</el-button>
+      <base-button type="primary" icon="el-icon-upload2" @click="submitUpload">开始上传</base-button>
       <div v-if="currentFile" :key="currentFile.lastModified">
         <h2>{{ currentFile.name }}({{ formatSize(currentFile.size) }})</h2>
-        <el-progress :text-inside="true" :stroke-width="20" :percentage="percentage" status="success"></el-progress>
+        <el-progress :text-inside="true" :stroke-width="20" :percentage="percentage" status="success"/>
       </div>
     </div>
   </div>
 </template>
 <script>
 import SparkMD5 from 'spark-md5'
-import IconShow from '@/components/IconShow/index.vue'
+import { MyIcon } from '@/components/MyIcon'
 import { generateUUID } from '@/utils/tools'
 import request from '@/utils/request'
 
 export default {
   name: 'FileSecond',
-  components: {IconShow},
+  components: {MyIcon},
   props: {
     // 分片上传地址
     secondServerUrl: {type: String, required: true, default: '/upload/second/chunks'},
@@ -82,23 +82,25 @@ export default {
     },
     async submitUpload() {
       this.isLoading = true
-      // 上传前，校验文件秒传表
-      await this.getChunkFileMd5(this.currentFile, async secondMd5 => {
+      try {
+        // 上传前，校验文件秒传表
+        const secondMd5 = await this.getChunkFileMd5(this.currentFile)
         const params = {secondMd5: secondMd5, isCopy: this.isCopy, path: this.uploadDir}
-        request({url: this.secondMd5Url, method: 'get', params})
-            .then((response) => {
-              if (response.code === '200' && response.data) {
-                // 文件已存在，秒传完成
-                this.uploadData = response.data
-                this.percentage = 100
-              } else {
-                // 文件不存在，开始上传（使用分片上传+断点续传）
-                console.log('准备分片上传')
-                this.chunkFile(this.currentFile, generateUUID())
-              }
-              this.isLoading = false
-            })
-      })
+        const response = await request({url: this.secondMd5Url, method: 'get', params})
+        if (response.code === '200' && response.data) {
+          // 文件已存在，秒传完成
+          this.uploadData = response.data
+          this.percentage = 100
+        } else {
+          // 文件不存在，开始上传（使用分片上传+断点续传）
+          console.log('准备分片上传')
+          await this.chunkFile(this.currentFile, generateUUID())
+        }
+      } catch (e) {
+        console.error('上传失败，请重试', e)
+      } finally {
+        this.isLoading = false
+      }
     },
     async chunkFile(newFile, uploadId) {
       // 把文件分片
@@ -107,58 +109,52 @@ export default {
         const start = i * this.chunkSize
         const end = start + this.chunkSize
         const chunkFile = newFile.slice(start, end) // 使用slice方法获取分片
-        // 上传分片
-        await new Promise(async (resolve, reject) => {
-          await this.getChunkFileMd5(chunkFile, async md5 => {
-            const params = {
-              chunkMD5: md5,
-              chunk: i,
-              chunks: chunks,
-              name: newFile.name,
-              uploadId: uploadId,
-              isCopy: this.isCopy,
-              path: this.uploadDir
-            }
-            await request({
-              url: this.secondServerUrl, method: 'post', params, headers: {skipRepeatSubmitCheck: true}
-            }).then(async (response) => {
-              if (response.code === '200') {
-                if (response.data !== null) {
-                  // 上传成功处理
-                  this.uploadProcess(response.data, i, chunks)
-                } else {
-                  // 分片不存在，新上传，更新状态
-                  let data = {
-                    chunk: i,
-                    chunks: chunks,
-                    name: newFile.name,
-                    file: chunkFile,
-                    uploadId: uploadId,
-                    isCopy: this.isCopy,
-                    path: this.uploadDir
-                  }
-                  await request({
-                    url: this.secondServerUrl, method: 'post', data,
-                    headers: {skipRepeatSubmitCheck: true, 'Content-Type': 'multipart/form-data'}
-                  }).then(async (response) => {
-                    if (response.code === '200') {
-                      // 上传成功处理
-                      this.uploadProcess(response.data, i, chunks)
-                    } else {
-                      reject('上传失败，请重试')// 上传失败
-                    }
-                  })
-                }
-              } else {
-                reject('上传失败，请重试')// 上传失败
-              }
-            })
-            resolve()
-          }).catch((e) => {
-            console.log(e)
-            resolve(e)
+        try {
+          const md5 = await this.getChunkFileMd5(chunkFile)
+          const params = {
+            chunkMD5: md5,
+            chunk: i,
+            chunks: chunks,
+            name: newFile.name,
+            uploadId: uploadId,
+            isCopy: this.isCopy,
+            path: this.uploadDir
+          }
+          const response = await request({
+            url: this.secondServerUrl, method: 'post', params, headers: {skipRepeatSubmitCheck: true}
           })
-        })
+          if (response.code === '200') {
+            if (response.data !== null) {
+              // 上传成功处理
+              this.uploadProcess(response.data, i, chunks)
+            } else {
+              // 分片不存在，新上传，更新状态
+              const data = {
+                chunk: i,
+                chunks: chunks,
+                name: newFile.name,
+                file: chunkFile,
+                uploadId: uploadId,
+                isCopy: this.isCopy,
+                path: this.uploadDir
+              }
+              const response2 = await request({
+                url: this.secondServerUrl, method: 'post', data,
+                headers: {skipRepeatSubmitCheck: true, 'Content-Type': 'multipart/form-data'}
+              })
+              if (response2.code === '200') {
+                // 上传成功处理
+                this.uploadProcess(response2.data, i, chunks)
+              } else {
+                throw new Error('上传失败，请重试') // 上传失败
+              }
+            }
+          } else {
+            throw new Error('上传失败，请重试') // 上传失败
+          }
+        } catch (e) {
+          console.error('分片上传出错', e)
+        }
       }
     },
     uploadProcess(data, chunk, chunks) {
@@ -172,18 +168,20 @@ export default {
         this.percentage = Number((chunk * 100 / chunks).toFixed(2))
       }
     },
-    async getChunkFileMd5(chunkFile, callback) {
-      const fileReader = new FileReader()
-      const spark = new SparkMD5.ArrayBuffer()
-      fileReader.onload = function (e) {
-        spark.append(e.target.result) // 将文件块内容添加到MD5计算中
-        callback(spark.end())// 计算完成，调用回调函数返回MD5值
-      }
-      fileReader.onerror = function () {
-        console.error('文件读取出错')
-        callback(null)
-      }
-      fileReader.readAsArrayBuffer(chunkFile) // 读取文件块内容
+    getChunkFileMd5(chunkFile) {
+      return new Promise((resolve, reject) => {
+        const fileReader = new FileReader()
+        const spark = new SparkMD5.ArrayBuffer()
+        fileReader.onload = function (e) {
+          spark.append(e.target.result) // 将文件块内容添加到MD5计算中
+          resolve(spark.end()) // 计算完成，调用回调函数返回MD5值
+        }
+        fileReader.onerror = function (e) {
+          console.error('文件读取出错', e)
+          reject(e)
+        }
+        fileReader.readAsArrayBuffer(chunkFile) // 读取文件块内容
+      })
     },
     beforeUpload(file) {
       const fileExtension = file.name.slice(file.name.lastIndexOf('.'))
@@ -213,39 +211,7 @@ export default {
   }
 }
 </script>
-<style scoped lang="scss">
-.upload {
-  .fileInputButton {
-    padding: 9px 15px;
-    font-size: 12px;
-    border-radius: 3px;
-    display: inline-block;
-    line-height: 1;
-    white-space: nowrap;
-    cursor: pointer;
-    background: #fff;
-    border: 1px solid #dcdfe6;
-    -webkit-appearance: button;
-    text-align: center;
-    box-sizing: border-box;
-    outline: 0;
-    margin: 0;
-    transition: .1s;
-    font-weight: 500;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    margin-right: 10px;
-    color: #606266;
-
-    &:hover {
-      color: #4080ff;
-      border-color: #c6d9ff;
-      background-color: #ecf2ff;
-    }
-  }
-}
-
+<style scoped lang="less">
 .uploadDataInfo {
   line-height: 30px;
   font-size: 14px;
@@ -254,11 +220,9 @@ export default {
   border-radius: 10px;
   padding: 20px;
   cursor: pointer;
-
   &:hover {
     background-color: rgba(185, 185, 185, 0.1);
   }
-
   a {
     margin: auto 10px;
     color: #2C7EEA;

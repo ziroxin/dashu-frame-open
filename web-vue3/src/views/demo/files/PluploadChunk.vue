@@ -7,7 +7,7 @@
   <div>
     <div v-show="isSupport">
       <div v-if="uploadData">
-        <el-button type="danger" icon="el-icon-refresh" size="small" @click="reloadUpload">重新上传</el-button>
+        <base-button type="danger" icon="el-icon-refresh" size="small" @click="reloadUpload">重新上传</base-button>
         <div class="uploadDataInfo">
           <div>上传成功 <a :href="$baseServer+uploadData.fileUrl" target="_blank">[点击下载]</a> 其他文件信息：</div>
           <div>原文件名:{{ uploadData.fileOldName }}</div>
@@ -18,12 +18,12 @@
       </div>
       <div v-show="!uploadData" class="plupload">
         <div>
-          <el-button id="selectFileBtn" icon="el-icon-plus" size="small">选择文件</el-button>
-          <el-button type="primary" icon="el-icon-upload2" size="small" @click="uploadChunk">开始上传</el-button>
+          <base-button id="selectFileBtn" icon="el-icon-plus">选择文件</base-button>
+          <base-button type="primary" icon="el-icon-upload2" @click="uploadChunk">开始上传</base-button>
         </div>
         <div v-if="currentFile" :key="currentFile.id">
           <h2>{{ currentFile.name }}({{ formatSize(currentFile.size) }})</h2>
-          <el-progress :text-inside="true" :stroke-width="20" :percentage="percentage" status="success"></el-progress>
+          <el-progress :text-inside="true" :stroke-width="20" :percentage="percentage" status="success"/>
         </div>
       </div>
     </div>
@@ -34,7 +34,7 @@
 </template>
 <script>
 import plupload from 'plupload'
-import {generateUUID} from '@/utils/tools'
+import { generateUUID } from '@/utils/tools'
 
 export default {
   name: 'PluploadChunk',
@@ -63,7 +63,7 @@ export default {
       // 已上传完成内容
       uploadData: null,
       // 上传组件
-      uploader: null,
+      uploader: null
     }
   },
   mounted() {
@@ -71,8 +71,8 @@ export default {
   },
   methods: {
     uploadChunk() {
-      this.uploader.setOption("multipart_params", {uploadId: generateUUID()})
-      this.uploader.start();
+      this.uploader.setOption('multipart_params', {uploadId: generateUUID()})
+      this.uploader.start()
     },
     formatSize(size) {
       return plupload.formatSize(size)
@@ -85,8 +85,8 @@ export default {
     async init() {
       this.uploader = new plupload.Uploader({
         runtimes: 'html5,flash,silverlight',
-        browse_button: document.getElementById("selectFileBtn"),
-        url: this.$baseServer + this.uploadServerUrl + "?path=" + this.uploadDir, // 替换为你的上传处理URL
+        browse_button: document.getElementById('selectFileBtn'),
+        url: this.$baseServer + this.uploadServerUrl + '?path=' + this.uploadDir, // 替换为你的上传处理URL
         filters: {
           mime_types: this.mimeTypes,
           max_file_size: this.maxFileSize, // 最大只能上传100mb的文件
@@ -121,7 +121,7 @@ export default {
           FileUploaded: (up, file, info) => {
             console.log('file uploaded', info)
             const data = JSON.parse(info.response)
-            if (info.status === 200 && data.code === "200") {
+            if (info.status === 200 && data.code === '200') {
               this.uploadData = data.data
               this.$message({type: 'success', message: '文件上传成功！'})
             } else {
@@ -142,16 +142,16 @@ export default {
           }
         }
       })
-      this.uploader.init();
-    },
+      this.uploader.init()
+    }
   },
-  destroyed() {
+  beforeUnmount() {
     // 销毁
-    this.uploader.destroy();
+    this.uploader.destroy()
   }
 }
 </script>
-<style scoped lang="scss">
+<style scoped lang="less">
 .noSupport {
   text-align: center;
   color: #dd1f29;

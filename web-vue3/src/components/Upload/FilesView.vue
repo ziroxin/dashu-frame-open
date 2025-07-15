@@ -3,7 +3,7 @@
  * 参数说明：
        fileList: 可选，显示文件列表，默认[]
        showCheck: 可选，是否显示选择框，可选择，默认false
-       value: 可选，选中的文件列表（通过v-model双向绑定），默认[]，可回显
+       modelValue: 可选，选中的文件列表（通过v-model双向绑定），默认[]，可回显
               注意只有showCheck为true时有效，才会显示复选框，该参数才有效
 
  * @Author: ziro
@@ -131,7 +131,7 @@ export default {
     // 是否可选择
     showCheck: {type: Boolean, default: false},
     // 默认选中的列表（当showCheck为true时有效）
-    value: {type: Array, default: () => []}
+    modelValue: {type: Array, default: () => []}
   },
   data() {
     return {
@@ -147,7 +147,7 @@ export default {
     }
   },
   watch: {
-    value(val) {
+    modelValue(val) {
       this.selectedFileList = val
     }
   },
@@ -155,7 +155,7 @@ export default {
     // 全选按钮
     handleCheckAllChange(e) {
       this.selectedFileList = e ? [...this.fileList] : []
-      this.$emit('input', this.selectedFileList)
+      this.$emit('update:modelValue', this.selectedFileList)
     },
     // 选中文件
     checkFile(e, file) {
@@ -164,7 +164,7 @@ export default {
       } else {
         this.selectedFileList.splice(this.selectedFileList.indexOf(file), 1)
       }
-      this.$emit('input', this.selectedFileList)
+      this.$emit('update:modelValue', this.selectedFileList)
     },
     // 下载文件
     downloadFile(file) {
@@ -189,7 +189,7 @@ export default {
   }
 }
 </script>
-<style scoped lang="scss">
+<style scoped lang="less">
 .files-panel {
   width: 100%;
 
