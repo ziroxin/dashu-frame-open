@@ -145,7 +145,7 @@
         表单保存时，后台可调用【OssFileCacheUtils.get(fileId)或getBean(fileId,clazz)】方法，得到已上传oss的文件信息，并保存到数据库。
         <br/>
         文件信息DEMO：
-        <vue-json-pretty :data="demoJson"/>
+        <json-editor v-model="demoJson"/>
       </div>
       <div class="text-center mt-30px">
         <a href="#" target="_blank">
@@ -163,7 +163,7 @@ import FileUpload from '@/components/Upload/FileUpload.vue'
 import FileSecond from '@/views/demo/files/FileSecond.vue'
 import PluploadChunk from '@/views/demo/files/PluploadChunk.vue'
 import FileUploadBreakpointResume from '@/components/Upload/FileUploadBreakpointResume.vue'
-import VueJsonPretty from 'vue-json-pretty'
+import { JsonEditor } from '@/components/JsonEditor'
 import request from '@/utils/request'
 import { getTokenHeader } from '@/utils/auth'
 

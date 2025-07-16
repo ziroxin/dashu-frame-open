@@ -90,23 +90,23 @@
     <div style="margin-top: 20px;letter-spacing: 0px;">
       <div v-if="error">
         <div style="color: #d7000f;margin: 10px 0px;">请求错误，错误信息：</div>
-        <vue-json-pretty v-if="error.isJson" :data="error.value"/>
+        <json-editor v-if="error.isJson" v-model="error.value"/>
         <div v-else style="color: #d7000f;margin: 10px 0px;">{{ error.value }}</div>
       </div>
       <div v-if="data">
         <div style="color: #2C7EEA;margin: 10px 0px;">请求成功，响应信息：</div>
-        <vue-json-pretty v-if="data.isJson" :data="data.value||'返回值为null'"/>
+        <json-editor v-if="data.isJson" v-model="data.value"/>
         <p v-else style="color: #2C7EEA;margin: 10px 0px;">{{ data.value }}</p>
       </div>
     </div>
   </div>
 </template>
 <script>
-import VueJsonPretty from 'vue-json-pretty'
+import { JsonEditor } from '@/components/JsonEditor'
 import request from '@/utils/request'
 
 export default {
-  components: {VueJsonPretty},
+  components: {JsonEditor, VueJsonPretty},
   data() {
     return {
       url: '',
