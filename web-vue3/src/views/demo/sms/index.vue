@@ -9,32 +9,28 @@
       ）
     </div>
     <!-- 短信 - demo-管理按钮 -->
-    <div class="mb-10px">
-      <el-input v-model="searchData.smsChannel" size="small" class="filter-item w-120px mr-10px"
-                placeholder="发送渠道"/>
-      <el-input v-model="searchData.smsPhones" size="small" style="width: 120px;margin-right: 10px;"
-                class="filter-item" placeholder="手机号"/>
-      <el-select v-model="searchData.status" size="small" style="width: 120px;margin-right: 10px;"
-                 class="filter-item" placeholder="发送状态" clearable>
-        <el-option label="发送成功" value="1"/>
-        <el-option label="发送失败" value="0"/>
-      </el-select>
-      <el-date-picker v-model="searchData.createTime" size="small" style="width: 140px;margin-right: 10px;"
-                      type="date" class="filter-item" placeholder="发送时间"
-                      format="yyyy-MM-dd" value-format="yyyy-MM-dd"/>
-      <el-button class="filter-item" type="primary" size="small"
-                 icon="el-icon-search" @click="searchBtnHandle">查询
-      </el-button>
-      <el-button class="filter-item" type="info" size="small"
-                 icon="el-icon-refresh" @click="resetTableList">重置
-      </el-button>
-      <div style="float: right;">
-        <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
-                   v-permission="'sms-demoSms-add'">发短信
-        </el-button>
-        <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
-                   v-permission="'sms-demoSms-delete'">删除
-        </el-button>
+    <div class="searchPanel">
+      <div class="searchForm">
+        <el-input v-model="searchData.smsChannel" class="searchInput w-50!" placeholder="发送渠道"/>
+        <el-input v-model="searchData.smsPhones" class="searchInput" placeholder="手机号"/>
+        <el-select v-model="searchData.status" class="searchInput" placeholder="发送状态" clearable>
+          <el-option label="发送成功" value="1"/>
+          <el-option label="发送失败" value="0"/>
+        </el-select>
+        <el-date-picker v-model="searchData.createTime" class="searchInput"
+                        type="date" placeholder="发送时间" format="yyyy-MM-dd" value-format="yyyy-MM-dd"/>
+        <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询
+        </base-button>
+        <base-button class="searchBtn" type="info" icon="el-icon-refresh" @click="resetTableList">重置
+        </base-button>
+      </div>
+      <div class="operatePanel">
+        <base-button type="primary" icon="el-icon-plus" @click="openAdd"
+                     v-permission="'sms-demoSms-add'">发短信
+        </base-button>
+        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)"
+                     v-permission="'sms-demoSms-delete'">删除
+        </base-button>
       </div>
     </div>
     <!-- 短信 - demo-列表 -->
@@ -61,11 +57,10 @@
       </el-table-column>
     </el-table>
     <!-- 短信 - demo-分页 -->
-    <el-pagination style="text-align: center;margin-top:10px;" layout="total,prev,pager,next,sizes,jumper"
+    <el-pagination class="flex justify-center mt-10px" layout="total,prev,pager,next,sizes,jumper"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
-                   @size-change="handleSizeChange"
-    />
+                   @size-change="handleSizeChange"/>
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
                v-model="dialogFormVisible" @close="resetTemp" width="600px" :key="'myDialog'+dialogIndex">
@@ -85,7 +80,7 @@
         </el-form-item>
         <el-form-item label="选择模板" v-if="temp.smsChannel==='阿里云短信'">
           <el-select v-model="temp.smsTemplate" placeholder="请选择模板">
-            <el-option v-for="item in dict.dict.aliyun_sms_template" :key="item.value"
+            <el-option v-for="item in getDict('aliyun_sms_template')" :key="item.value"
                        :value="item.value" :label="item.label"/>
           </el-select>
           <div v-if="temp.smsTemplate" class="smsTemplate">
@@ -93,23 +88,26 @@
           </div>
         </el-form-item>
         <el-form-item label="短信内容" v-if="temp.smsTemplate">
-          <template v-for="field in smsTemplateFields">
+          <template v-for="field in smsTemplateFields" :key="field">
             <el-input v-model="temp.sendJson[field]" placeholder="请输入">
-              <template slot="prepend">{{ field }}</template>
+              <template #prepend>{{ field }}</template>
             </el-input>
           </template>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-        <el-button @click="dialogFormVisible=false">取消</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+          <el-button @click="dialogFormVisible=false">取消</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import request from '@/utils/request'
+import { getDict } from '@/utils/dict-utils'
 
 export default {
   dicts: ['aliyun_sms_template'],
@@ -148,6 +146,7 @@ export default {
     this.resetTemp()
   },
   methods: {
+    getDict,
     // 查询按钮
     searchBtnHandle() {
       this.pager.page = 1
@@ -203,8 +202,7 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          let data = {...this.temp, sendJson: JSON.stringify(this.temp.sendJson)}
-          console.log(data)
+          const data = {...this.temp, sendJson: JSON.stringify(this.temp.sendJson)}
           request({url: '/sms/demoSms/add', method: 'post', data}).then(response => {
             this.$message({type: 'success', message: '短信发送成功！'})
             this.loadTableList()

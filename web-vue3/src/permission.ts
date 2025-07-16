@@ -42,7 +42,7 @@ router.beforeEach((to, from, next) => {
       // 登录后，跳转到原来打开的页面
       const permissionStore = usePermissionStoreWithOut()
       // 跳转前，先判断：store里是否有角色相关信息（路由等）
-      if (permissionStore.routesLoaded) {
+      if (permissionStore.getRoutesLoaded) {
         console.log(2)
         // 保存路由访问历史
         saveLastedRoutes(to.path)

@@ -40,6 +40,8 @@ const storageKeys = {
   l_userStore: `${key_prefix}_store_user`,
   // lock锁屏的store持久化key
   l_lockStore: `${key_prefix}_store_lock`,
+  // 数据字典持久化key
+  l_dictList: `${key_prefix}_dicts_list`,
   // 侧边栏状态的key
   sidebarStatus: `${key_prefix}_sidebar_status`,
   // 系统整体大小（字体等：default、medium、small、mini）的key
