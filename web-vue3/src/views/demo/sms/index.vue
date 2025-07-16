@@ -9,9 +9,9 @@
       ）
     </div>
     <!-- 短信 - demo-管理按钮 -->
-    <div style="margin-bottom: 10px;">
-      <el-input v-model="searchData.smsChannel" size="small" style="width: 120px;margin-right: 10px;"
-                class="filter-item" placeholder="发送渠道"/>
+    <div class="mb-10px">
+      <el-input v-model="searchData.smsChannel" size="small" class="filter-item w-120px mr-10px"
+                placeholder="发送渠道"/>
       <el-input v-model="searchData.smsPhones" size="small" style="width: 120px;margin-right: 10px;"
                 class="filter-item" placeholder="手机号"/>
       <el-select v-model="searchData.status" size="small" style="width: 120px;margin-right: 10px;"
@@ -22,17 +22,17 @@
       <el-date-picker v-model="searchData.createTime" size="small" style="width: 140px;margin-right: 10px;"
                       type="date" class="filter-item" placeholder="发送时间"
                       format="yyyy-MM-dd" value-format="yyyy-MM-dd"/>
-      <el-button v-waves class="filter-item" type="primary" size="small"
+      <el-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
       </el-button>
-      <el-button v-waves class="filter-item" type="info" size="small"
+      <el-button class="filter-item" type="info" size="small"
                  icon="el-icon-refresh" @click="resetTableList">重置
       </el-button>
       <div style="float: right;">
-        <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
+        <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
                    v-permission="'sms-demoSms-add'">发短信
         </el-button>
-        <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
+        <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                    v-permission="'sms-demoSms-delete'">删除
         </el-button>
       </div>
@@ -101,19 +101,17 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-        <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
+        <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+        <el-button @click="dialogFormVisible=false">取消</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import waves from '@/directive/waves'
 import request from '@/utils/request'
 
 export default {
-  directives: {waves},
   dicts: ['aliyun_sms_template'],
   data() {
     return {

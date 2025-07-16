@@ -8,17 +8,17 @@
                 class="filter-item" placeholder="输入原文件名-模糊"/>
       <el-input v-model="searchData.fileExtend" size="small" style="width: 150px;margin-right: 10px;"
                 class="filter-item" placeholder="输入扩展名-模糊"/>
-      <el-button v-waves class="filter-item" type="primary" size="small"
+      <el-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
       </el-button>
-      <el-button v-waves class="filter-item" type="info" size="small"
+      <el-button class="filter-item" type="info" size="small"
                  icon="el-icon-refresh" @click="resetTableList">重置
       </el-button>
       <div style="float: right;">
-        <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
+        <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
                    v-permission="'files-zFiles-add'">新增
         </el-button>
-        <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
+        <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                    v-permission="'files-zFiles-delete'">删除
         </el-button>
       </div>
@@ -105,8 +105,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-          <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
+          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+          <el-button @click="dialogFormVisible=false">取消</el-button>
         </div>
       </div>
     </el-dialog>
@@ -114,14 +114,13 @@
 </template>
 
 <script>
-import waves from '@/directive/waves'
+
 import request from '@/utils/request'
-import downloadUtil from '@/utils/download-util';
-import FileSecond from "@/views/demo/files/FileSecond.vue";
+import downloadUtil from '@/utils/download-util'
+import FileSecond from '@/views/demo/files/FileSecond.vue'
 
 export default {
   components: {FileSecond},
-  directives: {waves},
   data() {
     return {
       // 分页数据
@@ -141,7 +140,7 @@ export default {
       // 表单临时数据
       temp: {},
       isLoading: false,
-      dialogIndex: 0,
+      dialogIndex: 0
     }
   },
   created() {
@@ -163,7 +162,7 @@ export default {
     // 加载表格
     loadTableList() {
       this.isLoading = true
-      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      const params = {...this.pager, params: JSON.stringify(this.searchData)}
       request({url: '/files/zFiles/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
@@ -266,7 +265,7 @@ export default {
       }
     },
     formatSize(size) {
-      let sizeStr = size + 'B';
+      let sizeStr = size + 'B'
       if (size >= 1024 * 1024 * 1024) {
         sizeStr = (size / 1024 / 1024 / 1024).toFixed(2) + 'GB'
       } else if (size >= 1024 * 1024) {
@@ -276,7 +275,7 @@ export default {
       } else {
         sizeStr = size + 'B'
       }
-      return sizeStr;
+      return sizeStr
     }
   }
 }

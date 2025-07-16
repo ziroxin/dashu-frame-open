@@ -3,30 +3,24 @@
     <!-- 定时任务调度表-管理按钮 -->
     <div style="margin-bottom: 10px;">
       <el-input v-model="searchData.jobName" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入名称查询"
-      />
+                class="filter-item" placeholder="请输入名称查询"/>
       <el-input v-model="searchData.jobClass" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入类名查询"
-      />
-      <el-button v-waves class="filter-item" size="small" type="primary"
+                class="filter-item" placeholder="请输入类名查询"/>
+      <el-button class="filter-item" size="small" type="primary"
                  icon="el-icon-search" @click="searchBtnHandle">查询
       </el-button>
-      <el-button v-waves class="filter-item" size="small" type="info"
+      <el-button class="filter-item" size="small" type="info"
                  icon="el-icon-refresh" @click="resetTableList">重置
       </el-button>
       <div style="float: right;">
-        <el-button v-waves v-permission="'zquartz-zQuartz-add'" type="primary"
-                   size="small" icon="el-icon-plus"
-                   @click="openAdd"
-        >新增
+        <el-button v-permission="'zquartz-zQuartz-add'" type="primary"
+                   size="small" icon="el-icon-plus" @click="openAdd">新增
         </el-button>
-        <el-button v-waves type="warning" size="small" v-permission="'zquartz-zQuartz-copy'"
-                   @click="copyById" icon="el-icon-copy-document"
-        >复制任务
+        <el-button type="warning" size="small" v-permission="'zquartz-zQuartz-copy'"
+                   @click="copyById" icon="el-icon-copy-document">复制任务
         </el-button>
-        <el-button v-waves v-permission="'zquartz-zQuartz-delete'" type="danger" size="small"
-                   @click="deleteByIds" icon="el-icon-delete"
-        >删除
+        <el-button v-permission="'zquartz-zQuartz-delete'" type="danger" size="small"
+                   @click="deleteByIds" icon="el-icon-delete">删除
         </el-button>
       </div>
     </div>
@@ -49,20 +43,13 @@
             <el-tooltip effect="dark" content="请先停用！才能修改" placement="top">
               <el-button type="info" size="mini" icon="el-icon-edit">修改</el-button>
             </el-tooltip>
-            <el-button v-waves size="mini" type="danger" @click="updateStatus(row,0)">
-              停用
-            </el-button>
+            <el-button size="mini" type="danger" @click="updateStatus(row,0)">停用</el-button>
           </template>
           <template v-else>
-            <el-button v-waves type="primary" v-permission="'zquartz-zQuartz-update'"
-                       icon="el-icon-edit" size="mini"
-                       @click="openUpdate(row)"
-            >修改
+            <el-button type="primary" v-permission="'zquartz-zQuartz-update'"
+                       icon="el-icon-edit" size="mini" @click="openUpdate(row)">修改
             </el-button>
-            <el-button v-waves
-                       size="mini" type="success" @click="updateStatus(row,1)"
-            >启用
-            </el-button>
+            <el-button size="mini" type="success" @click="updateStatus(row,1)">启用</el-button>
           </template>
         </template>
       </el-table-column>
@@ -109,19 +96,17 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button v-if="dialogType!=='view'" v-waves type="primary" @click="saveData">保存</el-button>
-        <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
+        <el-button v-if="dialogType!=='view'" type="primary" @click="saveData">保存</el-button>
+        <el-button @click="dialogFormVisible=false">取消</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import waves from '@/directive/waves'
 import request from '@/utils/request'
 
 export default {
-  directives: {waves},
   data() {
     return {
       // 分页数据
@@ -160,7 +145,7 @@ export default {
     },
     // 加载表格
     loadTableList() {
-      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      const params = {...this.pager, params: JSON.stringify(this.searchData)}
       request({url: '/zquartz/zQuartz/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
@@ -229,7 +214,7 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          var data = this.temp;
+          var data = this.temp
           if (this.dialogType === 'update') {
             request({url: '/zquartz/zQuartz/update', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
@@ -283,7 +268,7 @@ export default {
     // 启用/停用
     updateStatus(row, status) {
       row.status = status
-      let data = {...row};
+      let data = {...row}
       request({url: '/zquartz/zQuartz/update', method: 'post', data}).then(response => {
         if (status === '1') {
           this.$message({type: 'success', message: '启用成功！'})
@@ -302,18 +287,18 @@ export default {
     },
     // 导出Excel文件
     exportExcel() {
-      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      const params = {...this.pager, params: JSON.stringify(this.searchData)}
       request({url: '/zquartz/zQuartz/export/excel', method: 'get', params}).then(response => {
         // 创建a标签
-        const link = document.createElement('a');
+        const link = document.createElement('a')
         // 组装下载地址
-        link.href = this.$baseServer + response.data;
+        link.href = this.$baseServer + response.data
         // 修改文件名
-        link.setAttribute('download', '定时任务调度表.xlsx');
+        link.setAttribute('download', '定时任务调度表.xlsx')
         // 开始下载
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
+        link.style.display = 'none'
+        document.body.appendChild(link)
+        link.click()
       })
     }
   }

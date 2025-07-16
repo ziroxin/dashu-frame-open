@@ -4,7 +4,7 @@
       <el-tab-pane label="临时锁定用户管理" name="second">
         <!-- 用户锁定-管理按钮 -->
         <div style="margin-bottom: 10px;float: right;">
-          <el-button v-waves v-permission="'zuserlock-zUserLock-unlock'" type="danger" size="small"
+          <el-button v-permission="'zuserlock-zUserLock-unlock'" type="danger" size="small"
                      @click="deleteByIds" icon="el-icon-unlock">用户解锁
           </el-button>
         </div>
@@ -19,18 +19,16 @@
         <!-- 用户锁定-管理按钮 -->
         <div style="margin-bottom: 10px;">
           <el-input v-model="searchData.userName" style="width: 150px;margin-right: 10px;" size="small"
-                    class="filter-item" placeholder="请输入用户名查询"
-          />
-          <el-button v-waves class="filter-item" type="primary" size="small"
+                    class="filter-item" placeholder="请输入用户名查询"/>
+          <el-button class="filter-item" type="primary" size="small"
                      icon="el-icon-search" @click="searchBtnHandle">查询
           </el-button>
-          <el-button v-waves class="filter-item" type="info" size="small"
+          <el-button class="filter-item" type="info" size="small"
                      icon="el-icon-refresh" @click="resetTableList">重置
           </el-button>
           <div style="float: right;">
-            <el-button v-waves type="danger" icon="el-icon-unlock" @click="deleteByIds"
-                       v-permission="'zuserlock-zUserLock-unlock'" size="small"
-            >用户解锁
+            <el-button type="danger" icon="el-icon-unlock" @click="deleteByIds"
+                       v-permission="'zuserlock-zUserLock-unlock'" size="small">用户解锁
             </el-button>
           </div>
         </div>
@@ -55,11 +53,9 @@
 </template>
 
 <script>
-import waves from '@/directive/waves'
 import request from '@/utils/request'
 
 export default {
-  directives: {waves},
   data() {
     return {
       activeName: 'second',
@@ -108,7 +104,7 @@ export default {
     },
     // 加载表格
     loadTableList() {
-      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      const params = {...this.pager, params: JSON.stringify(this.searchData)}
       request({url: '/zuserlock/zUserLock/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total

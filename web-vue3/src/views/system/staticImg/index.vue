@@ -4,20 +4,21 @@
     <div style="margin-bottom: 10px;">
       <el-input v-model="searchData.fileOldName" size="small" style="width: 150px;margin-right: 10px;"
                 class="filter-item" placeholder="文件夹名称"/>
-      <el-button v-waves class="filter-item" type="primary" size="small"
+      <el-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
       </el-button>
-      <el-button v-waves class="filter-item" type="info" size="small"
+      <el-button class="filter-item" type="info" size="small"
                  icon="el-icon-refresh" @click="resetTableList">重置
       </el-button>
       <div style="float: right;">
-        <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small">新增
+        <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small">新增
         </el-button>
-        <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small">删除
+        <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small">删除
         </el-button>
       </div>
     </div>
-    <div style="margin-bottom:10px;font-size:12px;line-height:20px;color:#666;border:1px dashed #ddd;padding:5px;border-radius:5px;">
+    <div
+        style="margin-bottom:10px;font-size:12px;line-height:20px;color:#666;border:1px dashed #ddd;padding:5px;border-radius:5px;">
       <b>用途：</b>静态资源管理&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <b>统一文件前缀：</b>{{ copyUrlBase }}<br/>
       <b>说明：</b>静态资源上传后，不修改原文件名；如果上传同名文件，需要先删除旧文件<br/>
@@ -62,8 +63,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-        <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
+        <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+        <el-button @click="dialogFormVisible=false">取消</el-button>
       </div>
     </el-dialog>
     <!-- 管理文件夹弹窗 -->
@@ -75,13 +76,12 @@
 </template>
 
 <script>
-import waves from '@/directive/waves'
+
 import request from '@/utils/request'
-import FolderViews from "@/views/system/staticImg/FolderViews.vue";
+import FolderViews from '@/views/system/staticImg/FolderViews.vue'
 
 export default {
   components: {FolderViews},
-  directives: {waves},
   data() {
     return {
       // 分页数据
@@ -104,7 +104,7 @@ export default {
       dialogIndex: 0,
       // 管理文件夹内容相关
       currentParentId: '',
-      folderDialogVisible: false,
+      folderDialogVisible: false
     }
   },
   computed: {
@@ -132,7 +132,7 @@ export default {
     loadTableList() {
       this.isLoading = true
       let obj = {...this.searchData, fileType: '0'}
-      const params = {...this.pager, params: JSON.stringify(obj)};
+      const params = {...this.pager, params: JSON.stringify(obj)}
       request({url: '/filesStatic/zFilesStatic/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
@@ -234,7 +234,7 @@ export default {
     openViews(row) {
       this.currentParentId = row.fileId
       this.folderDialogVisible = true
-    },
+    }
   }
 }
 </script>

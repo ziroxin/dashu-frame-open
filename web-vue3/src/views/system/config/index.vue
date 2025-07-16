@@ -6,14 +6,14 @@
                 class="filter-item" placeholder="请输入参数名称查询"/>
       <el-input v-model="searchData.cfgKey" size="small" clearable style="width: 170px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入参数键名查询"/>
-      <el-button v-waves class="filter-item" type="primary" size="small"
+      <el-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
       </el-button>
-      <el-button v-waves class="filter-item" type="info" size="small"
+      <el-button class="filter-item" type="info" size="small"
                  icon="el-icon-refresh" @click="resetTableList">重置
       </el-button>
       <div style="float: right;">
-        <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
+        <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
                    v-permission="'config-zConfig-add'">新增
         </el-button>
       </div>
@@ -97,20 +97,19 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-        <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
+        <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+        <el-button @click="dialogFormVisible=false">取消</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import waves from '@/directive/waves'
+
 import request from '@/utils/request'
-import downloadUtil from '@/utils/download-util';
+import downloadUtil from '@/utils/download-util'
 
 export default {
-  directives: {waves},
   data() {
     return {
       // 分页数据
@@ -130,7 +129,7 @@ export default {
       // 表单临时数据
       temp: {},
       isLoading: false,
-      dialogIndex: 0,
+      dialogIndex: 0
     }
   },
   created() {
@@ -152,7 +151,7 @@ export default {
     // 加载表格
     loadTableList() {
       this.isLoading = true
-      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      const params = {...this.pager, params: JSON.stringify(this.searchData)}
       request({url: '/config/zConfig/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
@@ -274,7 +273,7 @@ export default {
       } else {
         this.$message({type: 'error', message: response.message})
       }
-    },
+    }
   }
 }
 </script>

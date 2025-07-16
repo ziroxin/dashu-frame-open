@@ -129,7 +129,7 @@
           <el-input v-model="temp.permissionComponent" placeholder="组件完整地址（例：/system/menu/index）"/>
           <el-tag type="info">根节点，且有子菜单时，请填写：/layout/index</el-tag>
           &nbsp;
-          <el-button size="mini" v-waves @click="temp.permissionComponent='/layout/index'">
+          <el-button size="mini" @click="temp.permissionComponent='/layout/index'">
             点击填入 /layout/index
           </el-button>
         </el-form-item>
@@ -213,18 +213,17 @@ import {
   updateParentId
 } from '@/api/permission.js'
 // 引入图标选择器
-import IconPicker from '@/views/system/menu/IconPicker/index';
+import IconPicker from '@/views/system/menu/IconPicker/index'
 // 引入按钮组件
 import PermissionButton from '@/views/system/menu/permissionButton/index'
 // 菜单项目
-import Item from '@/layout/components/Sidebar/Item';
-import request from '@/utils/request';
-import {generateUUID} from "@/utils/tools";
-import waves from '@/directive/waves'
+import Item from '@/layout/components/Sidebar/Item'
+import request from '@/utils/request'
+import { generateUUID } from '@/utils/tools'
+
 
 export default {
   components: {IconPicker, PermissionButton, Item},
-  directives: {waves},
   data() {
     return {
       // 表格数据
@@ -266,7 +265,7 @@ export default {
       temp2: {},
       parentDialogVisible: false,
       currentParentName: '',
-      expandRowKeys: new Set(),
+      expandRowKeys: new Set()
     }
   },
   computed: {
@@ -276,7 +275,7 @@ export default {
   },
   created() {
     this.getPermissionTreeList()
-    this.resetTemp();
+    this.resetTemp()
   },
   methods: {
     //查询下拉树
@@ -356,10 +355,10 @@ export default {
           permissionAdd(this.temp).then(response => {
             this.dialogFormVisible = false
             if (response.data) {
-              this.$message({type: 'success', message: '添加成功！'});
+              this.$message({type: 'success', message: '添加成功！'})
               this.getPermissionTreeList()
             } else {
-              this.$message({type: 'error', message: '添加失败！'});
+              this.$message({type: 'error', message: '添加失败！'})
             }
           })
         }
@@ -372,9 +371,9 @@ export default {
         this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.changeData.length <= 0) {
-        this.$message({message: '请选择一条数据进行修改！', type: 'warning'});
+        this.$message({message: '请选择一条数据进行修改！', type: 'warning'})
       } else if (this.changeData.length > 1) {
-        this.$message({message: '修改时只允许选择一条数据！', type: 'warning'});
+        this.$message({message: '修改时只允许选择一条数据！', type: 'warning'})
       } else {
         // Object.assign：把changeData[0]的值复制到集合{}
         this.temp = Object.assign({}, this.changeData[0])
@@ -395,9 +394,9 @@ export default {
         this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.changeData.length <= 0) {
-        this.$message({message: '请选择一条数据进行修改！', type: 'warning'});
+        this.$message({message: '请选择一条数据进行修改！', type: 'warning'})
       } else if (this.changeData.length > 1) {
-        this.$message({message: '修改时只允许选择一条数据！', type: 'warning'});
+        this.$message({message: '修改时只允许选择一条数据！', type: 'warning'})
       } else {
         const changeData = this.changeData
         // Object.assign：把changeData[0]的值复制到集合{}
@@ -420,10 +419,10 @@ export default {
           permissionUpdate(this.temp).then(response => {
             this.dialogFormVisible = false
             if (response.data) {
-              this.$message({type: 'success', message: '修改成功！'});
+              this.$message({type: 'success', message: '修改成功！'})
               this.getPermissionTreeList()
             } else {
-              this.$message({type: 'error', message: '修改失败！'});
+              this.$message({type: 'error', message: '修改失败！'})
             }
           })
         }
@@ -436,7 +435,7 @@ export default {
         this.$refs.dataTable.toggleRowSelection(row, true)
       }
       if (this.changeData.length <= 0) {
-        this.$message({message: '请选择一条数据进行删除！', type: 'warning'});
+        this.$message({message: '请选择一条数据进行删除！', type: 'warning'})
       } else {
         const changeData = this.changeData
         this.$confirm('永久删除菜单无法恢复，确定要删除吗?', '提示', {
@@ -450,14 +449,14 @@ export default {
             }
             permissionDelete(this.permissionIds).then(response => {
               if (response.data) {
-                this.$message({type: 'success', message: '删除成功！'});
+                this.$message({type: 'success', message: '删除成功！'})
                 this.getPermissionTreeList()
               } else {
-                this.$message({type: 'error', message: '删除失败！'});
+                this.$message({type: 'error', message: '删除失败！'})
               }
             })
           })
-        });
+        })
       }
     },
     // 添加下级
@@ -540,10 +539,10 @@ export default {
       updateParentId(this.temp2).then(response => {
         this.parentDialogVisible = false
         if (response.data) {
-          this.$message({type: 'success', message: '修改成功！'});
+          this.$message({type: 'success', message: '修改成功！'})
           this.getPermissionTreeList()
         } else {
-          this.$message({type: 'error', message: '修改失败！'});
+          this.$message({type: 'error', message: '修改失败！'})
         }
       })
     },

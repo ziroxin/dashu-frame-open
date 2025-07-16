@@ -16,17 +16,17 @@
       </el-select>
       <el-date-picker v-model="searchData.paySuccessTime" size="small" style="width: 150px;margin-right: 10px;"
                       type="date" class="filter-item" placeholder="支付成功日期"/>
-      <el-button v-waves class="filter-item" type="primary" size="small"
+      <el-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
       </el-button>
-      <el-button v-waves class="filter-item" type="info" size="small"
+      <el-button class="filter-item" type="info" size="small"
                  icon="el-icon-refresh" @click="resetTableList">重置
       </el-button>
       <div style="float: right;">
-        <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small">
+        <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small">
           打开支付
         </el-button>
-        <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
+        <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                    v-permission="'trade-busTrade-delete'">删除
         </el-button>
       </div>
@@ -114,7 +114,6 @@
 </template>
 
 <script>
-import waves from '@/directive/waves'
 import request from '@/utils/request'
 import {getToken} from "@/utils/auth";
 import TradeRefund from "@/views/demo/tradeRefund/index.vue";
@@ -122,7 +121,6 @@ import TradeRefundAlipay from "@/views/demo/tradeRefund/trade-refund-alipay.vue"
 
 export default {
   components: {TradeRefundAlipay, TradeRefund},
-  directives: {waves},
   data() {
     return {
       // 分页数据

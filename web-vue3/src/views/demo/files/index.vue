@@ -168,7 +168,7 @@ import request from '@/utils/request'
 import { getTokenHeader } from '@/utils/auth'
 
 // 上传类型：normal=普通上传;chunk=分片上传;chunkResume=断点续传;second=秒传;oss=OSS上传（阿里云）
-const uploadType = ref('oss')
+const uploadType = ref('normal')
 // 是否拷贝：文件秒传
 const isCopy = ref(true)
 // oss上传的文件id

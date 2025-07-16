@@ -88,18 +88,16 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer width600">
-      <el-button v-waves type="primary" style="margin-left: 120px;" @click="saveData" icon="el-icon-check">保存配置
+      <el-button type="primary" style="margin-left: 120px;" @click="saveData" icon="el-icon-check">保存配置
       </el-button>
     </div>
   </div>
 </template>
 
 <script>
-import waves from '@/directive/waves'
 import request from '@/utils/request'
 
 export default {
-  directives: {waves},
   data() {
     return {
       // 表单临时数据
@@ -132,16 +130,16 @@ export default {
       request({url: '/zsafety/zSafety/getSafety', method: 'get'}).then((response) => {
         const {data} = response
         this.temp = Object.assign({}, data)
-        this.validTimeEnable = this.temp.validTime > 0;
-        this.loginFailedTimesEnable = this.temp.loginFailedTimes > 0;
-        this.lockTimeEnable = this.temp.lockTime > 0;
+        this.validTimeEnable = this.temp.validTime > 0
+        this.loginFailedTimesEnable = this.temp.loginFailedTimes > 0
+        this.lockTimeEnable = this.temp.lockTime > 0
       })
     },
     // 修改保存
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          var data = this.temp;
+          var data = this.temp
           if (this.validTimeEnable === true && data.validTime <= 0) {
             this.$message({type: 'error', message: '请输入密码有效期限制天数，必须大于0！'})
             return

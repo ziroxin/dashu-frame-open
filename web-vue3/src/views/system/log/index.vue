@@ -8,17 +8,17 @@
                 class="filter-item" placeholder="输入方法名模糊查询"/>
       <el-input v-model="searchData.ip" size="small" style="width: 150px; margin-right: 10px"
                 class="filter-item" placeholder="请输入IP地址查询"/>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search"
+      <el-button class="filter-item" type="primary" icon="el-icon-search"
                  @click="searchBtnHandle" size="small">查询
       </el-button>
-      <el-button v-waves class="filter-item" type="info" size="small"
+      <el-button class="filter-item" type="info" size="small"
                  icon="el-icon-refresh" @click="resetTableList">重置
       </el-button>
       <div style="float: right">
-        <el-button v-waves v-permission="'zlog-zOperateLog-delete'" icon="el-icon-delete"
+        <el-button v-permission="'zlog-zOperateLog-delete'" icon="el-icon-delete"
                    size="small" type="danger" @click="deleteByIds">删除
         </el-button>
-        <el-button v-waves v-permission="'zlog-zOperateLog-exportExcel'" icon="el-icon-printer"
+        <el-button v-permission="'zlog-zOperateLog-exportExcel'" icon="el-icon-printer"
                    size="small" type="success" @click="exportExcel">导出Excel
         </el-button>
       </div>
@@ -75,20 +75,18 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button v-if="dialogType !== 'view'" v-waves type="primary" @click="saveData">保存</el-button>
-        <el-button v-waves @click="dialogFormVisible = false">取消</el-button>
+        <el-button v-if="dialogType !== 'view'" type="primary" @click="saveData">保存</el-button>
+        <el-button @click="dialogFormVisible = false">取消</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import waves from '@/directive/waves';
-import request from '@/utils/request';
-import downloadUtil from '@/utils/download-util';
+import request from '@/utils/request'
+import downloadUtil from '@/utils/download-util'
 
 export default {
-  directives: {waves},
   data() {
     return {
       // 分页数据
@@ -111,11 +109,11 @@ export default {
       dialogFormVisible: false,
       // 表单临时数据
       temp: {}
-    };
+    }
   },
   created() {
-    this.loadTableList();
-    this.resetTemp();
+    this.loadTableList()
+    this.resetTemp()
   },
   methods: {
     // 查询按钮
@@ -126,26 +124,26 @@ export default {
     // 重置
     resetTableList() {
       this.pager.page = 1
-      this.searchData = this.$options.data().searchData;
-      this.loadTableList();
+      this.searchData = this.$options.data().searchData
+      this.loadTableList()
     },
     // 加载表格
     loadTableList() {
-      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      const params = {...this.pager, params: JSON.stringify(this.searchData)}
       request({url: '/zlog/zOperateLog/list', method: 'get', params}).then((response) => {
-        const {data} = response;
-        this.pager.totalCount = data.total;
-        this.tableData = data.records;
-      });
+        const {data} = response
+        this.pager.totalCount = data.total
+        this.tableData = data.records
+      })
     },
     // 监听选中行
     handleTableSelectChange(rows) {
-      this.tableSelectRows = rows;
+      this.tableSelectRows = rows
     },
     // 监听分页
     handleCurrentChange(page) {
-      this.pager.page = page;
-      this.loadTableList();
+      this.pager.page = page
+      this.loadTableList()
     },
     // 分页条数改变
     handleSizeChange(size) {
@@ -154,41 +152,41 @@ export default {
     },
     // 清空表单temp数据
     resetTemp() {
-      this.temp = {orderIndex: 0};
+      this.temp = {orderIndex: 0}
     },
     // 打开添加窗口
     openAdd() {
-      this.resetTemp();
-      this.dialogFormVisible = true;
-      this.dialogType = 'add';
+      this.resetTemp()
+      this.dialogFormVisible = true
+      this.dialogType = 'add'
       this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate();
-      });
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     // 打开修改窗口
     openUpdate() {
       if (this.tableSelectRows.length <= 0) {
-        this.$message({message: '请选择一条数据修改！', type: 'warning'});
+        this.$message({message: '请选择一条数据修改！', type: 'warning'})
       } else if (this.tableSelectRows.length > 1) {
         this.$message({
           message: '修改时，只允许选择一条数据！',
           type: 'warning'
-        });
+        })
       } else {
         // 修改弹窗
-        this.temp = Object.assign({}, this.tableSelectRows[0]);
-        this.dialogType = 'update';
-        this.dialogFormVisible = true;
+        this.temp = Object.assign({}, this.tableSelectRows[0])
+        this.dialogType = 'update'
+        this.dialogFormVisible = true
         this.$nextTick(() => {
-          this.$refs['dataForm'].clearValidate();
-        });
+          this.$refs['dataForm'].clearValidate()
+        })
       }
     },
     // 打开查看窗口
     openView(row) {
-      this.temp = Object.assign({}, row);
-      this.dialogType = 'view';
-      this.dialogFormVisible = true;
+      this.temp = Object.assign({}, row)
+      this.dialogType = 'view'
+      this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
@@ -197,27 +195,27 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          var data = this.temp;
+          var data = this.temp
           if (this.dialogType === 'update') {
             request({url: '/zlog/zOperateLog/update', method: 'post', data}).then((response) => {
-              this.$message({type: 'success', message: '修改成功！'});
-              this.loadTableList();
-              this.dialogFormVisible = false;
-            });
+              this.$message({type: 'success', message: '修改成功！'})
+              this.loadTableList()
+              this.dialogFormVisible = false
+            })
           } else {
             request({url: '/zlog/zOperateLog/add', method: 'post', data}).then((response) => {
-              this.$message({type: 'success', message: '添加成功！'});
-              this.loadTableList();
-              this.dialogFormVisible = false;
-            });
+              this.$message({type: 'success', message: '添加成功！'})
+              this.loadTableList()
+              this.dialogFormVisible = false
+            })
           }
         }
-      });
+      })
     },
     // 删除
     deleteByIds() {
       if (this.tableSelectRows.length <= 0) {
-        this.$message({message: '请选择一条数据删除！', type: 'warning'});
+        this.$message({message: '请选择一条数据删除！', type: 'warning'})
       } else {
         this.$confirm('确定要删除吗?', '删除提醒', {
           confirmButtonText: '确定',
@@ -225,19 +223,19 @@ export default {
           type: 'warning'
         }).then(() => {
           // 执行删除
-          const data = this.tableSelectRows.map((r) => r.logId);
+          const data = this.tableSelectRows.map((r) => r.logId)
           request({url: '/zlog/zOperateLog/delete', method: 'post', data}).then((response) => {
-            this.$message({type: 'success', message: '删除成功！'});
-            this.loadTableList();
-          });
-        });
+            this.$message({type: 'success', message: '删除成功！'})
+            this.loadTableList()
+          })
+        })
       }
     },
     // 导出Excel文件
     exportExcel() {
-      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      const params = {...this.pager, params: JSON.stringify(this.searchData)}
       downloadUtil.download('/zlog/zOperateLog/export/excel', params, '操作日志表.xlsx')
     }
   }
-};
+}
 </script>

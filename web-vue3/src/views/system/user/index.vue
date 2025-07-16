@@ -17,19 +17,19 @@
                   size="small" class="filter-item" placeholder="输入用户名查询"/>
         <el-input v-model="searchData.name" style="width: 115px;margin-right: 10px;"
                   size="small" class="filter-item" placeholder="输入姓名查询"/>
-        <el-button v-waves class="filter-item" type="primary" icon="el-icon-search"
+        <el-button class="filter-item" type="primary" icon="el-icon-search"
                    size="small" @click="searchBtnHandle"/>
-        <el-button v-waves class="filter-item" type="info" icon="el-icon-refresh"
+        <el-button class="filter-item" type="info" icon="el-icon-refresh"
                    size="small" @click="resetTableList"/>
         <div style="float: right;margin-bottom: 10px;">
           <!--  操作按钮  -->
-          <el-button v-waves type="primary" v-permission="'user-add'" size="small"
+          <el-button type="primary" v-permission="'user-add'" size="small"
                      @click="userAdd" icon="el-icon-plus">新增
           </el-button>
-          <el-button v-waves v-permission="'reset-password'" type="warning" size="small"
+          <el-button v-permission="'reset-password'" type="warning" size="small"
                      @click="resetPassword(null)" icon="el-icon-key">重置密码
           </el-button>
-          <el-button v-waves v-permission="'user-delete'" type="danger" size="small"
+          <el-button v-permission="'user-delete'" type="danger" size="small"
                      @click="userDelete(null)" icon="el-icon-delete">删除
           </el-button>
         </div>
@@ -152,11 +152,10 @@ import { getRoleList } from '@/api/role'
 import ImageAvatar from '@/components/Upload/ImageAvatar'
 import request from '@/utils/request'
 import SelectTree from '@/components/SelectTree'
-import waves from '@/directive/waves'
+
 
 export default {
   components: {ImageAvatar, SelectTree},
-  directives: {waves},
   data() {
     return {
       // 表格数据

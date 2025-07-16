@@ -6,7 +6,7 @@
       <el-tag type="success">总金额：{{ currentTradeInfo.totalFee }} 分</el-tag>
       <el-tag type="danger">已退款金额：{{ currentTradeInfo.refundTotalFee || 0 }} 分</el-tag>
       <el-button v-if="currentTradeInfo.totalFee > (currentTradeInfo.refundTotalFee || 0)"
-                 v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
+                 type="primary" icon="el-icon-plus" @click="openAdd" size="small"
                  v-permission="'tradeRefund-busTradeRefund-add'">退款
       </el-button>
       <el-button v-else type="info" size="small">已全部退款</el-button>
@@ -88,8 +88,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-        <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
+        <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+        <el-button @click="dialogFormVisible=false">取消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -97,12 +97,10 @@
 </template>
 
 <script>
-import waves from '@/directive/waves'
 import request from '@/utils/request'
 
 export default {
   name: 'TradeRefund',
-  directives: {waves},
   props: {
     // 当前订单信息
     currentTradeInfo: {type: Object, default: {}},

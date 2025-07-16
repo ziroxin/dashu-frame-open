@@ -5,20 +5,20 @@
       <el-input v-model="searchData.orgName" style="width: 220px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入组织机构名称查询" clearable
       />
-      <el-button v-waves class="filter-item" size="small" type="primary"
+      <el-button class="filter-item" size="small" type="primary"
                  icon="el-icon-search" @click="loadTableList">查询
       </el-button>
-      <el-button v-waves class="filter-item" size="small" type="info"
+      <el-button class="filter-item" size="small" type="info"
                  icon="el-icon-refresh" @click="resetTableList">重置
       </el-button>
       <div style="float: right;">
-        <el-button v-waves v-permission="'zorg-zOrganization-add'" type="primary"
+        <el-button v-permission="'zorg-zOrganization-add'" type="primary"
                    @click="openAdd(null)" size="small" icon="el-icon-plus">新增
         </el-button>
-        <el-button v-waves v-permission="'zorg-zOrganization-importExcel'" @click="dialogImportVisible=true"
+        <el-button v-permission="'zorg-zOrganization-importExcel'" @click="dialogImportVisible=true"
                    type="primary" size="small" icon="el-icon-upload2">批量导入
         </el-button>
-        <el-button v-waves v-permission="'zorg-zOrganization-delete'" type="danger"
+        <el-button v-permission="'zorg-zOrganization-delete'" type="danger"
                    @click="deleteByIds(null)" size="small" icon="el-icon-delete">删除
         </el-button>
       </div>
@@ -78,8 +78,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button v-if="dialogType!=='view'" v-waves type="primary" @click="saveData">保存</el-button>
-        <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
+        <el-button v-if="dialogType!=='view'" type="primary" @click="saveData">保存</el-button>
+        <el-button @click="dialogFormVisible=false">取消</el-button>
       </div>
     </el-dialog>
 
@@ -88,7 +88,7 @@
                @close="dialogIndex++" width="600px" :key="'importDialog'+dialogIndex">
       <el-form ref="importForm" label-width="120px" v-loading="isImportLoading">
         <el-form-item label="下载模板：">
-          <el-button v-waves type="success" plain @click="downloadExcelTemplate"
+          <el-button type="success" plain @click="downloadExcelTemplate"
                      icon="el-icon-download" size="small">下载Excel模板
           </el-button>
           <el-tag type="danger">
@@ -102,7 +102,7 @@
                      :before-upload="beforeImportUpload" :on-error="importExcelError"
                      :on-success="importExcelSuccess" accept=".xls,.xlsx"
                      :show-file-list="false" :auto-upload="true">
-            <el-button v-waves type="primary" plain icon="el-icon-upload2" size="small">点击上传Excel并导入</el-button>
+            <el-button type="primary" plain icon="el-icon-upload2" size="small">点击上传Excel并导入</el-button>
           </el-upload>
           <el-tag type="info" size="small">
             说明：点击上方按钮上传Excel文件，上传成功后会自动开始导入！
@@ -110,21 +110,20 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button v-waves @click="dialogImportVisible=false">关闭</el-button>
+        <el-button @click="dialogImportVisible=false">关闭</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import waves from '@/directive/waves'
+
 import request from '@/utils/request'
 import SelectTree from '@/components/SelectTree'
 import downloadUtil from '@/utils/download-util'
 
 export default {
   components: {SelectTree},
-  directives: {waves},
   data() {
     return {
       // 表格

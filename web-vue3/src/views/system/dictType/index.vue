@@ -6,24 +6,24 @@
         <div style="margin-bottom: 10px;">
           <el-input v-model="searchData.typeName" size="small" style="width: 160px;margin-right: 10px;"
                     class="filter-item" placeholder="输入名称或code查询"/>
-          <el-button v-waves class="filter-item" type="primary" size="small"
+          <el-button class="filter-item" type="primary" size="small"
                      icon="el-icon-search" @click="searchBtnHandle">
           </el-button>
-          <el-button v-waves class="filter-item" type="info" size="small"
+          <el-button class="filter-item" type="info" size="small"
                      icon="el-icon-refresh" @click="resetTableList">重置
           </el-button>
         </div>
         <div style="margin-bottom: 10px">
-          <el-button v-waves type="primary" icon="el-icon-plus" @click="openAdd" size="small"
+          <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
                      v-permission="'dictType-zDictType-add'">新增
           </el-button>
-          <el-button v-waves type="info" icon="el-icon-edit" @click="openUpdate(null)" size="small"
+          <el-button type="info" icon="el-icon-edit" @click="openUpdate(null)" size="small"
                      v-permission="'dictType-zDictType-update'">修改
           </el-button>
-          <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
+          <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                      v-permission="'dictType-zDictType-delete'">删除
           </el-button>
-          <el-button v-waves size="small" icon="el-icon-document"
+          <el-button size="small" icon="el-icon-document"
                      @click="dialogDictDataVisible=true">示例
           </el-button>
         </div>
@@ -85,8 +85,8 @@
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-            <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
+            <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+            <el-button @click="dialogFormVisible=false">取消</el-button>
           </div>
         </el-dialog>
       </el-col>
@@ -95,7 +95,7 @@
         <div v-if="!currentDictType.typeId">
           <el-empty description="请点击左侧字典类型表中的 [ 字典数据 ] 按钮"/>
           <div style="text-align: center;">
-            <el-button v-waves class="filter-item" type="danger" size="small"
+            <el-button class="filter-item" type="danger" size="small"
                        @click="clearDictCache(null)" icon="el-icon-refresh-right">更新全部字典缓存
             </el-button>
           </div>
@@ -110,15 +110,14 @@
 </template>
 
 <script>
-import waves from '@/directive/waves'
+
 import request from '@/utils/request'
-import DictData from "@/views/system/dictData/index.vue";
-import {clearDictCache} from "@/api/dicts";
-import DictDataDemo from "@/views/system/dictData/dictDataDemo.vue";
+import DictData from '@/views/system/dictData/index.vue'
+import { clearDictCache } from '@/api/dicts'
+import DictDataDemo from '@/views/system/dictData/dictDataDemo.vue'
 
 export default {
   components: {DictDataDemo, DictData},
-  directives: {waves},
   data() {
     return {
       // 分页数据
@@ -162,7 +161,7 @@ export default {
     },
     // 加载表格
     loadTableList() {
-      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      const params = {...this.pager, params: JSON.stringify(this.searchData)}
       request({url: '/dictType/zDictType/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
@@ -278,18 +277,18 @@ export default {
     },
     // 导出Excel文件
     exportExcel() {
-      const params = {params: JSON.stringify(this.searchData)};
+      const params = {params: JSON.stringify(this.searchData)}
       request({url: '/dictType/zDictType/export/excel', method: 'get', params}).then(response => {
         // 创建a标签
-        const link = document.createElement('a');
+        const link = document.createElement('a')
         // 组装下载地址
-        link.href = this.$baseServer + response.data;
+        link.href = this.$baseServer + response.data
         // 修改文件名
-        link.setAttribute('download', '字典类型.xlsx');
+        link.setAttribute('download', '字典类型.xlsx')
         // 开始下载
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
+        link.style.display = 'none'
+        document.body.appendChild(link)
+        link.click()
       })
     },
     // 导入Excel成功，提示
@@ -300,7 +299,7 @@ export default {
       } else {
         this.$message({type: 'error', message: response.message})
       }
-    },
+    }
   }
 }
 </script>

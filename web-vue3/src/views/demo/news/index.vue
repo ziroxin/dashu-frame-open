@@ -6,11 +6,9 @@
                 class="filter-item" placeholder="请输入新闻标题查询"/>
       <el-input v-model="searchData.newsContent" style="width: 150px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入新闻内容查询"/>
-      <base-button v-waves class="filter-item" type="primary"
-                   icon="el-icon-search" @click="searchBtnHandle">查询
+      <base-button class="filter-item" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询
       </base-button>
-      <base-button v-waves class="filter-item" type="info"
-                   icon="el-icon-refresh" @click="resetTableList">重置
+      <base-button class="filter-item" type="info" icon="el-icon-refresh" @click="resetTableList">重置
       </base-button>
       <div style="float: right;">
         <base-button v-permission="'news-news-add'" type="primary"

@@ -4,17 +4,17 @@
     <div style="margin: 15px 0px 25px 0px;">
       <el-input v-model="searchData.msgTitle" size="small" style="width: 240px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入消息标题查询"/>
-      <el-button v-waves class="filter-item" type="primary" size="small"
+      <el-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
       </el-button>
-      <el-button v-waves class="filter-item" type="info" size="small"
+      <el-button class="filter-item" type="info" size="small"
                  icon="el-icon-refresh" @click="resetTableList">重置
       </el-button>
       <div style="float: right;">
-        <el-button v-waves type="primary" size="small" v-if="msgStatus !== '1'"
+        <el-button type="primary" size="small" v-if="msgStatus !== '1'"
                    icon="el-icon-check" @click="markAllRead">全部标记已读
         </el-button>
-        <el-button v-waves type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small">批量删除
+        <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small">批量删除
         </el-button>
       </div>
     </div>
@@ -77,22 +77,21 @@
         </template>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button v-waves type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-        <el-button v-waves @click="dialogFormVisible=false">取消</el-button>
+        <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+        <el-button @click="dialogFormVisible=false">取消</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import waves from '@/directive/waves'
+
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util'
 
 export default {
   name: 'MessageList',
   props: ['msgStatus'],
-  directives: {waves},
   data() {
     return {
       // 分页数据
