@@ -1,11 +1,11 @@
 <template>
-  <div class="app-container postman1" :style="'height: ' + ($windowHeight-120) + 'px;'">
-    <h2 style="text-align: center;">本项目接口测试工具</h2>
+  <div class="app-container postman1">
+    <h2 class="text-center">本项目接口测试工具</h2>
     <div class="row">
-      <div class="label"><span style="color:#d7000f;">*</span>接口地址：</div>
+      <div class="label"><span class="color-#d7000f">*</span>接口地址：</div>
       <div class="input">
         <el-input type="text" v-model="url" placeholder="请输入API地址"></el-input>
-        <div style="width: 100%;">
+        <div class="w-100%">
           <el-button type="text" @click="demo('get')">Get示例(查询)</el-button>
           <el-button type="text" @click="demo('post')">Post示例(新增)</el-button>
           <el-button type="text" @click="demo('put')">Put示例(修改)</el-button>
@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="label"><span style="color:#d7000f;">*</span>请求方式：</div>
+      <div class="label"><span class="color-#d7000f">*</span>请求方式：</div>
       <div class="input">
         <el-radio v-model="method" label="GET">GET</el-radio>
         <el-radio v-model="method" label="POST">POST</el-radio>
@@ -45,7 +45,7 @@
         <el-radio v-model="dataType" label="x-www-form-urlencoded">x-www-form-urlencoded</el-radio>
         <el-radio v-model="dataType" label="form-data">form-data</el-radio>
         <el-radio v-model="dataType" label="text">text</el-radio>
-        <div style="font-size: 12px;color: #d7000f;letter-spacing: 1px;">{{ dataTypeInfo[dataType] }}</div>
+        <div class="text-12px color-#d7000f tracking-1px">{{ dataTypeInfo[dataType] }}</div>
       </div>
     </div>
     <div class="row" v-if="method==='POST'||method==='PUT'||method==='DELETE'">
@@ -66,8 +66,7 @@
         <input type="file" ref="myfile" name="myfile" class="myfile"/>
       </div>
       <div class="input" v-if="dataType==='text'||dataType==='json-str'">
-        <textarea v-model="bodyText" class="el-input__inner"
-                  style="text-align: left;letter-spacing: 0px;width: 100%;height: 100px;"></textarea>
+        <textarea v-model="bodyText" class="el-input__inner text-left tracking-0 w-100% h-100px"/>
       </div>
     </div>
     <div class="row">
@@ -87,16 +86,16 @@
       </div>
     </div>
     <el-divider></el-divider>
-    <div style="margin-top: 20px;letter-spacing: 0px;">
+    <div class="mt-20px tracking-0">
       <div v-if="error">
-        <div style="color: #d7000f;margin: 10px 0px;">请求错误，错误信息：</div>
+        <div class="color-#d7000f m-[10px_0]">请求错误，错误信息：</div>
         <json-editor v-if="error.isJson" v-model="error.value"/>
-        <div v-else style="color: #d7000f;margin: 10px 0px;">{{ error.value }}</div>
+        <div v-else class="color-#d7000f m-[10px_0]">{{ error.value }}</div>
       </div>
       <div v-if="data">
-        <div style="color: #2C7EEA;margin: 10px 0px;">请求成功，响应信息：</div>
+        <div class="color-#2C7EEA m-[10px_0]">请求成功，响应信息：</div>
         <json-editor v-if="data.isJson" v-model="data.value"/>
-        <p v-else style="color: #2C7EEA;margin: 10px 0px;">{{ data.value }}</p>
+        <p v-else class="color-#2C7EEA m-[10px_0]">{{ data.value }}</p>
       </div>
     </div>
   </div>
@@ -106,7 +105,7 @@ import { JsonEditor } from '@/components/JsonEditor'
 import request from '@/utils/request'
 
 export default {
-  components: {JsonEditor, VueJsonPretty},
+  components: {JsonEditor},
   data() {
     return {
       url: '',
