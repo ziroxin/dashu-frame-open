@@ -1,16 +1,16 @@
 <template>
   <div class="app-container">
     <!-- 新闻表-测试-管理按钮 -->
-    <div style="margin-bottom: 10px;">
-      <el-input v-model="searchData.newsTitle" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入新闻标题查询"/>
-      <el-input v-model="searchData.newsContent" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入新闻内容查询"/>
-      <base-button class="filter-item" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询
-      </base-button>
-      <base-button class="filter-item" type="info" icon="el-icon-refresh" @click="resetTableList">重置
-      </base-button>
-      <div style="float: right;">
+    <div class="searchPanel">
+      <div class="searchForm">
+        <el-input v-model="searchData.newsTitle" class="searchInput w-50!" placeholder="请输入新闻标题查询"/>
+        <el-input v-model="searchData.newsContent" class="searchInput w-50!" placeholder="请输入新闻内容查询"/>
+        <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询
+        </base-button>
+        <base-button class="searchBtn" type="info" icon="el-icon-refresh" @click="resetTableList">重置
+        </base-button>
+      </div>
+      <div class="operatePanel">
         <base-button v-permission="'news-news-add'" type="primary"
                      icon="el-icon-plus" @click="openAdd">新增
         </base-button>
@@ -52,8 +52,7 @@
     <el-pagination class="flex justify-center mt-10px" layout="total,prev,pager,next,sizes,jumper"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
-                   @size-change="handleSizeChange"
-    />
+                   @size-change="handleSizeChange"/>
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" v-model="dialogFormVisible" width="900px"
                :close-on-click-modal="dialogType !== 'view' ? false : true"
