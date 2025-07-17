@@ -12,7 +12,7 @@ const modules = import.meta.glob('../views/**/*.{vue,tsx}')
 const convertToComponent = (componentName, childrenLength = 0) => {
   // 空/有子路由，直接返回
   if (!componentName || childrenLength > 0) {
-    return () => new Promise((resolve) => { resolve({name: 'ParentLayout'}) })
+    return
   }
   // 加载其他路由
   if (componentName === 'Layout') {
