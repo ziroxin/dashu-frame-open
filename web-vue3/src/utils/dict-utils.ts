@@ -1,8 +1,5 @@
 /**
  * 数据字典工具类
- * 提供2个方法：
- *            1. clearDictList() 清除数据字典缓存
- *            2. getDict(code) 根据[code]获取数据字典
  */
 import request from '@/utils/request'
 import storageKeys from '@/utils/storage-keys'

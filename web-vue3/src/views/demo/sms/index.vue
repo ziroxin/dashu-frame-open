@@ -4,9 +4,9 @@
       短信模块Demo（说明：
       1.目前集成了阿里云短信，后续可再集成其他平台，集成时需要再开发；
       2.发送短信模板，在【
-      <el-link href="/#/system/dictType" :underline="false" icon="el-icon-coin">数据字典</el-link>
-      】模块维护
-      ）
+      <base-button type="text" size="small" icon="el-icon-coin" @click="useRouter().push('/system/dictType')">数据字典
+      </base-button>
+      】模块维护）
     </div>
     <!-- 短信 - demo-管理按钮 -->
     <div class="searchPanel">
@@ -64,13 +64,13 @@
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
                v-model="dialogFormVisible" @close="resetTemp" width="600px" :key="'myDialog'+dialogIndex">
-      <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
+      <el-form ref="dataForm" :model="temp" label-position="right" class="min-h-70"
+               label-width="100px" :disabled="dialogType==='view'">
         <el-form-item label="手机号" prop="smsPhones"
                       :rules="[{required: true, message: '手机号不能为空'}]">
-          <el-input v-model="temp.smsPhones" type="textarea"
-                    maxlength="12000" show-word-limit :autosize="{minRows: 3}"
-                    placeholder="请输入手机号(例如：18900000001,18900000002)"/>
-          <el-tag type="success">支持群发，多个手机号以英文逗号隔开，最多1000个</el-tag>
+          <el-input v-model="temp.smsPhones" type="textarea" maxlength="12000" show-word-limit
+                    :autosize="{minRows: 3}" placeholder="请输入手机号(例如：18900000001,18900000002)"/>
+          <el-tag type="success" class="mt-5px">支持群发，多个手机号以英文逗号隔开，最多1000个</el-tag>
         </el-form-item>
         <el-form-item label="发送渠道" prop="smsChannel"
                       :rules="[]">
@@ -80,8 +80,8 @@
         </el-form-item>
         <el-form-item label="选择模板" v-if="temp.smsChannel==='阿里云短信'">
           <el-select v-model="temp.smsTemplate" placeholder="请选择模板">
-            <el-option v-for="item in getDict('aliyun_sms_template')" :key="item.value"
-                       :value="item.value" :label="item.label"/>
+            <el-option v-for="item in aliyunTempList" :key="item.dictValue"
+                       :value="item.dictValue" :label="item.dictLabel"/>
           </el-select>
           <div v-if="temp.smsTemplate" class="smsTemplate">
             模板内容：{{ temp.smsTemplate }}
@@ -131,13 +131,21 @@ export default {
       temp: {},
       isLoading: false,
       dialogIndex: 0,
-      smsTemplateFields: []// 短信模板中的字段
+      // 短信模板中的字段
+      smsTemplateFields: [],
+      // 阿里云短信模板列表
+      aliyunTempList: []
     }
   },
   watch: {
     'temp.smsTemplate'(newVal) {
       if (newVal) {
         this.smsTemplateFields = this.extractFieldNames(newVal)
+      }
+    },
+    'temp.smsChannel'(newVal) {
+      if (newVal === '阿里云短信') {
+        this.aliyunTempList = getDict('aliyun_sms_template')
       }
     }
   },
@@ -146,7 +154,6 @@ export default {
     this.resetTemp()
   },
   methods: {
-    getDict,
     // 查询按钮
     searchBtnHandle() {
       this.pager.page = 1
