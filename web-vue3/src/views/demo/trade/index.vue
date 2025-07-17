@@ -53,11 +53,11 @@
       <el-table-column label="操作" width="120" align="center">
         <template v-slot="scope">
           <el-button style="color: #409eff;" v-if="scope.row.tradeStatus === 1"
-                     type="text" size="small" @click="refund(scope.row)">
+                     link size="small" @click="refund(scope.row)">
             退款
           </el-button>
           <el-button v-permission="'trade-busTrade-delete'" style="color: #ff6d6d;"
-                     type="text" size="small" @click="deleteByIds(scope.row)">删除
+                     link size="small" @click="deleteByIds(scope.row)">删除
           </el-button>
         </template>
       </el-table-column>

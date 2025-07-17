@@ -49,12 +49,12 @@
       <el-table-column fixed="right" label="操作" width="100" align="center">
         <template v-slot="scope">
           <el-button v-permission="'generator-zFormGenerator-update'"
-                     type="text" size="mini" @click="openUpdate(scope.row)">修改表单
+                     link type="primary" size="mini" @click="openUpdate(scope.row)">修改表单
           </el-button>
           <br/>
-          <el-button type="text" size="mini" style="color: #13ce66;" @click="openView(scope.row)">详情</el-button>
+          <el-button link size="mini" style="color: #13ce66;" @click="openView(scope.row)">详情</el-button>
           <el-button v-permission="'generator-zFormGenerator-delete'" style="color: #ff6d6d;"
-                     type="text" size="mini" @click="deleteByIds(scope.row)">删除
+                     link size="mini" @click="deleteByIds(scope.row)">删除
           </el-button>
         </template>
       </el-table-column>

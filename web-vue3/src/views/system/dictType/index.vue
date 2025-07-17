@@ -37,7 +37,7 @@
               <div>{{ scope.row.typeName }}</div>
               <div>
                 {{ scope.row.typeCode }}
-                <el-button type="text" size="small" style="color: #00b42a;"
+                <el-button link size="small" style="color: #00b42a;"
                            v-clipboard:copy="scope.row.typeCode">
                   <i class="el-icon-document-copy"/>复制
                 </el-button>
@@ -52,7 +52,7 @@
           </el-table-column>
           <el-table-column label="操作" width="50px" align="center">
             <template v-slot="scope">
-              <el-button type="text" size="small" @click="openDictData(scope.row)" style="line-height: 14px;">
+              <el-button link type="primary" size="small" @click="openDictData(scope.row)" style="line-height: 14px;">
                 字典<br/>数据
               </el-button>
             </template>

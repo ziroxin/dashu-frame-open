@@ -34,7 +34,7 @@
               <p v-if="currentHeaderHash">
                 <span>
                   文件头：{{ currentHeaderHash[0] }}
-                  <el-button type="text" size="small" style="color: #00b42a;"
+                  <el-button link size="small" style="color: #00b42a;"
                              v-clipboard:copy="currentHeaderHash[0]">
                     <i class="el-icon-document-copy"/>复制
                   </el-button>
@@ -42,7 +42,7 @@
                 <br/>
                 <span v-if="currentHeaderHash.length>1">
                   扩展名：{{ currentHeaderHash[1] }}
-                  <el-button type="text" size="small" style="color: #00b42a;"
+                  <el-button link size="small" style="color: #00b42a;"
                              v-clipboard:copy="currentHeaderHash[1]">
                     <i class="el-icon-document-copy"/>复制
                   </el-button>

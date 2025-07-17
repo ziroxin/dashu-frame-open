@@ -36,15 +36,15 @@
           <el-table-column prop="permissionName" label="菜单标识" min-width="20%" v-if="!buttonTableVisible">
             <template v-slot="{row}">
               <el-button v-permission="'system-menu-update-parent'" style="color: #52c41a;"
-                         type="text" size="mini" @click="permissionUpdateParent(row)">调整上下级
+                         link size="mini" @click="permissionUpdateParent(row)">调整上下级
               </el-button>
-              <el-button v-permission="'system-menu-update'" type="text" size="mini"
+              <el-button v-permission="'system-menu-update'" link type="primary" size="mini"
                          @click="permissionUpdate(row)">修改
               </el-button>
-              <el-button v-permission="'system-menu-delete'" type="text" size="mini" style="color: #f56c6c;"
+              <el-button v-permission="'system-menu-delete'" link size="mini" style="color: #f56c6c;"
                          @click="permissionDelete(row)">删除
               </el-button>
-              <el-button v-if="row.permissionType === '0'" type="text" size="mini"
+              <el-button v-if="row.permissionType === '0'" link type="primary" size="mini"
                          @click="subordinatesAdd(row)">添加下级
               </el-button>
             </template>
@@ -78,13 +78,13 @@
           <el-table-column fixed="right" label="操作" width="86" header-align="center">
             <template slot-scope="{row}">
               <div>
-                <el-button v-if="row.permissionIsEnabled" type="text" size="mini" style="color: #f56c6c;"
+                <el-button v-if="row.permissionIsEnabled" link size="mini" style="color: #f56c6c;"
                            @click="changeIsEnabled(row, 0)">禁用
                 </el-button>
-                <el-button v-else type="text" size="mini" style="color: #52c41a;"
+                <el-button v-else link size="mini" style="color: #52c41a;"
                            @click="changeIsEnabled(row, 1)">启用
                 </el-button>
-                <el-button v-if="row.permissionType !== '2'" type="text" plain size="mini"
+                <el-button v-if="row.permissionType !== '2'" link type="primary" plain size="mini"
                            @click="openButtonTable(row)">按钮
                 </el-button>
               </div>

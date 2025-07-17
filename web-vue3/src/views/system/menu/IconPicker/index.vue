@@ -15,7 +15,7 @@
         </span>
       </el-button>
     </el-popover>
-    <el-button v-show="iconName!==''" type="text" style="margin-left:5px" @click="iconName=''">清空</el-button>
+    <el-button v-show="iconName!==''" link type="primary" style="margin-left:5px" @click="iconName=''">清空</el-button>
   </div>
 </template>
 

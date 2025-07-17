@@ -4,7 +4,8 @@
       短信模块Demo（说明：
       1.目前集成了阿里云短信，后续可再集成其他平台，集成时需要再开发；
       2.发送短信模板，在【
-      <base-button type="text" size="small" icon="el-icon-coin" @click="useRouter().push('/system/dictType')">数据字典
+      <base-button type="primary" link size="small" icon="el-icon-coin"
+                   @click="useRouter().push('/system/dictType')">数据字典
       </base-button>
       】模块维护）
     </div>
@@ -51,7 +52,7 @@
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template v-slot="scope">
           <el-button v-permission="'sms-demoSms-delete'" style="color: #ff6d6d;"
-                     type="text" size="small" @click="deleteByIds(scope.row)">删除
+                     link size="small" @click="deleteByIds(scope.row)">删除
           </el-button>
         </template>
       </el-table-column>

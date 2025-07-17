@@ -53,14 +53,14 @@
       <el-table-column label="顺序" prop="orderIndex" align="center" width="60"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template v-slot="scope">
-          <el-button type="text" style="color: #13ce66;"
+          <el-button link style="color: #13ce66;"
                      size="mini" @click="openView(scope.row)">详情
           </el-button>
           <el-button v-permission="'dictData-zDictData-update'"
-                     type="text" size="mini" @click="openUpdate(scope.row)">修改
+                     link type="primary" size="mini" @click="openUpdate(scope.row)">修改
           </el-button>
           <el-button v-permission="'dictData-zDictData-delete'" style="color: #ff6d6d;"
-                     type="text" size="mini" @click="deleteByIds(scope.row)">删除
+                     link size="mini" @click="deleteByIds(scope.row)">删除
           </el-button>
         </template>
       </el-table-column>

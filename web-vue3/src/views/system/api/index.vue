@@ -24,7 +24,7 @@
             </el-table-column>
             <el-table-column label="操作" width="70px" align="center">
               <template #default="{row}">
-                <el-button type="text" size="small" @click.native.prevent="setMyApi(row.permissionId)">设置API
+                <el-button link type="primary" size="small" @click.native.prevent="setMyApi(row.permissionId)">设置API
                 </el-button>
               </template>
             </el-table-column>

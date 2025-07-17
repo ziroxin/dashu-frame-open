@@ -40,9 +40,9 @@
         <template v-slot="scope">
           <el-button v-permission="'tradeRefund-busTradeRefund-update'" style="color: #00afff;"
                      v-if="scope.row.refundStatus!==1"
-                     type="text" size="small" @click="updateRefundStatus(scope.row)">更新状态
+                     link size="small" @click="updateRefundStatus(scope.row)">更新状态
           </el-button>
-          <el-button type="text" style="color: #13ce66;"
+          <el-button link style="color: #13ce66;"
                      size="small" @click="openView(scope.row)">详情
           </el-button>
         </template>

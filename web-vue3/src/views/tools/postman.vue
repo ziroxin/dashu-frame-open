@@ -4,12 +4,12 @@
     <div class="row">
       <div class="label"><span class="color-#d7000f">*</span>接口地址：</div>
       <div class="input">
-        <el-input type="text" v-model="url" placeholder="请输入API地址"></el-input>
+        <el-input v-model="url" placeholder="请输入API地址"></el-input>
         <div class="w-100%">
-          <el-button type="text" @click="demo('get')">Get示例(查询)</el-button>
-          <el-button type="text" @click="demo('post')">Post示例(新增)</el-button>
-          <el-button type="text" @click="demo('put')">Put示例(修改)</el-button>
-          <el-button type="text" @click="demo('delete')">Delete示例(删除)</el-button>
+          <el-button link type="primary" @click="demo('get')">Get示例(查询)</el-button>
+          <el-button link type="primary" @click="demo('post')">Post示例(新增)</el-button>
+          <el-button link type="primary" @click="demo('put')">Put示例(修改)</el-button>
+          <el-button link type="primary" @click="demo('delete')">Delete示例(删除)</el-button>
         </div>
       </div>
     </div>
@@ -18,11 +18,11 @@
       <div class="input">
         <div v-for="(item, index) in headers" :key="index" class="input-item">
           <el-checkbox v-model="item.select" class="select"></el-checkbox>
-          <el-input type="text" v-model="item.key" @input="changeHeader(item, index)"
+          <el-input v-model="item.key" @input="changeHeader(item, index)"
                     placeholder="Content-Type" class="key">
             <template slot="prepend">KEY</template>
           </el-input>
-          <el-input type="text" v-model="item.value" placeholder="text/json;charset=utf-8" class="value">
+          <el-input v-model="item.value" placeholder="text/json;charset=utf-8" class="value">
             <template slot="prepend">VALUE</template>
           </el-input>
         </div>
@@ -53,11 +53,11 @@
       <div class="input" v-if="dataType==='json'||dataType==='x-www-form-urlencoded'">
         <div v-for="(item, index) in bodys" :key="index" class="input-item">
           <el-checkbox v-model="item.select" class="select"></el-checkbox>
-          <el-input type="text" v-model="item.key" @input="changeBody(item, index)"
+          <el-input v-model="item.key" @input="changeBody(item, index)"
                     placeholder="参数名" class="key">
             <template slot="prepend">参数名</template>
           </el-input>
-          <el-input type="text" v-model="item.value" placeholder="参数值" class="value">
+          <el-input v-model="item.value" placeholder="参数值" class="value">
             <template slot="prepend">参数值</template>
           </el-input>
         </div>
@@ -79,7 +79,7 @@
           <el-option :value="item"
                      v-for="(item, index) in historyUrlList" :key="index">
             <span class="historyContent" :title="item">{{ item }}</span>
-            <el-button type="text" icon="el-icon-delete" @click="removeHistory(item)"
+            <el-button link icon="el-icon-delete" @click="removeHistory(item)"
                        class="historyDelete" title="删除"></el-button>
           </el-option>
         </el-select>

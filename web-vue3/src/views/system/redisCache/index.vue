@@ -5,7 +5,7 @@
         <el-card style="height: calc(100vh - 125px);overflow: auto">
           <div slot="header">
             <span><i class="el-icon-collection"></i> 缓存列表</span>
-            <el-button style="float: right; padding: 3px 0" type="text" icon="el-icon-refresh-right"
+            <el-button style="float: right; padding: 3px 0" link type="primary" icon="el-icon-refresh-right"
                        @click="loadRedisCacheList()">刷新
             </el-button>
           </div>
@@ -20,7 +20,7 @@
             </el-table-column>
             <el-table-column label="操作" width="100" align="center">
               <template v-slot="scope">
-                <el-button size="mini" type="text" icon="el-icon-view"
+                <el-button size="mini" link type="primary" icon="el-icon-view"
                            @click="cacheForm=scope.row">详情
                 </el-button>
               </template>

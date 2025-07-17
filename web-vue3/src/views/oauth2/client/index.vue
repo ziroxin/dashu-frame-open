@@ -38,20 +38,20 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="130" align="center">
         <template v-slot="scope">
-          <el-button type="text" style="color: #13ce66;"
+          <el-button link style="color: #13ce66;"
                      size="small" @click="openView(scope.row)">详情
           </el-button>
           <el-button v-permission="'oauth2.client-oauthClientDetails-update'"
-                     type="text" size="small" @click="openUpdate(scope.row)">修改
+                     link type="primary" size="small" @click="openUpdate(scope.row)">修改
           </el-button>
           <el-button v-permission="'oauth2.client-oauthClientDetails-delete'" style="color: #ff6d6d;"
-                     type="text" size="small" @click="deleteByIds(scope.row)">删除
+                     link size="small" @click="deleteByIds(scope.row)">删除
           </el-button>
-          <el-button type="text"
+          <el-button link type="primary"
                      size="small" @click="testOauth(scope.row)">测试
           </el-button>
           <el-button v-permission="'oauth2.client-oauthClientDetails-resetSecret'" style="color: #ff6d6d;"
-                     type="text" size="small" @click="resetSecret(scope.row)">重置Secret
+                     link size="small" @click="resetSecret(scope.row)">重置Secret
           </el-button>
         </template>
       </el-table-column>
@@ -75,7 +75,7 @@
         </el-form-item>
         <el-form-item label="应用Secret" prop="clientSecret"
                       :rules="[{required: true, message: '应用Secret不能为空'}]">
-          <el-input v-model="temp.clientSecret" type="text" placeholder="请输入应用Secret（点击下方按钮可随机生成）"/>
+          <el-input v-model="temp.clientSecret" placeholder="请输入应用Secret（点击下方按钮可随机生成）"/>
           <el-button type="primary" size="mini" @click="generateRandomPassword(16)">随机生成Secret</el-button>
           <el-button type="success" size="mini" v-clipboard:copy="temp.clientSecret">复制当前Secret</el-button>
         </el-form-item>
@@ -86,8 +86,7 @@
         <!-- 应用ID -->
         <el-form-item label="应用ID" prop="clientId" v-if="dialogType === 'add'"
                       :rules="[{required: true, message: '应用ID不能为空'}]">
-          <el-input v-model="temp.clientId" type="text"
-                    maxlength="256" placeholder="请输入应用ID（注意：应用ID添加后不能修改）"/>
+          <el-input v-model="temp.clientId" maxlength="256" placeholder="请输入应用ID（注意：应用ID添加后不能修改）"/>
         </el-form-item>
         <el-form-item label="应用ID" v-if="dialogType === 'update'">
           <span style="color: #dd1f29;font-weight: bold;font-size: 20px;">{{ temp.clientId }}</span>
@@ -96,7 +95,7 @@
         <!-- 应用Secret -->
         <el-form-item label="应用Secret" prop="clientSecret" v-if="dialogType === 'add'"
                       :rules="[{required: true, message: '应用Secret不能为空'}]">
-          <el-input v-model="temp.clientSecret" type="text" placeholder="请输入应用Secret（点击下方按钮可随机生成）"/>
+          <el-input v-model="temp.clientSecret" placeholder="请输入应用Secret（点击下方按钮可随机生成）"/>
           <div style="color: #dd1f29;">请妥善保管好应用Secret，不要泄露；不可找回，若丢失只能重置！</div>
           <el-button type="primary" size="mini" @click="generateRandomPassword(16)">随机生成Secret</el-button>
           <el-button type="success" size="mini" v-clipboard:copy="temp.clientSecret">复制当前Secret</el-button>
@@ -104,7 +103,7 @@
         <!-- 回调地址 -->
         <el-form-item label="回调地址" prop="webServerRedirectUri"
                       :rules="[{required: true, message: '应用回调地址不能为空'}]">
-          <el-input v-model="temp.webServerRedirectUri" type="text" placeholder="请输入应用回调地址"/>
+          <el-input v-model="temp.webServerRedirectUri" placeholder="请输入应用回调地址"/>
         </el-form-item>
         <!-- 授权模式 -->
         <el-form-item label="授权模式" prop="authorizedGrantTypesArr"

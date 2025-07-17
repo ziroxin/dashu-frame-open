@@ -26,7 +26,7 @@
           </el-table-column>
           <el-table-column label="操作" width="100" align="center">
             <template v-slot="scope">
-              <el-button type="text" size="small" @click="setMyApi(scope.row)">设置权限</el-button>
+              <el-button link type="primary" size="small" @click="setMyApi(scope.row)">设置权限</el-button>
             </template>
           </el-table-column>
         </el-table>

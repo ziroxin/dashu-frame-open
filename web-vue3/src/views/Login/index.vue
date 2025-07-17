@@ -34,7 +34,7 @@
                   <el-form-item prop="userName">
                     <el-input ref="userName" prefix-icon="el-icon-user"
                               v-model="loginForm.userName" placeholder="请输入用户名"
-                              name="userName" type="text" tabindex="1" autocomplete="off"
+                              name="userName" tabindex="1" autocomplete="off"
                     />
                   </el-form-item>
                   <el-tooltip v-model="capsTooltip" content="大写已打开" placement="right" manual>
@@ -50,7 +50,7 @@
                   <el-form-item prop="yzm">
                     <el-input ref="yzm" prefix-icon="el-icon-help"
                               v-model="loginForm.yzm" class="yzmInput" placeholder="请输入验证码"
-                              name="yzm" type="text" tabindex="3" autocomplete="off"
+                              name="yzm" tabindex="3" autocomplete="off"
                               @keyup.enter.native="handleLogin"
                     />
                     <img class="yzmImg" :src="loginForm.codeBaseImage" @click="loadCaptcha">

@@ -83,7 +83,7 @@
         <div>
           使用本功能上传的文件，全部存入 “ 文件秒传表 ”。
           点击进入：
-          <el-button type="text" @click="$router.push('/files')">[文件秒传管理]</el-button>
+          <el-button link type="primary" @click="$router.push('/files')">[文件秒传管理]</el-button>
         </div>
         <div class="text-#dd1f29">
           说明：上传前，先根据文件 md5 判断，表中是否存在：

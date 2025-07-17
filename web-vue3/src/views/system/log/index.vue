@@ -34,7 +34,7 @@
       <el-table-column label="操作时间" prop="createTime" align="center" width="100"/>
       <el-table-column fixed="right" label="操作" align="center" width="80">
         <template #default="scope">
-          <el-button type="text" size="small" @click="openView(scope.row)">查看详情</el-button>
+          <el-button link type="primary" size="small" @click="openView(scope.row)">查看详情</el-button>
         </template>
       </el-table-column>
     </el-table>

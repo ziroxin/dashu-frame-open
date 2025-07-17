@@ -42,11 +42,11 @@
       <el-table-column label="消息创建时间" prop="createTime" width="150" align="center"/>
       <el-table-column fixed="right" label="操作" width="150" align="center">
         <template v-slot="scope">
-          <el-button type="text"
+          <el-button link type="primary"
                      size="small" @click="openView(scope.row)">查看详情
           </el-button>
           <el-button style="color: #ff6d6d;"
-                     type="text" size="small" @click="deleteByIds(scope.row)">删除
+                     link size="small" @click="deleteByIds(scope.row)">删除
           </el-button>
         </template>
       </el-table-column>

@@ -38,14 +38,14 @@
       <el-table-column label="创建时间" prop="createTime" align="center" width="100"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template v-slot="scope">
-          <el-button type="text" style="color: #13ce66;"
+          <el-button link style="color: #13ce66;"
                      size="small" @click="openView(scope.row)">详情
           </el-button>
-          <el-button type="text"
+          <el-button link type="primary"
                      size="small" @click="downloadFile(scope.row)">下载
           </el-button>
           <el-button v-permission="'files-zFiles-delete'" style="color: #ff6d6d;"
-                     type="text" size="small" @click="deleteByIds(scope.row)">删除
+                     link size="small" @click="deleteByIds(scope.row)">删除
           </el-button>
         </template>
       </el-table-column>

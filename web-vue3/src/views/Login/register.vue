@@ -29,7 +29,7 @@
                   <el-form-item prop="userName">
                     <el-input ref="userName" prefix-icon="el-icon-user" tabindex="1"
                               v-model="regForm.userName" placeholder="请输入用户名"
-                              name="userName" type="text" autocomplete="off"/>
+                              name="userName"  autocomplete="off"/>
                   </el-form-item>
                   <el-tooltip v-model="capsTooltip" content="大写已打开" placement="right" manual>
                     <el-form-item prop="password">
@@ -50,7 +50,7 @@
                   <el-form-item prop="yzm">
                     <el-input ref="yzm" prefix-icon="el-icon-help" tabindex="4"
                               v-model="regForm.yzm" class="yzmInput" placeholder="请输入验证码"
-                              name="yzm" type="text" autocomplete="off"/>
+                              name="yzm"  autocomplete="off"/>
                     <img class="yzmImg" :src="regForm.codeBaseImage" @click="loadCaptcha">
                   </el-form-item>
                   <!-- 选填项 -->
@@ -74,7 +74,7 @@
                         </el-radio-group>
                       </el-form-item>
                       <el-form-item prop="nickName">
-                        <el-input prefix-icon="el-icon-user-solid" type="text" tabindex="7"
+                        <el-input prefix-icon="el-icon-user-solid" tabindex="7"
                                   autocomplete="off" v-model="regForm.nickName" placeholder="请输入昵称"/>
                       </el-form-item>
                       <el-form-item prop="introduce">
@@ -82,11 +82,11 @@
                                   maxlength="50" v-model="regForm.introduce" placeholder="个人简介"/>
                       </el-form-item>
                       <el-form-item prop="name">
-                        <el-input prefix-icon="el-icon-user" type="text" autocomplete="off" tabindex="9"
+                        <el-input prefix-icon="el-icon-user" autocomplete="off" tabindex="9"
                                   v-model="regForm.name" placeholder="姓名"/>
                       </el-form-item>
                       <el-form-item prop="phone">
-                        <el-input prefix-icon="el-icon-mobile-phone" type="text" tabindex="10"
+                        <el-input prefix-icon="el-icon-mobile-phone" tabindex="10"
                                   autocomplete="off" v-model="regForm.phone" placeholder="手机号"/>
                       </el-form-item>
                     </el-collapse-item>

@@ -37,10 +37,10 @@
       <el-table-column label="修改时间" prop="updateTime" align="center"/>
       <el-table-column fixed="right" label="操作" width="200" align="center">
         <template v-slot="scope">
-          <el-button type="text" style="color: #13ce66;" size="small" @click="openViews(scope.row)">管理文件夹
+          <el-button link style="color: #13ce66;" size="small" @click="openViews(scope.row)">管理文件夹
           </el-button>
-          <el-button type="text" size="small" @click="openUpdate(scope.row)">修改</el-button>
-          <el-button type="text" style="color: #ff6d6d;" size="small" @click="deleteByIds(scope.row)">删除</el-button>
+          <el-button link type="primary" size="small" @click="openUpdate(scope.row)">修改</el-button>
+          <el-button link style="color: #ff6d6d;" size="small" @click="deleteByIds(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
