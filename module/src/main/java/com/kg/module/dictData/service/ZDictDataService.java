@@ -2,7 +2,6 @@ package com.kg.module.dictData.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.kg.module.dictData.dto.DictTreeDTO;
 import com.kg.module.dictData.dto.ZDictDataDTO;
 import com.kg.module.dictData.entity.ZDictData;
 
@@ -69,11 +68,6 @@ public interface ZDictDataService extends IService<ZDictData> {
      * 获取全部字典（缓存redis）
      */
     List<ZDictData> listCache(String typeCode);
-
-    /**
-     * 获取数据字典树（缓存redis）
-     */
-    List<DictTreeDTO> listTreeCache();
 
     /**
      * 清空数据字典缓存数据

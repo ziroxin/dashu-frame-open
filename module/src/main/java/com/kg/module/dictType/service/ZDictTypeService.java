@@ -3,6 +3,7 @@ package com.kg.module.dictType.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kg.core.exception.BaseException;
+import com.kg.module.dictType.dto.DictTreeDTO;
 import com.kg.module.dictType.dto.ZDictTypeDTO;
 import com.kg.module.dictType.entity.ZDictType;
 
@@ -64,4 +65,9 @@ public interface ZDictTypeService extends IService<ZDictType> {
      * @param request 请求文件
      */
     void importExcel(HttpServletRequest request);
+
+    /**
+     * 获取数据字典树（缓存redis）
+     */
+    List<DictTreeDTO> listTreeCache();
 }

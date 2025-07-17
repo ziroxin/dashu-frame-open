@@ -13,7 +13,6 @@ import com.kg.component.utils.GuidUtils;
 import com.kg.component.utils.StrTypeCheckUtils;
 import com.kg.component.utils.TimeUtils;
 import com.kg.core.common.constant.CacheConstant;
-import com.kg.module.dictData.dto.DictTreeDTO;
 import com.kg.module.dictData.dto.ZDictDataDTO;
 import com.kg.module.dictData.dto.convert.ZDictDataConvert;
 import com.kg.module.dictData.entity.ZDictData;
@@ -21,8 +20,6 @@ import com.kg.module.dictData.excels.ZDictDataExcelConstant;
 import com.kg.module.dictData.excels.ZDictDataExcelImportDTO;
 import com.kg.module.dictData.excels.ZDictDataExcelOutDTO;
 import com.kg.module.dictData.mapper.ZDictDataMapper;
-import com.kg.module.dictType.entity.ZDictType;
-import com.kg.module.dictType.service.ZDictTypeService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -50,8 +47,6 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
     private ZDictDataConvert zDictDataConvert;
     @Resource
     private RedisUtils redisUtils;
-    @Resource
-    private ZDictTypeService zDictTypeService;
 
     /**
      * 分页列表
@@ -340,40 +335,6 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
             return dataList;
         }
         return new ArrayList<>();
-    }
-
-    @Override
-    public List<DictTreeDTO> listTreeCache() {
-        // 定义返回结果
-        List<DictTreeDTO> result = new ArrayList<>();
-        // 所有字典类型Set
-        List<ZDictType> typeList = zDictTypeService.lambdaQuery().eq(ZDictType::getStatus, "1").list();
-        // 所有字典数据
-        List<ZDictData> dictDataList = lambdaQuery().eq(ZDictData::getStatus, "1")
-                .orderByAsc(ZDictData::getTypeCode).orderByAsc(ZDictData::getOrderIndex).list();
-        // 遍历处理所有类型
-        for (ZDictType type : typeList) {
-            DictTreeDTO dictTree = new DictTreeDTO();
-            dictTree.setTypeId(type.getTypeId());
-            dictTree.setTypeCode(type.getTypeCode());
-            dictTree.setTypeName(type.getTypeName());
-            // 查询字典数据
-            String key = CacheConstant.DICT_TYPE_REDIS_PRE + type.getTypeCode();
-            if (redisUtils.hasKey(key)) {
-                dictTree.setChildren(JSONUtil.toList(redisUtils.get(key).toString(), ZDictData.class));
-            } else {
-                // 查询所有字典数据
-                List<ZDictData> dataList = dictDataList.stream()
-                        .filter(d -> d.getTypeCode().equals(type.getTypeCode())).collect(Collectors.toList());
-                if (dataList != null && dataList.size() > 0) {
-                    // 将缓存存入redis
-                    redisUtils.set(key, JSONUtil.toJsonStr(dataList));
-                    dictTree.setChildren(dataList);
-                }
-            }
-            result.add(dictTree);
-        }
-        return result;
     }
 
     /**

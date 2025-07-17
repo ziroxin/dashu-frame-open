@@ -1,4 +1,4 @@
-package com.kg.module.dictData.dto;
+package com.kg.module.dictType.dto;
 
 import com.kg.module.dictData.entity.ZDictData;
 import io.swagger.annotations.ApiModel;

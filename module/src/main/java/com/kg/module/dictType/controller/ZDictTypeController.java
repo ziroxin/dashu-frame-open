@@ -3,6 +3,7 @@ package com.kg.module.dictType.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
+import com.kg.module.dictType.dto.DictTreeDTO;
 import com.kg.module.dictType.dto.ZDictTypeDTO;
 import com.kg.module.dictType.dto.convert.ZDictTypeConvert;
 import com.kg.module.dictType.service.ZDictTypeService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * <p>
@@ -34,6 +36,12 @@ public class ZDictTypeController {
     private ZDictTypeService zDictTypeService;
     @Resource
     private ZDictTypeConvert zDictTypeConvert;
+
+    @ApiOperation(value = "/dictType/zDictType/listTreeCache", notes = "获取数据字典树（缓存redis）", httpMethod = "GET")
+    @GetMapping("/listTreeCache")
+    public List<DictTreeDTO> listTreeCache() {
+        return zDictTypeService.listTreeCache();
+    }
 
     @ApiOperation(value = "/dictType/zDictType/getById", notes = "详情-字典类型", httpMethod = "GET")
     @ApiImplicitParams({

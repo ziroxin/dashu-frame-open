@@ -8,9 +8,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kg.component.file.FilePathConfig;
 import com.kg.component.office.ExcelReadUtils;
 import com.kg.component.office.ExcelWriteUtils;
+import com.kg.component.redis.RedisUtils;
 import com.kg.component.utils.GuidUtils;
 import com.kg.component.utils.TimeUtils;
+import com.kg.core.common.constant.CacheConstant;
 import com.kg.core.exception.BaseException;
+import com.kg.module.dictType.dto.DictTreeDTO;
 import com.kg.module.dictData.entity.ZDictData;
 import com.kg.module.dictData.service.ZDictDataService;
 import com.kg.module.dictType.dto.ZDictTypeDTO;
@@ -45,6 +48,8 @@ public class ZDictTypeServiceImpl extends ServiceImpl<ZDictTypeMapper, ZDictType
     private ZDictTypeConvert zDictTypeConvert;
     @Resource
     private ZDictDataService zDictDataService;
+    @Resource
+    private RedisUtils redisUtils;
 
     /**
      * 分页列表
@@ -228,6 +233,40 @@ public class ZDictTypeServiceImpl extends ServiceImpl<ZDictTypeMapper, ZDictType
         }).collect(Collectors.toList());
         // 保存
         saveBatch(saveData);
+    }
+
+    @Override
+    public List<DictTreeDTO> listTreeCache() {
+        // 定义返回结果
+        List<DictTreeDTO> result = new ArrayList<>();
+        // 所有字典类型Set
+        List<ZDictType> typeList = lambdaQuery().eq(ZDictType::getStatus, "1").list();
+        // 所有字典数据
+        List<ZDictData> dictDataList = zDictDataService.lambdaQuery().eq(ZDictData::getStatus, "1")
+                .orderByAsc(ZDictData::getTypeCode).orderByAsc(ZDictData::getOrderIndex).list();
+        // 遍历处理所有类型
+        for (ZDictType type : typeList) {
+            DictTreeDTO dictTree = new DictTreeDTO();
+            dictTree.setTypeId(type.getTypeId());
+            dictTree.setTypeCode(type.getTypeCode());
+            dictTree.setTypeName(type.getTypeName());
+            // 查询字典数据
+            String key = CacheConstant.DICT_TYPE_REDIS_PRE + type.getTypeCode();
+            if (redisUtils.hasKey(key)) {
+                dictTree.setChildren(JSONUtil.toList(redisUtils.get(key).toString(), ZDictData.class));
+            } else {
+                // 查询所有字典数据
+                List<ZDictData> dataList = dictDataList.stream()
+                        .filter(d -> d.getTypeCode().equals(type.getTypeCode())).collect(Collectors.toList());
+                if (dataList != null && dataList.size() > 0) {
+                    // 将缓存存入redis
+                    redisUtils.set(key, JSONUtil.toJsonStr(dataList));
+                    dictTree.setChildren(dataList);
+                }
+            }
+            result.add(dictTree);
+        }
+        return result;
     }
 
 }

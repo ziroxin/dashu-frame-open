@@ -5,7 +5,6 @@ import com.kg.core.annotation.AutoOperateLog;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
 import com.kg.core.web.ResponseResult;
-import com.kg.module.dictData.dto.DictTreeDTO;
 import com.kg.module.dictData.dto.ZDictDataDTO;
 import com.kg.module.dictData.dto.convert.ZDictDataConvert;
 import com.kg.module.dictData.entity.ZDictData;
@@ -45,12 +44,6 @@ public class ZDictDataController {
     @GetMapping("/listCache")
     public List<ZDictData> listCache(String typeCode) {
         return zDictDataService.listCache(typeCode);
-    }
-
-    @ApiOperation(value = "/dictData/zDictData/listTreeCache", notes = "获取数据字典树（缓存redis）", httpMethod = "GET")
-    @GetMapping("/listTreeCache")
-    public List<DictTreeDTO> listTreeCache() {
-        return zDictDataService.listTreeCache();
     }
 
     @ApiOperation(value = "/dictData/zDictData/clearCache", notes = "清空数据字典缓存数据", httpMethod = "GET")
