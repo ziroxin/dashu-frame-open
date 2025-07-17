@@ -15,7 +15,7 @@
                 command: () => {refreshSelectedTag(item)}
               },{
                 icon: 'vi-ant-design:close-outlined',label: t('common.closeTab'),
-                disabled: !!visitedViews?.length && selectedTag?.meta.affix,
+                disabled: !!(!!visitedViews?.length&&selectedTag?.meta.affix),
                 command: () => {closeSelectedTag(item)}
               },{
                 divided: true,icon: 'vi-ant-design:vertical-right-outlined',
@@ -69,7 +69,7 @@
           command: () => {refreshSelectedTag(selectedTag)}
         },{
           icon: 'vi-ant-design:close-outlined',label: t('common.closeTab'),
-          disabled: !!visitedViews?.length && selectedTag?.meta.affix,
+          disabled: !!(!!visitedViews?.length && selectedTag?.meta.affix),
           command: () => {closeSelectedTag(selectedTag!)}
         },{
           divided: true,icon: 'vi-ant-design:vertical-right-outlined',label: t('common.closeTheLeftTab'),
