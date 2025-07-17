@@ -72,4 +72,5 @@ export function storageClear4Logout() {
   localStorage.removeItem(storageKeys.l_permissionStore)
   localStorage.removeItem(storageKeys.l_userStore)
   localStorage.removeItem(storageKeys.l_lockStore)
+  localStorage.removeItem(storageKeys.l_dictList)
 }

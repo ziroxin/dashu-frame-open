@@ -22,6 +22,8 @@ import { setupRouter } from './router'
 import { setupDirectives } from './directives'
 // 注册全局变量
 import { setupGlobalProperties } from '@/utils/global-properties'
+// 注册数据字典
+import { setupDictList } from '@/utils/dict-utils'
 // 引入App组件
 import { createApp } from 'vue'
 import App from './App.vue'
@@ -44,6 +46,8 @@ const setupAll = async () => {
   setupDirectives(app)
   // 注册全局变量
   setupGlobalProperties(app)
+  // 注册数据字典
+  setupDictList()
   // 挂载
   app.mount('#app')
 }

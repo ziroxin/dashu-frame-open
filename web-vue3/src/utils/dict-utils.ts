@@ -6,9 +6,39 @@
  */
 import request from '@/utils/request'
 import storageKeys from '@/utils/storage-keys'
+import { getToken } from '@/utils/auth'
 
 /** 数据字典列表 */
-let dictList: any[] = JSON.parse(localStorage.getItem(storageKeys.l_dictList) as string) || []
+let dictList: any[]
+
+/**
+ * 初始化数据字典列表
+ */
+export const setupDictList = () => {
+  if (!dictList || dictList.length <= 0) {
+    const obj = localStorage.getItem(storageKeys.l_dictList)
+    if (obj) {
+      dictList = JSON.parse(obj)
+    } else {
+      if (getToken()) {
+        // 加载全部数据字典
+        request({url: '/dictType/zDictType/listTreeCache', method: 'get'}).then(res => {
+          dictList = res.data
+          localStorage.setItem(storageKeys.l_dictList, JSON.stringify(res.data))
+        }).catch(err => { console.error('加载数据字典列表出错:', err) })
+      }
+    }
+  }
+}
+
+/**
+ * 获取数据字典
+ * @param code 字典类型code
+ */
+export function getDict(code: string) {
+  const dict = dictList.filter(item => item.typeCode === code)
+  return dict.length > 0 ? dict[0].children : []
+}
 
 /**
  * 清除数据字典缓存
@@ -17,48 +47,4 @@ export function clearDictList() {
   dictList = []
   localStorage.removeItem(storageKeys.l_dictList)
 }
-
-/**
- * 获取数据字典
- * @param code 字典类型code
- */
-export function getDict(code: string): Promise<any> {
-  const dict = dictList.filter(item => item.code === code)
-  if (dict.length > 0) {
-    return Promise.resolve(dict[0])
-  } else {
-    return new Promise((resolve, reject) => {
-      request({url: '/dictData/zDictData/listCache', method: 'get', params: {typeCode: code}})
-        .then((res) => {
-          setDict(code, res.data)
-          resolve(res.data)
-        })
-        .catch((err) => {
-          console.log('获取字典数据失败，', err)
-          reject(err)
-        })
-    })
-  }
-}
-
-
-/**
- * 设置数据字典（并缓存到本地）
- * @param code 字典类型code
- * @param list 字典数据列表
- */
-function setDict(code: string, list: any): void {
-  if (code && list) {
-    // 更新数据字典
-    const dict = dictList.find(item => item.code === code)
-    if (dict) {
-      dict.list = list
-    } else {
-      dictList.push({code: code, list: list})
-    }
-    // 存储数据字典
-    localStorage.setItem(storageKeys.l_dictList, JSON.stringify(dictList))
-  }
-}
-
 
