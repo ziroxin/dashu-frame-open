@@ -19,7 +19,7 @@ export const setupElementPlus = (app: App<Element>, type: string) => {
     import('element-plus/dist/index.css')
   }
   // 设置语言和尺寸
-  const options = {locale: zhCN, size: 'medium'}
+  const options = {locale: zhCN, size: 'default'}
   // 然后根据type参数选择引入方式
   if (type === 'all') {
     // 方式一：全局引入所有组件

@@ -1,6 +1,9 @@
 <template>
   <el-dropdown :class="prefixCls" trigger="click" @command="setLang">
-    <my-icon :size="18" icon="vi-ion:language-sharp" class="cursor-pointer !p-0" :class="$attrs.class" :color="color"/>
+    <div class="flex items-center h-100%">
+      <my-icon :size="18" icon="vi-ion:language-sharp"
+               class="cursor-pointer !p-0" :class="$attrs.class" :color="color"/>
+    </div>
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item v-for="item in langMap" :key="item.lang" :command="item.lang">

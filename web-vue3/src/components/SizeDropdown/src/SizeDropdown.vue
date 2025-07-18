@@ -1,6 +1,8 @@
 <template>
   <el-dropdown :class="prefixCls" trigger="click" @command="setCurrentSize">
-    <my-icon :size="18" icon="vi-mdi:format-size" :color="color" class="cursor-pointer"/>
+    <div class="flex items-center h-100%">
+      <my-icon :size="18" icon="vi-mdi:format-size" :color="color" class="cursor-pointer"/>
+    </div>
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item v-for="item in sizeMap" :key="item" :command="item">

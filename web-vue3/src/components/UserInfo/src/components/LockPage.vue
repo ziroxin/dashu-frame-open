@@ -1,42 +1,47 @@
 <template>
   <div :class="prefixCls" class="fixed inset-0 flex h-screen w-screen bg-black items-center justify-center">
-    <div :class="`${prefixCls}__unlock`" @click="handleShowForm(false)" v-show="showDate"
+    <!-- 解锁按钮 -->
+    <div :class="`${prefixCls}__unlock`" @click="handleShowForm(true)"
          class="absolute top-0 left-1/2 flex pt-5 h-16 items-center justify-center sm:text-md xl:text-xl text-white flex-col cursor-pointer transform translate-x-1/2">
-      <my-icon icon="vi-ep:lock"/>
+      <my-icon icon="vi-ep:unlock" :size="28"/>
       <span>{{ t('lock.unlock') }}</span>
     </div>
-
+    <!-- 时钟 -->
     <div class="flex w-screen h-screen justify-center items-center">
       <div :class="`${prefixCls}__hour`" class="relative mr-5 md:mr-20 w-2/5 h-2/5 md:h-4/5">
         <span>{{ hour }}</span>
-        <span class="meridiem absolute left-5 top-5 text-md xl:text-xl" v-show="showDate">
-          {{ meridiem }}
-        </span>
+        <span class="meridiem absolute left-5 top-5 text-md xl:text-xl">{{ meridiem }}</span>
       </div>
       <div :class="`${prefixCls}__minute w-2/5 h-2/5 md:h-4/5 `">
         <span>{{ minute }}</span>
       </div>
     </div>
+    <!-- 解锁表单 -->
     <transition name="fade-slide">
-      <div :class="`${prefixCls}-entry`" v-show="!showDate">
-        <div :class="`${prefixCls}-entry-content`">
+      <div :class="`${prefixCls}-entry`" v-show="formVisible">
+        <div :class="`${prefixCls}-entry-content mt-[-100px]`">
+          <!-- 头像、昵称 -->
           <div class="flex flex-col items-center">
-            <img src="@/assets/imgs/avatar.jpg" alt="" class="w-70px h-70px rounded-[50%]"/>
-            <span class="text-14px my-10px text-[var(--logo-title-text-color)]">Archer</span>
+            <img v-if="userInfo.avatar" :src="$baseServer+userInfo.avatar" alt="" class="w-70px h-70px rounded-[50%]"/>
+            <img v-else src="@/assets/imgs/avatar.jpg" alt="" class="w-70px h-70px rounded-[50%]"/>
+            <span class="text-14px my-20px text-[var(--logo-title-text-color)]">
+              {{ userInfo?.name || userInfo?.nickName || userInfo?.userName }}
+            </span>
           </div>
+          <!-- 密码输入框 -->
           <el-input type="password" :placeholder="t('lock.placeholder')" class="enter-x"
                     v-model="password" @keydown.enter="unLock" ref="passwordInputRef"/>
-          <span :class="`text-14px ${prefixCls}-entry__err-msg enter-x`" v-if="errMsg">
-            {{ t('lock.message') }}
-          </span>
-          <div :class="`${prefixCls}-entry__footer enter-x`">
-            <base-button type="primary" size="small" class="mt-2 mr-2 enter-x" link :disabled="loading"
-                         @click="handleShowForm(true)">{{ t('common.back') }}
+          <!-- 错误提示 -->
+          <span :class="`text-14px ${prefixCls}-entry__err-msg enter-x`" v-if="errMsg">{{ errMsg }}</span>
+          <!-- 底部按钮 -->
+          <div :class="`${prefixCls}-entry__footer enter-x mt-10px`">
+            <base-button type="primary" size="small" class="mt-2 mr-2 enter-x" link @click="handleShowForm(false)">
+              {{ t('common.back') }}
             </base-button>
-            <base-button type="primary" size="small" class="mt-2 mr-2 enter-x" link :disabled="loading"
-                         @click="goLogin">{{ t('lock.backToLogin') }}
+            <base-button type="primary" size="small" class="mt-2 mr-2 enter-x" link @click="goLogin">
+              {{ t('lock.backToLogin') }}
             </base-button>
-            <base-button type="primary" class="mt-2" size="small" link @click="unLock()" :disabled="loading">
+            <base-button type="primary" class="mt-2" size="small" link @click="unLock()">
               {{ t('lock.entrySystem') }}
             </base-button>
           </div>
@@ -44,16 +49,20 @@
       </div>
     </transition>
 
+    <!-- 底部 -->
     <div class="absolute bottom-5 w-full text-gray-300 xl:text-xl 2xl:text-3xl text-center enter-y">
-      <div class="text-5xl mb-4 enter-x" v-show="!showDate">
+      <!-- 时间 -->
+      <div class="text-5xl mb-4 enter-x" v-show="formVisible">
         {{ hour }}:{{ minute }} <span class="text-3xl">{{ meridiem }}</span>
       </div>
+      <!-- 日期 -->
       <div class="text-2xl">{{ year }}/{{ month }}/{{ day }} {{ week }}</div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { ElMessageBox } from 'element-plus'
 import { useLockStore } from '@/store/modules/lock'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useNow } from '@/hooks/web/useNow'
@@ -62,48 +71,50 @@ import { useUserStoreWithOut } from '@/store/modules/user'
 
 const {t} = useI18n()
 const prefixCls = useDesign().getPrefixCls('lock-page')
-
-const password = ref('')
-const loading = ref(false)
-const errMsg = ref(false)
-const showDate = ref(true)
-
+const {hour, month, minute, meridiem, year, day, week} = useNow(true)
 const lockStore = useLockStore()
 
-const {hour, month, minute, meridiem, year, day, week} = useNow(true)
+// 加载用户信息
+const userInfo: any = useUserStoreWithOut().getUserInfo
+
+// 解锁表单显示状态
+const formVisible = ref(false)
+// 密码输入框
+const passwordInputRef = ref()
+
+// 显示/隐藏解锁表单
+function handleShowForm(val = false) {
+  formVisible.value = val
+  if (val) {
+    // 获取密码输入框焦点
+    requestAnimationFrame(() => { passwordInputRef.value?.focus() })
+  }
+}
+
+// 密码输入框
+const password = ref('')
+const errMsg = ref('')
 
 // 解锁
 async function unLock() {
   if (!password.value) {
-    return
-  }
-  const pwd = password.value
-  try {
-    loading.value = true
-    const res = await lockStore.unLock(pwd)
-    errMsg.value = !res
-  } finally {
-    loading.value = false
+    errMsg.value = '请输入锁屏密码'
+  } else {
+    const unlocked = await lockStore.unLock(password.value)
+    errMsg.value = unlocked ? '' : '锁屏密码错误'
   }
 }
 
 // 返回登录（退出）
 function goLogin() {
-  // 重置锁定信息
-  lockStore.resetLockInfo()
-  // 调用统一退出方法
-  useUserStoreWithOut().logout()
-}
-
-const passwordInputRef = ref()
-
-function handleShowForm(show = false) {
-  showDate.value = show
-  if (!show) {
-    requestAnimationFrame(() => {
-      passwordInputRef.value?.focus()
-    })
-  }
+  ElMessageBox.confirm('确定要退出系统，返回登录页吗?', '退出登录提醒', {
+    confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning', appendTo: `.${prefixCls}-entry`
+  }).then(() => {
+    // 重置锁定信息
+    lockStore.resetLockInfo()
+    // 调用统一退出方法
+    useUserStoreWithOut().logout()
+  })
 }
 </script>
 

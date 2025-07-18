@@ -34,7 +34,7 @@
   <template v-else-if="layoutType === 'topLeft'">
     <div
         class="flex items-center bg-[var(--top-header-bg-color)] relative layout-border__bottom dark:bg-[var(--el-bg-color)]">
-      <div v-if="logo" class="custom-hover">
+      <div v-if="logo" class="top-tool-hover">
         <my-logo/>
       </div>
       <tool-header class="flex-1"/>
@@ -63,7 +63,7 @@
   <template v-else-if="layoutType === 'top'">
     <div :class="['flex items-center justify-between bg-[var(--top-header-bg-color)] relative',
                  {'layout-border__bottom':!tagsView}]">
-      <div v-if="logo" class="custom-hover">
+      <div v-if="logo" class="top-tool-hover">
         <my-logo/>
       </div>
       <my-menu class="flex-1 px-10px h-[var(--top-tool-height)]"/>
@@ -86,7 +86,7 @@
   <!-- 分栏菜单布局 -->
   <template v-else-if="layoutType === 'cutMenu'">
     <div class="flex items-center bg-[var(--top-header-bg-color)] relative layout-border__bottom">
-      <div v-if="logo" class="custom-hover !pr-15px">
+      <div v-if="logo" class="top-tool-hover !pr-15px">
         <my-logo/>
       </div>
       <tool-header class="flex-1"/>

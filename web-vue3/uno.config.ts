@@ -45,7 +45,7 @@ ${selector} {
       }
     ],
     [
-      /^custom-hover$/,
+      /^top-tool-hover$/,
       ([], {rawSelector}) => {
         const selector = e(rawSelector)
         return `

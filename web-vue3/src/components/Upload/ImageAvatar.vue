@@ -1,7 +1,7 @@
 <!--
  * 上传头像（单图） - 无删除按钮，点击替换
  * 参数说明：
-       value: 可选，上传图片路径（通过v-model双向绑定），默认为空，传入正确路径可回显
+       modelValue: 可选，上传图片路径（通过v-model双向绑定），默认为空，传入正确路径可回显
        paramsData: 可选，调用上传接口时传入后台的参数（JSON格式）
        name: 可选，file表单的name属性，默认：filename
        action: 可选，上传接口地址，默认：/upload/images
@@ -13,7 +13,7 @@
 <template>
   <div>
     <el-upload ref="imageAvatar" class="avatar-uploader"
-               :headers="$store.getters.headerToken"
+               :headers="getTokenHeader()"
                :data="{'path':folder,...paramsData}"
                :name="name"
                :action="action===''?$baseServer+'/upload/images':action"
@@ -22,18 +22,22 @@
                :before-upload="imgBeforeUpload"
                :on-success="imgUploadSuccess"
                accept="image/*">
-      <img v-if="dialogImageUrl" :src="dialogImageUrl" class="avatar">
-      <i v-else class="el-icon-plus avatar-uploader-icon"/>
+      <img v-if="dialogImageUrl" :src="dialogImageUrl" class="avatar"/>
+      <my-icon v-else icon="el-icon-plus" class="avatar-uploader-icon"/>
     </el-upload>
   </div>
 </template>
 
 <script>
+import { getTokenHeader } from '@/utils/auth'
+import { MyIcon } from '@/components/MyIcon'
+
 export default {
   name: 'ImageAvatar',
+  components: {MyIcon},
   props: {
     // 上传图片路径
-    value: {type: String, default: ''},
+    modelValue: {type: String, default: ''},
     // 传入参数
     paramsData: {type: Object, default: () => ({})},
     // 表单名称
@@ -52,7 +56,7 @@ export default {
     }
   },
   watch: {
-    value() {
+    modelValue() {
       this.loadImg()
     }
   },
@@ -60,35 +64,36 @@ export default {
     this.loadImg()
   },
   methods: {
+    getTokenHeader,
     loadImg() {
       this.dialogImageUrl = ''
-      if (this.value && this.value !== null && this.value !== '') {
-        this.dialogImageUrl = this.$baseServer + this.value
+      if (this.modelValue && this.modelValue !== null && this.modelValue !== '') {
+        this.dialogImageUrl = this.$baseServer + this.modelValue
       } else {
-        this.$emit('input', '')
+        this.$emit('update:modelValue', '')
       }
     },
     imgUploadSuccess(response, file, fileList) {
       // 给value赋值
-      this.$emit('input', response.data[0].fileUrl)
+      this.$emit('update:modelValue', response.data[0].fileUrl)
       this.dialogImageUrl = URL.createObjectURL(file.raw)
     },
     // 图片大小和格式限制
     imgBeforeUpload(file) {
       // 判断文件大小
-      let isRightSize = file.size < this.limitSize
+      const isRightSize = file.size < this.limitSize
       if (!isRightSize) {
         this.$message.error('图片大小不能超过 ' + this.formatSize(this.limitSize))
       }
       // 判断图片扩展名
-      let isAccept = new RegExp('image/*').test(file.type)
+      const isAccept = new RegExp('image/*').test(file.type)
       if (!isAccept) {
         this.$message.error('请选择正确的图片！')
       }
       return isRightSize && isAccept
     },
     formatSize(size) {
-      let sizeStr = size + 'B';
+      let sizeStr = size + 'B'
       if (size >= 1024 * 1024 * 1024) {
         sizeStr = (size / 1024 / 1024 / 1024).toFixed(2) + 'GB'
       } else if (size >= 1024 * 1024) {
@@ -98,7 +103,7 @@ export default {
       } else {
         sizeStr = size + 'B'
       }
-      return sizeStr;
+      return sizeStr
     }
   }
 }

@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import type { App } from 'vue'
 import { Layout } from '@/utils/router-helper'
-import { homeRoute, loginRoute, oauth2Routes, otherRoutes } from '@/router/constant-routes'
+import { homeRoute, loginRoute, oauth2Routes, otherRoutes, userRoute } from '@/router/constant-routes'
 
 export const constantRoutes: AppRouteRecordRaw[] = [
   {
@@ -47,6 +47,7 @@ export const constantRoutes: AppRouteRecordRaw[] = [
     meta: {hidden: true}
   },
   homeRoute,
+  userRoute,
   ...oauth2Routes,// todo: oauth客户端相关路由
   ...otherRoutes// todo: 其他路由
 ]

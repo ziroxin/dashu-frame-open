@@ -1,6 +1,8 @@
 <template>
-  <el-dropdown class="custom-hover" :class="prefixCls" trigger="click">
-    <div class="flex items-center">
+  <!-- 顶部个人中心 -->
+  <el-dropdown class="top-tool-hover" :class="prefixCls" trigger="click">
+    <!-- 头像、昵称 -->
+    <div class="flex items-center h-100%">
       <img v-if="userInfo.avatar" :src="$baseServer+userInfo.avatar"
            class="w-[calc(var(--logo-height)-25px)] rounded-[50%]" alt=""/>
       <img v-else src="@/assets/imgs/avatar.jpg"
@@ -9,21 +11,35 @@
         {{ userInfo?.name || userInfo?.nickName || userInfo?.userName }}
       </span>
     </div>
+    <!-- 下拉菜单 -->
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item>
-          <div @click="toPage('/personal/personal-center')">{{ t('router.personalCenter') }}</div>
+        <!-- 个人中心 -->
+        <el-dropdown-item @click="toUserPage()">
+          <div class="flex items-center">
+            <my-icon icon="el-icon-user"/>
+            {{ t('router.personalCenter') }}
+          </div>
         </el-dropdown-item>
-        <el-dropdown-item divided>
-          <div @click="lockScreen">{{ t('lock.lockScreen') }}</div>
+        <!-- 锁屏 -->
+        <el-dropdown-item divided @click="lockScreen">
+          <div class="flex items-center">
+            <my-icon icon="el-icon-lock"/>
+            {{ t('lock.lockScreen') }}
+          </div>
         </el-dropdown-item>
-        <el-dropdown-item>
-          <div @click="loginOut">{{ t('common.loginOut') }}</div>
+        <!-- 退出登录 -->
+        <el-dropdown-item @click="loginOut">
+          <div class="flex items-center">
+            <my-icon icon="exit"/>
+            {{ t('common.loginOut') }}
+          </div>
         </el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>
 
+  <!-- 锁屏弹窗 -->
   <lock-dialog v-if="dialogVisible" v-model="dialogVisible"/>
   <teleport to="body">
     <transition name="fade-bottom" mode="out-in">
@@ -39,7 +55,8 @@ import LockDialog from './components/LockDialog.vue'
 import LockPage from './components/LockPage.vue'
 import { useLockStore } from '@/store/modules/lock'
 import { useUserStore } from '@/store/modules/user'
-import { useRouter } from 'vue-router'
+import { userRoute } from '@/router/constant-routes'
+import { MyIcon } from '@/components/MyIcon'
 
 const {t} = useI18n()
 const prefixCls = useDesign().getPrefixCls('user-info')
@@ -47,7 +64,6 @@ const prefixCls = useDesign().getPrefixCls('user-info')
 // 用户信息
 const userStore = useUserStore()
 const userInfo: any = computed(() => userStore.getUserInfo)
-console.log(userStore.getUserInfo)
 // 锁屏状态
 const getIsLock = computed(() => useLockStore().getLockInfo?.isLock ?? false)
 // 锁定弹窗
@@ -57,7 +73,7 @@ const lockScreen = () => { dialogVisible.value = true }
 const loginOut = () => { userStore.logoutConfirm() }
 // 个人中心
 const {push} = useRouter()
-const toPage = (path: string) => { push(path) }
+const toUserPage = () => { push(userRoute.path) }
 </script>
 
 <style scoped lang="less">

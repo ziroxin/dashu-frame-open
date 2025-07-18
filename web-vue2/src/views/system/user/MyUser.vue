@@ -113,11 +113,7 @@ export default {
         userName: [{required: true, message: '请填写用户名', trigger: 'blur'}],
         password: [{required: true, message: '请填写密码', trigger: 'blur'}],
         roleId: [{required: true, message: '请给用户选择角色', trigger: 'blur'}],
-        phone: [{
-          required: false, trigger: 'blur', validator: (r, v, b) => {
-            (v && !(/^(?:(?:\+|00)86)?1\d{10}$/.test(v))) ? b('手机号格式不正确') : b()
-          }
-        }]
+        phone: [{required: false, pattern: /^1[3456789]\d{9}$/, message: '手机号格式不正确'}]
       },
       defaultSettings: defaultSettings
     }

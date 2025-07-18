@@ -5,7 +5,7 @@
     <!-- 左侧按钮 -->
     <div v-if="layout !== 'top'" class="h-full flex items-center">
       <!-- 展开/收起菜单按钮 -->
-      <div v-if="hamburger&&layout!=='cutMenu'" :class="prefixClsCollapse" class="custom-hover" @click="toggleCollapse">
+      <div v-if="hamburger&&layout!=='cutMenu'" :class="prefixClsCollapse" class="top-tool-hover" @click="toggleCollapse">
         <my-icon :size="18" color="var(--top-header-text-color)"
                  class="cursor-pointer"
                  :icon="collapse?'vi-ant-design:menu-unfold-outlined':'vi-ant-design:menu-fold-outlined'"/>
@@ -16,14 +16,14 @@
     <!-- 右侧按钮 -->
     <div class="h-full flex items-center">
       <!-- 全屏按钮 -->
-      <div v-if="screenFull" :class="prefixClsScreenfull" class="custom-hover" @click="toggleFullscreen">
+      <div v-if="screenFull" :class="prefixClsScreenfull" class="top-tool-hover" @click="toggleFullscreen">
         <my-icon :size="18" color="var(--top-header-text-color)"
                  :icon="isFullscreen?'vi-zmdi:fullscreen-exit':'vi-zmdi:fullscreen'"/>
       </div>
       <!-- 字体大小切换按钮 -->
-      <size-dropdown v-if="size" class="custom-hover" color="var(--top-header-text-color)"/>
+      <size-dropdown v-if="size" class="top-tool-hover" color="var(--top-header-text-color)"/>
       <!-- 语言切换按钮 -->
-      <locale-dropdown v-if="locale" class="custom-hover" color="var(--top-header-text-color)"/>
+      <locale-dropdown v-if="locale" class="top-tool-hover" color="var(--top-header-text-color)"/>
       <!-- 用户信息按钮 -->
       <user-info/>
     </div>

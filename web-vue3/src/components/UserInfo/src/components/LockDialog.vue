@@ -1,8 +1,11 @@
 <template>
-  <Dialog v-model="dialogVisible" width="500px" max-height="170px" :class="prefixCls" :title="t('lock.lockScreen')">
+  <el-dialog v-model="dialogVisible" width="500px" draggable :class="prefixCls" :title="t('lock.lockScreen')">
     <div class="flex flex-col items-center">
-      <img src="@/assets/imgs/avatar.jpg" alt="" class="w-70px h-70px rounded-[50%]"/>
-      <span class="text-14px my-10px text-[var(--top-header-text-color)]">Archer</span>
+      <img v-if="userInfo.avatar" :src="$baseServer+userInfo.avatar" alt="" class="w-70px h-70px rounded-[50%]"/>
+      <img v-else src="@/assets/imgs/avatar.jpg" alt="" class="w-70px h-70px rounded-[50%]"/>
+      <span class="text-14px my-20px text-[var(--top-header-text-color)]">
+        {{ userInfo?.name || userInfo?.nickName || userInfo?.userName }}
+      </span>
     </div>
     <el-form ref="lockFormRef" :model="formData">
       <el-form-item :label="t('lock.lockPassword')" :rules="[{required:true, message: t('common.required')}]">
@@ -13,17 +16,20 @@
     <template #footer>
       <base-button type="primary" @click="handleLock">{{ t('lock.lock') }}</base-button>
     </template>
-  </Dialog>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from '@/hooks/web/useI18n'
-import { Dialog } from '@/components/Dialog'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useLockStore } from '@/store/modules/lock'
+import { useUserStoreWithOut } from '@/store/modules/user'
 
 const prefixCls = useDesign().getPrefixCls('lock-dialog')
 const {t} = useI18n()
+
+// 加载用户信息
+const userInfo: any = useUserStoreWithOut().getUserInfo
 
 // 双向绑定弹窗的显示/隐藏
 const {modelValue} = defineProps({modelValue: {type: Boolean}})

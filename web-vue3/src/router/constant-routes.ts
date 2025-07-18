@@ -1,8 +1,6 @@
 import { Layout } from '@/utils/router-helper'
 
-/**
- * 登录页
- */
+/** 登录页 */
 export const loginRoute = {
   path: '/login',
   name: 'Login',
@@ -11,9 +9,7 @@ export const loginRoute = {
   meta: {hidden: true, title: '登录页', noTagsView: true}
 }
 
-/**
- * 首页
- */
+/** 首页 */
 export const homeRoute = {
   path: '/dashboard/index',
   name: 'Dashboard',
@@ -32,9 +28,21 @@ export const homeRoute = {
   }]
 }
 
-/**
- * oauth2 client 相关页面 - 路由配置
- */
+/** 用户个人中心（登录可用） */
+export const userRoute = {
+  path: '/system/user/MyUser',
+  name: 'MyUser',
+  component: Layout,
+  meta: {hidden: true},
+  children: [{
+    path: '/system/user/MyUser',
+    name: 'MyUserIndex',
+    component: () => import('@/views/system/user/MyUser.vue'),
+    meta: {title: '个人中心'}
+  }]
+}
+
+/** oauth2 client 相关页面 - 路由配置 */
 export const oauth2Routes = [
   {
     path: '/oauth2/error',
@@ -54,9 +62,7 @@ export const oauth2Routes = [
   }
 ]
 
-/**
- * 其他静态页面 - 路由配置
- */
+/**其他静态页面 - 路由配置 */
 export const otherRoutes = [
   // swagger 静态页
   {
@@ -71,19 +77,6 @@ export const otherRoutes = [
     name: 'GeneratorForm',
     component: () => import('@/views/generator/form.vue'),
     meta: {hidden: true}
-  },
-  // 用户个人中心（登录可用）
-  {
-    path: '/system/user/MyUser',
-    name: 'MyUser',
-    component: Layout,
-    meta: {hidden: true},
-    children: [{
-      path: '/system/user/MyUser',
-      name: 'MyUserIndex',
-      component: () => import('@/views/system/user/MyUser.vue'),
-      meta: {title: '个人中心'}
-    }]
   },
   // 消息中心（登录可用）
   {

@@ -1,111 +1,118 @@
 <template>
-  <div class="app-container" v-loading="isLoading">
-    <el-divider>
-      <div class="title">
-        <el-icon class="el-icon-user-solid"></el-icon>
-        用户基本信息
+  <div class="flex m-[var(--app-content-margin)]" v-loading="isLoading">
+    <!-- 左侧个人信息 -->
+    <el-card class="flex-[3] mr-15px">
+      <template #header><span class="text-16px font-700">个人信息</span></template>
+      <div class="flex items-center justify-center">
+        <el-image :src="$baseServer+temp.avatar" class="w-[150px] h-[150px] rounded-full"
+                  :preview-src-list="[$baseServer+temp.avatar]"/>
       </div>
-    </el-divider>
-    <el-form ref="userDataForm" :model="temp" :rules="rules" label-position="right"
-             label-width="100px" style="width: 500px;margin: 50px auto;"
-    >
-      <el-form-item label="用户名：" prop="userName">
-        <el-input v-model="temp.userName" placeholder="请输入用户名"/>
-      </el-form-item>
-      <el-form-item label="性别：" prop="sex">
-        <el-radio v-model="temp.sex" label="0">未知</el-radio>
-        <el-radio v-model="temp.sex" label="1">男</el-radio>
-        <el-radio v-model="temp.sex" label="2">女</el-radio>
-      </el-form-item>
-      <el-form-item label="昵称：" prop="nickName">
-        <el-input v-model="temp.nickName" placeholder="请输入昵称"/>
-      </el-form-item>
-      <el-form-item label="简介：" prop="introduce">
-        <el-input v-model="temp.introduce" type="textarea" placeholder="请输入简介"/>
-      </el-form-item>
-      <el-form-item label="头像：" prop="avatar">
-        <image-avatar v-model="temp.avatar" name="avatar"/>
-      </el-form-item>
-      <el-form-item label="姓名：" prop="name">
-        <el-input v-model="temp.name" placeholder="请输入姓名"/>
-      </el-form-item>
-      <el-form-item label="手机号：" prop="phone">
-        <el-input v-model="temp.phone" placeholder="请输入手机号"/>
-      </el-form-item>
-    </el-form>
-    <div style="width:500px;margin:0px auto 30px auto;padding-left:100px">
-      <el-button type="primary" @click="submitJudgment" icon="el-icon-edit">保存个人资料</el-button>
-    </div>
-
-
-    <!-- 绑定Oauth2用户信息 -->
-    <div style="margin-top:60px;">
-      <el-divider>
-        <div class="title">
-          <el-icon class="el-icon-link"></el-icon>
-          绑定 Oauth2 信息
-        </div>
-      </el-divider>
-      <div v-if="this.temp.oauthBind" style="width: 500px;text-align: center;margin: 50px auto;">
-        <span style="color: #00a226;margin-right: 20px;">已绑定</span>
-        <el-button type="danger" icon="el-icon-delete" @click="unBindOauthUser">解绑</el-button>
+      <el-divider/>
+      <div class="flex justify-between items-center">
+        <div>用户名：</div>
+        <div>{{ temp.userName }}</div>
       </div>
-      <div v-else style="width: 500px;text-align: center;color: #D7000F;margin: 50px auto;">
-        抱歉！您还没有绑定其他 “Oauth2平台” 账号！
+      <el-divider/>
+      <div class="flex justify-between items-center">
+        <div>性别：</div>
+        <div>{{ temp.sex === '0' ? '未知' : temp.sex === '1' ? '男' : '女' }}</div>
       </div>
-    </div>
-
-    <!-- 绑定微信账号信息 -->
-    <div style="margin-top:60px;">
-      <el-divider>
-        <div class="title">
-          <el-icon class="el-icon-mobile"></el-icon>
-          绑定微信账号信息
-        </div>
-      </el-divider>
-      <div v-if="this.temp.wechatBind" style="width: 500px;text-align: center;margin: 50px auto;">
-        <span style="color: #00a226;margin-right: 20px;">已绑定</span>
-        <el-button type="danger" icon="el-icon-delete" @click="unBindWechat">解绑</el-button>
+      <el-divider/>
+      <div class="flex justify-between items-center">
+        <div>昵称：</div>
+        <div>{{ temp.nickName }}</div>
       </div>
-      <div v-else style="width: 500px;text-align: center;color: #D7000F;margin: 50px auto;">未绑定</div>
-    </div>
-
-
-    <!-- 主题设置配置 -->
-    <div v-if="!showSettings && defaultSettings.showSettings" style="text-align: center;margin-top:60px;">
-      <el-divider>
-        <div class="title">
-          <el-icon class="el-icon-setting"></el-icon>
-          主题设置
-        </div>
-      </el-divider>
-      <el-button type="danger" icon="el-icon-setting" style="margin-top: 10px;"
-                 @click="showSettings=true">显示主题设置
-      </el-button>
-    </div>
+      <el-divider/>
+      <div class="flex justify-between items-center">
+        <div>简介：</div>
+        <div>{{ temp.introduce }}</div>
+      </div>
+      <el-divider/>
+      <div class="flex justify-between items-center">
+        <div>姓名：</div>
+        <div>{{ temp.name }}</div>
+      </div>
+      <el-divider/>
+      <div class="flex justify-between items-center">
+        <div>手机号：</div>
+        <div>{{ temp.phone }}</div>
+      </div>
+      <el-divider/>
+    </el-card>
+    <!-- 右侧基本资料 -->
+    <el-card class="flex-[7]">
+      <template #header><span class="text-16px font-700">基本资料</span></template>
+      <el-tabs v-model="activeTabName">
+        <!-- 用户基本信息 -->
+        <el-tab-pane name="user">
+          <template #label>
+            <div class="p-10px flex items-center justify-center">
+              <my-icon icon="el-icon-user-solid" class="mr-5px"/>
+              用户基本信息
+            </div>
+          </template>
+          <el-form ref="userDataForm" :model="temp" :rules="rules"
+                   label-width="80px" class="m-[20px_10px]">
+            <el-form-item label="用户名：" prop="userName">
+              <el-input v-model="temp.userName" placeholder="请输入用户名"/>
+            </el-form-item>
+            <el-form-item label="性别：" prop="sex">
+              <el-radio v-model="temp.sex" label="0">未知</el-radio>
+              <el-radio v-model="temp.sex" label="1">男</el-radio>
+              <el-radio v-model="temp.sex" label="2">女</el-radio>
+            </el-form-item>
+            <el-form-item label="昵称：" prop="nickName">
+              <el-input v-model="temp.nickName" placeholder="请输入昵称"/>
+            </el-form-item>
+            <el-form-item label="简介：" prop="introduce">
+              <el-input v-model="temp.introduce" type="textarea" placeholder="请输入简介"/>
+            </el-form-item>
+            <el-form-item label="头像：" prop="avatar">
+              <div class="flex items-end">
+                <image-avatar v-model="temp.avatar" name="avatar"/>
+                <el-tag type="info" class="m-10px">提示：点击左侧头像图片可修改</el-tag>
+              </div>
+            </el-form-item>
+            <el-form-item label="姓名：" prop="name">
+              <el-input v-model="temp.name" placeholder="请输入姓名"/>
+            </el-form-item>
+            <el-form-item label="手机号：" prop="phone">
+              <el-input v-model="temp.phone" placeholder="请输入手机号"/>
+            </el-form-item>
+          </el-form>
+          <div class="m-[30px_10px] pl-80px">
+            <base-button type="primary" @click="submitJudgment" icon="el-icon-edit">保存个人资料</base-button>
+          </div>
+        </el-tab-pane>
+        <!-- 绑定Oauth2信息 -->
+        <el-tab-pane label="绑定Oauth2信息" name="oauthBind">
+          <div v-if="this.temp.oauthBind" class="w-500px text-center m-[50px_auto]">
+            <span class="color-#00a226 mr-20px">已绑定</span>
+            <base-button type="danger" icon="el-icon-delete" @click="unBindOauthUser">解绑</base-button>
+          </div>
+          <div v-else class="w-500px text-center color-#D7000F m-[50px_auto]">
+            抱歉！您还没有绑定其他 “Oauth2平台” 账号！
+          </div>
+        </el-tab-pane>
+        <!-- 绑定微信账号信息 -->
+        <el-tab-pane label="绑定微信账号信息" name="wechatBind">
+          <div v-if="this.temp.wechatBind" class="w-500px text-center m-[50px_auto]">
+            <span class="color-#00a226 mr-20px">已绑定</span>
+            <base-button type="danger" icon="el-icon-delete" @click="unBindWechat">解绑</base-button>
+          </div>
+          <div v-else class="w-500px text-center color-#D7000F m-[50px_auto]">未绑定</div>
+        </el-tab-pane>
+      </el-tabs>
+    </el-card>
   </div>
 </template>
 <script>
 import ImageAvatar from '@/components/Upload/ImageAvatar.vue'
-import SelectTree from '@/components/SelectTree/index.vue'
-import defaultSettings from '@/settings'
 import request from '@/utils/request'
+import { MyIcon } from '@/components/MyIcon'
 
 export default {
-  components: {SelectTree, ImageAvatar},
-  computed: {
-    showSettings: {
-      get() {
-        return this.$store.state.settings.showSettings
-      },
-      set(val) {
-        this.$store.dispatch('settings/changeSetting', {
-          key: 'showSettings',
-          value: val
-        })
-      }
-    }
-  },
+  components: {MyIcon, ImageAvatar},
   data() {
     return {
       isLoading: false,
@@ -114,13 +121,9 @@ export default {
         userName: [{required: true, message: '请填写用户名', trigger: 'blur'}],
         password: [{required: true, message: '请填写密码', trigger: 'blur'}],
         roleId: [{required: true, message: '请给用户选择角色', trigger: 'blur'}],
-        phone: [{
-          required: false, trigger: 'blur', validator: (r, v, b) => {
-            (v && !(/^(?:(?:\+|00)86)?1\d{10}$/.test(v))) ? b('手机号格式不正确') : b()
-          }
-        }]
+        phone: [{required: false, pattern: /^1[3456789]\d{9}$/, message: '手机号格式不正确'}]
       },
-      defaultSettings: defaultSettings
+      activeTabName: 'user'
     }
   },
   created() {
