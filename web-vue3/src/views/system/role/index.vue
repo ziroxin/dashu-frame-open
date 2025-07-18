@@ -75,8 +75,8 @@
           <el-table-column type="selection" width="50" align="center" header-align="center"/>
           <el-table-column label="路由/外链" min-width="30%">
             <template v-slot="{row}">
-              <el-tag v-if="row.permissionType === '0'" disable-transitions size="mini">路由</el-tag>
-              <el-tag v-if="row.permissionType === '2'" disable-transitions type="success" size="mini">外链</el-tag>
+              <el-tag v-if="row.permissionType === '0'" disable-transitions size="small">路由</el-tag>
+              <el-tag v-if="row.permissionType === '2'" disable-transitions type="success" size="small">外链</el-tag>
               <a style="cursor: pointer;margin-left: 5px;">{{ row.permissionTitle }}</a>
             </template>
           </el-table-column>

@@ -76,8 +76,8 @@
         <el-form-item label="应用Secret" prop="clientSecret"
                       :rules="[{required: true, message: '应用Secret不能为空'}]">
           <el-input v-model="temp.clientSecret" placeholder="请输入应用Secret（点击下方按钮可随机生成）"/>
-          <el-button type="primary" size="mini" @click="generateRandomPassword(16)">随机生成Secret</el-button>
-          <el-button type="success" size="mini" v-clipboard:copy="temp.clientSecret">复制当前Secret</el-button>
+          <el-button type="primary" @click="generateRandomPassword(16)">随机生成Secret</el-button>
+          <el-button type="success" v-clipboard:copy="temp.clientSecret">复制当前Secret</el-button>
         </el-form-item>
       </el-form>
       <!-- 添加、修改、查看 -->
@@ -97,8 +97,8 @@
                       :rules="[{required: true, message: '应用Secret不能为空'}]">
           <el-input v-model="temp.clientSecret" placeholder="请输入应用Secret（点击下方按钮可随机生成）"/>
           <div style="color: #dd1f29;">请妥善保管好应用Secret，不要泄露；不可找回，若丢失只能重置！</div>
-          <el-button type="primary" size="mini" @click="generateRandomPassword(16)">随机生成Secret</el-button>
-          <el-button type="success" size="mini" v-clipboard:copy="temp.clientSecret">复制当前Secret</el-button>
+          <el-button type="primary" @click="generateRandomPassword(16)">随机生成Secret</el-button>
+          <el-button type="success" v-clipboard:copy="temp.clientSecret">复制当前Secret</el-button>
         </el-form-item>
         <!-- 回调地址 -->
         <el-form-item label="回调地址" prop="webServerRedirectUri"

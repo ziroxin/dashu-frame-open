@@ -46,8 +46,8 @@
           </el-table-column>
           <el-table-column label="状态" width="60px" prop="status" align="center">
             <template v-slot="scope">
-              <el-tag type="success" v-if="scope.row.status === '1'" size="mini">正常</el-tag>
-              <el-tag type="danger" v-else size="mini">停用</el-tag>
+              <el-tag type="success" v-if="scope.row.status === '1'" size="small">正常</el-tag>
+              <el-tag type="danger" v-else size="small">停用</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="50px" align="center">

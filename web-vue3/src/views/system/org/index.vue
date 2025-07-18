@@ -33,13 +33,13 @@
           <span>{{ scope.row.orgName }}</span>
           <div style="float: right;">
             <el-button v-permission="'zorg-zOrganization-add'" v-if="maxLevel===-1 || scope.row.orgLevel<maxLevel"
-                       link type="primary" size="mini" @click="openAdd(scope.row)">添加下级
+                       link type="primary" @click="openAdd(scope.row)">添加下级
             </el-button>
-            <el-button v-permission="'zorg-zOrganization-update'" link type="primary" size="mini"
+            <el-button v-permission="'zorg-zOrganization-update'" link type="primary"
                        @click="openUpdate(scope.row)">修改
             </el-button>
             <el-button v-permission="'zorg-zOrganization-delete'" style="color: #f56c6c;"
-                       link size="mini" @click="deleteByIds(scope.row)">删除
+                       link @click="deleteByIds(scope.row)">删除
             </el-button>
           </div>
         </template>

@@ -71,7 +71,7 @@ const routeList = computed(() => {
   })
   return result
 })
-console.log(routeList.value)
+
 // 菜单展开/收起状态
 const collapse = computed(() => appStore.getCollapse)
 // 是否只保持一个子菜单的展开

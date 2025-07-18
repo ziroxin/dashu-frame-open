@@ -16,9 +16,9 @@
           >
             <el-table-column label="名称">
               <template #default="{row}">
-                <el-tag v-if="row.permissionType === '0'" disable-transitions size="mini">路由</el-tag>
-                <el-tag v-if="row.permissionType === '1'" disable-transitions type="warning" size="mini">按钮</el-tag>
-                <el-tag v-if="row.permissionType === '3'" disable-transitions type="success" size="mini">其他</el-tag>
+                <el-tag v-if="row.permissionType === '0'" disable-transitions size="small">路由</el-tag>
+                <el-tag v-if="row.permissionType === '1'" disable-transitions type="warning" size="small">按钮</el-tag>
+                <el-tag v-if="row.permissionType === '3'" disable-transitions type="success" size="small">其他</el-tag>
                 {{ row.permissionTitle }}{{ row.permissionRouter ? '(' + row.permissionRouter + ')' : '' }}
               </template>
             </el-table-column>

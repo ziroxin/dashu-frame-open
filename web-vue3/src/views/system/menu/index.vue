@@ -25,26 +25,26 @@
             <template v-slot="{row}">
               <li class="menu-item">
                 <item :icon="row.permissionIcon" :title="row.permissionTitle"/>
-                <el-tag v-if="row.permissionType === '0'" size="mini">路由</el-tag>
-                <el-tag v-if="row.permissionType === '2'" type="success" size="mini">外链</el-tag>
-                <el-tag v-if="!row.permissionIsShow" type="danger" size="mini">隐藏</el-tag>
-                <el-tag v-if="!row.permissionIsEnabled" type="danger" size="mini">禁用</el-tag>
-                <el-tag type="info" size="mini" style="float: right;">{{ row.permissionOrder }}</el-tag>
+                <el-tag v-if="row.permissionType === '0'" size="small">路由</el-tag>
+                <el-tag v-if="row.permissionType === '2'" type="success" size="small">外链</el-tag>
+                <el-tag v-if="!row.permissionIsShow" type="danger" size="small">隐藏</el-tag>
+                <el-tag v-if="!row.permissionIsEnabled" type="danger" size="small">禁用</el-tag>
+                <el-tag type="info" size="small" style="float: right;">{{ row.permissionOrder }}</el-tag>
               </li>
             </template>
           </el-table-column>
           <el-table-column prop="permissionName" label="菜单标识" min-width="20%" v-if="!buttonTableVisible">
             <template v-slot="{row}">
               <el-button v-permission="'system-menu-update-parent'" style="color: #52c41a;"
-                         link size="mini" @click="permissionUpdateParent(row)">调整上下级
+                         link @click="permissionUpdateParent(row)">调整上下级
               </el-button>
-              <el-button v-permission="'system-menu-update'" link type="primary" size="mini"
+              <el-button v-permission="'system-menu-update'" link type="primary"
                          @click="permissionUpdate(row)">修改
               </el-button>
-              <el-button v-permission="'system-menu-delete'" link size="mini" style="color: #f56c6c;"
+              <el-button v-permission="'system-menu-delete'" link style="color: #f56c6c;"
                          @click="permissionDelete(row)">删除
               </el-button>
-              <el-button v-if="row.permissionType === '0'" link type="primary" size="mini"
+              <el-button v-if="row.permissionType === '0'" link type="primary"
                          @click="subordinatesAdd(row)">添加下级
               </el-button>
             </template>
@@ -54,13 +54,13 @@
               <el-tooltip v-if="row.permissionType === '0'" class="item" effect="dark" placement="left">
                 <div slot="content" :key="'tipcontent'+row.permissionId" style="line-height: 40px;">
                   菜单标记：{{ row.permissionName }}
-                  <el-button type="success" size="mini" circle plain icon="el-icon-document-copy"
+                  <el-button type="success" circle plain icon="el-icon-document-copy"
                              v-clipboard:copy="row.permissionName"></el-button>
                   <br>菜单地址：{{ row.permissionRouter }}
-                  <el-button type="success" size="mini" circle plain icon="el-icon-document-copy"
+                  <el-button type="success" circle plain icon="el-icon-document-copy"
                              v-clipboard:copy="row.permissionRouter"></el-button>
                   <br>组件地址：{{ row.permissionComponent }}
-                  <el-button type="success" size="mini" circle plain icon="el-icon-document-copy"
+                  <el-button type="success" circle plain icon="el-icon-document-copy"
                              v-clipboard:copy="row.permissionComponent"></el-button>
                   <br>noRedirect: {{ row.noRedirect }}
                   <br>noCache: {{ row.noCache }}
@@ -68,7 +68,7 @@
                   <br>affix: {{ row.affix }}
                   <br>activeMenu: {{ row.activeMenu }}
                 </div>
-                <el-button size="mini" plain>{{ row.permissionRouter }}</el-button>
+                <el-button plain>{{ row.permissionRouter }}</el-button>
               </el-tooltip>
               <a v-else :href="row.permissionRouter" style="text-decoration: underline;color: #1890ff;"
                  target="_blank"
@@ -78,13 +78,13 @@
           <el-table-column fixed="right" label="操作" width="86" header-align="center">
             <template slot-scope="{row}">
               <div>
-                <el-button v-if="row.permissionIsEnabled" link size="mini" style="color: #f56c6c;"
+                <el-button v-if="row.permissionIsEnabled" link style="color: #f56c6c;"
                            @click="changeIsEnabled(row, 0)">禁用
                 </el-button>
-                <el-button v-else link size="mini" style="color: #52c41a;"
+                <el-button v-else link style="color: #52c41a;"
                            @click="changeIsEnabled(row, 1)">启用
                 </el-button>
-                <el-button v-if="row.permissionType !== '2'" link type="primary" plain size="mini"
+                <el-button v-if="row.permissionType !== '2'" link type="primary" plain
                            @click="openButtonTable(row)">按钮
                 </el-button>
               </div>
@@ -129,7 +129,7 @@
           <el-input v-model="temp.permissionComponent" placeholder="组件完整地址（例：/system/menu/index）"/>
           <el-tag type="info">根节点，且有子菜单时，请填写：/layout/index</el-tag>
           &nbsp;
-          <el-button size="mini" @click="temp.permissionComponent='/layout/index'">
+          <el-button @click="temp.permissionComponent='/layout/index'">
             点击填入 /layout/index
           </el-button>
         </el-form-item>

@@ -41,15 +41,15 @@
         <template v-slot="{row}">
           <template v-if="row.status==='1'">
             <el-tooltip effect="dark" content="请先停用！才能修改" placement="top">
-              <el-button type="info" size="mini" icon="el-icon-edit">修改</el-button>
+              <el-button type="info" icon="el-icon-edit">修改</el-button>
             </el-tooltip>
-            <el-button size="mini" type="danger" @click="updateStatus(row,0)">停用</el-button>
+            <el-button type="danger" @click="updateStatus(row,0)">停用</el-button>
           </template>
           <template v-else>
             <el-button type="primary" v-permission="'zquartz-zQuartz-update'"
-                       icon="el-icon-edit" size="mini" @click="openUpdate(row)">修改
+                       icon="el-icon-edit" @click="openUpdate(row)">修改
             </el-button>
-            <el-button size="mini" type="success" @click="updateStatus(row,1)">启用</el-button>
+            <el-button type="success" @click="updateStatus(row,1)">启用</el-button>
           </template>
         </template>
       </el-table-column>

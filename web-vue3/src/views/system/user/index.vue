@@ -65,21 +65,19 @@
           <el-table-column align="center" prop="introduce" label="简介" min-width="10%"/>
           <el-table-column fixed="right" align="center" label="操作" width="120px">
             <template v-slot="scope">
-              <el-button v-permission="'user-update'" link type="primary" size="mini"
-                         @click="userUpdate(scope.row)">修改
+              <el-button v-permission="'user-update'" link type="primary" @click="userUpdate(scope.row)">修改
               </el-button>
-              <el-button v-permission="'reset-password'" link type="primary" size="mini"
-                         @click="resetPassword(scope.row)">重置密码
+              <el-button v-permission="'reset-password'" link type="primary" @click="resetPassword(scope.row)">重置密码
               </el-button>
               <br/>
               <el-button v-if="scope.row.status === '0'" style="color: #13ce66;" v-permission="'change-status'"
-                         link size="mini" @click="changeStatus(1, scope.row)">启用
+                         link @click="changeStatus(1, scope.row)">启用
               </el-button>
               <el-button v-else style="color: #ff6d6d;" v-permission="'change-status'"
-                         link size="mini" @click="changeStatus(0, scope.row)">禁用
+                         link @click="changeStatus(0, scope.row)">禁用
               </el-button>
               <el-button v-permission="'user-delete'" style="color: #ff6d6d;"
-                         link size="mini" @click="userDelete(scope.row)">删除
+                         link @click="userDelete(scope.row)">删除
               </el-button>
             </template>
           </el-table-column>

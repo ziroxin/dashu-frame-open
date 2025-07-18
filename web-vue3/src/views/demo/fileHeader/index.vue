@@ -27,7 +27,7 @@
               </el-upload>
               <a href="http://docs.java119.cn/use/comm-fileupload.html#_4-%E6%96%87%E4%BB%B6%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%B5%8B"
                  target="_blank" class="help">
-                <el-button type="danger" size="mini" icon="el-icon-question" plain>使用帮助</el-button>
+                <el-button type="danger" icon="el-icon-question" plain>使用帮助</el-button>
               </a>
             </div>
             <div class="info">

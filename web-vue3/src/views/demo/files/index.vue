@@ -87,8 +87,8 @@
         </div>
         <div class="text-#dd1f29">
           说明：上传前，先根据文件 md5 判断，表中是否存在：
-          <el-tag type="success" size="mini" class="mr-10px">若已存在，则跳过，直接返回结果；</el-tag>
-          <el-tag type="danger" size="mini">若不存在，则上传，并存入 “ 文件秒传表 ”，返回结果。</el-tag>
+          <el-tag type="success" size="small" class="mr-10px">若已存在，则跳过，直接返回结果；</el-tag>
+          <el-tag type="danger" size="small">若不存在，则上传，并存入 “ 文件秒传表 ”，返回结果。</el-tag>
         </div>
       </div>
       <div>
