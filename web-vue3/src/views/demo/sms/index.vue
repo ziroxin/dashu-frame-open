@@ -22,8 +22,7 @@
                         type="date" placeholder="发送时间" format="yyyy-MM-dd" value-format="yyyy-MM-dd"/>
         <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询
         </base-button>
-        <base-button class="searchBtn" type="info" icon="el-icon-refresh" @click="resetTableList">重置
-        </base-button>
+        <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
       </div>
       <div class="operatePanel">
         <base-button type="primary" icon="el-icon-plus" @click="openAdd"

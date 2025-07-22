@@ -90,8 +90,8 @@
       <el-form ref="groupDataForm" :model="temp" :rules="rules" label-position="right" label-width="100px"
                class="w-500px ml-50px">
         <el-form-item label="">
-          <el-radio v-model="isNewGroup" label="0" @change="isNewGroup='0';temp={};">创建新分组</el-radio>
-          <el-radio v-model="isNewGroup" label="1" @change="isNewGroup='1'">加入已有分组</el-radio>
+          <el-radio v-model="isNewGroup" value="0" @change="isNewGroup='0';temp={};">创建新分组</el-radio>
+          <el-radio v-model="isNewGroup" value="1" @change="isNewGroup='1'">加入已有分组</el-radio>
         </el-form-item>
         <el-form-item v-if="isNewGroup==='0'" label="分组名称：" prop="groupName">
           <el-input v-model="temp.groupName" placeholder="请输入分组名称"/>

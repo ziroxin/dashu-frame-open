@@ -8,9 +8,7 @@
       <el-button class="filter-item" size="small" type="primary"
                  icon="el-icon-search" @click="loadTableList">查询
       </el-button>
-      <el-button class="filter-item" size="small" type="info"
-                 icon="el-icon-refresh" @click="resetTableList">重置
-      </el-button>
+      <el-button class="filter-item" size="small" type="info" icon="reset" @click="resetTableList">重置</el-button>
       <div style="float: right;">
         <el-button v-permission="'zorg-zOrganization-add'" type="primary"
                    @click="openAdd(null)" size="small" icon="el-icon-plus">新增
@@ -24,9 +22,8 @@
       </div>
     </div>
     <!-- 组织机构表-列表 -->
-    <el-table ref="dataTable" :data="tableData" :tree-props="{children: 'children'}"
-              row-key="orgId" :height="this.$windowHeight-197" v-loading="isLoading"
-              default-expand-all border stripe @selection-change="handleTableSelectChange">
+    <el-table ref="dataTable" :data="tableData" :tree-props="{children: 'children'}" row-key="orgId"
+              v-loading="isLoading" default-expand-all border stripe @selection-change="handleTableSelectChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="组织机构名称" prop="orgName" min-width="40%">
         <template #default="scope">

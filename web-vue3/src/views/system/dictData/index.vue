@@ -16,9 +16,7 @@
       <el-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
       </el-button>
-      <el-button class="filter-item" type="info" size="small"
-                 icon="el-icon-refresh" @click="resetTableList">重置
-      </el-button>
+      <el-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</el-button>
     </div>
     <div style="margin-bottom: 10px;">
       <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
@@ -38,7 +36,7 @@
       </el-button>
     </div>
     <!-- 字典数据-列表 -->
-    <el-table ref="dataTable" :data="tableData" stripe border :height="this.$windowHeight-270" v-loading="isLoading"
+    <el-table ref="dataTable" :data="tableData" stripe border v-loading="isLoading"
               @selection-change="handleTableSelectChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="数据标签" prop="dictLabel" align="center"/>

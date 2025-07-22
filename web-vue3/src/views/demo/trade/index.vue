@@ -16,7 +16,7 @@
         <el-date-picker v-model="searchData.paySuccessTime" type="date" class="searchInput w-150px!"
                         placeholder="支付成功日期"/>
         <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询</base-button>
-        <base-button class="searchBtn" type="info" icon="el-icon-refresh" @click="resetTableList">重置</base-button>
+        <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
       </div>
       <div class="operatePanel">
         <base-button type="primary" icon="el-icon-plus" @click="openAdd">打开支付</base-button>

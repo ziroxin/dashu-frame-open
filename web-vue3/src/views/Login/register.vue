@@ -68,9 +68,9 @@
                           <span style="margin-left:6px;">性别</span>
                         </span>
                         <el-radio-group v-model="regForm.sex" tabindex="6">
-                          <el-radio label="0">保密</el-radio>
-                          <el-radio label="1">男</el-radio>
-                          <el-radio label="2">女</el-radio>
+                          <el-radio value="0">保密</el-radio>
+                          <el-radio value="1">男</el-radio>
+                          <el-radio value="2">女</el-radio>
                         </el-radio-group>
                       </el-form-item>
                       <el-form-item prop="nickName">

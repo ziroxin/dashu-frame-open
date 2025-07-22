@@ -7,9 +7,7 @@
       <el-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
       </el-button>
-      <el-button class="filter-item" type="info" size="small"
-                 icon="el-icon-refresh" @click="resetTableList">重置
-      </el-button>
+      <el-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</el-button>
       <div style="float: right;">
         <el-button type="primary" size="small" v-if="msgStatus !== '1'"
                    icon="el-icon-check" @click="markAllRead">全部标记已读

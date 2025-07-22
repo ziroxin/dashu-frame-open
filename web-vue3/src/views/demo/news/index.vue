@@ -7,8 +7,7 @@
         <el-input v-model="searchData.newsContent" class="searchInput w-50!" placeholder="请输入新闻内容查询"/>
         <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询
         </base-button>
-        <base-button class="searchBtn" type="info" icon="el-icon-refresh" @click="resetTableList">重置
-        </base-button>
+        <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
       </div>
       <div class="operatePanel">
         <base-button v-permission="'news-news-add'" type="primary"

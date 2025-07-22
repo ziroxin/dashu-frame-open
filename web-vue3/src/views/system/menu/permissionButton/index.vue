@@ -45,8 +45,8 @@
           <el-input v-model="temp.permissionDescription" type="textarea" placeholder="按钮简介"/>
         </el-form-item>
         <el-form-item label="类型：" prop="permissionType">
-          <el-radio v-model="temp.permissionType" label="1">按钮</el-radio>
-          <el-radio v-model="temp.permissionType" label="3">其他</el-radio>
+          <el-radio v-model="temp.permissionType" value="1">按钮</el-radio>
+          <el-radio v-model="temp.permissionType" value="3">其他</el-radio>
         </el-form-item>
         <el-form-item label="图标：" prop="permissionIcon">
           <IconPicker v-model="temp.permissionIcon"/>

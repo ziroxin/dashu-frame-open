@@ -16,7 +16,7 @@
           </el-button>
         </div>
         <!-- 表格部分 -->
-        <el-table ref="dataTable" :data="tableData" row-key="permissionId" :height="this.$windowHeight-200"
+        <el-table ref="dataTable" :data="tableData" row-key="permissionId"
                   border highlight-current-row :tree-props="{children: 'children'}" class="data-table-permission"
                   :default-expand-all="isExpand" @selection-change="selectionChangeHandlerOrder"
                   @expand-change="expandChangeHandler" :expand-row-keys="Array.from(this.expandRowKeys)">
@@ -104,8 +104,8 @@
       <el-form ref="dataForm" :model="temp" :rules="rules" label-position="right" label-width="110px"
                style="width: 600px; margin-left: 30px;">
         <el-form-item label="菜单类型：" prop="permissionType">
-          <el-radio v-model="temp.permissionType" label="0" @change="routerShow=true">路由</el-radio>
-          <el-radio v-model="temp.permissionType" label="2" @change="routerShow=false">外链</el-radio>
+          <el-radio v-model="temp.permissionType" value="0" @change="routerShow=true">路由</el-radio>
+          <el-radio v-model="temp.permissionType" value="2" @change="routerShow=false">外链</el-radio>
         </el-form-item>
         <el-form-item label="菜单名称：" prop="permissionTitle">
           <el-input v-model="temp.permissionTitle" placeholder="菜单显示名称"/>
@@ -190,8 +190,7 @@
           <el-button v-else @click="handleNodeClick('-1')">顶级菜单</el-button>
         </el-form-item>
         <el-divider content-position="center">请选择父级菜单</el-divider>
-        <el-tree ref="parentTree" :key="temp2.permissionId" :data="tableData"
-                 class="parentDataTree" :style="{height: ($windowHeight-300) + 'px'}"
+        <el-tree ref="parentTree" :key="temp2.permissionId" :data="tableData" class="parentDataTree"
                  :props="{children: 'children',label: 'permissionTitle'}"
                  :highlight-current="true" :default-expand-all="this.isExpand"
                  :expand-on-click-node="false" node-key="permissionId"

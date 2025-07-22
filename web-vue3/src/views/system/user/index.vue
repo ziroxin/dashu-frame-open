@@ -2,40 +2,39 @@
   <div class="app-container">
     <el-row :gutter="15">
       <el-col :span="4">
-        <el-input v-model="filterText" placeholder="输入关键字进行过滤" size="small"
-                  style="margin-bottom: 10px;"/>
+        <el-input v-model="filterText" placeholder="关键字过滤" clearable class="mb-10px"/>
         <!-- 组织机构树 -->
-        <el-tree ref="orgTreeRef" class="filter-tree" :data="orgSelectTreeData"
-                 style="height: calc(100vh - 155px);overflow: auto;" :expand-on-click-node="false"
+        <el-tree ref="orgTreeRef" :data="orgSelectTreeData"
+                 class="filter-tree overflow-auto" :expand-on-click-node="false"
                  :highlight-current="true" :props="{children: 'children',label: 'label'}" node-key="value"
                  default-expand-all :filter-node-method="filterNode" @node-click="treeNodeClick"/>
       </el-col>
-      <el-col :span="20" style="">
-        <el-switch v-model="searchData.isSelf" active-value="self" inactive-value="notself" style="margin-right: 10px;"
-                   size="small" active-text="包含下级" inactive-text="只查本级" @change="getUserList"/>
-        <el-input v-model="searchData.userName" style="width: 125px;margin-right: 10px;"
-                  size="small" class="filter-item" placeholder="输入用户名查询"/>
-        <el-input v-model="searchData.name" style="width: 115px;margin-right: 10px;"
-                  size="small" class="filter-item" placeholder="输入姓名查询"/>
-        <el-button class="filter-item" type="primary" icon="el-icon-search"
-                   size="small" @click="searchBtnHandle"/>
-        <el-button class="filter-item" type="info" icon="el-icon-refresh"
-                   size="small" @click="resetTableList"/>
-        <div style="float: right;margin-bottom: 10px;">
-          <!--  操作按钮  -->
-          <el-button type="primary" v-permission="'user-add'" size="small"
-                     @click="userAdd" icon="el-icon-plus">新增
-          </el-button>
-          <el-button v-permission="'reset-password'" type="warning" size="small"
-                     @click="resetPassword(null)" icon="el-icon-key">重置密码
-          </el-button>
-          <el-button v-permission="'user-delete'" type="danger" size="small"
-                     @click="userDelete(null)" icon="el-icon-delete">删除
-          </el-button>
+      <el-col :span="20">
+        <div class="searchPanel">
+          <div class="searchForm">
+            <el-switch v-model="searchData.isSelf" class="searchInput w-180px!"
+                       active-value="self" inactive-value="notself"
+                       active-text="包含下级" inactive-text="只查本级" @change="getUserList"/>
+            <el-input v-model="searchData.userName" class="searchInput" placeholder="用户名" clearable/>
+            <el-input v-model="searchData.name" class="searchInput" placeholder="姓名" clearable/>
+            <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle"/>
+            <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList"/>
+          </div>
+          <div class="operatePanel">
+            <!--  操作按钮  -->
+            <base-button type="primary" v-permission="'user-add'" @click="userAdd" icon="el-icon-plus">新增
+            </base-button>
+            <base-button v-permission="'reset-password'" type="warning"
+                         @click="resetPassword(null)" icon="el-icon-key">重置密码
+            </base-button>
+            <base-button v-permission="'user-delete'" type="danger"
+                         @click="userDelete(null)" icon="el-icon-delete">删除
+            </base-button>
+          </div>
         </div>
         <!-- 表格部分 -->
-        <el-table :data="userTable" row-key="userId" ref="dataTable" :height="this.$windowHeight-230"
-                  style="width: 100%;" border @selection-change="selectionChangeHandlerOrder">
+        <el-table :data="userTable" row-key="userId" ref="dataTable" class="w-100%" border v-loading="isLoading"
+                  @selection-change="selectionChangeHandlerOrder">
           <el-table-column align="center" type="selection" width="40"/>
           <el-table-column align="center" prop="roleName" label="角色" min-width="10%"/>
           <el-table-column align="center" prop="orgName" label="部门" min-width="10%"/>
@@ -51,33 +50,36 @@
           </el-table-column>
           <el-table-column align="center" prop="status" label="状态" min-width="5%">
             <template #default="scope">
-              <span v-if="scope.row.status === '0'" style="color: red;">禁用</span>
-              <span v-else style="color: green;">正常</span>
+              <span v-if="scope.row.status === '0'" class="color-red">禁用</span>
+              <span v-else class="color-green">正常</span>
             </template>
           </el-table-column>
           <el-table-column align="center" prop="avatar" label="头像" width="121px">
             <template #default="scope">
-              <img v-if="scope.row.avatar" :src="$baseServer+'/'+scope.row.avatar"
-                   style="max-width: 100px;max-height: 100px;object-fit: cover;">
-              <span v-if="!scope.row.avatar">未上传</span>
+              <el-image v-if="scope.row.avatar" :src="$baseServer+'/'+scope.row.avatar"
+                        :preview-src-list="[$baseServer+'/'+scope.row.avatar]"
+                        class="max-w-100px max-h-100px object-cover"/>
+              <el-tag type="info" size="small" v-if="!scope.row.avatar">未上传</el-tag>
             </template>
           </el-table-column>
           <el-table-column align="center" prop="introduce" label="简介" min-width="10%"/>
-          <el-table-column fixed="right" align="center" label="操作" width="120px">
+          <el-table-column fixed="right" align="center" label="操作" width="125px">
             <template #default="scope">
-              <el-button v-permission="'user-update'" link type="primary" @click="userUpdate(scope.row)">修改
+              <el-button v-permission="'user-update'" link size="small" type="primary"
+                         @click="userUpdate(scope.row)">修改
               </el-button>
-              <el-button v-permission="'reset-password'" link type="primary" @click="resetPassword(scope.row)">重置密码
+              <el-button v-permission="'reset-password'" link size="small" type="primary"
+                         @click="resetPassword(scope.row)">重置密码
               </el-button>
               <br/>
-              <el-button v-if="scope.row.status === '0'" style="color: #13ce66;" v-permission="'change-status'"
-                         link @click="changeStatus(1, scope.row)">启用
+              <el-button v-if="scope.row.status === '0'" class="color-#13ce66!" v-permission="'change-status'"
+                         link size="small" @click="changeStatus(1, scope.row)">启用
               </el-button>
-              <el-button v-else style="color: #ff6d6d;" v-permission="'change-status'"
-                         link @click="changeStatus(0, scope.row)">禁用
+              <el-button v-else class="color-#ff6d6d!" v-permission="'change-status'"
+                         link size="small" @click="changeStatus(0, scope.row)">禁用
               </el-button>
-              <el-button v-permission="'user-delete'" style="color: #ff6d6d;"
-                         link @click="userDelete(scope.row)">删除
+              <el-button v-permission="'user-delete'" class="color-#ff6d6d!"
+                         link size="small" @click="userDelete(scope.row)">删除
               </el-button>
             </template>
           </el-table-column>
@@ -93,8 +95,7 @@
     <!--  弹窗  -->
     <el-dialog :title="textMap[dialogStatus]" top="5vh" :close-on-click-modal="false" @close="closeDialog"
                v-model="dialogFormVisible" width="680px" :key="'myDialog'+dialogIndex">
-      <el-form ref="userDataForm" :model="temp" label-position="right"
-               label-width="100px" style="width: 500px; margin-left: 50px;">
+      <el-form ref="userDataForm" :model="temp" label-position="right" class="w-500px ml-50px" label-width="100px">
         <el-form-item label="用户名" prop="userName"
                       :rules="[{required: true, message: '请填写用户名', trigger: 'blur'}]">
           <el-input v-model="temp.userName" placeholder="请输入用户名"/>
@@ -104,21 +105,20 @@
         </el-form-item>
         <el-form-item label="所在部门" prop="orgId"
                       :rules="[{required: true, message: '请选择所属组织机构', trigger: 'blur'}]">
-          <el-cascader v-model="temp.orgId" placeholder="请选择上级" style="width: 100%;"
+          <el-cascader v-model="temp.orgId" placeholder="请选择上级" class="w-100%"
                        :options="orgSelectTreeData" filterable clearable
                        :props="{value:'value',label:'label',checkStrictly:true,emitPath:false}"/>
         </el-form-item>
         <el-form-item label="角色" prop="roleId"
                       :rules="[{required: true, message: '请给用户选择角色', trigger: 'blur'}]">
-          <el-select v-model="temp.roleId" class="filter-item" :multiple="true" style="width: 400px;"
-                     placeholder="请选择角色">
+          <el-select v-model="temp.roleId" class="filter-item w-400px" :multiple="true" placeholder="请选择角色">
             <el-option v-for="item in roleNameOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId"/>
           </el-select>
         </el-form-item>
         <el-form-item label="性别" prop="sex">
-          <el-radio v-model="temp.sex" label="0">未知</el-radio>
-          <el-radio v-model="temp.sex" label="1">男</el-radio>
-          <el-radio v-model="temp.sex" label="2">女</el-radio>
+          <el-radio v-model="temp.sex" value="0">未知</el-radio>
+          <el-radio v-model="temp.sex" value="1">男</el-radio>
+          <el-radio v-model="temp.sex" value="2">女</el-radio>
         </el-form-item>
         <el-form-item label="昵称" prop="nickName">
           <el-input v-model="temp.nickName" placeholder="请输入昵称"/>
@@ -139,23 +139,19 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="submitJudgment">保存</el-button>
-          <el-button @click="dialogFormVisible=false">取消</el-button>
+          <base-button type="primary" icon="el-icon-check" @click="submitJudgment">保存</base-button>
+          <base-button icon="el-icon-close" @click="dialogFormVisible=false">取消</base-button>
         </div>
       </template>
     </el-dialog>
   </div>
 </template>
 <script>
-import { getUserList, userAdd, userDelete, userResetPassword, userUpdate } from '@/api/user'
-import { getRoleList } from '@/api/role'
-import ImageAvatar from '@/components/Upload/ImageAvatar'
+import ImageAvatar from '@/components/Upload/ImageAvatar.vue'
 import request from '@/utils/request'
-import SelectTree from '@/components/SelectTree'
-
 
 export default {
-  components: {ImageAvatar, SelectTree},
+  components: {ImageAvatar},
   data() {
     return {
       // 表格数据
@@ -163,6 +159,7 @@ export default {
       // 分页数据
       pager: {page: 1, limit: 10, totalCount: 0},
       searchData: {},
+      isLoading: false,
       roleNameOptions: [],
       textMap: {update: '修改', create: '新增'},
       // 对话框属性
@@ -171,8 +168,6 @@ export default {
       dialogIndex: 0,
       //选中的数据
       changeData: [],
-      //删除的IDS
-      userIds: [],
       temp: {},
       // （新增/修改弹窗）下拉树-组织机构
       orgSelectTreeData: [],
@@ -217,16 +212,8 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        userName: '',
-        orgId: '',
-        roleId: [],
-        password: '',
-        sex: '0',
-        nickName: '',
-        introduce: '',
-        avatar: '',
-        name: '',
-        phone: ''
+        userName: '', orgId: '', roleId: [], password: '', sex: '0', nickName: '',
+        introduce: '', avatar: '', name: '', phone: ''
       }
     },
     // 查询按钮
@@ -243,10 +230,12 @@ export default {
     },
     //查询用户列表
     getUserList() {
+      this.isLoading = true
       const params = {...this.pager, params: JSON.stringify(this.searchData)}
-      getUserList(params).then(response => {
+      request({url: '/user/list', method: 'get', params}).then(response => {
         this.userTable = response.data.records
         this.pager.totalCount = response.data.total
+        this.isLoading = false
       })
     },
     //分页
@@ -261,7 +250,7 @@ export default {
     },
     // 查询角色
     getRoleList() {
-      getRoleList().then(response => {
+      request({url: '/role/list', method: 'get'}).then(response => {
         this.roleNameOptions = response.data.records
       })
     },
@@ -315,15 +304,15 @@ export default {
       // 表单验证
       this.$refs['userDataForm'].validate((valid) => {
         if (valid) {
-          let data = {...this.temp}
+          const data = {...this.temp}
           if (this.dialogStatus === 'update') {
-            userUpdate(data).then(reponse => {
+            request({url: '/user/update', method: 'post', data}).then(reponse => {
               this.$message({type: 'success', message: '修改成功！'})
               this.dialogFormVisible = false
               this.getUserList()
             })
           } else {
-            userAdd(data).then(reponse => {
+            request({url: '/user/add', method: 'post', data}).then(reponse => {
               this.$message({type: 'success', message: '添加成功！'})
               this.dialogFormVisible = false
               this.getUserList()
@@ -344,9 +333,8 @@ export default {
           confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
         }).then(() => {
           // 执行删除
-          this.userIds = []
-          this.userIds.push(...this.changeData.map(r => r.userId))
-          userDelete(this.userIds).then(response => {
+          const data = this.changeData.map(r => r.userId)
+          request({url: '/user/delete', method: 'post', data}).then(response => {
             this.$message({type: 'success', message: '删除成功！'})
             this.getUserList()
           })
@@ -365,10 +353,8 @@ export default {
         this.$confirm('确定要重置成  默认密码：' + this.defaultPassword + '  吗?', '重置密码提醒', {
           confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
         }).then(() => {
-          this.userIds = []
-          this.userIds.push(...this.changeData.map(r => r.userId))
-          console.log(this.userIds)
-          userResetPassword(this.userIds).then(response => {
+          const data = this.changeData.map(r => r.userId)
+          request({url: '/user/reset/password', method: 'post', data}).then(response => {
             this.$message({type: 'success', message: '重置密码成功！'})
             this.getUserList()
           })
@@ -381,13 +367,11 @@ export default {
         this.$refs.dataTable.clearSelection()
         this.$refs.dataTable.toggleRowSelection(row, true)
       }
-      let msg = status === 0 ? '禁用' : '启用'
+      const msg = status === 0 ? '禁用' : '启用'
       if (this.changeData.length <= 0) {
         this.$message({message: '至少选择一个用户' + msg + '！', type: 'error'})
       } else {
-        this.userIds = []
-        this.userIds.push(...this.changeData.map(r => r.userId))
-        let data = {userIds: this.userIds, status: status}
+        const data = {userIds: this.changeData.map(r => r.userId), status: status}
         request({url: '/user/change/status', method: 'post', data}).then(response => {
           this.$message({type: 'success', message: '用户' + msg + '成功！'})
           this.getUserList()
@@ -397,6 +381,3 @@ export default {
   }
 }
 </script>
-<style>
-</style>
-

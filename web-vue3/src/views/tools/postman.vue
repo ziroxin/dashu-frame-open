@@ -31,20 +31,20 @@
     <div class="row">
       <div class="label"><span class="color-#d7000f">*</span>请求方式：</div>
       <div class="input">
-        <el-radio v-model="method" label="GET">GET</el-radio>
-        <el-radio v-model="method" label="POST">POST</el-radio>
-        <el-radio v-model="method" label="PUT">PUT</el-radio>
-        <el-radio v-model="method" label="DELETE">DELETE</el-radio>
+        <el-radio v-model="method" value="GET">GET</el-radio>
+        <el-radio v-model="method" value="POST">POST</el-radio>
+        <el-radio v-model="method" value="PUT">PUT</el-radio>
+        <el-radio v-model="method" value="DELETE">DELETE</el-radio>
       </div>
     </div>
     <div class="row" v-if="method==='POST'||method==='PUT'||method==='DELETE'">
       <div class="label">参数类型：</div>
       <div class="input">
-        <el-radio v-model="dataType" label="json">json</el-radio>
-        <el-radio v-model="dataType" label="json-str">json-str</el-radio>
-        <el-radio v-model="dataType" label="x-www-form-urlencoded">x-www-form-urlencoded</el-radio>
-        <el-radio v-model="dataType" label="form-data">form-data</el-radio>
-        <el-radio v-model="dataType" label="text">text</el-radio>
+        <el-radio v-model="dataType" value="json">json</el-radio>
+        <el-radio v-model="dataType" value="json-str">json-str</el-radio>
+        <el-radio v-model="dataType" value="x-www-form-urlencoded">x-www-form-urlencoded</el-radio>
+        <el-radio v-model="dataType" value="form-data">form-data</el-radio>
+        <el-radio v-model="dataType" value="text">text</el-radio>
         <div class="text-12px color-#d7000f tracking-1px">{{ dataTypeInfo[dataType] }}</div>
       </div>
     </div>
@@ -73,7 +73,7 @@
       <div class="label mobileHidden"></div>
       <div class="input">
         <el-button type="primary" @click="sendRequest" icon="el-icon-plus" round>发送请求</el-button>
-        <el-button icon="el-icon-refresh" round @click="resetForm">重置</el-button>
+        <el-button icon="reset" round @click="resetForm">重置</el-button>
         <el-select placeholder="历史请求记录（永久保存；清空缓存可清理；重复请求会覆盖上次）"
                    filterable clearable class="history" v-model="historyUrl" @change="changeHistoryUrl">
           <el-option :value="item"

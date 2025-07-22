@@ -9,9 +9,7 @@
       <el-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
       </el-button>
-      <el-button class="filter-item" type="info" size="small"
-                 icon="el-icon-refresh" @click="resetTableList">重置
-      </el-button>
+      <el-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</el-button>
       <div style="float: right;">
         <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                    v-permission="'userTheme-zUserTheme-delete'">删除

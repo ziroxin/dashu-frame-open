@@ -1,5 +1,5 @@
 <template>
-  <div class="home" :style="{height: ($windowHeight-45) + 'px'}">
+  <div class="home">
     <div class="title" @click="back">
       < 返回后台
     </div>

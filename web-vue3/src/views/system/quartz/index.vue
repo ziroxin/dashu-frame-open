@@ -9,9 +9,7 @@
       <el-button class="filter-item" size="small" type="primary"
                  icon="el-icon-search" @click="searchBtnHandle">查询
       </el-button>
-      <el-button class="filter-item" size="small" type="info"
-                 icon="el-icon-refresh" @click="resetTableList">重置
-      </el-button>
+      <el-button class="filter-item" size="small" type="info" icon="reset" @click="resetTableList">重置</el-button>
       <div style="float: right;">
         <el-button v-permission="'zquartz-zQuartz-add'" type="primary"
                    size="small" icon="el-icon-plus" @click="openAdd">新增

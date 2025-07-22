@@ -7,9 +7,7 @@
       <el-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
       </el-button>
-      <el-button class="filter-item" type="info" size="small"
-                 icon="el-icon-refresh" @click="resetTableList">重置
-      </el-button>
+      <el-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</el-button>
       <div style="float: right;">
         <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small">新增
         </el-button>
@@ -58,7 +56,7 @@
         </el-form-item>
         <el-form-item label="类型" prop="fileType" :rules="[{required: true, message: '类型不能为空'}]">
           <el-radio-group v-model="temp.fileType">
-            <el-radio :label="'0'">文件夹</el-radio>
+            <el-radio :value="'0'">文件夹</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
