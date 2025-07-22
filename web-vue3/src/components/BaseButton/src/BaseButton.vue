@@ -1,6 +1,6 @@
 <template>
   <el-button :class="`${prefixCls}`" v-bind="{ ...props,icon:null }" @click="handleClick">
-    <my-icon v-if="icon" :icon="icon" class="mr-5px"/>
+    <my-icon v-if="icon" :icon="icon" :class="hasDefaultSlot?'mr-5px!':''"/>
     <slot></slot>
     <slot name="loading"></slot>
   </el-button>
@@ -32,6 +32,9 @@ const props = defineProps({
   darker: {type: Boolean, default: false},
   tag: {type: [String, Object] as PropType<string | Component>, default: 'button'}
 })
+
+// 默认插槽是否有值
+const hasDefaultSlot = computed(() => !!useSlots().default)
 
 // 触发父级组件的点击事件
 const emits = defineEmits(['click'])
