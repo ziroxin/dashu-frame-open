@@ -13,13 +13,13 @@
                     border highlight-current-row>
             <el-table-column prop="key" label="缓存名称" show-overflow-tooltip/>
             <el-table-column prop="expireTime" label="过期时间" width="100" align="center">
-              <template v-slot="scope">
+              <template #default="scope">
                 <el-tag v-if="scope.row.expireTime===-1" type="success">永不过期</el-tag>
                 <el-tag v-else type="danger">{{ scope.row.expireTime }} 秒</el-tag>
               </template>
             </el-table-column>
             <el-table-column label="操作" width="100" align="center">
-              <template v-slot="scope">
+              <template #default="scope">
                 <el-button link type="primary" icon="el-icon-view" @click="cacheForm=scope.row">详情</el-button>
               </template>
             </el-table-column>

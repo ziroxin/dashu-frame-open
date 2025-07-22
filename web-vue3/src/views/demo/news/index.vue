@@ -33,7 +33,7 @@
       <el-table-column label="添加时间" prop="createTime" align="center"/>
       <el-table-column label="修改时间" prop="updateTime" align="center"/>
       <el-table-column fixed="right" label="操作" width="140" align="center">
-        <template v-slot="scope">
+        <template #default="scope">
           <el-button size="small" link style="color: #4dd219;" @click="openView(scope.row)">详情
           </el-button>
           <el-button v-permission="'news-news-update'" size="small" link @click="openUpdate(scope.row)">修改

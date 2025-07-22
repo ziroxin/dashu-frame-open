@@ -74,10 +74,12 @@
           <el-input v-model="temp.ip" placeholder="请输入IP地址"/>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button v-if="dialogType !== 'view'" type="primary" @click="saveData">保存</el-button>
-        <el-button @click="dialogFormVisible = false">取消</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button v-if="dialogType !== 'view'" type="primary" @click="saveData">保存</el-button>
+          <el-button @click="dialogFormVisible = false">取消</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>

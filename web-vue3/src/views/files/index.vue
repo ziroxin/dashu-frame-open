@@ -31,13 +31,13 @@
       <el-table-column label="原文件名" prop="fileOldName" align="center"/>
       <el-table-column label="扩展名" prop="fileExtend" align="center" width="80"/>
       <el-table-column label="大小" prop="fileSize" align="center" width="100">
-        <template v-slot="scope">
+        <template #default="scope">
           {{ formatSize(scope.row.fileSize) }}
         </template>
       </el-table-column>
       <el-table-column label="创建时间" prop="createTime" align="center" width="100"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
-        <template v-slot="scope">
+        <template #default="scope">
           <el-button link style="color: #13ce66;"
                      size="small" @click="openView(scope.row)">详情
           </el-button>
@@ -104,10 +104,12 @@
             <el-input-number v-model.number="temp.fileSize" placeholder="请输入文件大小"/>
           </el-form-item>
         </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-          <el-button @click="dialogFormVisible=false">取消</el-button>
-        </div>
+        <template #footer>
+          <div class="dialog-footer">
+            <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+            <el-button @click="dialogFormVisible=false">取消</el-button>
+          </div>
+        </template>
       </div>
     </el-dialog>
   </div>

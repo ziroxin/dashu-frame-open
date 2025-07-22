@@ -50,16 +50,18 @@
           </el-form-item>
         </el-tooltip>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="savePassword">保存</el-button>
-        <el-button @click="innerVisible=false" v-if="showCloseBtn">取消</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="savePassword">保存</el-button>
+          <el-button @click="innerVisible=false" v-if="showCloseBtn">取消</el-button>
+        </div>
+      </template>
     </div>
   </el-dialog>
 </template>
 
 <script>
-import request from '@/utils/request';
+import request from '@/utils/request'
 import myMixDialog from '@/utils/my-mix-dialog'
 
 export default {
@@ -129,7 +131,7 @@ export default {
           if (this.temp.pwd1 === this.temp.pwd2) {
             if (this.temp.pwd1 === this.temp.oldPassword && !this.isDefaultPassword) {
               this.$message({type: 'error', message: '新密码不能和旧密码一样！'})
-              return;
+              return
             }
             this.temp.userId = this.userId
             this.temp.password = this.temp.pwd1

@@ -1,34 +1,28 @@
 <template>
   <div class="app-container">
     <!-- 交易 - 支付demo-管理按钮 -->
-    <div style="margin-bottom: 10px;">
-      <el-select v-model="searchData.payType" size="small" style="width: 120px;margin-right: 10px;"
-                 class="filter-item" placeholder="支付方式">
-        <el-option label="全部" value=""/>
-        <el-option label="微信支付" value="0"/>
-        <el-option label="支付宝支付" value="1"/>
-      </el-select>
-      <el-select v-model="searchData.tradeStatus" size="small" style="width: 100px;margin-right: 10px;"
-                 class="filter-item" placeholder="支付状态">
-        <el-option label="全部" value=""/>
-        <el-option label="未支付" value="0"/>
-        <el-option label="已支付" value="1"/>
-      </el-select>
-      <el-date-picker v-model="searchData.paySuccessTime" size="small" style="width: 150px;margin-right: 10px;"
-                      type="date" class="filter-item" placeholder="支付成功日期"/>
-      <el-button class="filter-item" type="primary" size="small"
-                 icon="el-icon-search" @click="searchBtnHandle">查询
-      </el-button>
-      <el-button class="filter-item" type="info" size="small"
-                 icon="el-icon-refresh" @click="resetTableList">重置
-      </el-button>
-      <div style="float: right;">
-        <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small">
-          打开支付
-        </el-button>
-        <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
-                   v-permission="'trade-busTrade-delete'">删除
-        </el-button>
+    <div class="searchPanel">
+      <div class="searchForm">
+        <el-select v-model="searchData.payType" class="searchInput" placeholder="支付方式">
+          <el-option label="全部" value=""/>
+          <el-option label="微信支付" value="0"/>
+          <el-option label="支付宝支付" value="1"/>
+        </el-select>
+        <el-select v-model="searchData.tradeStatus" class="searchInput" placeholder="支付状态">
+          <el-option label="全部" value=""/>
+          <el-option label="未支付" value="0"/>
+          <el-option label="已支付" value="1"/>
+        </el-select>
+        <el-date-picker v-model="searchData.paySuccessTime" type="date" class="searchInput w-150px!"
+                        placeholder="支付成功日期"/>
+        <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询</base-button>
+        <base-button class="searchBtn" type="info" icon="el-icon-refresh" @click="resetTableList">重置</base-button>
+      </div>
+      <div class="operatePanel">
+        <base-button type="primary" icon="el-icon-plus" @click="openAdd">打开支付</base-button>
+        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)"
+                     v-permission="'trade-busTrade-delete'">删除
+        </base-button>
       </div>
     </div>
     <!-- 交易 - 支付demo-列表 -->
@@ -36,14 +30,14 @@
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="关联商品ID" prop="productId" align="center"/>
       <el-table-column label="支付方式" prop="payType" align="center">
-        <template v-slot="scope">
-          <span v-if="scope.row.payType===0" style="color: #00a226;">微信支付</span>
-          <span v-if="scope.row.payType===1" style="color: #00afff;">支付宝支付</span>
+        <template #default="scope">
+          <span v-if="scope.row.payType===0" class="color-#00a226">微信支付</span>
+          <span v-if="scope.row.payType===1" class="color-#00afff">支付宝支付</span>
         </template>
       </el-table-column>
       <el-table-column label="支付状态" prop="tradeStatus" align="center">
-        <template v-slot="scope">
-          <span v-if="scope.row.tradeStatus === 1" style="color: #00a226;">已支付</span>
+        <template #default="scope">
+          <span v-if="scope.row.tradeStatus === 1" class="color-#00a226">已支付</span>
           <span v-else>未支付</span>
         </template>
       </el-table-column>
@@ -51,24 +45,24 @@
       <el-table-column label="总金额(分)" prop="totalFee" align="center"/>
       <el-table-column label="已退款(分)" prop="refundTotalFee" align="center"/>
       <el-table-column label="操作" width="120" align="center">
-        <template v-slot="scope">
-          <el-button style="color: #409eff;" v-if="scope.row.tradeStatus === 1"
-                     link size="small" @click="refund(scope.row)">
-            退款
+        <template #default="scope">
+          <el-button v-if="scope.row.tradeStatus === 1" link class="color-#409eff!"
+                     size="small" @click="refund(scope.row)">退款
           </el-button>
-          <el-button v-permission="'trade-busTrade-delete'" style="color: #ff6d6d;"
+          <el-button v-permission="'trade-busTrade-delete'" class="color-#ff6d6d!"
                      link size="small" @click="deleteByIds(scope.row)">删除
           </el-button>
         </template>
       </el-table-column>
       <el-table-column label="支付结果json" prop="resultJson" align="center">
-        <template v-slot="scope">
+        <template #default="scope">
           <el-popover placement="top-start" title="支付反馈结果JSON"
                       width="500" trigger="hover" :content="scope.row.resultJson">
-            <div slot="reference"
-                 style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">
-              {{ scope.row.resultJson }}
-            </div>
+            <template #reference>
+              <div style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">
+                {{ scope.row.resultJson }}
+              </div>
+            </template>
           </el-popover>
         </template>
       </el-table-column>
@@ -77,8 +71,7 @@
     <el-pagination class="flex justify-center mt-10px" layout="total,prev,pager,next,sizes,jumper"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
-                   @size-change="handleSizeChange"
-    />
+                   @size-change="handleSizeChange"/>
     <!-- 支付弹窗 -->
     <el-dialog title="支付窗口" v-model="dialogFormVisible" width="600px"
                @closed="closePayDialog">
@@ -97,9 +90,11 @@
           </el-radio-group>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible=false">关闭</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="dialogFormVisible=false">关闭</el-button>
+        </div>
+      </template>
     </el-dialog>
     <!-- 退款弹窗 -->
     <el-dialog title="退款窗口" v-model="dialogRefundFormVisible" width="95%" top="5vh" @closed="loadTableList">
@@ -115,9 +110,9 @@
 
 <script>
 import request from '@/utils/request'
-import {getToken} from "@/utils/auth";
-import TradeRefund from "@/views/demo/tradeRefund/index.vue";
-import TradeRefundAlipay from "@/views/demo/tradeRefund/trade-refund-alipay.vue";
+import { getToken } from '@/utils/auth'
+import TradeRefund from '@/views/demo/tradeRefund/index.vue'
+import TradeRefundAlipay from '@/views/demo/tradeRefund/trade-refund-alipay.vue'
 
 export default {
   components: {TradeRefundAlipay, TradeRefund},
@@ -180,14 +175,14 @@ export default {
             '?UserJwtToken=' + getToken() +
             '&productId=' + this.payData.productId +
             '&productName=' + this.payData.productName +
-            '&totalFee=' + this.payData.totalFee;
+            '&totalFee=' + this.payData.totalFee
       } else if (this.openPayType === 3) {
         // 支付宝移动网站支付
         location.href = this.$baseServer + '/pay/alipay/toWapPay' +
             '?UserJwtToken=' + getToken() +
             '&productId=' + this.payData.productId +
             '&productName=' + this.payData.productName +
-            '&totalFee=' + this.payData.totalFee;
+            '&totalFee=' + this.payData.totalFee
       } else if (this.openPayType === 4) {
         // 支付宝扫码支付
         this.$router.replace('/demo/trade/AlipayScanPay')
@@ -206,7 +201,7 @@ export default {
     },
     // 加载表格
     loadTableList() {
-      const params = {...this.pager, params: JSON.stringify(this.searchData)};
+      const params = {...this.pager, params: JSON.stringify(this.searchData)}
       request({url: '/trade/busTrade/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total

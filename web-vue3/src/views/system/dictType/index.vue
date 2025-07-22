@@ -33,7 +33,7 @@
                   @selection-change="handleTableSelectChange">
           <el-table-column type="selection" width="50" align="center" header-align="center"/>
           <el-table-column label="字典类型" min-width="50%" prop="typeName">
-            <template v-slot="scope">
+            <template #default="scope">
               <div>{{ scope.row.typeName }}</div>
               <div>
                 {{ scope.row.typeCode }}
@@ -45,13 +45,13 @@
             </template>
           </el-table-column>
           <el-table-column label="状态" width="60px" prop="status" align="center">
-            <template v-slot="scope">
+            <template #default="scope">
               <el-tag type="success" v-if="scope.row.status === '1'" size="small">正常</el-tag>
               <el-tag type="danger" v-else size="small">停用</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="50px" align="center">
-            <template v-slot="scope">
+            <template #default="scope">
               <el-button link type="primary" size="small" @click="openDictData(scope.row)" style="line-height: 14px;">
                 字典<br/>数据
               </el-button>
@@ -84,10 +84,12 @@
               </el-switch>
             </el-form-item>
           </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-            <el-button @click="dialogFormVisible=false">取消</el-button>
-          </div>
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+              <el-button @click="dialogFormVisible=false">取消</el-button>
+            </div>
+          </template>
         </el-dialog>
       </el-col>
       <el-col :span="16">

@@ -25,7 +25,7 @@
             </template>
           </el-table-column>
           <el-table-column label="操作" width="100" align="center">
-            <template v-slot="scope">
+            <template #default="scope">
               <el-button link type="primary" size="small" @click="setMyApi(scope.row)">设置权限</el-button>
             </template>
           </el-table-column>
@@ -50,10 +50,12 @@
               <el-input v-model.number="temp.roleOrder"/>
             </el-form-item>
           </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="saveRoles">保存</el-button>
-            <el-button @click="dialogFormVisible=false">取消</el-button>
-          </div>
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button type="primary" @click="saveRoles">保存</el-button>
+              <el-button @click="dialogFormVisible=false">取消</el-button>
+            </div>
+          </template>
         </el-dialog>
       </el-col>
       <el-col :span="17" style="padding-left: 20px;border-left: 1px solid #dedede;" v-loading="isLoading">
@@ -219,7 +221,7 @@ export default {
         this.$message({message: '请选择一个角色进行复制！', type: 'error'})
       } else {
         this.isLoading2 = true
-        let params = {'roleId': this.tableSelectRows[0].roleId};
+        let params = {'roleId': this.tableSelectRows[0].roleId}
         copyRole(params).then(response => {
           this.$message({type: 'success', message: '复制角色成功！'})
           this.loadRoleList()
@@ -307,8 +309,8 @@ export default {
     table2SelectAll(selection) {
       this.isLoading = true
       setTimeout(() => {
-        const tableData2Ids = this.tableData2.map(item => item.permissionId);
-        const selectionIds = selection.map(item => item.permissionId);
+        const tableData2Ids = this.tableData2.map(item => item.permissionId)
+        const selectionIds = selection.map(item => item.permissionId)
         // 检查 tableData2 中的每一个 permissionId 是否都在 selectionIds 中
         if (tableData2Ids.every(id => selectionIds.includes(id))) {
           // 全选

@@ -109,10 +109,12 @@
           <el-input-number v-model="temp.groupOrder"/>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="saveGroupInfo">保存</el-button>
-        <el-button @click="groupDialogShow=false">取消</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="saveGroupInfo">保存</el-button>
+          <el-button @click="groupDialogShow=false">取消</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>
@@ -154,7 +156,7 @@ export default {
   },
   created() {
     this.getPermissionTreeList()
-    this.getApiList();
+    this.getApiList()
   },
   methods: {
     toggleTableOprate() {
@@ -167,11 +169,11 @@ export default {
     },
     toggleRowExpansionAll(data, isExpansion) {
       data.forEach((item) => {
-        this.$refs.permissionTable.toggleRowExpansion(item, isExpansion);
+        this.$refs.permissionTable.toggleRowExpansion(item, isExpansion)
         if (item.children !== undefined && item.children !== null) {
-          this.toggleRowExpansionAll(item.children, isExpansion);
+          this.toggleRowExpansionAll(item.children, isExpansion)
         }
-      });
+      })
     },
     // 左侧菜单列表
     async getPermissionTreeList() {
@@ -184,9 +186,9 @@ export default {
     async getApiList() {
       this.listLoading2 = true
       const {data} = await getApiList()
-      this.activeNames = [];
+      this.activeNames = []
       for (const group1 of data) {
-        this.activeNames.push(group1.apiGroupId);
+        this.activeNames.push(group1.apiGroupId)
       }
       this.tableData2 = data
       this.listLoading2 = false
@@ -200,7 +202,7 @@ export default {
           title: '扫描成功',
           message: '扫描所有api已完成，并存入数据库中',
           type: 'success'
-        });
+        })
       }
       this.listLoading2 = true
       // 刷新api列表
@@ -261,7 +263,7 @@ export default {
     openGroupDialog() {
       if (this.selectPermissionApiList.length <= 0) {
         this.$message({message: '至少选择一个API接口！', type: 'error'})
-        return;
+        return
       }
       // 加载分组下拉框
       request({url: '/api/group/list', method: 'get'}).then((response) => {
@@ -287,7 +289,7 @@ export default {
       }
       this.$refs.groupDataForm.validate(valid => {
         if (valid) {
-          let data = {...this.temp};
+          let data = {...this.temp}
           data.apiIds = this.selectPermissionApiList
           saveApiGroup(data).then((response) => {
             this.groupDialogShow = false
@@ -296,7 +298,7 @@ export default {
             this.getApiList()
           })
         }
-      });
+      })
     },
     // 删除分组
     deleteGroup(apiGroupId) {
@@ -306,7 +308,7 @@ export default {
         deleteApiGroup({'apiGroupId': apiGroupId}).then((response) => {
           const {code} = response
           if (code === '200') {
-            this.$notify({title: '删除成功', message: '删除API分组成功！', type: 'success'});
+            this.$notify({title: '删除成功', message: '删除API分组成功！', type: 'success'})
             this.getApiList()
           }
         })

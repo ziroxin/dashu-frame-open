@@ -40,14 +40,14 @@
       <el-table-column label="前端路径" prop="viewPath" align="center"/>
       <el-table-column label="作者" prop="author" align="center"/>
       <el-table-column label="状态" prop="status" align="center">
-        <template v-slot="scope">
+        <template #default="scope">
           <el-tag v-if="scope.row.status === '0'" type="warning">未生成</el-tag>
           <el-tag v-if="scope.row.status === '1'" type="success">已生成</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="顺序" prop="orderIndex" align="center"/>
       <el-table-column fixed="right" label="操作" width="100" align="center">
-        <template v-slot="scope">
+        <template #default="scope">
           <el-button v-permission="'generator-zFormGenerator-update'"
                      link type="primary" @click="openUpdate(scope.row)">修改表单
           </el-button>
@@ -115,10 +115,12 @@
           <el-input-number v-model="temp.orderIndex" :min="0" step-strictly/>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-        <el-button @click="dialogFormVisible=false">取消</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+          <el-button @click="dialogFormVisible=false">取消</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>

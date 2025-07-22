@@ -64,7 +64,7 @@
           </el-table-column>
           <el-table-column align="center" prop="introduce" label="简介" min-width="10%"/>
           <el-table-column fixed="right" align="center" label="操作" width="120px">
-            <template v-slot="scope">
+            <template #default="scope">
               <el-button v-permission="'user-update'" link type="primary" @click="userUpdate(scope.row)">修改
               </el-button>
               <el-button v-permission="'reset-password'" link type="primary" @click="resetPassword(scope.row)">重置密码
@@ -137,10 +137,12 @@
           <el-input v-model="temp.phone" placeholder="请输入手机号"/>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitJudgment">保存</el-button>
-        <el-button @click="dialogFormVisible=false">取消</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="submitJudgment">保存</el-button>
+          <el-button @click="dialogFormVisible=false">取消</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>

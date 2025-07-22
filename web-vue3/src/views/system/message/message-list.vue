@@ -24,7 +24,7 @@
               v-loading="isLoading">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="消息标题" prop="msgTitle" max-width="50%">
-        <template v-slot="scope">
+        <template #default="scope">
           <div :class="{'unread':scope.row.msgStatus==='0'}">
             {{ scope.row.msgTitle }}
             <template v-if="scope.row.msgRouter">
@@ -41,7 +41,7 @@
       </el-table-column>
       <el-table-column label="消息创建时间" prop="createTime" width="150" align="center"/>
       <el-table-column fixed="right" label="操作" width="150" align="center">
-        <template v-slot="scope">
+        <template #default="scope">
           <el-button link type="primary"
                      size="small" @click="openView(scope.row)">查看详情
           </el-button>
@@ -76,10 +76,12 @@
           </el-form-item>
         </template>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-        <el-button @click="dialogFormVisible=false">取消</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+          <el-button @click="dialogFormVisible=false">取消</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>

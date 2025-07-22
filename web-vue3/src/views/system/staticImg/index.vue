@@ -31,12 +31,12 @@
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="文件夹名称" prop="fileOldName" align="center"/>
       <el-table-column label="文件夹地址" prop="fileUrl" align="center" show-overflow-tooltip>
-        <template v-slot="scope">{{ copyUrlBase + scope.row.fileUrl }}</template>
+        <template #default="scope">{{ copyUrlBase + scope.row.fileUrl }}</template>
       </el-table-column>
       <el-table-column label="创建时间" prop="createTime" align="center"/>
       <el-table-column label="修改时间" prop="updateTime" align="center"/>
       <el-table-column fixed="right" label="操作" width="200" align="center">
-        <template v-slot="scope">
+        <template #default="scope">
           <el-button link style="color: #13ce66;" size="small" @click="openViews(scope.row)">管理文件夹
           </el-button>
           <el-button link type="primary" size="small" @click="openUpdate(scope.row)">修改</el-button>
@@ -62,10 +62,12 @@
           </el-radio-group>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-        <el-button @click="dialogFormVisible=false">取消</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+          <el-button @click="dialogFormVisible=false">取消</el-button>
+        </div>
+      </template>
     </el-dialog>
     <!-- 管理文件夹弹窗 -->
     <el-dialog title="管理文件夹" v-model="folderDialogVisible" @close="dialogIndex++"

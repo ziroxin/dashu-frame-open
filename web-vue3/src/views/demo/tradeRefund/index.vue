@@ -1,7 +1,7 @@
 <template>
   <div v-if="currentTradeInfo" v-loading.fullscreen.lock="isLoading">
     <!-- 退款 - 支付demo-管理按钮 -->
-    <div class="filter-container" style="margin-bottom: 10px;">
+    <div class="filter-container mb-10px">
       微信退款：
       <el-tag type="success">总金额：{{ currentTradeInfo.totalFee }} 分</el-tag>
       <el-tag type="danger">已退款金额：{{ currentTradeInfo.refundTotalFee || 0 }} 分</el-tag>
@@ -9,7 +9,7 @@
                  type="primary" icon="el-icon-plus" @click="openAdd" size="small"
                  v-permission="'tradeRefund-busTradeRefund-add'">退款
       </el-button>
-      <el-button v-else type="info" size="small">已全部退款</el-button>
+      <el-button v-else type="info">已全部退款</el-button>
     </div>
     <!-- 退款 - 支付demo-列表 -->
     <el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange">
@@ -17,7 +17,7 @@
       <el-table-column label="商户退款单号" prop="outRefundNo" align="center"/>
       <el-table-column label="退款原因" prop="refundDesc" align="center"/>
       <el-table-column label="退款状态" align="center">
-        <template v-slot="scope">
+        <template #default="scope">
           <el-tag v-if="scope.row.refundStatus===0" type="info">退款中</el-tag>
           <el-tag v-else-if="scope.row.refundStatus===1" type="success">退款成功</el-tag>
           <el-tag v-else type="danger">退款异常</el-tag>
@@ -26,7 +26,7 @@
       <el-table-column label="退款成功时间" prop="refundSuccessTime" align="center"/>
       <el-table-column label="退款金额，单位：分" prop="refundFee" align="center"/>
       <el-table-column label="退款反馈结果json" prop="refundResultJson" align="center">
-        <template v-slot="scope">
+        <template #default="scope">
           <el-popover placement="top-start" title="支付反馈结果JSON"
                       width="500" trigger="hover" :content="scope.row.refundResultJson">
             <div slot="reference"
@@ -37,14 +37,11 @@
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="120" align="center">
-        <template v-slot="scope">
-          <el-button v-permission="'tradeRefund-busTradeRefund-update'" style="color: #00afff;"
-                     v-if="scope.row.refundStatus!==1"
-                     link size="small" @click="updateRefundStatus(scope.row)">更新状态
+        <template #default="scope">
+          <el-button v-permission="'tradeRefund-busTradeRefund-update'" class="color-#00afff!" link
+                     v-if="scope.row.refundStatus!==1" size="small" @click="updateRefundStatus(scope.row)">更新状态
           </el-button>
-          <el-button link style="color: #13ce66;"
-                     size="small" @click="openView(scope.row)">详情
-          </el-button>
+          <el-button link class="color-#13ce66!" size="small" @click="openView(scope.row)">详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -87,10 +84,12 @@
           <el-input v-model="temp.refundResultJson" type="textarea"/>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-        <el-button @click="dialogFormVisible=false">取消</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+          <el-button @click="dialogFormVisible=false">取消</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
   <div v-else>暂无数据</div>

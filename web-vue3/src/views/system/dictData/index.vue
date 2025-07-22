@@ -44,7 +44,7 @@
       <el-table-column label="数据标签" prop="dictLabel" align="center"/>
       <el-table-column label="数据值" prop="dictValue" align="center" show-overflow-tooltip/>
       <el-table-column label="状态" prop="status" align="center" width="60">
-        <template v-slot="scope">
+        <template #default="scope">
           <el-tag :type="scope.row.status === '1' ? 'success' : 'danger'" size="small">
             {{ scope.row.status === '1' ? '正常' : '停用' }}
           </el-tag>
@@ -52,7 +52,7 @@
       </el-table-column>
       <el-table-column label="顺序" prop="orderIndex" align="center" width="60"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
-        <template v-slot="scope">
+        <template #default="scope">
           <el-button link style="color: #13ce66;"
                      @click="openView(scope.row)">详情
           </el-button>
@@ -101,10 +101,12 @@
           <el-input-number v-model="temp.orderIndex" :min="0" step-strictly/>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-        <el-button @click="dialogFormVisible=false">取消</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+          <el-button @click="dialogFormVisible=false">取消</el-button>
+        </div>
+      </template>
     </el-dialog>
 
     <!-- 批量导入弹窗 -->
@@ -131,9 +133,11 @@
           </el-tag>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogImportVisible=false">关闭</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="dialogImportVisible=false">关闭</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>

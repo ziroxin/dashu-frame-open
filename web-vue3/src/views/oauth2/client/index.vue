@@ -31,13 +31,13 @@
       <el-table-column label="access_token有效期（秒）" prop="accessTokenValidity" align="center" width="120px"/>
       <el-table-column label="refresh_token有效期（秒）" prop="refreshTokenValidity" align="center" width="120px"/>
       <el-table-column label="自动授权" prop="autoapprove" align="center" width="100px">
-        <template v-slot="scope">
+        <template #default="scope">
           <el-tag type="primary" v-if="scope.row.autoapprove==='false'">手动授权</el-tag>
           <el-tag type="success" v-else-if="scope.row.autoapprove==='true'">自动授权</el-tag>
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="130" align="center">
-        <template v-slot="scope">
+        <template #default="scope">
           <el-button link style="color: #13ce66;"
                      size="small" @click="openView(scope.row)">详情
           </el-button>
@@ -134,10 +134,12 @@
           </el-radio-group>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-        <el-button @click="dialogFormVisible=false">取消</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+          <el-button @click="dialogFormVisible=false">取消</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>

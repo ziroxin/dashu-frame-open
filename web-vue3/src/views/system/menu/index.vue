@@ -172,10 +172,12 @@
           <el-input-number v-model.number="temp.permissionOrder" :min="0"/>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitJudgment(dialogStatus)">保存</el-button>
-        <el-button @click="dialogFormVisible=false">取消</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="submitJudgment(dialogStatus)">保存</el-button>
+          <el-button @click="dialogFormVisible=false">取消</el-button>
+        </div>
+      </template>
     </el-dialog>
 
     <!-- 修改上下级菜单 -->

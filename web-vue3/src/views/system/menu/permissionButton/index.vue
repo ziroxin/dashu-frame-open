@@ -3,14 +3,14 @@
     <!--    操作按钮  -->
     <div style="margin: 10px 0px;text-align: center;">
       {{ currentPermissionRow.permissionTitle }}：
-      <el-button type="primary" icon="el-icon-plus" circle @click="permissionButtonAdd" />
-      <el-button type="info" icon="el-icon-edit" circle @click="permissionButtonUpdate" />
-      <el-button type="danger" icon="el-icon-delete" circle @click="permissionButtonDelete" />
-      <el-button type="warning" icon="el-icon-close" circle @click="permissionButtonClose" />
+      <el-button type="primary" icon="el-icon-plus" circle @click="permissionButtonAdd"/>
+      <el-button type="info" icon="el-icon-edit" circle @click="permissionButtonUpdate"/>
+      <el-button type="danger" icon="el-icon-delete" circle @click="permissionButtonDelete"/>
+      <el-button type="warning" icon="el-icon-close" circle @click="permissionButtonClose"/>
     </div>
     <!--   表格部分 -->
     <el-table :data="tableData" style="margin-bottom: 20px;" border @selection-change="selectionChangeHandlerOrder">
-      <el-table-column type="selection" width="55" header-align="center" align="center" />
+      <el-table-column type="selection" width="55" header-align="center" align="center"/>
       <el-table-column label="元素名称" header-align="center" align="center">
         <template slot-scope="{row}">
           <el-tooltip :key="'tip'+row.permissionId" placement="bottom">
@@ -25,7 +25,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column prop="permissionOrder" label="顺序" width="80" sortable align="center" />
+      <el-table-column prop="permissionOrder" label="顺序" width="80" sortable align="center"/>
     </el-table>
 
     <el-dialog :title="textMap[dialogStatus]" width="700px"
@@ -48,31 +48,33 @@
           />
         </el-form-item>
         <el-form-item label="描述：" prop="permissionDescription">
-          <el-input v-model="temp.permissionDescription" type="textarea" placeholder="按钮简介" />
+          <el-input v-model="temp.permissionDescription" type="textarea" placeholder="按钮简介"/>
         </el-form-item>
         <el-form-item label="类型：" prop="permissionType">
           <el-radio v-model="temp.permissionType" label="1">按钮</el-radio>
           <el-radio v-model="temp.permissionType" label="3">其他</el-radio>
         </el-form-item>
         <el-form-item label="图标：" prop="permissionIcon">
-          <IconPicker v-model="temp.permissionIcon" />
+          <IconPicker v-model="temp.permissionIcon"/>
         </el-form-item>
         <el-form-item label="顺序：" prop="permissionOrder">
-          <el-input-number v-model.number="temp.permissionOrder" :min="0" />
+          <el-input-number v-model.number="temp.permissionOrder" :min="0"/>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">保存</el-button>
-        <el-button @click="dialogFormVisible=false">取消</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">保存</el-button>
+          <el-button @click="dialogFormVisible=false">取消</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import {getListById, permissionAdd, permissionDelete, permissionUpdate} from '@/api/permission'
+import { getListById, permissionAdd, permissionDelete, permissionUpdate } from '@/api/permission'
 // 引入图标选择器
-import IconPicker from '@/views/system/menu/IconPicker/index';
+import IconPicker from '@/views/system/menu/IconPicker/index'
 
 export default {
   name: 'PermissionButton',
@@ -103,7 +105,10 @@ export default {
       rules: {
         permissionName: [{required: true, message: '请填写标记', trigger: 'blur'}],
         permissionTitle: [{required: true, message: '请填写名称', trigger: 'blur'}],
-        permissionOrder: [{required: true, message: '请填写顺序', trigger: 'blur'}, {type: 'number', message: '请填写数字'}]
+        permissionOrder: [{required: true, message: '请填写顺序', trigger: 'blur'}, {
+          type: 'number',
+          message: '请填写数字'
+        }]
       }
     }
   },
@@ -115,7 +120,7 @@ export default {
   },
   created() {
     this.getList()
-    this.resetTemp();
+    this.resetTemp()
   },
   methods: {
     // 表格勾选
@@ -171,13 +176,13 @@ export default {
               this.$message({
                 type: 'success',
                 message: '添加成功！'
-              });
+              })
               this.getList()
             } else {
               this.$message({
                 type: 'error',
                 message: '添加失败！'
-              });
+              })
             }
           })
         }
@@ -216,13 +221,13 @@ export default {
               this.$message({
                 type: 'success',
                 message: '修改成功！'
-              });
+              })
               this.getList()
             } else {
               this.$message({
                 type: 'error',
                 message: '修改失败！'
-              });
+              })
             }
           })
         }
@@ -250,20 +255,20 @@ export default {
               this.$message({
                 type: 'success',
                 message: '删除成功！'
-              });
+              })
               this.getList()
             } else {
               this.$message({
                 type: 'error',
                 message: '删除失败！'
-              });
+              })
             }
           })
         }).catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });
+          })
         })
       }
     },

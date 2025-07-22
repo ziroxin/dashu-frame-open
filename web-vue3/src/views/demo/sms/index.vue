@@ -42,7 +42,7 @@
       <el-table-column label="手机号" prop="smsPhones" align="center"/>
       <el-table-column label="发送短信内容json" prop="sendJson" align="center" show-overflow-tooltip/>
       <el-table-column label="发送状态" prop="status" align="center">
-        <template v-slot="scope">
+        <template #default="scope">
           <el-tag v-if="scope.row.status === '0'" type="danger">发送失败</el-tag>
           <el-tag v-if="scope.row.status === '1'" type="success">发送成功</el-tag>
         </template>
@@ -50,7 +50,7 @@
       <el-table-column label="返回结果json" prop="resultJson" align="center" show-overflow-tooltip/>
       <el-table-column label="发送时间" prop="createTime" align="center"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
-        <template v-slot="scope">
+        <template #default="scope">
           <el-button v-permission="'sms-demoSms-delete'" style="color: #ff6d6d;"
                      link size="small" @click="deleteByIds(scope.row)">删除
           </el-button>

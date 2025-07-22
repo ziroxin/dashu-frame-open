@@ -32,7 +32,7 @@
       <el-table-column label="任务执行时间" prop="jobTimeCron" align="center" min-width="10%"/>
       <el-table-column label="任务描述" prop="description" align="center" min-width="20%" show-overflow-tooltip/>
       <el-table-column label="状态" align="center" min-width="10%">
-        <template v-slot="scope">
+        <template #default="scope">
           <span v-if="scope.row.status==='1'" style="color: #2ac06d;">开启</span>
           <span v-else style="color: #dd1100;">关闭</span>
         </template>
@@ -95,10 +95,12 @@
           />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button v-if="dialogType!=='view'" type="primary" @click="saveData">保存</el-button>
-        <el-button @click="dialogFormVisible=false">取消</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button v-if="dialogType!=='view'" type="primary" @click="saveData">保存</el-button>
+          <el-button @click="dialogFormVisible=false">取消</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>

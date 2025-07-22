@@ -29,7 +29,7 @@
               default-expand-all border stripe @selection-change="handleTableSelectChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="组织机构名称" prop="orgName" min-width="40%">
-        <template v-slot="scope">
+        <template #default="scope">
           <span>{{ scope.row.orgName }}</span>
           <div style="float: right;">
             <el-button v-permission="'zorg-zOrganization-add'" v-if="maxLevel===-1 || scope.row.orgLevel<maxLevel"
@@ -77,10 +77,12 @@
           />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button v-if="dialogType!=='view'" type="primary" @click="saveData">保存</el-button>
-        <el-button @click="dialogFormVisible=false">取消</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button v-if="dialogType!=='view'" type="primary" @click="saveData">保存</el-button>
+          <el-button @click="dialogFormVisible=false">取消</el-button>
+        </div>
+      </template>
     </el-dialog>
 
     <!-- 批量导入弹窗 -->
@@ -109,9 +111,11 @@
           </el-tag>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogImportVisible=false">关闭</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="dialogImportVisible=false">关闭</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>

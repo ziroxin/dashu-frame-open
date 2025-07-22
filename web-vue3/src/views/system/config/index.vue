@@ -38,7 +38,7 @@
       <el-table-column label="备注" prop="cfgRemark" align="center" show-overflow-tooltip/>
       <el-table-column label="顺序" prop="orderIndex" align="center" width="60"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
-        <template v-slot="scope">
+        <template #default="scope">
           <el-button link style="color: #13ce66;"
                      size="small" @click="openView(scope.row)">详情
           </el-button>
@@ -96,10 +96,12 @@
           <el-input-number v-model="temp.orderIndex" :min="0" step-strictly/>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-        <el-button @click="dialogFormVisible=false">取消</el-button>
-      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
+          <el-button @click="dialogFormVisible=false">取消</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>
