@@ -12,16 +12,16 @@
     <el-table :data="tableData" style="margin-bottom: 20px;" border @selection-change="selectionChangeHandlerOrder">
       <el-table-column type="selection" width="55" header-align="center" align="center"/>
       <el-table-column label="元素名称" header-align="center" align="center">
-        <template slot-scope="{row}">
+        <template #default="{row}">
           <el-tooltip :key="'tip'+row.permissionId" placement="bottom">
-            <div slot="content" :key="'tipcontent'+row.permissionId" style="line-height: 30px;">
-              名称：{{ row.permissionTitle }}
-              标签：{{ row.permissionName }}
-              <br>描述：{{ row.permissionDescription }}
-            </div>
-            <div style="cursor: pointer;">
-              {{ row.permissionTitle }}
-            </div>
+            <template #content>
+              <div :key="'tipcontent'+row.permissionId" class="lh-30px">
+                名称：{{ row.permissionTitle }}
+                标签：{{ row.permissionName }}
+                <br>描述：{{ row.permissionDescription }}
+              </div>
+            </template>
+            <div class="cursor-pointer">{{ row.permissionTitle }}</div>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -29,23 +29,17 @@
     </el-table>
 
     <el-dialog :title="textMap[dialogStatus]" width="700px"
-               v-model="dialogFormVisible" :close-on-click-modal="false"
-    >
-      <el-form ref="dataForm" :model="temp" :rules="rules" label-position="right" label-width="100px"
-               style="width: 650px;"
-      >
+               v-model="dialogFormVisible" :close-on-click-modal="false">
+      <el-form ref="dataForm" :model="temp" :rules="rules" label-position="right" label-width="100px" class="w-650px">
         <el-form-item label="名称：" prop="permissionTitle">
           <el-input v-if="this.dialogStatus==='update'" v-model="temp.permissionTitle"
-                    placeholder="按钮名称"
-          />
+                    placeholder="按钮名称"/>
           <el-input v-else v-model="temp.permissionTitle" placeholder="按钮名称"
-                    @input="temp.permissionDescription=currentPermissionRow.permissionTitle+'-'+temp.permissionTitle"
-          />
+                    @input="temp.permissionDescription=currentPermissionRow.permissionTitle+'-'+temp.permissionTitle"/>
         </el-form-item>
         <el-form-item label="标记：" prop="permissionName">
           <el-input v-model="temp.permissionName"
-                    placeholder="唯一标记-用于控制权限，推荐格式：模块名-按钮名（例：system-menu-add）"
-          />
+                    placeholder="唯一标记-用于控制权限，推荐格式：模块名-按钮名（例：system-menu-add）"/>
         </el-form-item>
         <el-form-item label="描述：" prop="permissionDescription">
           <el-input v-model="temp.permissionDescription" type="textarea" placeholder="按钮简介"/>

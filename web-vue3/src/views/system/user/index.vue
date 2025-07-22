@@ -43,7 +43,7 @@
           <el-table-column align="center" prop="name" label="姓名" min-width="8%"/>
           <el-table-column align="center" prop="nickName" label="昵称" min-width="8%"/>
           <el-table-column align="center" prop="sex" label="性别" min-width="5%">
-            <template slot-scope="scope">
+            <template #default="scope">
               <span v-if="scope.row.sex === '0'">未知</span>
               <span v-else-if="scope.row.sex === '1'">男</span>
               <span v-else-if="scope.row.sex === '2'">女</span>
@@ -56,7 +56,7 @@
             </template>
           </el-table-column>
           <el-table-column align="center" prop="avatar" label="头像" width="121px">
-            <template slot-scope="scope">
+            <template #default="scope">
               <img v-if="scope.row.avatar" :src="$baseServer+'/'+scope.row.avatar"
                    style="max-width: 100px;max-height: 100px;object-fit: cover;">
               <span v-if="!scope.row.avatar">未上传</span>

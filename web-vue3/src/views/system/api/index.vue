@@ -65,13 +65,15 @@
                     </el-divider>
                     <template v-for="api2 in cls.apiList" :key="'tip'+api2.apiId">
                       <el-tooltip placement="left">
-                        <div slot="content" :key="'tipcontent'+api2.apiId" class="lh-30px">
-                          请求地址：{{ api2.apiRequestUrl }}
-                          <br>请求方式：{{ api2.apiRequestMethod }}
-                          <br>描述：{{ api2.apiDescription }}
-                        </div>
-                        <el-checkbox ref="apiCheckboxList" :key="api2.apiId" :label="api2.apiId" border
-                                     class="ml-0px! h-50px">
+                        <template #content>
+                          <div :key="'tipcontent'+api2.apiId" class="lh-30px">
+                            请求地址：{{ api2.apiRequestUrl }}
+                            <br>请求方式：{{ api2.apiRequestMethod }}
+                            <br>描述：{{ api2.apiDescription }}
+                          </div>
+                        </template>
+                        <el-checkbox ref="apiCheckboxList" :key="api2.apiId" :label="api2.apiId"
+                                     border class="ml-0px! h-50px">
                           {{ api2.apiName }}<br>{{ api2.apiRequestUrl }}
                         </el-checkbox>
                       </el-tooltip>

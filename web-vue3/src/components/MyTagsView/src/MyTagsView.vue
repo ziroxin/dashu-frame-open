@@ -38,7 +38,7 @@
                         :class="[`${prefixCls}__item`,item?.meta?.affix?`${prefixCls}__item--affix`:'',{'is-active': isActive(item)}]"
                         @visible-change="visibleChange">
             <div>
-              <router-link :ref="tagLinksRefs.set" :to="{ ...item }" custom v-slot="{ navigate }">
+              <router-link :ref="tagLinksRefs.set" :to="{ ...item }" custom #default="{ navigate }">
                 <div @click="navigate" class="h-full flex justify-center items-center whitespace-nowrap pl-15px">
                   <my-icon v-if="canShowIcon(item)" :icon="item?.matched?.[1]?.meta?.icon||item?.meta?.icon"
                            :size="12" class="mr-5px"/>

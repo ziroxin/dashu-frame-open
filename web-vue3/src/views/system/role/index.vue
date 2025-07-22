@@ -17,7 +17,7 @@
                   @selection-change="handleTableSelectChange" v-loading="isLoading2">
           <el-table-column type="selection" width="50" align="center" header-align="center"/>
           <el-table-column label="角色" align="center">
-            <template slot-scope="scope">
+            <template #default="scope">
               <el-popover trigger="hover" placement="right" :title="scope.row.roleName">
                 <p>顺序：{{ scope.row.roleOrder }}<br>描述：{{ scope.row.roleDescription }}</p>
                 <template #reference>

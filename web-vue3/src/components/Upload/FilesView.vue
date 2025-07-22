@@ -31,10 +31,12 @@
           </div>
           <div class="file-name">
             <el-tooltip>
-              <div slot="content" style="line-height: 20px;">
-                文件名：{{ file.fileOldName }}<br/>图片地址：{{ copyUrlBase + file.fileUrl }}
-              </div>
-              <span style="width:100%;text-align:center;cursor:pointer;"
+              <template #content>
+                <div class="lh-20px">
+                  文件名：{{ file.fileOldName }}<br/>图片地址：{{ copyUrlBase + file.fileUrl }}
+                </div>
+              </template>
+              <span class="w-100% text-center cursor-pointer"
                     v-clipboard:copy="copyUrlBase+file.fileUrl">点击复制图片地址</span>
             </el-tooltip>
           </div>

@@ -52,33 +52,35 @@
           <el-table-column prop="permissionRouter" label="菜单详情" min-width="20%">
             <template #default="{row}">
               <el-tooltip v-if="row.permissionType === '0'" class="item" effect="dark" placement="left">
-                <div slot="content" :key="'tipcontent'+row.permissionId" style="line-height: 40px;">
-                  菜单标记：{{ row.permissionName }}
-                  <el-button type="success" circle plain icon="el-icon-document-copy"
-                             v-clipboard:copy="row.permissionName"></el-button>
-                  <br>菜单地址：{{ row.permissionRouter }}
-                  <el-button type="success" circle plain icon="el-icon-document-copy"
-                             v-clipboard:copy="row.permissionRouter"></el-button>
-                  <br>组件地址：{{ row.permissionComponent }}
-                  <el-button type="success" circle plain icon="el-icon-document-copy"
-                             v-clipboard:copy="row.permissionComponent"></el-button>
-                  <br>noRedirect: {{ row.noRedirect }}
-                  <br>noCache: {{ row.noCache }}
-                  <br>breadcrumb: {{ row.breadcrumb }}
-                  <br>affix: {{ row.affix }}
-                  <br>activeMenu: {{ row.activeMenu }}
-                </div>
+                <template #content>
+                  <div :key="'tipcontent'+row.permissionId" class="lh-40px">
+                    菜单标记：{{ row.permissionName }}
+                    <el-button type="success" circle plain icon="el-icon-document-copy"
+                               v-clipboard:copy="row.permissionName"></el-button>
+                    <br>菜单地址：{{ row.permissionRouter }}
+                    <el-button type="success" circle plain icon="el-icon-document-copy"
+                               v-clipboard:copy="row.permissionRouter"></el-button>
+                    <br>组件地址：{{ row.permissionComponent }}
+                    <el-button type="success" circle plain icon="el-icon-document-copy"
+                               v-clipboard:copy="row.permissionComponent"></el-button>
+                    <br>noRedirect: {{ row.noRedirect }}
+                    <br>noCache: {{ row.noCache }}
+                    <br>breadcrumb: {{ row.breadcrumb }}
+                    <br>affix: {{ row.affix }}
+                    <br>activeMenu: {{ row.activeMenu }}
+                  </div>
+                </template>
                 <el-button plain>{{ row.permissionRouter }}</el-button>
               </el-tooltip>
-              <a v-else :href="row.permissionRouter" style="text-decoration: underline;color: #1890ff;"
-                 target="_blank"
-              >{{ row.permissionRouter }}</a>
+              <a v-else :href="row.permissionRouter" class="underline color-#1890ff" target="_blank">
+                {{ row.permissionRouter }}
+              </a>
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="86" header-align="center">
-            <template slot-scope="{row}">
+            <template #default="{row}">
               <div>
-                <el-button v-if="row.permissionIsEnabled" link style="color: #f56c6c;"
+                <el-button v-if="row.permissionIsEnabled" link class="color-#f56c6c"
                            @click="changeIsEnabled(row, 0)">禁用
                 </el-button>
                 <el-button v-else link style="color: #52c41a;"

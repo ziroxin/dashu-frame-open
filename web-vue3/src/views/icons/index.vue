@@ -10,11 +10,11 @@
         <div class="grid">
           <div v-for="item of svgIcons" :key="item" v-clipboard:copy="generateIconCode(item)">
             <el-tooltip placement="top">
-              <div slot="content">
-                {{ generateIconCode(item) }}
-              </div>
+              <template #content>
+                <div>{{ generateIconCode(item) }}</div>
+              </template>
               <div class="icon-item">
-                <svg-icon :icon-class="item" class-name="disabled" />
+                <my-icon :icon="item" class-name="disabled"/>
                 <span>{{ item }}</span>
               </div>
             </el-tooltip>
@@ -25,11 +25,11 @@
         <div class="grid">
           <div v-for="item of elementIcons" :key="item" v-clipboard:copy="generateElementIconCode(item)">
             <el-tooltip placement="top">
-              <div slot="content">
-                {{ generateElementIconCode(item) }}
-              </div>
+              <template #content>
+                <div>{{ generateElementIconCode(item) }}</div>
+              </template>
               <div class="icon-item">
-                <i :class="'el-icon-' + item" />
+                <my-icon :icon="'el-icon-' + item"/>
                 <span>{{ item }}</span>
               </div>
             </el-tooltip>
@@ -43,9 +43,11 @@
 <script>
 import svgIcons from './svg-icons'
 import elementIcons from './element-icons'
+import { MyIcon } from '@/components/MyIcon'
 
 export default {
   name: 'Icons',
+  components: {MyIcon},
   data() {
     return {
       svgIcons,
@@ -54,10 +56,10 @@ export default {
   },
   methods: {
     generateIconCode(symbol) {
-      return `<svg-icon icon-class="${symbol}" />`
+      return `<my-icon icon="${symbol}" />`
     },
     generateElementIconCode(symbol) {
-      return `<i class="el-icon-${symbol}" />`
+      return `<my-icon icon="el-icon-${symbol}" />`
     }
   }
 }

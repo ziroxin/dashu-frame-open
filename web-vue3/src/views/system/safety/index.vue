@@ -87,10 +87,11 @@
         <span>（重置密码时的默认密码）</span>
       </el-form-item>
     </el-form>
-    <div slot="footer" class="dialog-footer width600">
-      <el-button type="primary" style="margin-left: 120px;" @click="saveData" icon="el-icon-check">保存配置
-      </el-button>
-    </div>
+    <template #footer>
+      <div class="dialog-footer width600">
+        <el-button type="primary" class="ml-120px" @click="saveData" icon="el-icon-check">保存配置</el-button>
+      </div>
+    </template>
   </div>
 </template>
 

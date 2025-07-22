@@ -2,15 +2,14 @@
   <div class="app-container" v-loading="isLoading">
     <el-row :gutter="24">
       <el-col :span="12">
-        <el-card style="height: calc(100vh - 125px);overflow: auto">
-          <div slot="header">
-            <span><i class="el-icon-collection"></i> 缓存列表</span>
-            <el-button style="float: right; padding: 3px 0" link type="primary" icon="el-icon-refresh-right"
+        <el-card class="h-[calc(100vh-125px)] overflow-auto">
+          <template #header>
+            <span><my-icon icon="el-icon-collection"/> 缓存列表</span>
+            <el-button class="float-right p-[3px_0]" link type="primary" icon="el-icon-refresh-right"
                        @click="loadRedisCacheList()">刷新
             </el-button>
-          </div>
-          <el-table :data="cacheList" style="width: 100%"
-                    border highlight-current-row>
+          </template>
+          <el-table :data="cacheList" class="w-100%" border highlight-current-row>
             <el-table-column prop="key" label="缓存名称" show-overflow-tooltip/>
             <el-table-column prop="expireTime" label="过期时间" width="100" align="center">
               <template #default="scope">
@@ -28,10 +27,10 @@
       </el-col>
 
       <el-col :span="12">
-        <el-card :bordered="false" style="height: calc(100vh - 125px)">
-          <div slot="header">
-            <span><i class="el-icon-document"></i> 缓存内容</span>
-          </div>
+        <el-card :bordered="false" class="h-[calc(100vh-125px)]">
+          <template #header>
+            <span><my-icon icon="el-icon-document"/> 缓存内容</span>
+          </template>
           <el-form :model="cacheForm">
             <el-row :gutter="32" v-if="cacheForm.key">
               <el-col :offset="1" :span="22">
@@ -50,9 +49,7 @@
                 </el-form-item>
               </el-col>
               <el-col :offset="1" :span="22">
-                <el-button type="danger" icon="el-icon-delete"
-                           @click="handleDeleteRedisCache()">删除此缓存
-                </el-button>
+                <el-button type="danger" icon="el-icon-delete" @click="handleDeleteRedisCache()">删除此缓存</el-button>
               </el-col>
             </el-row>
             <div v-else class="cacheInfo">
@@ -66,8 +63,10 @@
 </template>
 <script>
 import request from '@/utils/request'
+import { MyIcon } from '@/components/MyIcon'
 
 export default {
+  components: {MyIcon},
   data() {
     return {
       cacheList: [],
