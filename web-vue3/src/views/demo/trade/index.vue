@@ -30,9 +30,9 @@
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="关联商品ID" prop="productId" align="center"/>
       <el-table-column label="支付方式" prop="payType" align="center">
-        <template #default="scope">
-          <span v-if="scope.row.payType===0" class="color-#00a226">微信支付</span>
-          <span v-if="scope.row.payType===1" class="color-#00afff">支付宝支付</span>
+        <template #default="{row}">
+          <span v-if="row.payType===0" class="color-#00a226">微信支付</span>
+          <span v-if="row.payType===1" class="color-#00afff">支付宝支付</span>
         </template>
       </el-table-column>
       <el-table-column label="支付状态" prop="tradeStatus" align="center">

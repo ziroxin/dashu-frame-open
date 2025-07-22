@@ -38,7 +38,7 @@
         </template>
       </el-table-column>
       <el-table-column label="状态" align="center" width="160px">
-        <template v-slot="{row}">
+        <template #default="{row}">
           <template v-if="row.status==='1'">
             <el-tooltip effect="dark" content="请先停用！才能修改" placement="top">
               <el-button type="info" icon="el-icon-edit">修改</el-button>

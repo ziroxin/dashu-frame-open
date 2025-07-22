@@ -2,31 +2,32 @@
 <template>
   <div class="IconPickder">
     <el-popover width="600" trigger="click">
-      <div style="max-height:400px;overflow-y: scroll;overflow-x:hidden">
-        <el-button v-for="(item,index) in iconList" :key="index" plain style="margin:2px;" @click="iconName=item">
-          <eIcon :icon-name="item" style="font-size: 20px;" />
+      <div class="max-h-400px overflow-x-hidden overflow-y-scroll">
+        <el-button v-for="(item,index) in iconList" :key="index" plain class="m-2px" @click="iconName=item">
+          <my-icon :icon="item" class="text-20px"/>
         </el-button>
       </div>
-
-      <el-button slot="reference">
-        <span v-if="iconName===''">请选择图标</span>
-        <span v-else>
-          <eIcon :icon-name="iconName" />
-        </span>
-      </el-button>
+      <template #reference>
+        <el-button>
+          <span v-if="iconName===''">请选择图标</span>
+          <span v-else><el-icon :icon="iconName"/></span>
+        </el-button>
+      </template>
     </el-popover>
-    <el-button v-show="iconName!==''" link type="primary" style="margin-left:5px" @click="iconName=''">清空</el-button>
+    <el-button v-show="iconName!==''" link type="primary" class="ml-5px" @click="iconName=''">清空</el-button>
   </div>
 </template>
 
 <script>
-import eIcon from './eIcon';
+import eIcon from './eIcon'
 import svgIcons from '@/views/icons/svg-icons'
 import elementIcons from '@/views/icons/element-icons'
+import { MyIcon } from '@/components/MyIcon'
 
 export default {
   name: 'IconPicker',
   components: {
+    MyIcon,
     eIcon
   },
   props: {
@@ -38,7 +39,7 @@ export default {
       elementIcons,
       iconName: this.value,
       iconList: []
-    };
+    }
   },
   watch: {
     iconName() {
@@ -56,5 +57,5 @@ export default {
       this.iconList.push('el-icon-' + elementIcons[i])
     }
   }
-};
+}
 </script>

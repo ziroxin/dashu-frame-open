@@ -20,10 +20,10 @@
           <el-checkbox v-model="item.select" class="select"></el-checkbox>
           <el-input v-model="item.key" @input="changeHeader(item, index)"
                     placeholder="Content-Type" class="key">
-            <template slot="prepend">KEY</template>
+            <template #prepend>KEY</template>
           </el-input>
           <el-input v-model="item.value" placeholder="text/json;charset=utf-8" class="value">
-            <template slot="prepend">VALUE</template>
+            <template #prepend>VALUE</template>
           </el-input>
         </div>
       </div>
@@ -55,10 +55,10 @@
           <el-checkbox v-model="item.select" class="select"></el-checkbox>
           <el-input v-model="item.key" @input="changeBody(item, index)"
                     placeholder="参数名" class="key">
-            <template slot="prepend">参数名</template>
+            <template #prepend>参数名</template>
           </el-input>
           <el-input v-model="item.value" placeholder="参数值" class="value">
-            <template slot="prepend">参数值</template>
+            <template #prepend>参数值</template>
           </el-input>
         </div>
       </div>

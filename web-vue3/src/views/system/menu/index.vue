@@ -22,7 +22,7 @@
                   @expand-change="expandChangeHandler" :expand-row-keys="Array.from(this.expandRowKeys)">
           <el-table-column type="selection" width="50" header-align="center" align="center"/>
           <el-table-column prop="permissionTitle" label="菜单名称" min-width="35%">
-            <template v-slot="{row}">
+            <template #default="{row}">
               <li class="menu-item">
                 <item :icon="row.permissionIcon" :title="row.permissionTitle"/>
                 <el-tag v-if="row.permissionType === '0'" size="small">路由</el-tag>
@@ -34,7 +34,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="permissionName" label="菜单标识" min-width="20%" v-if="!buttonTableVisible">
-            <template v-slot="{row}">
+            <template #default="{row}">
               <el-button v-permission="'system-menu-update-parent'" style="color: #52c41a;"
                          link @click="permissionUpdateParent(row)">调整上下级
               </el-button>
@@ -50,7 +50,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="permissionRouter" label="菜单详情" min-width="20%">
-            <template v-slot="{row}">
+            <template #default="{row}">
               <el-tooltip v-if="row.permissionType === '0'" class="item" effect="dark" placement="left">
                 <div slot="content" :key="'tipcontent'+row.permissionId" style="line-height: 40px;">
                   菜单标记：{{ row.permissionName }}

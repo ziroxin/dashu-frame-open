@@ -20,7 +20,9 @@
             <template slot-scope="scope">
               <el-popover trigger="hover" placement="right" :title="scope.row.roleName">
                 <p>顺序：{{ scope.row.roleOrder }}<br>描述：{{ scope.row.roleDescription }}</p>
-                <span slot="reference" style="cursor: pointer;">{{ scope.row.roleName }}</span>
+                <template #reference>
+                  <span class="cursor-pointer">{{ scope.row.roleName }}</span>
+                </template>
               </el-popover>
             </template>
           </el-table-column>
@@ -76,14 +78,14 @@
                   @select="table2RowSelect" @select-all="table2SelectAll" resizable border>
           <el-table-column type="selection" width="50" align="center" header-align="center"/>
           <el-table-column label="路由/外链" min-width="30%">
-            <template v-slot="{row}">
+            <template #default="{row}">
               <el-tag v-if="row.permissionType === '0'" disable-transitions size="small">路由</el-tag>
               <el-tag v-if="row.permissionType === '2'" disable-transitions type="success" size="small">外链</el-tag>
               <a style="cursor: pointer;margin-left: 5px;">{{ row.permissionTitle }}</a>
             </template>
           </el-table-column>
           <el-table-column label="按钮/其他" min-width="60%">
-            <template v-slot="{row}">
+            <template #default="{row}">
               <div @click.stop="">
                 <el-checkbox-group v-model="selectPermissionApiList">
                   <el-checkbox v-for="perm in row.buttonList" :key="perm.permissionId" :label="perm.permissionId"

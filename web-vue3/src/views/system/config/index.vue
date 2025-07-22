@@ -24,13 +24,13 @@
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="参数名称" prop="cfgName" align="center"/>
       <el-table-column label="参数键名" prop="cfgKey" align="center">
-        <template v-slot="{row}">
+        <template #default="{row}">
           <el-tag type="primary" effect="plain">{{ row.cfgKey }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="参数键值" prop="cfgValue" align="center"/>
       <el-table-column label="是否系统参数" prop="cfgIsSys" align="center" width="70">
-        <template v-slot="{row}">
+        <template #default="{row}">
           <el-tag type="primary" size="small" v-if="row.cfgIsSys === '1'">是</el-tag>
           <el-tag type="danger" size="small" v-else>否</el-tag>
         </template>

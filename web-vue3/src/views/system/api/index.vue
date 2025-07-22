@@ -3,17 +3,15 @@
     <el-row>
       <el-col :span="9">
         <!-- 资源表格 -->
-        <div style="margin-bottom: 10px;">
+        <div class="mb-10px">
           <el-button @click="toggleTableOprate" :icon="isExpand?'el-icon-arrow-up':'el-icon-arrow-down'"
                      size="small">全部{{ isExpand ? '收起' : '展开' }}
           </el-button>
         </div>
         <div class="grid-content bg-purple">
-          <el-table ref="permissionTable" v-loading="listLoading" :default-expand-all="isExpand"
-                    :height="this.$windowHeight-200" style="width: 96%;"
+          <el-table ref="permissionTable" v-loading="listLoading" :default-expand-all="isExpand" class="w-96%"
                     border :data="tableData" row-key="permissionId"
-                    highlight-current-row :tree-props="{children: 'children'}"
-          >
+                    highlight-current-row :tree-props="{children: 'children'}">
             <el-table-column label="名称">
               <template #default="{row}">
                 <el-tag v-if="row.permissionType === '0'" disable-transitions size="small">路由</el-tag>
@@ -31,50 +29,49 @@
           </el-table>
         </div>
       </el-col>
-      <el-col :span="15" style="padding-left: 10px;border-left: 1px solid #dedede;" v-loading="listLoading2">
+      <el-col :span="15" class="pl-10px b-l-1px b-l-solid b-l-#dedede" v-loading="listLoading2">
         <!--        API列表-->
         <div class="grid-content bg-purple-light">
-          <div style="margin-bottom: 10px;">
+          <div class="mb-10px">
             <el-button type="primary" :disabled="isSaveBtn" icon="el-icon-check"
                        size="small" @click="savePermissionApi()">保存关联API
             </el-button>
-            <div style="float: right;">
+            <div class="float-right">
               <el-button type="primary" size="small" @click="openGroupDialog()">设置分组</el-button>
               <el-button type="danger" size="small" @click="scanApi()">自动扫描API（增量）</el-button>
               <el-button type="info" size="small" @click="clearApi()">清除无效API</el-button>
             </div>
           </div>
-          <div :style="'height:' + ( this.$windowHeight - 200 ) + 'px;overflow-y: auto;'">
-            <el-collapse v-model="activeNames" style="padding-top: 5px;">
-              <el-collapse-item v-for="group2 in tableData2" :key="group2.apiGroupId"
-                                :name="group2.apiGroupId">
-                <template slot="title">
+          <div class="overflow-y-auto h-[calc(100vh-200px)]">
+            <el-collapse v-model="activeNames" class="pt-5px">
+              <el-collapse-item v-for="group2 in tableData2" :key="group2.apiGroupId" :name="group2.apiGroupId">
+                <template #title>
                   <div class="collapse-title">
                     <div>分组：{{ group2.groupName }}</div>
-                    <div style="margin-left: 10px;">
+                    <div class="ml-10px">
                       <el-tooltip content="点击删除分组" placement="right">
-                        <i class="el-icon-delete" style="color: #D7000F;font-size: 16px;"
+                        <i class="el-icon-delete color-#D7000F text-16px"
                            v-if="group2.apiGroupId!=='no_group_api'" @click.stop="deleteGroup(group2.apiGroupId)"/>
                       </el-tooltip>
                     </div>
                   </div>
                 </template>
                 <el-checkbox-group v-model="selectPermissionApiList" style="line-height: 50px;">
-                  <template v-for="cls in group2.apiClass">
-                    <el-divider :key="cls.className">
+                  <template v-for="cls in group2.apiClass" :key="cls.className">
+                    <el-divider>
                       <p class="class-name-p">{{ cls.className.split('@')[0] }}</p>
                       <p v-if="cls.className.split('@').length > 1" class="class-name-p controller">
                         {{ cls.className.split('@')[1] }}</p>
                     </el-divider>
-                    <template v-for="api2 in cls.apiList">
-                      <el-tooltip :key="'tip'+api2.apiId" placement="left">
-                        <div slot="content" :key="'tipcontent'+api2.apiId" style="line-height: 30px;">
+                    <template v-for="api2 in cls.apiList" :key="'tip'+api2.apiId">
+                      <el-tooltip placement="left">
+                        <div slot="content" :key="'tipcontent'+api2.apiId" class="lh-30px">
                           请求地址：{{ api2.apiRequestUrl }}
                           <br>请求方式：{{ api2.apiRequestMethod }}
                           <br>描述：{{ api2.apiDescription }}
                         </div>
-                        <el-checkbox :key="api2.apiId" :label="api2.apiId" border ref="apiCheckboxList"
-                                     style="margin-left: 0px!important;height: 50px;">
+                        <el-checkbox ref="apiCheckboxList" :key="api2.apiId" :label="api2.apiId" border
+                                     class="ml-0px! h-50px">
                           {{ api2.apiName }}<br>{{ api2.apiRequestUrl }}
                         </el-checkbox>
                       </el-tooltip>
@@ -89,8 +86,7 @@
     </el-row>
     <el-dialog v-model="groupDialogShow">
       <el-form ref="groupDataForm" :model="temp" :rules="rules" label-position="right" label-width="100px"
-               style="width: 500px; margin-left: 50px;"
-      >
+               class="w-500px ml-50px">
         <el-form-item label="">
           <el-radio v-model="isNewGroup" label="0" @change="isNewGroup='0';temp={};">创建新分组</el-radio>
           <el-radio v-model="isNewGroup" label="1" @change="isNewGroup='1'">加入已有分组</el-radio>
@@ -101,8 +97,7 @@
         <el-form-item v-else label="选择分组：" prop="apiGroupId">
           <el-select v-model="temp.apiGroupId" placeholder="请选择分组" @change="groupSelectChange">
             <el-option v-for="item in groupList" :key="item.apiGroupId"
-                       :label="item.groupName" :value="item.apiGroupId"
-            />
+                       :label="item.groupName" :value="item.apiGroupId"/>
           </el-select>
         </el-form-item>
         <el-form-item v-if="isNewGroup==='0'" label="分组顺序：" prop="groupOrder">

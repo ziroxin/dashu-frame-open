@@ -29,10 +29,11 @@
         <template #default="scope">
           <el-popover placement="top-start" title="支付反馈结果JSON"
                       width="500" trigger="hover" :content="scope.row.refundResultJson">
-            <div slot="reference"
-                 style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">
-              {{ scope.row.refundResultJson }}
-            </div>
+            <template #reference>
+              <div style="display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;">
+                {{ scope.row.refundResultJson }}
+              </div>
+            </template>
           </el-popover>
         </template>
       </el-table-column>
