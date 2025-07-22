@@ -23,24 +23,24 @@
       </el-form-item>
       <el-form-item label="密码强度" label-position="right">
         <el-radio-group v-model="temp.lowercase" prop="lowercase" style="margin-bottom: 20px;">
-          <el-radio-button label="2">可有可无</el-radio-button>
-          <el-radio-button label="1">必须有小写字母</el-radio-button>
-          <el-radio-button label="0">无小写字母</el-radio-button>
+          <el-radio-button value="2">可有可无</el-radio-button>
+          <el-radio-button value="1">必须有小写字母</el-radio-button>
+          <el-radio-button value="0">无小写字母</el-radio-button>
         </el-radio-group>
         <el-radio-group v-model="temp.uppercase" prop="uppercase" style="margin-bottom: 20px;">
-          <el-radio-button label="2">可有可无</el-radio-button>
-          <el-radio-button label="1">必须有大写字母</el-radio-button>
-          <el-radio-button label="0">无大写字母</el-radio-button>
+          <el-radio-button value="2">可有可无</el-radio-button>
+          <el-radio-button value="1">必须有大写字母</el-radio-button>
+          <el-radio-button value="0">无大写字母</el-radio-button>
         </el-radio-group>
         <el-radio-group v-model="temp.numbers" prop="numbers" style="margin-bottom: 20px;">
-          <el-radio-button label="2">可有可无</el-radio-button>
-          <el-radio-button label="1">必须有数字</el-radio-button>
-          <el-radio-button label="0">无数字</el-radio-button>
+          <el-radio-button value="2">可有可无</el-radio-button>
+          <el-radio-button value="1">必须有数字</el-radio-button>
+          <el-radio-button value="0">无数字</el-radio-button>
         </el-radio-group>
         <el-radio-group v-model="temp.specialCharacters" prop="specialCharacters" style="margin-bottom: 20px;">
-          <el-radio-button label="2">可有可无</el-radio-button>
-          <el-radio-button label="1">必须有特殊字符</el-radio-button>
-          <el-radio-button label="0">无特殊字符</el-radio-button>
+          <el-radio-button value="2">可有可无</el-radio-button>
+          <el-radio-button value="1">必须有特殊字符</el-radio-button>
+          <el-radio-button value="0">无特殊字符</el-radio-button>
         </el-radio-group>
         <el-switch v-model="temp.banUsername" style="margin-bottom: 20px;" prop="banUsername"
                    active-text="不能包含用户名" :active-value="1" active-color="#ff4949"
@@ -140,7 +140,7 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          var data = this.temp
+          let data = this.temp
           if (this.validTimeEnable === true && data.validTime <= 0) {
             this.$message({type: 'error', message: '请输入密码有效期限制天数，必须大于0！'})
             return

@@ -80,8 +80,8 @@
           <!-- 系统参数，不能改成非系统参数 -->
           <el-tag type="primary" v-if="dialogType==='update'&&temp.noUpdateCfgIsSys==='1'">是</el-tag>
           <el-radio-group v-else v-model="temp.cfgIsSys" size="small">
-            <el-radio-button label="1">是</el-radio-button>
-            <el-radio-button label="0">否</el-radio-button>
+            <el-radio-button value="1">是</el-radio-button>
+            <el-radio-button value="0">否</el-radio-button>
           </el-radio-group>
           <el-tag type="danger" style="margin-left:10px;"
                   v-if="temp.cfgIsSys==='1'">系统参数不能删除

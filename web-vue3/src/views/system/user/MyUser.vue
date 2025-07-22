@@ -57,9 +57,9 @@
               <el-input v-model="temp.userName" placeholder="请输入用户名"/>
             </el-form-item>
             <el-form-item label="性别：" prop="sex">
-              <el-radio v-model="temp.sex" label="0">未知</el-radio>
-              <el-radio v-model="temp.sex" label="1">男</el-radio>
-              <el-radio v-model="temp.sex" label="2">女</el-radio>
+              <el-radio v-model="temp.sex" value="0">未知</el-radio>
+              <el-radio v-model="temp.sex" value="1">男</el-radio>
+              <el-radio v-model="temp.sex" value="2">女</el-radio>
             </el-form-item>
             <el-form-item label="昵称：" prop="nickName">
               <el-input v-model="temp.nickName" placeholder="请输入昵称"/>

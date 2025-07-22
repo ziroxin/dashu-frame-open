@@ -129,8 +129,8 @@
         <el-form-item label="是否自动授权" prop="autoapprove"
                       :rules="[{required: true, message: '是否自动授权不能为空'}]">
           <el-radio-group v-model="temp.autoapprove" size="small">
-            <el-radio-button :label="true">自动授权</el-radio-button>
-            <el-radio-button :label="false">用户手动确认</el-radio-button>
+            <el-radio-button :value="true">自动授权</el-radio-button>
+            <el-radio-button :value="false">用户手动确认</el-radio-button>
           </el-radio-group>
         </el-form-item>
       </el-form>

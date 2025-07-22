@@ -241,7 +241,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          for (var i = 0; i < changeData.length; i++) {
+          for (let i = 0; i < changeData.length; i++) {
             this.permissionIds.push(changeData[i].permissionId)
           }
           permissionDelete(this.permissionIds).then(response => {

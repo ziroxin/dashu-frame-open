@@ -448,7 +448,7 @@ export default {
           this.$confirm('会同时删除子元素（按钮等），确定要删除吗?', '提示', {
             confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
           }).then(() => {
-            for (var i = 0; i < changeData.length; i++) {
+            for (let i = 0; i < changeData.length; i++) {
               this.permissionIds.push(changeData[i].permissionId)
             }
             permissionDelete(this.permissionIds).then(response => {

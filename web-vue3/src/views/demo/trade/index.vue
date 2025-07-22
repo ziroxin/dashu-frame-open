@@ -78,15 +78,15 @@
       <el-form>
         <el-form-item label="选择支付方式" prop="openPayType">
           <el-radio-group v-model="openPayType" @change="toPay">
-            <el-radio-button :label="0">微信PC扫码</el-radio-button>
-            <el-radio-button :label="1">微信移动支付(H5/JSAPI)</el-radio-button>
+            <el-radio-button :value="0">微信PC扫码</el-radio-button>
+            <el-radio-button :value="1">微信移动支付(H5/JSAPI)</el-radio-button>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="选择支付方式" prop="openPayType">
           <el-radio-group v-model="openPayType" @change="toPay">
-            <el-radio-button :label="2">支付宝PC</el-radio-button>
-            <el-radio-button :label="3">支付宝移动端</el-radio-button>
-            <el-radio-button :label="4">支付宝扫码支付</el-radio-button>
+            <el-radio-button :value="2">支付宝PC</el-radio-button>
+            <el-radio-button :value="3">支付宝移动端</el-radio-button>
+            <el-radio-button :value="4">支付宝扫码支付</el-radio-button>
           </el-radio-group>
         </el-form-item>
       </el-form>

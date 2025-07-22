@@ -216,7 +216,7 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          var data = this.temp
+          let data = this.temp
           if (this.dialogType === 'update') {
             request({url: '/zquartz/zQuartz/update', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})

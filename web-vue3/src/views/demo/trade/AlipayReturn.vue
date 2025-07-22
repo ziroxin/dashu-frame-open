@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-container">
     <h1>支付宝回调</h1>
     <div v-if="isSuccess==='success'" class="pay-success">支付成功！</div>
     <div v-else class="pay-fail">支付失败！</div>
@@ -8,10 +8,10 @@
 </template>
 <script>
 export default {
-  name: "AlipayReturn",
+  name: 'AlipayReturn',
   data() {
     return {
-      isSuccess: this.$route.query.isSuccess,
+      isSuccess: this.$route.query.isSuccess
     }
   }
 }

@@ -27,7 +27,7 @@ export default {
     this.readSecurityIgnoreList()
     document.addEventListener('keydown', this.handleKeyDown)
   },
-  beforeDestroy() {
+  beforeUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown)
   },
   methods: {

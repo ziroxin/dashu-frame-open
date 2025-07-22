@@ -1,15 +1,15 @@
 <template>
-  <div v-if="currentTradeInfo" v-loading.fullscreen.lock="isLoading">
+  <div v-if="tradeData" v-loading.fullscreen.lock="isLoading">
     <!-- 退款 - 支付demo-管理按钮 -->
-    <div class="filter-container" style="margin-bottom: 20px;">
+    <div class="filter-container mb-20px">
       支付宝退款：
-      <el-tag type="success">总金额：{{ currentTradeInfo.totalFee }} 分</el-tag>
-      <el-tag type="danger">已退款金额：{{ currentTradeInfo.refundTotalFee || 0 }} 分</el-tag>
-      <el-button v-if="currentTradeInfo.totalFee > (currentTradeInfo.refundTotalFee || 0)"
-                 type="primary" icon="el-icon-plus" @click="openAdd" size="small"
-                 v-permission="'tradeRefund-busTradeRefund-add'">退款
-      </el-button>
-      <el-button v-else type="info" size="small">已全部退款</el-button>
+      <el-tag type="success">总金额：{{ tradeData.totalFee }} 分</el-tag>
+      <el-tag type="danger">已退款金额：{{ tradeData.refundTotalFee || 0 }} 分</el-tag>
+      <base-button v-if="tradeData.totalFee > (tradeData.refundTotalFee || 0)"
+                   type="primary" icon="el-icon-plus" @click="openAdd"
+                   v-permission="'tradeRefund-busTradeRefund-add'">退款
+      </base-button>
+      <el-button v-else type="info">已全部退款</el-button>
     </div>
     <!-- 退款 - 支付demo-列表 -->
     <el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange">
@@ -25,6 +25,17 @@
       </el-table-column>
       <el-table-column label="退款成功时间" prop="refundSuccessTime" align="center"/>
       <el-table-column label="退款金额，单位：分" prop="refundFee" align="center"/>
+      <el-table-column label="操作" width="120" align="center">
+        <template #default="scope">
+          <el-button v-permission="'tradeRefund-busTradeRefund-update'" style="color: #00afff;"
+                     v-if="scope.row.refundStatus!==1"
+                     link size="small" @click="updateRefundStatus(scope.row)">更新状态
+          </el-button>
+          <el-button link style="color: #13ce66;"
+                     size="small" @click="openView(scope.row)">详情
+          </el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="退款反馈结果json" prop="refundResultJson" align="center">
         <template #default="scope">
           <el-popover placement="top-start" title="支付反馈结果JSON"
@@ -37,17 +48,6 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="120" align="center">
-        <template #default="scope">
-          <el-button v-permission="'tradeRefund-busTradeRefund-update'" style="color: #00afff;"
-                     v-if="scope.row.refundStatus!==1"
-                     link size="small" @click="updateRefundStatus(scope.row)">更新状态
-          </el-button>
-          <el-button link style="color: #13ce66;"
-                     size="small" @click="openView(scope.row)">详情
-          </el-button>
-        </template>
-      </el-table-column>
     </el-table>
     <!-- 退款 - 支付demo-分页 -->
     <el-pagination class="flex justify-center mt-10px" layout="total,prev,pager,next,sizes,jumper"
@@ -57,8 +57,8 @@
     />
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-               v-model="dialogFormVisible" @close="closeDialog" width="600px" :modal="false">
-      <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px">
+               v-model="dialogFormVisible" @close="closeDialog" width="800px" :modal="false">
+      <el-form ref="dataForm" :model="temp" label-position="right" label-width="125px">
         <el-form-item label="退款金额" prop="refundFee"
                       :rules="[{required: true, message: '退款金额不能为空'}, {type: 'number', message: '必须为数字'}]">
           <el-input-number v-model.number="temp.refundFee" placeholder="请输入退款金额，单位：分"/>
@@ -85,7 +85,7 @@
           <el-date-picker v-model="temp.refundSuccessTime" type="datetime"/>
         </el-form-item>
         <el-form-item label="退款反馈结果json" prop="refundResultJson" v-show="dialogType === 'view'">
-          <el-input v-model="temp.refundResultJson" type="textarea"/>
+          <el-input v-model="temp.refundResultJson" type="textarea" :rows="5" class="w-100%!"/>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -107,12 +107,14 @@ export default {
   name: 'trade-refund-alipay',
   props: {
     // 当前订单信息
-    currentTradeInfo: {type: Object, default: {}},
+    currentTradeInfo: {type: Object, default: () => {}},
     // 刷新数据
     refundRefreshIndex: {type: Number, default: 0}
   },
   data() {
     return {
+      // 订单信息
+      tradeData: this.currentTradeInfo,
       // 是否加载中
       isLoading: false,
       // 分页数据
@@ -144,7 +146,7 @@ export default {
       this.loadTableList()
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     clearInterval(this.intervalIndex)
   },
   methods: {
@@ -157,7 +159,7 @@ export default {
           .then((resp) => {
             if (resp.data.refundStatus === 1) {
               this.$message({type: 'success', message: '退款成功'})
-              this.currentTradeInfo.refundTotalFee = this.currentTradeInfo.refundTotalFee + row.refundFee
+              this.tradeData.refundTotalFee = this.tradeData.refundTotalFee + row.refundFee
               this.dialogFormVisible = false
             } else if (resp.data.refundStatus === 2) {
               this.$message({type: 'error', message: '退款异常'})
@@ -180,7 +182,7 @@ export default {
     },
     // 加载表格
     loadTableList() {
-      this.searchData = {...this.searchData, tradeId: this.currentTradeInfo.tradeId}
+      this.searchData = {...this.searchData, tradeId: this.tradeData.tradeId}
       const params = {...this.pager, params: JSON.stringify(this.searchData)}
       request({url: '/tradeRefund/busTradeRefund/list', method: 'get', params}).then((response) => {
         const {data} = response
@@ -256,13 +258,13 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.currentTradeInfo.refundTotalFee = this.currentTradeInfo.refundTotalFee || 0
-          if (this.currentTradeInfo.totalFee < (this.currentTradeInfo.refundTotalFee + this.temp.refundFee)) {
+          this.tradeData.refundTotalFee = this.tradeData.refundTotalFee || 0
+          if (this.tradeData.totalFee < (this.tradeData.refundTotalFee + this.temp.refundFee)) {
             this.$message({message: '退款金额合计，不能大于支付总金额!', type: 'error'})
             return
           }
-          this.temp.tradeId = this.currentTradeInfo.tradeId
-          var data = {...this.temp}
+          this.temp.tradeId = this.tradeData.tradeId
+          const data = {...this.temp}
           // 提交退款
           request({url: '/pay/alipay/refund', method: 'post', data})
               .then(response => {
@@ -275,7 +277,7 @@ export default {
                         .then((resp) => {
                           if (resp.data.refundStatus === 1) {
                             this.$message({type: 'success', message: '退款成功'})
-                            this.currentTradeInfo.refundTotalFee = this.currentTradeInfo.refundTotalFee + this.temp.refundFee
+                            this.tradeData.refundTotalFee = this.tradeData.refundTotalFee + this.temp.refundFee
                             this.dialogFormVisible = false
                           } else if (resp.data.refundStatus === 2) {
                             this.$message({type: 'error', message: '退款异常'})

@@ -1,13 +1,13 @@
 <template>
-  <div v-if="!tradeId" style="margin: 20px;">
-    <h1>H5（非微信客户端）支付</h1>
+  <div v-if="!tradeId" class="app-container m-20px">
+    <h1 class="m-20px">H5（非微信客户端）支付</h1>
     <el-form ref="dataForm" label-position="right" label-width="100px">
       <el-form-item label="支付金额" prop="totalFee">
         <el-input-number v-model="payData.totalFee" placeholder="请输入支付金额"/>
-        <span style="margin-left: 20px;color: red;">(单位：分)</span>
+        <span class="ml-20px color-red">(单位：分)</span>
       </el-form-item>
     </el-form>
-    <div style="margin: 20px 100px;">
+    <div class="m-[20px_100px]">
       <el-button type="primary" @click="payRedirect">立即支付</el-button>
       <el-button type="primary" @click="clearBack">返回</el-button>
     </div>

@@ -272,7 +272,7 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          var data = {...this.temp}
+          let data = {...this.temp}
           // 字典code
           data.typeCode = this.currentDictType.typeCode
           if (this.dialogType === 'update') {

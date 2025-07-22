@@ -1,17 +1,17 @@
 <template>
-  <div style="margin: 20px;">
-    <h1>微信PC扫码支付</h1>
+  <div class="app-container m-20px">
+    <h1 class="m-20px">微信PC扫码支付</h1>
     <el-form ref="dataForm" label-position="right" label-width="100px">
       <el-form-item label="支付金额" prop="totalFee">
         <el-input-number v-model="payData.totalFee" placeholder="请输入支付金额"/>
-        <span style="margin-left: 20px;color: red;">(单位：分)</span>
+        <span class="ml-20px color-red">(单位：分)</span>
       </el-form-item>
       <el-form-item label="PC扫码支付">
-        <img v-if="tradePayQRCodeUrl" :src="tradePayQRCodeUrl">
-        <div v-else style="font-size: 10px;color: red;">付款码加载中...</div>
+        <img v-if="tradePayQRCodeUrl" :src="tradePayQRCodeUrl"/>
+        <div v-else class="text-10px color-red">付款码加载中...</div>
       </el-form-item>
     </el-form>
-    <div style="margin: 20px 100px;">
+    <div class="m-[20px_100px]">
       <el-button type="primary" @click="clearBack">返回</el-button>
     </div>
   </div>
@@ -51,7 +51,7 @@ export default {
       // 支付信息
       this.payData = {...JSON.parse(window.sessionStorage.getItem(this.$storageKeys.payData))}
       // 调用微信支付
-      let data = {...this.payData}
+      const data = {...this.payData}
       request({url: '/pay/wechat/getPayNative', method: 'post', data})
           .then((response) => {
             // 二维码url，转成二维码图片
@@ -63,7 +63,7 @@ export default {
           })
     },
     wechatPayUpdateStatus(tradeId) {
-      let params = {tradeId: tradeId}
+      const params = {tradeId: tradeId}
       intervalIndex = setInterval(() => {
         request({url: '/pay/wechat/getPayResult', method: 'get', params}).then((response) => {
           if (response.data.tradeStatus === 1) {

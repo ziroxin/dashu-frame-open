@@ -106,8 +106,8 @@
         <el-form-item label="代码生成状态" prop="status"
                       :rules="[{required: true, message: '代码生成状态不能为空'}]">
           <el-radio-group v-model="temp.status">
-            <el-radio-button label="0">未生成</el-radio-button>
-            <el-radio-button label="1">已生成</el-radio-button>
+            <el-radio-button value="0">未生成</el-radio-button>
+            <el-radio-button value="1">已生成</el-radio-button>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="顺序" prop="orderIndex"
