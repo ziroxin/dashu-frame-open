@@ -57,7 +57,7 @@
           <el-table-column align="center" prop="avatar" label="头像" width="121px">
             <template #default="scope">
               <el-image v-if="scope.row.avatar" :src="$baseServer+'/'+scope.row.avatar"
-                        :preview-src-list="[$baseServer+'/'+scope.row.avatar]"
+                        :preview-src-list="[$baseServer+'/'+scope.row.avatar]" preview-teleported hide-on-click-modal
                         class="max-w-100px max-h-100px object-cover"/>
               <el-tag type="info" size="small" v-if="!scope.row.avatar">未上传</el-tag>
             </template>
