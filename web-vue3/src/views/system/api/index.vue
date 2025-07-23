@@ -286,7 +286,7 @@ export default {
       }
       this.$refs.groupDataForm.validate(valid => {
         if (valid) {
-          let data = {...this.temp}
+          const data = {...this.temp}
           data.apiIds = this.selectPermissionApiList
           saveApiGroup(data).then((response) => {
             this.groupDialogShow = false

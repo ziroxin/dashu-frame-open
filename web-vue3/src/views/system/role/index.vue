@@ -33,7 +33,7 @@
           </el-table-column>
         </el-table>
         <!-- 分页 -->
-        <el-pagination style="text-align: center;margin-top: 10px;" layout="total,prev,pager,next"
+        <el-pagination class="flex justify-center mt-10px" layout="total,prev,pager,next"
                        :page-size="pager.limit" :current-page="pager.page"
                        :total="totalCount" @current-change="handleCurrentChange"/>
         <!-- 添加修改弹窗 -->

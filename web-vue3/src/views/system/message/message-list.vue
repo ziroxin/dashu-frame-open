@@ -66,7 +66,7 @@
           <div>{{ temp.msgContent }}</div>
         </el-form-item>
         <template v-if="temp.msgRouter">
-          <el-divider></el-divider>
+          <el-divider/>
           <el-form-item label="链接：" prop="msgRouter">
             <el-link :underline="false" type="primary"
                      @click="$router.push(temp.msgRouter)">点击进入页面
@@ -212,7 +212,7 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          let data = {...this.temp}
+          const data = {...this.temp}
           if (this.dialogType === 'update') {
             request({url: '/message/zMessage/update', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})

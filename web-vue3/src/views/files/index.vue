@@ -212,7 +212,7 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          let data = {...this.temp}
+          const data = {...this.temp}
           if (this.dialogType === 'update') {
             request({url: '/files/zFiles/update', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})

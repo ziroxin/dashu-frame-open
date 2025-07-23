@@ -85,7 +85,7 @@
         </el-select>
       </div>
     </div>
-    <el-divider></el-divider>
+    <el-divider/>
     <div class="mt-20px tracking-0">
       <div v-if="error">
         <div class="color-#d7000f m-[10px_0]">请求错误，错误信息：</div>

@@ -5,7 +5,7 @@
       <!-- 文件显示 -->
       <files-view :file-list="item.children" :show-check="true" v-model="selectedFileList"/>
       <!-- 文件上传 -->
-      <el-divider></el-divider>
+      <el-divider/>
       <div style="display: flex;justify-content: space-between;align-items: center;">
         <div style="margin-right: 15px;">
           <el-button v-if="selectedFileList.length > 0" type="danger" @click="deleteFileList"
@@ -23,9 +23,9 @@
 </template>
 
 <script>
-import request from "@/utils/request";
-import FileUpload from "@/components/Upload/FileUpload.vue";
-import FilesView from "@/components/Upload/FilesView.vue";
+import request from '@/utils/request'
+import FileUpload from '@/components/Upload/FileUpload.vue'
+import FilesView from '@/components/Upload/FilesView.vue'
 
 export default {
   props: ['currentParentId'],
@@ -37,14 +37,14 @@ export default {
       folders: [],
       // 上传文件列表
       uploadFileList: [],
-      selectedFileList: [],
+      selectedFileList: []
     }
   },
   watch: {
     uploadFileList(val) {
       if (val && val.length > 0) {
         // 上传文件成功后，刷新文件列表
-        this.loadFolders();
+        this.loadFolders()
       }
     }
   },
@@ -57,7 +57,7 @@ export default {
       this.isLoading = true
       const params = {
         limit: 100, params: JSON.stringify({fileType: '0', hasChildren: 'true'})
-      };
+      }
       request({url: '/filesStatic/zFilesStatic/list', method: 'get', params}).then((response) => {
         this.folders = response.data.records.filter(r => r.fileId === this.currentParentId)
         this.selectedFileList = []
@@ -81,8 +81,8 @@ export default {
         })
       })
     }
-  },
-};
+  }
+}
 </script>
 
 <style scoped lang="less">
