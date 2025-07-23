@@ -21,7 +21,7 @@
         <el-col :span="12">
           <div class="right">
             <div class="title">
-              <el-upload :action="$baseServer+'/upload/fileHeader'" :headers="$store.getters.headerToken"
+              <el-upload :action="$baseServer+'/upload/fileHeader'" :headers="getTokenHeader()"
                          :on-success="uploadFileSuccess" :show-file-list="false" :auto-upload="true">
                 <el-button type="primary" icon="el-icon-upload2" size="small">点击选择文件上传，获取文件头</el-button>
               </el-upload>
@@ -63,6 +63,7 @@
 </template>
 <script>
 import request from '@/utils/request'
+import { getTokenHeader } from '@/utils/auth'
 
 export default {
   data() {
@@ -76,6 +77,7 @@ export default {
     this.refreshFileTypeMap()
   },
   methods: {
+    getTokenHeader,
     // 上传
     uploadFileSuccess(response) {
       if (response.code === '200') {

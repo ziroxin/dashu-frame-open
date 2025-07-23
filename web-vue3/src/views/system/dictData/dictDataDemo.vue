@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { getDict } from '@/utils/dict-utils'
+import { getDict } from '@/utils/dict-util'
 
 const sex = ref('2')
 // 输出测试

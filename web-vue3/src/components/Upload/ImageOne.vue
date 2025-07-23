@@ -20,7 +20,7 @@
     </el-dialog>
     <!-- 图片上传 -->
     <el-upload ref="imageOne"
-               :headers="$store.getters.headerToken"
+               :headers="getTokenHeader()"
                :data="{'path':folder,...paramsData}"
                :name="name"
                :action="action===''?$baseServer+'/upload/images':action"
@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import { getTokenHeader } from '@/utils/auth'
+
 export default {
   name: 'ImageOne',
   props: {
@@ -73,6 +75,7 @@ export default {
     this.loadImg()
   },
   methods: {
+    getTokenHeader,
     loadImg() {
       this.imgList = []
       if (this.modelValue && this.modelValue !== null && this.modelValue !== '') {

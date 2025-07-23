@@ -120,7 +120,7 @@
         <el-form-item label="导入：">
           <el-upload v-permission="'dictData-zDictData-importExcel'"
                      :action="$baseServer+'/dictData/zDictData/import/excel'"
-                     :headers="$store.getters.headerToken" :data="{typeCode:currentDictType.typeCode}"
+                     :headers="getTokenHeader()" :data="{typeCode:currentDictType.typeCode}"
                      :before-upload="beforeImportUpload" :on-error="importExcelError"
                      :on-success="importExcelSuccess" accept=".xls,.xlsx"
                      :show-file-list="false" :auto-upload="true">
@@ -145,6 +145,7 @@
 import request from '@/utils/request'
 import { clearDictCache } from '@/api/dicts'
 import downloadUtil from '@/utils/download-util'
+import { getTokenHeader } from '@/utils/auth'
 
 export default {
   name: 'DictData',
@@ -185,6 +186,7 @@ export default {
     }
   },
   methods: {
+    getTokenHeader,
     clearDictCache,
     // 查询按钮
     searchBtnHandle() {

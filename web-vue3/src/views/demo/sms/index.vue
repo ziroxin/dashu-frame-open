@@ -107,7 +107,7 @@
 
 <script>
 import request from '@/utils/request'
-import { getDict } from '@/utils/dict-utils'
+import { getDict } from '@/utils/dict-util'
 
 export default {
   dicts: ['aliyun_sms_template'],

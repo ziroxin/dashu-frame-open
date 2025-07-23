@@ -1,62 +1,63 @@
 <template>
   <div class="app-container">
     <!-- 组织机构表-管理按钮 -->
-    <div style="margin-bottom: 10px;">
-      <el-input v-model="searchData.orgName" style="width: 220px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入组织机构名称查询" clearable
-      />
-      <el-button class="filter-item" size="small" type="primary"
-                 icon="el-icon-search" @click="loadTableList">查询
-      </el-button>
-      <el-button class="filter-item" size="small" type="info" icon="reset" @click="resetTableList">重置</el-button>
-      <div style="float: right;">
-        <el-button v-permission="'zorg-zOrganization-add'" type="primary"
-                   @click="openAdd(null)" size="small" icon="el-icon-plus">新增
-        </el-button>
-        <el-button v-permission="'zorg-zOrganization-importExcel'" @click="dialogImportVisible=true"
-                   type="primary" size="small" icon="el-icon-upload2">批量导入
-        </el-button>
-        <el-button v-permission="'zorg-zOrganization-delete'" type="danger"
-                   @click="deleteByIds(null)" size="small" icon="el-icon-delete">删除
-        </el-button>
+    <div class="searchPanel">
+      <div class="searchForm">
+        <el-input v-model="searchData.orgName" class="searchInput w-220px!" placeholder="组织机构名称" clearable/>
+        <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="loadTableList">查询</base-button>
+        <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
+      </div>
+      <div class="operatePanel">
+        <base-button v-permission="'zorg-zOrganization-add'" type="primary"
+                     @click="openAdd(null)" icon="el-icon-plus">新增
+        </base-button>
+        <base-button v-permission="'zorg-zOrganization-importExcel'" @click="dialogImportVisible=true"
+                     type="primary" icon="el-icon-upload2">批量导入
+        </base-button>
+        <base-button v-permission="'zorg-zOrganization-delete'" type="danger"
+                     @click="deleteByIds(null)" icon="el-icon-delete">删除
+        </base-button>
       </div>
     </div>
     <!-- 组织机构表-列表 -->
-    <el-table ref="dataTable" :data="tableData" :tree-props="{children: 'children'}" row-key="orgId"
+    <el-table ref="dataTable" :data="tableData" :tree-props="{children: 'children',checkStrictly: checkStrictly}"
+              row-key="orgId"
               v-loading="isLoading" default-expand-all border stripe @selection-change="handleTableSelectChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="组织机构名称" prop="orgName" min-width="40%">
         <template #default="scope">
           <span>{{ scope.row.orgName }}</span>
-          <div style="float: right;">
-            <el-button v-permission="'zorg-zOrganization-add'" v-if="maxLevel===-1 || scope.row.orgLevel<maxLevel"
-                       link type="primary" @click="openAdd(scope.row)">添加下级
+          <div class="float-right">
+            <el-button v-if="maxLevel===-1||scope.row.orgLevel<maxLevel" v-permission="'zorg-zOrganization-add'"
+                       link size="small" type="primary" @click="openAdd(scope.row)">添加下级
             </el-button>
-            <el-button v-permission="'zorg-zOrganization-update'" link type="primary"
+            <el-button v-permission="'zorg-zOrganization-update'" link size="small" type="primary"
                        @click="openUpdate(scope.row)">修改
             </el-button>
-            <el-button v-permission="'zorg-zOrganization-delete'" style="color: #f56c6c;"
-                       link @click="deleteByIds(scope.row)">删除
+            <el-button v-permission="'zorg-zOrganization-delete'" class="color-#f56c6c!"
+                       link size="small" @click="deleteByIds(scope.row)">删除
             </el-button>
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="备注" prop="remarks" align="center" min-width="30%"/>
-      <el-table-column label="层级" prop="orgLevel" align="center" width="100"/>
+      <el-table-column label="层级" prop="orgLevel" width="100">
+        <template #default="scope">
+          <span>{{ '&nbsp;'.repeat((scope.row.orgLevel - 1) * 8) + scope.row.orgLevel }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="顺序" prop="orderIndex" align="center" width="100"/>
+      <el-table-column label="备注" prop="remarks" align="center" min-width="30%"/>
     </el-table>
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
                v-model="dialogFormVisible" width="680px" @close="resetTemp">
-      <el-form ref="dataForm" :model="temp" label-position="right" label-width="120px"
-               style="width: 600px;" :disabled="dialogType==='view'">
-        <el-form-item label="组织机构名称" prop="orgName"
-                      :rules="[{required: true, message: '组织机构名称不能为空'}]">
+      <el-form ref="dataForm" :model="temp" label-width="110px" class="mt-10px" :disabled="dialogType==='view'">
+        <el-form-item label="组织机构名称" prop="orgName" :rules="[{required: true, message: '组织机构名称不能为空'}]">
           <el-input v-model="temp.orgName" placeholder="请输入组织机构名称"/>
         </el-form-item>
         <el-form-item label="上级部门" prop="orgParentId" v-if="this.temp.orgId!==this.currentOrgId"
                       :rules="[{required: true, message: '上级部门不能为空'}]">
-          <el-cascader v-model="temp.orgParentId" placeholder="请选择上级" style="width: 100%;"
+          <el-cascader v-model="temp.orgParentId" placeholder="请选择上级" class="w-100%"
                        :options="treeSelectData" filterable
                        :props="{value:'orgId',label:'orgName',checkStrictly:true,emitPath:false}"/>
         </el-form-item>
@@ -64,14 +65,12 @@
           <el-tag type="info">不能修改自己的上级部门</el-tag>
         </el-form-item>
         <el-form-item label="顺序" prop="orderIndex"
-                      :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]"
-        >
+                      :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]">
           <el-input-number v-model="temp.orderIndex" :min="0" step-strictly/>
         </el-form-item>
         <el-form-item label="备注" prop="remarks">
           <el-input v-model="temp.remarks" placeholder="请输入备注" type="textarea"
-                    :autosize="{minRows: 2, maxRows: 5}" maxlength="300"
-          />
+                    :autosize="{minRows: 2, maxRows: 5}" maxlength="300"/>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -85,25 +84,24 @@
     <!-- 批量导入弹窗 -->
     <el-dialog title="批量导入" :close-on-click-modal="false" v-model="dialogImportVisible"
                @close="dialogIndex++" width="600px" :key="'importDialog'+dialogIndex">
-      <el-form ref="importForm" label-width="120px" v-loading="isImportLoading">
+      <el-form ref="importForm" label-width="100px" v-loading="isImportLoading">
         <el-form-item label="下载模板：">
-          <el-button type="success" plain @click="downloadExcelTemplate"
-                     icon="el-icon-download" size="small">下载Excel模板
-          </el-button>
-          <el-tag type="danger">
+          <base-button type="success" plain @click="downloadExcelTemplate" icon="el-icon-download">下载Excel模板
+          </base-button>
+          <el-tag type="danger" size="small" class="mt-5px">
             说明：[上级部门]字段，填写上级部门名称，若是最高一级部门，请填写“顶级”
           </el-tag>
         </el-form-item>
-        <el-divider></el-divider>
+        <el-divider/>
         <el-form-item label="导入：">
           <el-upload v-permission="'zorg-zOrganization-importExcel'"
-                     :action="$baseServer+'/zorg/zOrganization/import/excel'" :headers="$store.getters.headerToken"
+                     :action="$baseServer+'/zorg/zOrganization/import/excel'" :headers="getTokenHeader()"
                      :before-upload="beforeImportUpload" :on-error="importExcelError"
                      :on-success="importExcelSuccess" accept=".xls,.xlsx"
                      :show-file-list="false" :auto-upload="true">
-            <el-button type="primary" plain icon="el-icon-upload2" size="small">点击上传Excel并导入</el-button>
+            <base-button type="primary" plain icon="el-icon-upload2">点击上传Excel并导入</base-button>
           </el-upload>
-          <el-tag type="info" size="small">
+          <el-tag type="info" size="small" class="mt-5px">
             说明：点击上方按钮上传Excel文件，上传成功后会自动开始导入！
           </el-tag>
         </el-form-item>
@@ -118,13 +116,11 @@
 </template>
 
 <script>
-
 import request from '@/utils/request'
-import SelectTree from '@/components/SelectTree'
 import downloadUtil from '@/utils/download-util'
+import { getTokenHeader } from '@/utils/auth'
 
 export default {
-  components: {SelectTree},
   data() {
     return {
       // 表格
@@ -151,7 +147,9 @@ export default {
       dialogIndex: 0,
       // 导入弹窗
       dialogImportVisible: false,
-      isImportLoading: false
+      isImportLoading: false,
+      // 上下级关联选择
+      checkStrictly: true
     }
   },
   created() {
@@ -160,6 +158,7 @@ export default {
     this.loadMaxLevel()
   },
   methods: {
+    getTokenHeader,
     loadMaxLevel() {
       request({url: '/zorg/zOrganization/getMaxLevel', method: 'get'}).then((response) => {
         this.maxLevel = response.data.maxLevel
@@ -249,7 +248,7 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          let data = this.temp
+          const data = this.temp
           if (this.dialogType === 'update') {
             request({url: '/zorg/zOrganization/update', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})

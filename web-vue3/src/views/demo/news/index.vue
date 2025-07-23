@@ -56,7 +56,7 @@
     <el-dialog :title="titleMap[dialogType]" v-model="dialogFormVisible" width="900px"
                :close-on-click-modal="dialogType !== 'view' ? false : true"
                @close="resetTemp" :key="'myDialog'+dialogIndex">
-      <el-form ref="dataForm" :model="temp" label-position="right" label-width="60px" :disabled="dialogType==='view'">
+      <el-form ref="dataForm" :model="temp" label-width="60px" :disabled="dialogType==='view'">
         <el-form-item label-width="0px" prop="newsTitle"
                       :rules="[{required: true, message: '新闻标题不能为空'}]">
           <el-input v-model="temp.newsTitle" maxlength="30" :show-word-limit="true"

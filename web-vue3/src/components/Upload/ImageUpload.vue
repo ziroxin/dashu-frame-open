@@ -14,7 +14,7 @@
  -->
 <template>
   <el-upload ref="imageUploader" :name="name"
-             :headers="$store.getters.headerToken"
+             :headers="getTokenHeader()"
              :data="{'path':folder,...paramsData}"
              :action="action===''?$baseServer+'/upload/images':action"
              :file-list="fileShowList"
@@ -30,6 +30,7 @@
 
 <script>
 import request from '@/utils/request'
+import { getTokenHeader } from '@/utils/auth'
 
 export default {
   name: 'ImageUpload',
@@ -64,6 +65,7 @@ export default {
     this.loadFileShowList()
   },
   methods: {
+    getTokenHeader,
     // 加载回显图片列表
     loadFileShowList() {
       if (this.value && this.value.length > 0) {

@@ -23,7 +23,7 @@ import { setupDirectives } from './directives'
 // 注册全局变量
 import { setupGlobalProperties } from '@/utils/global-properties'
 // 注册数据字典
-import { setupDictList } from '@/utils/dict-utils'
+import { setupDictList } from '@/utils/dict-util'
 // 引入App组件
 import { createApp } from 'vue'
 import App from './App.vue'
