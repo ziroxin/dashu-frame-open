@@ -7,7 +7,7 @@
       文档地址：
       <a href="https://driverjs.com/" target="_blank">官方文档</a>
     </aside>
-    <el-button icon="el-icon-question" type="primary" @click.prevent.stop="guide">显示引导页</el-button>
+    <base-button icon="el-icon-question" type="primary" @click.prevent.stop="guide">显示引导页</base-button>
   </div>
 </template>
 

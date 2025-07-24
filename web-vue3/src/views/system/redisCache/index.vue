@@ -5,9 +5,9 @@
         <el-card class="h-[calc(100vh-125px)] overflow-auto">
           <template #header>
             <span><my-icon icon="el-icon-collection"/> 缓存列表</span>
-            <el-button class="float-right p-[3px_0]" link type="primary" icon="el-icon-refresh-right"
+            <base-button class="float-right p-[3px_0]" link type="primary" icon="el-icon-refresh-right"
                        @click="loadRedisCacheList()">刷新
-            </el-button>
+            </base-button>
           </template>
           <el-table :data="cacheList" class="w-100%" border highlight-current-row>
             <el-table-column prop="key" label="缓存名称" show-overflow-tooltip/>
@@ -19,7 +19,7 @@
             </el-table-column>
             <el-table-column label="操作" width="100" align="center">
               <template #default="scope">
-                <el-button link type="primary" icon="el-icon-view" @click="cacheForm=scope.row">详情</el-button>
+                <base-button link type="primary" icon="el-icon-view" @click="cacheForm=scope.row">详情</base-button>
               </template>
             </el-table-column>
           </el-table>
@@ -49,7 +49,7 @@
                 </el-form-item>
               </el-col>
               <el-col :offset="1" :span="22">
-                <el-button type="danger" icon="el-icon-delete" @click="handleDeleteRedisCache()">删除此缓存</el-button>
+                <base-button type="danger" icon="el-icon-delete" @click="handleDeleteRedisCache()">删除此缓存</base-button>
               </el-col>
             </el-row>
             <div v-else class="cacheInfo">

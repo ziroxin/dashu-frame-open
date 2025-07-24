@@ -65,22 +65,22 @@
           <el-table-column align="center" prop="introduce" label="简介" min-width="10%"/>
           <el-table-column fixed="right" align="center" label="操作" width="125px">
             <template #default="scope">
-              <el-button v-permission="'user-update'" link size="small" type="primary"
+              <base-button v-permission="'user-update'" link size="small" type="primary"
                          @click="userUpdate(scope.row)">修改
-              </el-button>
-              <el-button v-permission="'reset-password'" link size="small" type="primary"
+              </base-button>
+              <base-button v-permission="'reset-password'" link size="small" type="primary"
                          @click="resetPassword(scope.row)">重置密码
-              </el-button>
+              </base-button>
               <br/>
-              <el-button v-if="scope.row.status === '0'" class="color-#13ce66!" v-permission="'change-status'"
+              <base-button v-if="scope.row.status === '0'" class="color-#13ce66!" v-permission="'change-status'"
                          link size="small" @click="changeStatus(1, scope.row)">启用
-              </el-button>
-              <el-button v-else class="color-#ff6d6d!" v-permission="'change-status'"
+              </base-button>
+              <base-button v-else class="color-#ff6d6d!" v-permission="'change-status'"
                          link size="small" @click="changeStatus(0, scope.row)">禁用
-              </el-button>
-              <el-button v-permission="'user-delete'" class="color-#ff6d6d!"
+              </base-button>
+              <base-button v-permission="'user-delete'" class="color-#ff6d6d!"
                          link size="small" @click="userDelete(scope.row)">删除
-              </el-button>
+              </base-button>
             </template>
           </el-table-column>
         </el-table>

@@ -6,14 +6,14 @@
                 class="filter-item" placeholder="用户IP"/>
       <el-input v-model="searchData.requestCount" size="small" style="width: 200px;margin-right: 10px;"
                 class="filter-item" placeholder="请求次数超过多少的"/>
-      <el-button class="filter-item" type="primary" size="small"
+      <base-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
-      </el-button>
-      <el-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</el-button>
+      </base-button>
+      <base-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</base-button>
       <div style="float: right;">
-        <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
+        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                    v-permission="'ddos-zDdos-delete'">删除
-        </el-button>
+        </base-button>
       </div>
     </div>
     <!-- ddos用户请求记录-列表 -->

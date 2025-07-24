@@ -6,14 +6,14 @@
                 class="filter-item" placeholder="请输入参数名称查询"/>
       <el-input v-model="searchData.cfgKey" size="small" clearable style="width: 170px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入参数键名查询"/>
-      <el-button class="filter-item" type="primary" size="small"
+      <base-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
-      </el-button>
-      <el-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</el-button>
+      </base-button>
+      <base-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</base-button>
       <div style="float: right;">
-        <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
+        <base-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
                    v-permission="'config-zConfig-add'">新增
-        </el-button>
+        </base-button>
       </div>
     </div>
     <!-- 参数参数配置-列表 -->
@@ -37,16 +37,16 @@
       <el-table-column label="顺序" prop="orderIndex" align="center" width="60"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template #default="scope">
-          <el-button link style="color: #13ce66;"
+          <base-button link style="color: #13ce66;"
                      size="small" @click="openView(scope.row)">详情
-          </el-button>
-          <el-button v-permission="'config-zConfig-update'"
+          </base-button>
+          <base-button v-permission="'config-zConfig-update'"
                      link type="primary" size="small" @click="openUpdate(scope.row)">修改
-          </el-button>
-          <el-button v-permission="'config-zConfig-delete'" v-if="scope.row.cfgIsSys === '0'"
+          </base-button>
+          <base-button v-permission="'config-zConfig-delete'" v-if="scope.row.cfgIsSys === '0'"
                      style="color: #ff6d6d;"
                      link size="small" @click="deleteByIds(scope.row)">删除
-          </el-button>
+          </base-button>
         </template>
       </el-table-column>
     </el-table>
@@ -96,8 +96,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-          <el-button @click="dialogFormVisible=false">取消</el-button>
+          <base-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</base-button>
+          <base-button @click="dialogFormVisible=false">取消</base-button>
         </div>
       </template>
     </el-dialog>

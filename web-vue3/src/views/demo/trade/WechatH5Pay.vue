@@ -8,8 +8,8 @@
       </el-form-item>
     </el-form>
     <div class="m-[20px_100px]">
-      <el-button type="primary" @click="payRedirect">立即支付</el-button>
-      <el-button type="primary" @click="clearBack">返回</el-button>
+      <base-button type="primary" @click="payRedirect">立即支付</base-button>
+      <base-button type="primary" @click="clearBack">返回</base-button>
     </div>
   </div>
   <div v-else>

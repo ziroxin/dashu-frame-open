@@ -8,17 +8,17 @@
                 class="filter-item" placeholder="输入原文件名-模糊"/>
       <el-input v-model="searchData.fileExtend" size="small" style="width: 150px;margin-right: 10px;"
                 class="filter-item" placeholder="输入扩展名-模糊"/>
-      <el-button class="filter-item" type="primary" size="small"
+      <base-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
-      </el-button>
-      <el-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</el-button>
+      </base-button>
+      <base-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</base-button>
       <div style="float: right;">
-        <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
+        <base-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
                    v-permission="'files-zFiles-add'">新增
-        </el-button>
-        <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
+        </base-button>
+        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                    v-permission="'files-zFiles-delete'">删除
-        </el-button>
+        </base-button>
       </div>
     </div>
     <!-- 文件记录表-列表 -->
@@ -36,15 +36,15 @@
       <el-table-column label="创建时间" prop="createTime" align="center" width="100"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template #default="scope">
-          <el-button link style="color: #13ce66;"
+          <base-button link style="color: #13ce66;"
                      size="small" @click="openView(scope.row)">详情
-          </el-button>
-          <el-button link type="primary"
+          </base-button>
+          <base-button link type="primary"
                      size="small" @click="downloadFile(scope.row)">下载
-          </el-button>
-          <el-button v-permission="'files-zFiles-delete'" style="color: #ff6d6d;"
+          </base-button>
+          <base-button v-permission="'files-zFiles-delete'" style="color: #ff6d6d;"
                      link size="small" @click="deleteByIds(scope.row)">删除
-          </el-button>
+          </base-button>
         </template>
       </el-table-column>
     </el-table>
@@ -104,8 +104,8 @@
         </el-form>
         <template #footer>
           <div class="dialog-footer">
-            <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-            <el-button @click="dialogFormVisible=false">取消</el-button>
+            <base-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</base-button>
+            <base-button @click="dialogFormVisible=false">取消</base-button>
           </div>
         </template>
       </div>

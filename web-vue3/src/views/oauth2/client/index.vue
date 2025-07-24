@@ -6,17 +6,17 @@
                 class="filter-item" placeholder="请输入应用ID查询"/>
       <el-input v-model="searchData.webServerRedirectUri" size="small" style="width: 190px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入应用回调地址查询"/>
-      <el-button class="filter-item" type="primary" size="small"
+      <base-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
-      </el-button>
-      <el-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</el-button>
+      </base-button>
+      <base-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</base-button>
       <div style="float: right;">
-        <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
+        <base-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
                    v-permission="'oauth2.client-oauthClientDetails-add'">新增
-        </el-button>
-        <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
+        </base-button>
+        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                    v-permission="'oauth2.client-oauthClientDetails-delete'">删除
-        </el-button>
+        </base-button>
       </div>
     </div>
     <!-- 应用信息表-列表 -->
@@ -36,21 +36,21 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="130" align="center">
         <template #default="scope">
-          <el-button link style="color: #13ce66;"
+          <base-button link style="color: #13ce66;"
                      size="small" @click="openView(scope.row)">详情
-          </el-button>
-          <el-button v-permission="'oauth2.client-oauthClientDetails-update'"
+          </base-button>
+          <base-button v-permission="'oauth2.client-oauthClientDetails-update'"
                      link type="primary" size="small" @click="openUpdate(scope.row)">修改
-          </el-button>
-          <el-button v-permission="'oauth2.client-oauthClientDetails-delete'" style="color: #ff6d6d;"
+          </base-button>
+          <base-button v-permission="'oauth2.client-oauthClientDetails-delete'" style="color: #ff6d6d;"
                      link size="small" @click="deleteByIds(scope.row)">删除
-          </el-button>
-          <el-button link type="primary"
+          </base-button>
+          <base-button link type="primary"
                      size="small" @click="testOauth(scope.row)">测试
-          </el-button>
-          <el-button v-permission="'oauth2.client-oauthClientDetails-resetSecret'" style="color: #ff6d6d;"
+          </base-button>
+          <base-button v-permission="'oauth2.client-oauthClientDetails-resetSecret'" style="color: #ff6d6d;"
                      link size="small" @click="resetSecret(scope.row)">重置Secret
-          </el-button>
+          </base-button>
         </template>
       </el-table-column>
     </el-table>
@@ -74,8 +74,8 @@
         <el-form-item label="应用Secret" prop="clientSecret"
                       :rules="[{required: true, message: '应用Secret不能为空'}]">
           <el-input v-model="temp.clientSecret" placeholder="请输入应用Secret（点击下方按钮可随机生成）"/>
-          <el-button type="primary" @click="generateRandomPassword(16)">随机生成Secret</el-button>
-          <el-button type="success" v-clipboard:copy="temp.clientSecret">复制当前Secret</el-button>
+          <base-button type="primary" @click="generateRandomPassword(16)">随机生成Secret</base-button>
+          <base-button type="success" v-clipboard:copy="temp.clientSecret">复制当前Secret</base-button>
         </el-form-item>
       </el-form>
       <!-- 添加、修改、查看 -->
@@ -95,8 +95,8 @@
                       :rules="[{required: true, message: '应用Secret不能为空'}]">
           <el-input v-model="temp.clientSecret" placeholder="请输入应用Secret（点击下方按钮可随机生成）"/>
           <div style="color: #dd1f29;">请妥善保管好应用Secret，不要泄露；不可找回，若丢失只能重置！</div>
-          <el-button type="primary" @click="generateRandomPassword(16)">随机生成Secret</el-button>
-          <el-button type="success" v-clipboard:copy="temp.clientSecret">复制当前Secret</el-button>
+          <base-button type="primary" @click="generateRandomPassword(16)">随机生成Secret</base-button>
+          <base-button type="success" v-clipboard:copy="temp.clientSecret">复制当前Secret</base-button>
         </el-form-item>
         <!-- 回调地址 -->
         <el-form-item label="回调地址" prop="webServerRedirectUri"
@@ -134,8 +134,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-          <el-button @click="dialogFormVisible=false">取消</el-button>
+          <base-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</base-button>
+          <base-button @click="dialogFormVisible=false">取消</base-button>
         </div>
       </template>
     </el-dialog>

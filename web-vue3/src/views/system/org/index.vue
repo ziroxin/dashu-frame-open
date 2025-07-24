@@ -28,15 +28,15 @@
         <template #default="scope">
           <span>{{ scope.row.orgName }}</span>
           <div class="float-right">
-            <el-button v-if="maxLevel===-1||scope.row.orgLevel<maxLevel" v-permission="'zorg-zOrganization-add'"
+            <base-button v-if="maxLevel===-1||scope.row.orgLevel<maxLevel" v-permission="'zorg-zOrganization-add'"
                        link size="small" type="primary" @click="openAdd(scope.row)">添加下级
-            </el-button>
-            <el-button v-permission="'zorg-zOrganization-update'" link size="small" type="primary"
+            </base-button>
+            <base-button v-permission="'zorg-zOrganization-update'" link size="small" type="primary"
                        @click="openUpdate(scope.row)">修改
-            </el-button>
-            <el-button v-permission="'zorg-zOrganization-delete'" class="color-#f56c6c!"
+            </base-button>
+            <base-button v-permission="'zorg-zOrganization-delete'" class="color-#f56c6c!"
                        link size="small" @click="deleteByIds(scope.row)">删除
-            </el-button>
+            </base-button>
           </div>
         </template>
       </el-table-column>
@@ -75,8 +75,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button v-if="dialogType!=='view'" type="primary" @click="saveData">保存</el-button>
-          <el-button @click="dialogFormVisible=false">取消</el-button>
+          <base-button v-if="dialogType!=='view'" type="primary" @click="saveData">保存</base-button>
+          <base-button @click="dialogFormVisible=false">取消</base-button>
         </div>
       </template>
     </el-dialog>
@@ -108,7 +108,7 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="dialogImportVisible=false">关闭</el-button>
+          <base-button @click="dialogImportVisible=false">关闭</base-button>
         </div>
       </template>
     </el-dialog>

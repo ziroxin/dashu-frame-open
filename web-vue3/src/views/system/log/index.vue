@@ -1,24 +1,21 @@
 <template>
   <div class="app-container">
     <!-- 操作日志表-管理按钮 -->
-    <div style="margin-bottom: 10px">
-      <el-input v-model="searchData.userName" size="small" style="width: 160px; margin-right: 10px"
-                class="filter-item" placeholder="输入用户名模糊查询"/>
-      <el-input v-model="searchData.logMethod" size="small" style="width: 160px; margin-right: 10px"
-                class="filter-item" placeholder="输入方法名模糊查询"/>
-      <el-input v-model="searchData.ip" size="small" style="width: 150px; margin-right: 10px"
-                class="filter-item" placeholder="请输入IP地址查询"/>
-      <el-button class="filter-item" type="primary" icon="el-icon-search"
-                 @click="searchBtnHandle" size="small">查询
-      </el-button>
-      <el-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</el-button>
-      <div style="float: right">
-        <el-button v-permission="'zlog-zOperateLog-delete'" icon="el-icon-delete"
-                   size="small" type="danger" @click="deleteByIds">删除
-        </el-button>
-        <el-button v-permission="'zlog-zOperateLog-exportExcel'" icon="el-icon-printer"
-                   size="small" type="success" @click="exportExcel">导出Excel
-        </el-button>
+    <div class="searchPanel">
+      <div class="searchForm">
+        <el-input v-model="searchData.userName" class="searchInput w-160px!" placeholder="用户名-模糊查询"/>
+        <el-input v-model="searchData.logMethod" class="searchInput w-160px!" placeholder="方法名-模糊查询"/>
+        <el-input v-model="searchData.ip" class="searchInput w-150px!" placeholder="IP地址"/>
+        <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询</base-button>
+        <base-button class="filter-item" type="info" icon="reset" @click="resetTableList">重置</base-button>
+      </div>
+      <div class="operatePanel">
+        <base-button v-permission="'zlog-zOperateLog-delete'" icon="el-icon-delete"
+                     type="danger" @click="deleteByIds">删除
+        </base-button>
+        <base-button v-permission="'zlog-zOperateLog-exportExcel'" icon="el-icon-printer"
+                     size="small" type="success" @click="exportExcel">导出Excel
+        </base-button>
       </div>
     </div>
     <!-- 操作日志表-列表 -->
@@ -32,7 +29,7 @@
       <el-table-column label="操作时间" prop="createTime" align="center" width="100"/>
       <el-table-column fixed="right" label="操作" align="center" width="80">
         <template #default="scope">
-          <el-button link type="primary" size="small" @click="openView(scope.row)">查看详情</el-button>
+          <base-button link type="primary" size="small" @click="openView(scope.row)">查看详情</base-button>
         </template>
       </el-table-column>
     </el-table>
@@ -74,8 +71,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button v-if="dialogType !== 'view'" type="primary" @click="saveData">保存</el-button>
-          <el-button @click="dialogFormVisible = false">取消</el-button>
+          <base-button v-if="dialogType !== 'view'" type="primary" @click="saveData">保存</base-button>
+          <base-button @click="dialogFormVisible = false">取消</base-button>
         </div>
       </template>
     </el-dialog>
@@ -195,7 +192,7 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          let data = this.temp
+          const data = this.temp
           if (this.dialogType === 'update') {
             request({url: '/zlog/zOperateLog/update', method: 'post', data}).then((response) => {
               this.$message({type: 'success', message: '修改成功！'})

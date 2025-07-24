@@ -33,9 +33,9 @@
               <div class="text-12px">{{ scope.row.typeName }}</div>
               <div class="text-12px">
                 {{ scope.row.typeCode }}
-                <el-button link size="small" class="color-#00b42a!" icon="el-icon-document-copy"
+                <base-button link size="small" class="color-#00b42a!" icon="el-icon-document-copy"
                            v-clipboard:copy="scope.row.typeCode">复制
-                </el-button>
+                </base-button>
               </div>
             </template>
           </el-table-column>
@@ -47,9 +47,9 @@
           </el-table-column>
           <el-table-column label="操作" width="55px" align="center">
             <template #default="scope">
-              <el-button link type="primary" size="small" @click="openDictData(scope.row)" class="lh-14px!">
+              <base-button link type="primary" size="small" @click="openDictData(scope.row)" class="lh-14px!">
                 字典<br/>数据
-              </el-button>
+              </base-button>
             </template>
           </el-table-column>
         </el-table>
@@ -78,8 +78,8 @@
           </el-form>
           <template #footer>
             <div class="dialog-footer">
-              <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-              <el-button @click="dialogFormVisible=false">取消</el-button>
+              <base-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</base-button>
+              <base-button @click="dialogFormVisible=false">取消</base-button>
             </div>
           </template>
         </el-dialog>

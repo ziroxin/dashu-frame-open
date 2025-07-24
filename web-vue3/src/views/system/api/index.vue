@@ -4,9 +4,9 @@
       <el-col :span="9">
         <!-- 资源表格 -->
         <div class="mb-10px">
-          <el-button @click="toggleTableOprate" :icon="isExpand?'el-icon-arrow-up':'el-icon-arrow-down'"
+          <base-button @click="toggleTableOprate" :icon="isExpand?'el-icon-arrow-up':'el-icon-arrow-down'"
                      size="small">全部{{ isExpand ? '收起' : '展开' }}
-          </el-button>
+          </base-button>
         </div>
         <div class="grid-content bg-purple">
           <el-table ref="permissionTable" v-loading="listLoading" :default-expand-all="isExpand" class="w-96%"
@@ -22,8 +22,8 @@
             </el-table-column>
             <el-table-column label="操作" width="70px" align="center">
               <template #default="{row}">
-                <el-button link type="primary" size="small" @click.native.prevent="setMyApi(row.permissionId)">设置API
-                </el-button>
+                <base-button link type="primary" size="small" @click.native.prevent="setMyApi(row.permissionId)">设置API
+                </base-button>
               </template>
             </el-table-column>
           </el-table>
@@ -33,13 +33,13 @@
         <!--        API列表-->
         <div class="grid-content bg-purple-light">
           <div class="mb-10px">
-            <el-button type="primary" :disabled="isSaveBtn" icon="el-icon-check"
+            <base-button type="primary" :disabled="isSaveBtn" icon="el-icon-check"
                        size="small" @click="savePermissionApi()">保存关联API
-            </el-button>
+            </base-button>
             <div class="float-right">
-              <el-button type="primary" size="small" @click="openGroupDialog()">设置分组</el-button>
-              <el-button type="danger" size="small" @click="scanApi()">自动扫描API（增量）</el-button>
-              <el-button type="info" size="small" @click="clearApi()">清除无效API</el-button>
+              <base-button type="primary" size="small" @click="openGroupDialog()">设置分组</base-button>
+              <base-button type="danger" size="small" @click="scanApi()">自动扫描API（增量）</base-button>
+              <base-button type="info" size="small" @click="clearApi()">清除无效API</base-button>
             </div>
           </div>
           <div class="overflow-y-auto h-[calc(100vh-200px)]">
@@ -108,8 +108,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="saveGroupInfo">保存</el-button>
-          <el-button @click="groupDialogShow=false">取消</el-button>
+          <base-button type="primary" @click="saveGroupInfo">保存</base-button>
+          <base-button @click="groupDialogShow=false">取消</base-button>
         </div>
       </template>
     </el-dialog>

@@ -4,16 +4,16 @@
     <div style="margin: 15px 0px 25px 0px;">
       <el-input v-model="searchData.msgTitle" size="small" style="width: 240px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入消息标题查询"/>
-      <el-button class="filter-item" type="primary" size="small"
+      <base-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
-      </el-button>
-      <el-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</el-button>
+      </base-button>
+      <base-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</base-button>
       <div style="float: right;">
-        <el-button type="primary" size="small" v-if="msgStatus !== '1'"
+        <base-button type="primary" size="small" v-if="msgStatus !== '1'"
                    icon="el-icon-check" @click="markAllRead">全部标记已读
-        </el-button>
-        <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small">批量删除
-        </el-button>
+        </base-button>
+        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small">批量删除
+        </base-button>
       </div>
     </div>
     <!-- 消息中心-列表 -->
@@ -30,7 +30,7 @@
                        :underline="false" type="primary" style="margin-left: 10px;"
                        :href="scope.row.msgRouter" @click="$router.push(scope.row.msgRouter)">打开
               </el-link>
-              <el-link v-else :underline="false" type="primary" style="margin-left: 10px;"
+              <el-link v-else underline="never" type="primary" style="margin-left: 10px;"
                        @click="$router.push(scope.row.msgRouter)">打开
               </el-link>
             </template>
@@ -40,12 +40,12 @@
       <el-table-column label="消息创建时间" prop="createTime" width="150" align="center"/>
       <el-table-column fixed="right" label="操作" width="150" align="center">
         <template #default="scope">
-          <el-button link type="primary"
+          <base-button link type="primary"
                      size="small" @click="openView(scope.row)">查看详情
-          </el-button>
-          <el-button style="color: #ff6d6d;"
+          </base-button>
+          <base-button style="color: #ff6d6d;"
                      link size="small" @click="deleteByIds(scope.row)">删除
-          </el-button>
+          </base-button>
         </template>
       </el-table-column>
     </el-table>
@@ -68,16 +68,15 @@
         <template v-if="temp.msgRouter">
           <el-divider/>
           <el-form-item label="链接：" prop="msgRouter">
-            <el-link :underline="false" type="primary"
-                     @click="$router.push(temp.msgRouter)">点击进入页面
+            <el-link underline="never" type="primary" @click="$router.push(temp.msgRouter)">点击进入页面
             </el-link>
           </el-form-item>
         </template>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-          <el-button @click="dialogFormVisible=false">取消</el-button>
+          <base-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</base-button>
+          <base-button @click="dialogFormVisible=false">取消</base-button>
         </div>
       </template>
     </el-dialog>

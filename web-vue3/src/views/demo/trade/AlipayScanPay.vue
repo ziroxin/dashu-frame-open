@@ -12,7 +12,7 @@
       </el-form-item>
     </el-form>
     <div class="m-[20px_100px]">
-      <el-button type="primary" @click="clearBack">返回</el-button>
+      <base-button type="primary" @click="clearBack">返回</base-button>
     </div>
   </div>
 </template>

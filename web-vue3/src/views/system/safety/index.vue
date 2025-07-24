@@ -89,7 +89,7 @@
     </el-form>
     <template #footer>
       <div class="dialog-footer width600">
-        <el-button type="primary" class="ml-120px" @click="saveData" icon="el-icon-check">保存配置</el-button>
+        <base-button type="primary" class="ml-120px" @click="saveData" icon="el-icon-check">保存配置</base-button>
       </div>
     </template>
   </div>
@@ -140,7 +140,7 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          let data = this.temp
+          const data = this.temp
           if (this.validTimeEnable === true && data.validTime <= 0) {
             this.$message({type: 'error', message: '请输入密码有效期限制天数，必须大于0！'})
             return

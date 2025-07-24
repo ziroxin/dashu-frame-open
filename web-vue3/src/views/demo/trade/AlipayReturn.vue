@@ -3,7 +3,7 @@
     <h1>支付宝回调</h1>
     <div v-if="isSuccess==='success'" class="pay-success">支付成功！</div>
     <div v-else class="pay-fail">支付失败！</div>
-    <el-button @click="$router.replace('/demo/trade')">返回</el-button>
+    <base-button @click="$router.replace('/demo/trade')">返回</base-button>
   </div>
 </template>
 <script>

@@ -46,12 +46,12 @@
       <el-table-column label="已退款(分)" prop="refundTotalFee" align="center"/>
       <el-table-column label="操作" width="120" align="center">
         <template #default="scope">
-          <el-button v-if="scope.row.tradeStatus === 1" link class="color-#409eff!"
+          <base-button v-if="scope.row.tradeStatus === 1" link class="color-#409eff!"
                      size="small" @click="refund(scope.row)">退款
-          </el-button>
-          <el-button v-permission="'trade-busTrade-delete'" class="color-#ff6d6d!"
+          </base-button>
+          <base-button v-permission="'trade-busTrade-delete'" class="color-#ff6d6d!"
                      link size="small" @click="deleteByIds(scope.row)">删除
-          </el-button>
+          </base-button>
         </template>
       </el-table-column>
       <el-table-column label="支付结果json" prop="resultJson" align="center">
@@ -92,7 +92,7 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="dialogFormVisible=false">关闭</el-button>
+          <base-button @click="dialogFormVisible=false">关闭</base-button>
         </div>
       </template>
     </el-dialog>

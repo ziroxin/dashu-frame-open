@@ -5,12 +5,12 @@
         <el-col :span="12">
           <div v-loading="isLoading" class="left">
             <div class="title">
-              <el-button type="primary" @click="saveFileTypeMap" icon="el-icon-plus"
+              <base-button type="primary" @click="saveFileTypeMap" icon="el-icon-plus"
                          size="small">保存
-              </el-button>
-              <el-button @click="refreshFileTypeMap" icon="el-icon-refresh"
+              </base-button>
+              <base-button @click="refreshFileTypeMap" icon="el-icon-refresh"
                          size="small">刷新
-              </el-button>
+              </base-button>
               <span class="info">注意：#开头的行是注释</span>
             </div>
             <el-input type="textarea" class="content" autosize spellcheck="false"
@@ -23,29 +23,29 @@
             <div class="title">
               <el-upload :action="$baseServer+'/upload/fileHeader'" :headers="getTokenHeader()"
                          :on-success="uploadFileSuccess" :show-file-list="false" :auto-upload="true">
-                <el-button type="primary" icon="el-icon-upload2" size="small">点击选择文件上传，获取文件头</el-button>
+                <base-button type="primary" icon="el-icon-upload2" size="small">点击选择文件上传，获取文件头</base-button>
               </el-upload>
               <a href="http://docs.java119.cn/use/comm-fileupload.html#_4-%E6%96%87%E4%BB%B6%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%B5%8B"
                  target="_blank" class="help">
-                <el-button type="danger" icon="el-icon-question" plain>使用帮助</el-button>
+                <base-button type="danger" icon="el-icon-question" plain>使用帮助</base-button>
               </a>
             </div>
             <div class="info">
               <p v-if="currentHeaderHash">
                 <span>
                   文件头：{{ currentHeaderHash[0] }}
-                  <el-button link size="small" style="color: #00b42a;"
+                  <base-button link size="small" style="color: #00b42a;"
                              v-clipboard:copy="currentHeaderHash[0]">
                     <i class="el-icon-document-copy"/>复制
-                  </el-button>
+                  </base-button>
                 </span>
                 <br/>
                 <span v-if="currentHeaderHash.length>1">
                   扩展名：{{ currentHeaderHash[1] }}
-                  <el-button link size="small" style="color: #00b42a;"
+                  <base-button link size="small" style="color: #00b42a;"
                              v-clipboard:copy="currentHeaderHash[1]">
                     <i class="el-icon-document-copy"/>复制
-                  </el-button>
+                  </base-button>
                 </span>
               </p>
               <p v-else>请先点击上方按钮上传文件</p>

@@ -6,20 +6,20 @@
                 class="filter-item" placeholder="请输入名称查询"/>
       <el-input v-model="searchData.jobClass" style="width: 150px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入类名查询"/>
-      <el-button class="filter-item" size="small" type="primary"
+      <base-button class="filter-item" size="small" type="primary"
                  icon="el-icon-search" @click="searchBtnHandle">查询
-      </el-button>
-      <el-button class="filter-item" size="small" type="info" icon="reset" @click="resetTableList">重置</el-button>
+      </base-button>
+      <base-button class="filter-item" size="small" type="info" icon="reset" @click="resetTableList">重置</base-button>
       <div style="float: right;">
-        <el-button v-permission="'zquartz-zQuartz-add'" type="primary"
+        <base-button v-permission="'zquartz-zQuartz-add'" type="primary"
                    size="small" icon="el-icon-plus" @click="openAdd">新增
-        </el-button>
-        <el-button type="warning" size="small" v-permission="'zquartz-zQuartz-copy'"
+        </base-button>
+        <base-button type="warning" size="small" v-permission="'zquartz-zQuartz-copy'"
                    @click="copyById" icon="el-icon-copy-document">复制任务
-        </el-button>
-        <el-button v-permission="'zquartz-zQuartz-delete'" type="danger" size="small"
+        </base-button>
+        <base-button v-permission="'zquartz-zQuartz-delete'" type="danger" size="small"
                    @click="deleteByIds" icon="el-icon-delete">删除
-        </el-button>
+        </base-button>
       </div>
     </div>
     <!-- 定时任务调度表-列表 -->
@@ -39,15 +39,15 @@
         <template #default="{row}">
           <template v-if="row.status==='1'">
             <el-tooltip effect="dark" content="请先停用！才能修改" placement="top">
-              <el-button type="info" icon="el-icon-edit">修改</el-button>
+              <base-button type="info" icon="el-icon-edit">修改</base-button>
             </el-tooltip>
-            <el-button type="danger" @click="updateStatus(row,0)">停用</el-button>
+            <base-button type="danger" @click="updateStatus(row,0)">停用</base-button>
           </template>
           <template v-else>
-            <el-button type="primary" v-permission="'zquartz-zQuartz-update'"
+            <base-button type="primary" v-permission="'zquartz-zQuartz-update'"
                        icon="el-icon-edit" @click="openUpdate(row)">修改
-            </el-button>
-            <el-button type="success" @click="updateStatus(row,1)">启用</el-button>
+            </base-button>
+            <base-button type="success" @click="updateStatus(row,1)">启用</base-button>
           </template>
         </template>
       </el-table-column>
@@ -95,8 +95,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button v-if="dialogType!=='view'" type="primary" @click="saveData">保存</el-button>
-          <el-button @click="dialogFormVisible=false">取消</el-button>
+          <base-button v-if="dialogType!=='view'" type="primary" @click="saveData">保存</base-button>
+          <base-button @click="dialogFormVisible=false">取消</base-button>
         </div>
       </template>
     </el-dialog>
@@ -214,7 +214,7 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          let data = this.temp
+          const data = this.temp
           if (this.dialogType === 'update') {
             request({url: '/zquartz/zQuartz/update', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})

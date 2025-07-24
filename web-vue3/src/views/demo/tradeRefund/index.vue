@@ -9,7 +9,7 @@
                    type="primary" icon="el-icon-plus" @click="openAdd" size="small"
                    v-permission="'tradeRefund-busTradeRefund-add'">退款
       </base-button>
-      <el-button v-else type="info">已全部退款</el-button>
+      <base-button v-else type="info">已全部退款</base-button>
     </div>
     <!-- 退款 - 支付demo-列表 -->
     <el-table ref="dataTable" :data="tableData" stripe border @selection-change="handleTableSelectChange">
@@ -27,10 +27,10 @@
       <el-table-column label="退款金额，单位：分" prop="refundFee" align="center"/>
       <el-table-column label="操作" width="120" align="center">
         <template #default="scope">
-          <el-button v-permission="'tradeRefund-busTradeRefund-update'" class="color-#00afff!" link
+          <base-button v-permission="'tradeRefund-busTradeRefund-update'" class="color-#00afff!" link
                      v-if="scope.row.refundStatus!==1" size="small" @click="updateRefundStatus(scope.row)">更新状态
-          </el-button>
-          <el-button link class="color-#13ce66!" size="small" @click="openView(scope.row)">详情</el-button>
+          </base-button>
+          <base-button link class="color-#13ce66!" size="small" @click="openView(scope.row)">详情</base-button>
         </template>
       </el-table-column>
       <el-table-column label="退款反馈结果json" prop="refundResultJson" align="center">
@@ -87,8 +87,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-          <el-button @click="dialogFormVisible=false">取消</el-button>
+          <base-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</base-button>
+          <base-button @click="dialogFormVisible=false">取消</base-button>
         </div>
       </template>
     </el-dialog>

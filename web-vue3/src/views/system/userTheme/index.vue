@@ -6,14 +6,14 @@
                 class="filter-item" placeholder="请输入用户id查询"/>
       <el-input v-model="searchData.userName" size="small" style="width: 150px;margin-right: 10px;"
                 class="filter-item" placeholder="请输入用户名查询"/>
-      <el-button class="filter-item" type="primary" size="small"
+      <base-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
-      </el-button>
-      <el-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</el-button>
+      </base-button>
+      <base-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</base-button>
       <div style="float: right;">
-        <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
+        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                    v-permission="'userTheme-zUserTheme-delete'">删除
-        </el-button>
+        </base-button>
       </div>
     </div>
     <!-- 用户主题配置-列表 -->
@@ -29,12 +29,12 @@
       <el-table-column label="修改时间" prop="updateTime" align="center"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template #default="scope">
-          <el-button link style="color: #13ce66;"
+          <base-button link style="color: #13ce66;"
                      size="small" @click="openView(scope.row)">详情
-          </el-button>
-          <el-button v-permission="'userTheme-zUserTheme-delete'" style="color: #ff6d6d;"
+          </base-button>
+          <base-button v-permission="'userTheme-zUserTheme-delete'" style="color: #ff6d6d;"
                      link size="small" @click="deleteByIds(scope.row)">删除
-          </el-button>
+          </base-button>
         </template>
       </el-table-column>
     </el-table>
@@ -60,8 +60,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-          <el-button @click="dialogFormVisible=false">取消</el-button>
+          <base-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</base-button>
+          <base-button @click="dialogFormVisible=false">取消</base-button>
         </div>
       </template>
     </el-dialog>

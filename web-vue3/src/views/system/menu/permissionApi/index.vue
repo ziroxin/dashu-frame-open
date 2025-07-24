@@ -1,9 +1,9 @@
 <template>
   <div>
     <!--    &lt;!&ndash;      操作按钮  &ndash;&gt;-->
-    <!--    <el-button type="primary" icon="el-icon-edit" style="margin-bottom: 20px;">新增</el-button>-->
-    <!--    <el-button type="primary" icon="el-icon-edit" style="margin-bottom: 20px;">修改</el-button>-->
-    <!--    <el-button type="danger" icon="el-icon-edit" style="margin-bottom: 20px;">删除</el-button>-->
+    <!--    <base-button type="primary" icon="el-icon-edit" style="margin-bottom: 20px;">新增</base-button>-->
+    <!--    <base-button type="primary" icon="el-icon-edit" style="margin-bottom: 20px;">修改</base-button>-->
+    <!--    <base-button type="danger" icon="el-icon-edit" style="margin-bottom: 20px;">删除</base-button>-->
 
     <!--    &lt;!&ndash;     表格部分 &ndash;&gt;-->
     <!--    <el-table :data="tableData" style="margin-bottom: 20px;" border>-->

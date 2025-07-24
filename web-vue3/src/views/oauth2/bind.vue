@@ -25,9 +25,9 @@
             </el-col>
           </el-row>
         </el-form-item>
-        <el-button :loading="loading" type="primary" style="width: 300px;"
+        <base-button :loading="loading" type="primary" style="width: 300px;"
                    @click.native.prevent="loginUserBind">绑 定
-        </el-button>
+        </base-button>
       </el-form>
     </div>
   </div>

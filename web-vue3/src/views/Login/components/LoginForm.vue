@@ -37,15 +37,15 @@
         <el-form-item>
           <div class="flex justify-between items-center w-[100%]">
             <el-checkbox v-model="loginForm.rememberMe" :label="t('login.remember')"/>
-            <el-link type="primary" :underline="false" v-text="t('login.forgetPassword')"/>
+            <el-link type="primary" underline="never" v-text="t('login.forgetPassword')"/>
           </div>
         </el-form-item>
       </el-col>
       <el-col :span="24">
         <el-form-item class="w-[100%]">
-          <el-button :loading="isLoading" type="primary" class="w-[100%]" @click="signIn">
+          <base-button :loading="isLoading" type="primary" class="w-[100%]" @click="signIn">
             {{ t('login.login') }}
-          </el-button>
+          </base-button>
         </el-form-item>
       </el-col>
       <el-col :span="24">

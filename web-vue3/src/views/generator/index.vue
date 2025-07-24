@@ -13,17 +13,17 @@
         <el-option label="未生成" value="0"/>
         <el-option label="已生成" value="1"/>
       </el-select>
-      <el-button class="filter-item" type="primary" size="small"
+      <base-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
-      </el-button>
-      <el-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</el-button>
+      </base-button>
+      <base-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</base-button>
       <div style="float: right;">
-        <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
+        <base-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
                    v-permission="'generator-zFormGenerator-add'">新增
-        </el-button>
-        <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
+        </base-button>
+        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
                    v-permission="'generator-zFormGenerator-delete'">删除
-        </el-button>
+        </base-button>
       </div>
     </div>
     <!-- 代码生成器表单-列表 -->
@@ -46,14 +46,14 @@
       <el-table-column label="顺序" prop="orderIndex" align="center"/>
       <el-table-column fixed="right" label="操作" width="100" align="center">
         <template #default="scope">
-          <el-button v-permission="'generator-zFormGenerator-update'"
+          <base-button v-permission="'generator-zFormGenerator-update'"
                      link type="primary" @click="openUpdate(scope.row)">修改表单
-          </el-button>
+          </base-button>
           <br/>
-          <el-button link style="color: #13ce66;" @click="openView(scope.row)">详情</el-button>
-          <el-button v-permission="'generator-zFormGenerator-delete'" style="color: #ff6d6d;"
+          <base-button link style="color: #13ce66;" @click="openView(scope.row)">详情</base-button>
+          <base-button v-permission="'generator-zFormGenerator-delete'" style="color: #ff6d6d;"
                      link @click="deleteByIds(scope.row)">删除
-          </el-button>
+          </base-button>
         </template>
       </el-table-column>
     </el-table>
@@ -115,8 +115,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-          <el-button @click="dialogFormVisible=false">取消</el-button>
+          <base-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</base-button>
+          <base-button @click="dialogFormVisible=false">取消</base-button>
         </div>
       </template>
     </el-dialog>

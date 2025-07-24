@@ -83,7 +83,7 @@
         <div>
           使用本功能上传的文件，全部存入 “ 文件秒传表 ”。
           点击进入：
-          <el-button link type="primary" @click="$router.push('/files')">[文件秒传管理]</el-button>
+          <base-button link type="primary" @click="$router.push('/files')">[文件秒传管理]</base-button>
         </div>
         <div class="text-#dd1f29">
           说明：上传前，先根据文件 md5 判断，表中是否存在：
@@ -130,7 +130,7 @@
         <div class="text-12px mt-10px color-#666">
           oss存储文件夹+文件名：
           <el-input v-model="ossDemoFileName" class="w-50%!"/>
-          <el-button type="primary" class="ml-10px" @click="openStsFile">获取STS临时凭证</el-button>
+          <base-button type="primary" class="ml-10px" @click="openStsFile">获取STS临时凭证</base-button>
           <template v-if="ossDemoStsUrl">
             <img :src="ossDemoStsUrl" v-if="ossDemoStsType==='img'" class="max-w-300px"/>
             <video :src="ossDemoStsUrl" controls v-else-if="ossDemoStsType==='video'" class="max-w-300px"></video>

@@ -4,13 +4,13 @@
       <el-col :span="7">
         <!-- 角色管理按钮 -->
         <div style="margin-bottom: 10px;">
-          <el-button v-permission="'system-role-add'" type="primary" icon="el-icon-plus" size="small" @click="roleAdd"/>
-          <el-button v-permission="'system-role-update'" type="success" icon="el-icon-edit" size="small"
+          <base-button v-permission="'system-role-add'" type="primary" icon="el-icon-plus" size="small" @click="roleAdd"/>
+          <base-button v-permission="'system-role-update'" type="success" icon="el-icon-edit" size="small"
                      @click="roleUpdate"/>
-          <el-button v-permission="'system-role-delete'" type="danger" icon="el-icon-delete" size="small"
+          <base-button v-permission="'system-role-delete'" type="danger" icon="el-icon-delete" size="small"
                      @click="roleDelete"/>
-          <el-button v-permission="'system-role-copy'" type="warning" icon="el-icon-copy-document" size="small"
-                     @click="roleCopy"></el-button>
+          <base-button v-permission="'system-role-copy'" type="warning" icon="el-icon-copy-document" size="small"
+                     @click="roleCopy"></base-button>
         </div>
         <!-- 角色管理表格 -->
         <el-table ref="roleTable" :data="tableData" stripe border class="w-95%"
@@ -28,7 +28,7 @@
           </el-table-column>
           <el-table-column label="操作" width="100" align="center">
             <template #default="scope">
-              <el-button link type="primary" size="small" @click="setMyApi(scope.row)">设置权限</el-button>
+              <base-button link type="primary" size="small" @click="setMyApi(scope.row)">设置权限</base-button>
             </template>
           </el-table-column>
         </el-table>
@@ -54,8 +54,8 @@
           </el-form>
           <template #footer>
             <div class="dialog-footer">
-              <el-button type="primary" @click="saveRoles">保存</el-button>
-              <el-button @click="dialogFormVisible=false">取消</el-button>
+              <base-button type="primary" @click="saveRoles">保存</base-button>
+              <base-button @click="dialogFormVisible=false">取消</base-button>
             </div>
           </template>
         </el-dialog>
@@ -63,14 +63,14 @@
       <el-col :span="17" style="padding-left: 20px;border-left: 1px solid #dedede;" v-loading="isLoading">
         <!--        资源权限表格-->
         <div style="margin-bottom: 5px;">
-          <el-button :disabled="!isSaveBtn" size="small" icon="el-icon-check"
+          <base-button :disabled="!isSaveBtn" size="small" icon="el-icon-check"
                      v-permission="'system-role-save-permission'" type="primary"
                      @click="saveRolePermission()">保存角色权限
-          </el-button>
-          <el-button size="small" @click="toggleTableOprate"
+          </base-button>
+          <base-button size="small" @click="toggleTableOprate"
                      :icon="isExpand?'el-icon-arrow-up':'el-icon-arrow-down'">
             全部{{ isExpand ? '收起' : '展开' }}
-          </el-button>
+          </base-button>
         </div>
         <el-table ref="permissionTable" class="w-100%"
                   :default-expand-all="isExpand" :data="tableData2" row-key="permissionId"

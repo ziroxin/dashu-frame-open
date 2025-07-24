@@ -33,17 +33,17 @@
       <el-table-column label="修改时间" prop="updateTime" align="center"/>
       <el-table-column fixed="right" label="操作" width="140" align="center">
         <template #default="scope">
-          <el-button size="small" link style="color: #4dd219;" @click="openView(scope.row)">详情
-          </el-button>
-          <el-button v-permission="'news-news-update'" size="small" link @click="openUpdate(scope.row)">修改
-          </el-button>
-          <el-button v-permission="'news-news-delete'" size="small" link style="color: #f56c6c;"
+          <base-button size="small" link style="color: #4dd219;" @click="openView(scope.row)">详情
+          </base-button>
+          <base-button v-permission="'news-news-update'" size="small" link @click="openUpdate(scope.row)">修改
+          </base-button>
+          <base-button v-permission="'news-news-delete'" size="small" link style="color: #f56c6c;"
                      @click="deleteByIds(scope.row)">删除
-          </el-button>
+          </base-button>
           <br/>
-          <el-button v-if="scope.row.msgId" size="small" link style="color: red;"
+          <base-button v-if="scope.row.msgId" size="small" link style="color: red;"
                      @click="messageRead(scope.row)">[标记已读]
-          </el-button>
+          </base-button>
         </template>
       </el-table-column>
     </el-table>
@@ -94,8 +94,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button v-if="dialogType !== 'view'" type="primary" @click="saveData">保存</el-button>
-          <el-button @click="dialogFormVisible=false">取消</el-button>
+          <base-button v-if="dialogType !== 'view'" type="primary" @click="saveData">保存</base-button>
+          <base-button @click="dialogFormVisible=false">取消</base-button>
         </div>
       </template>
     </el-dialog>

@@ -3,10 +3,13 @@
     <el-tabs v-model="activeName" @tab-click="handleTabClick">
       <el-tab-pane label="临时锁定用户管理" name="second">
         <!-- 用户锁定-管理按钮 -->
-        <div style="margin-bottom: 10px;float: right;">
-          <el-button v-permission="'zuserlock-zUserLock-unlock'" type="danger" size="small"
-                     @click="deleteByIds" icon="el-icon-unlock">用户解锁
-          </el-button>
+        <div class="searchPanel">
+          <div class="searchForm"></div>
+          <div class="operatePanel">
+            <base-button v-permission="'zuserlock-zUserLock-unlock'" type="danger"
+                         @click="deleteByIds" icon="el-icon-unlock">用户解锁
+            </base-button>
+          </div>
         </div>
         <!-- 用户锁定-列表 -->
         <el-table :data="tableData2" stripe border @selection-change="handleTableSelectChange">
@@ -17,17 +20,18 @@
       </el-tab-pane>
       <el-tab-pane label="永久锁定用户管理" name="first">
         <!-- 用户锁定-管理按钮 -->
-        <div style="margin-bottom: 10px;">
-          <el-input v-model="searchData.userName" style="width: 150px;margin-right: 10px;" size="small"
-                    class="filter-item" placeholder="请输入用户名查询"/>
-          <el-button class="filter-item" type="primary" size="small"
-                     icon="el-icon-search" @click="searchBtnHandle">查询
-          </el-button>
-          <el-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</el-button>
-          <div style="float: right;">
-            <el-button type="danger" icon="el-icon-unlock" @click="deleteByIds"
-                       v-permission="'zuserlock-zUserLock-unlock'" size="small">用户解锁
-            </el-button>
+        <div class="searchPanel">
+          <div class="searchForm">
+            <el-input v-model="searchData.userName"
+                      class="searchInput w-200px!" placeholder="请输入用户名查询"/>
+            <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询
+            </base-button>
+            <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
+          </div>
+          <div class="operatePanel">
+            <base-button type="danger" icon="el-icon-unlock" @click="deleteByIds"
+                         v-permission="'zuserlock-zUserLock-unlock'">用户解锁
+            </base-button>
           </div>
         </div>
         <!-- 用户锁定-列表 -->
@@ -41,12 +45,9 @@
         <el-pagination class="flex justify-center mt-10px" layout="total,prev,pager,next,sizes,jumper"
                        :page-size="pager.limit" :current-page="pager.page"
                        :total="pager.totalCount" @current-change="handleCurrentChange"
-                       @size-change="handleSizeChange"
-        />
+                       @size-change="handleSizeChange"/>
       </el-tab-pane>
     </el-tabs>
-
-
   </div>
 </template>
 

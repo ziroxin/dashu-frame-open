@@ -33,7 +33,7 @@
              :show-file-list="showFileList"
              :on-exceed="handleExceed"
              :file-list="fileList">
-    <el-button type="primary">{{ btnTitle }}</el-button>
+    <base-button type="primary">{{ btnTitle }}</base-button>
     <template #tip v-if="showTip">
       <el-tag size="small" type="info" class="ml-10px">{{ tipInfo }}</el-tag>
     </template>

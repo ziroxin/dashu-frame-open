@@ -50,9 +50,9 @@
       <el-table-column label="发送时间" prop="createTime" align="center"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template #default="scope">
-          <el-button v-permission="'sms-demoSms-delete'" style="color: #ff6d6d;"
+          <base-button v-permission="'sms-demoSms-delete'" style="color: #ff6d6d;"
                      link size="small" @click="deleteByIds(scope.row)">删除
-          </el-button>
+          </base-button>
         </template>
       </el-table-column>
     </el-table>
@@ -97,8 +97,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-          <el-button @click="dialogFormVisible=false">取消</el-button>
+          <base-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</base-button>
+          <base-button @click="dialogFormVisible=false">取消</base-button>
         </div>
       </template>
     </el-dialog>

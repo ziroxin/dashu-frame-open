@@ -46,13 +46,13 @@
       <el-table-column label="顺序" prop="orderIndex" align="center" width="60"/>
       <el-table-column fixed="right" label="操作" width="140" align="center">
         <template #default="scope">
-          <el-button link size="small" class="color-#13ce66!" @click="openView(scope.row)">详情</el-button>
-          <el-button v-permission="'dictData-zDictData-update'"
+          <base-button link size="small" class="color-#13ce66!" @click="openView(scope.row)">详情</base-button>
+          <base-button v-permission="'dictData-zDictData-update'"
                      link size="small" type="primary" @click="openUpdate(scope.row)">修改
-          </el-button>
-          <el-button v-permission="'dictData-zDictData-delete'" class="color-#ff6d6d!"
+          </base-button>
+          <base-button v-permission="'dictData-zDictData-delete'" class="color-#ff6d6d!"
                      link size="small" @click="deleteByIds(scope.row)">删除
-          </el-button>
+          </base-button>
         </template>
       </el-table-column>
     </el-table>
@@ -88,8 +88,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-          <el-button @click="dialogFormVisible=false">取消</el-button>
+          <base-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</base-button>
+          <base-button @click="dialogFormVisible=false">取消</base-button>
         </div>
       </template>
     </el-dialog>
@@ -119,7 +119,7 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="dialogImportVisible=false">关闭</el-button>
+          <base-button @click="dialogImportVisible=false">关闭</base-button>
         </div>
       </template>
     </el-dialog>

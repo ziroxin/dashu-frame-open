@@ -5,9 +5,9 @@
         # 开头表示注释；**结尾可以模糊匹配；
       </span>
       提示：使用快捷键 Ctrl+S 保存; Ctrl+Z 撤销; Ctrl+Y 重做;
-      <el-button type="danger" @click="restartJava" icon="el-icon-refresh"
+      <base-button type="danger" @click="restartJava" icon="el-icon-refresh"
                  size="small" style="float: right;">重启本项目
-      </el-button>
+      </base-button>
     </div>
     <el-input type="textarea" class="content" autosize spellcheck="false"
               placeholder="请输入内容" v-model="ignoreContent"></el-input>

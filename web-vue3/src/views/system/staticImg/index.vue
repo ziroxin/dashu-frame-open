@@ -4,15 +4,15 @@
     <div style="margin-bottom: 10px;">
       <el-input v-model="searchData.fileOldName" size="small" style="width: 150px;margin-right: 10px;"
                 class="filter-item" placeholder="文件夹名称"/>
-      <el-button class="filter-item" type="primary" size="small"
+      <base-button class="filter-item" type="primary" size="small"
                  icon="el-icon-search" @click="searchBtnHandle">查询
-      </el-button>
-      <el-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</el-button>
+      </base-button>
+      <base-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</base-button>
       <div style="float: right;">
-        <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small">新增
-        </el-button>
-        <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small">删除
-        </el-button>
+        <base-button type="primary" icon="el-icon-plus" @click="openAdd" size="small">新增
+        </base-button>
+        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small">删除
+        </base-button>
       </div>
     </div>
     <div
@@ -35,10 +35,10 @@
       <el-table-column label="修改时间" prop="updateTime" align="center"/>
       <el-table-column fixed="right" label="操作" width="200" align="center">
         <template #default="scope">
-          <el-button link style="color: #13ce66;" size="small" @click="openViews(scope.row)">管理文件夹
-          </el-button>
-          <el-button link type="primary" size="small" @click="openUpdate(scope.row)">修改</el-button>
-          <el-button link style="color: #ff6d6d;" size="small" @click="deleteByIds(scope.row)">删除</el-button>
+          <base-button link style="color: #13ce66;" size="small" @click="openViews(scope.row)">管理文件夹
+          </base-button>
+          <base-button link type="primary" size="small" @click="openUpdate(scope.row)">修改</base-button>
+          <base-button link style="color: #ff6d6d;" size="small" @click="deleteByIds(scope.row)">删除</base-button>
         </template>
       </el-table-column>
     </el-table>
@@ -62,8 +62,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</el-button>
-          <el-button @click="dialogFormVisible=false">取消</el-button>
+          <base-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</base-button>
+          <base-button @click="dialogFormVisible=false">取消</base-button>
         </div>
       </template>
     </el-dialog>

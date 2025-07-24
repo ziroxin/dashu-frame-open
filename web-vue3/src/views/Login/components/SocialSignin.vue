@@ -1,8 +1,8 @@
 <template>
   <div class="social-signup-container">
-    <el-button style="margin-right: 50px;" type="primary" @click="oauth2HandleClick">
+    <base-button style="margin-right: 50px;" type="primary" @click="oauth2HandleClick">
       Oauth2统一认证登录
-    </el-button>
+    </base-button>
     <div class="sign-btn" @click="wechatHandleClick('wechat')">
       <span class="wx-svg-container"><svg-icon icon-class="wechat" class="icon"/></span>
       WeChat

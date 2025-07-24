@@ -6,10 +6,10 @@
       <div class="input">
         <el-input v-model="url" placeholder="请输入API地址"></el-input>
         <div class="w-100%">
-          <el-button link type="primary" @click="demo('get')">Get示例(查询)</el-button>
-          <el-button link type="primary" @click="demo('post')">Post示例(新增)</el-button>
-          <el-button link type="primary" @click="demo('put')">Put示例(修改)</el-button>
-          <el-button link type="primary" @click="demo('delete')">Delete示例(删除)</el-button>
+          <base-button link type="primary" @click="demo('get')">Get示例(查询)</base-button>
+          <base-button link type="primary" @click="demo('post')">Post示例(新增)</base-button>
+          <base-button link type="primary" @click="demo('put')">Put示例(修改)</base-button>
+          <base-button link type="primary" @click="demo('delete')">Delete示例(删除)</base-button>
         </div>
       </div>
     </div>
@@ -72,15 +72,15 @@
     <div class="row">
       <div class="label mobileHidden"></div>
       <div class="input">
-        <el-button type="primary" @click="sendRequest" icon="el-icon-plus" round>发送请求</el-button>
-        <el-button icon="reset" round @click="resetForm">重置</el-button>
+        <base-button type="primary" @click="sendRequest" icon="el-icon-plus" round>发送请求</base-button>
+        <base-button icon="reset" round @click="resetForm">重置</base-button>
         <el-select placeholder="历史请求记录（永久保存；清空缓存可清理；重复请求会覆盖上次）"
                    filterable clearable class="history" v-model="historyUrl" @change="changeHistoryUrl">
           <el-option :value="item"
                      v-for="(item, index) in historyUrlList" :key="index">
             <span class="historyContent" :title="item">{{ item }}</span>
-            <el-button link icon="el-icon-delete" @click="removeHistory(item)"
-                       class="historyDelete" title="删除"></el-button>
+            <base-button link icon="el-icon-delete" @click="removeHistory(item)"
+                       class="historyDelete" title="删除"></base-button>
           </el-option>
         </el-select>
       </div>

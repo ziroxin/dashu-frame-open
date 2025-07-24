@@ -3,18 +3,18 @@
   <div class="IconPickder">
     <el-popover width="600" trigger="click">
       <div class="max-h-400px overflow-x-hidden overflow-y-scroll">
-        <el-button v-for="(item,index) in iconList" :key="index" plain class="m-2px" @click="iconName=item">
+        <base-button v-for="(item,index) in iconList" :key="index" plain class="m-2px" @click="iconName=item">
           <my-icon :icon="item" class="text-20px"/>
-        </el-button>
+        </base-button>
       </div>
       <template #reference>
-        <el-button>
+        <base-button>
           <span v-if="iconName===''">请选择图标</span>
           <span v-else><el-icon :icon="iconName"/></span>
-        </el-button>
+        </base-button>
       </template>
     </el-popover>
-    <el-button v-show="iconName!==''" link type="primary" class="ml-5px" @click="iconName=''">清空</el-button>
+    <base-button v-show="iconName!==''" link type="primary" class="ml-5px" @click="iconName=''">清空</base-button>
   </div>
 </template>
 

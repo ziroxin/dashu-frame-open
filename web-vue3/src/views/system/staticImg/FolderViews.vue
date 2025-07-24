@@ -8,10 +8,10 @@
       <el-divider/>
       <div style="display: flex;justify-content: space-between;align-items: center;">
         <div style="margin-right: 15px;">
-          <el-button v-if="selectedFileList.length > 0" type="danger" @click="deleteFileList"
+          <base-button v-if="selectedFileList.length > 0" type="danger" @click="deleteFileList"
                      icon="el-icon-delete" size="small">删除选中的文件
-          </el-button>
-          <el-button type="info" v-else icon="el-icon-delete" size="small">请选择要删除的文件</el-button>
+          </base-button>
+          <base-button type="info" v-else icon="el-icon-delete" size="small">请选择要删除的文件</base-button>
         </div>
         <file-upload v-model="uploadFileList" :action="$baseServer+'/filesStatic/zFilesStatic/upload'"
                      :params-data="{parentId: item.fileId}" :limit-size="1024*1024*2" :show-file-list="false"

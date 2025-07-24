@@ -52,8 +52,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="savePassword">保存</el-button>
-          <el-button @click="innerVisible=false" v-if="showCloseBtn">取消</el-button>
+          <base-button type="primary" @click="savePassword">保存</base-button>
+          <base-button @click="innerVisible=false" v-if="showCloseBtn">取消</base-button>
         </div>
       </template>
     </div>

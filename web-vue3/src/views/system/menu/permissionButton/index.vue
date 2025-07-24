@@ -3,10 +3,10 @@
     <!--    操作按钮  -->
     <div style="margin: 10px 0px;text-align: center;">
       {{ currentPermissionRow.permissionTitle }}：
-      <el-button type="primary" icon="el-icon-plus" circle @click="permissionButtonAdd"/>
-      <el-button type="info" icon="el-icon-edit" circle @click="permissionButtonUpdate"/>
-      <el-button type="danger" icon="el-icon-delete" circle @click="permissionButtonDelete"/>
-      <el-button type="warning" icon="el-icon-close" circle @click="permissionButtonClose"/>
+      <base-button type="primary" icon="el-icon-plus" circle @click="permissionButtonAdd"/>
+      <base-button type="info" icon="el-icon-edit" circle @click="permissionButtonUpdate"/>
+      <base-button type="danger" icon="el-icon-delete" circle @click="permissionButtonDelete"/>
+      <base-button type="warning" icon="el-icon-close" circle @click="permissionButtonClose"/>
     </div>
     <!--   表格部分 -->
     <el-table :data="tableData" style="margin-bottom: 20px;" border @selection-change="selectionChangeHandlerOrder">
@@ -57,8 +57,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">保存</el-button>
-          <el-button @click="dialogFormVisible=false">取消</el-button>
+          <base-button type="primary" @click="dialogStatus==='create'?createData():updateData()">保存</base-button>
+          <base-button @click="dialogFormVisible=false">取消</base-button>
         </div>
       </template>
     </el-dialog>
