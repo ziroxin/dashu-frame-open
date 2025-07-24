@@ -83,7 +83,7 @@
 
     <!-- 批量导入弹窗 -->
     <el-dialog title="批量导入" :close-on-click-modal="false" v-model="dialogImportVisible"
-               @close="dialogIndex++" width="600px" :key="'importDialog'+dialogIndex">
+               @closed="dialogIndex++" width="600px" :key="'importDialog'+dialogIndex">
       <el-form ref="importForm" label-width="100px" v-loading="isImportLoading">
         <el-form-item label="下载模板：">
           <base-button type="success" plain @click="downloadExcelTemplate" icon="el-icon-download">下载Excel模板
@@ -102,7 +102,7 @@
             <base-button type="primary" plain icon="el-icon-upload2">点击上传Excel并导入</base-button>
           </el-upload>
           <el-tag type="info" size="small" class="mt-5px">
-            说明：点击上方按钮上传Excel文件，上传成功后会自动开始导入！
+            说明：点击上方按钮选择Excel文件，上传成功后会自动开始导入！
           </el-tag>
         </el-form-item>
       </el-form>

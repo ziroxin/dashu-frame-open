@@ -68,7 +68,7 @@
       </template>
     </el-dialog>
     <!-- 管理文件夹弹窗 -->
-    <el-dialog title="管理文件夹" v-model="folderDialogVisible" @close="dialogIndex++"
+    <el-dialog title="管理文件夹" v-model="folderDialogVisible" @closed="dialogIndex++"
                :close-on-click-modal="false" width="80%" :key="'folder'+dialogIndex">
       <folder-views :currentParentId="currentParentId" v-if="folderDialogVisible"/>
     </el-dialog>

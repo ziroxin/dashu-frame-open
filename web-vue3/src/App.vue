@@ -1,5 +1,5 @@
 <template>
-  <config-global :size="currentSize">
+  <config-global>
     <router-view :class="greyMode ? `${prefixCls}-grey-mode` : ''"/>
   </config-global>
 </template>
