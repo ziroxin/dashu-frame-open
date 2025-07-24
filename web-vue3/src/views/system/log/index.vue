@@ -14,7 +14,7 @@
                      type="danger" @click="deleteByIds">删除
         </base-button>
         <base-button v-permission="'zlog-zOperateLog-exportExcel'" icon="el-icon-printer"
-                     size="small" type="success" @click="exportExcel">导出Excel
+                     type="success" @click="exportExcel">导出Excel
         </base-button>
       </div>
     </div>
@@ -34,18 +34,14 @@
       </el-table-column>
     </el-table>
     <!-- 操作日志表-分页 -->
-    <el-pagination style="text-align: center;margin-top: 10px" layout="total,prev,pager,next,sizes,jumper"
+    <el-pagination class="flex justify-center mt-10px" layout="total,prev,pager,next,sizes,jumper"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
                    @size-change="handleSizeChange"/>
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" v-model="dialogFormVisible" width="680px">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px"
-               style="width: 500px; margin-left: 50px" :disabled="dialogType === 'view'">
-        <el-form-item label="操作日志id" prop="logId"
-                      style="display: none" :rules="[{ required: true, message: '操作日志id不能为空' }]">
-          <el-input v-model="temp.logId" placeholder="请输入操作日志id"/>
-        </el-form-item>
+               class="w-500px ml-50px" :disabled="dialogType === 'view'">
         <el-form-item label="操作人用户id" prop="userId" :rules="[]">
           <el-input v-model="temp.userId" placeholder="请输入用户id"/>
         </el-form-item>

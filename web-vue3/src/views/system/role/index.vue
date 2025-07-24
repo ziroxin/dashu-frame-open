@@ -3,14 +3,15 @@
     <el-row>
       <el-col :span="7">
         <!-- 角色管理按钮 -->
-        <div style="margin-bottom: 10px;">
-          <base-button v-permission="'system-role-add'" type="primary" icon="el-icon-plus" size="small" @click="roleAdd"/>
+        <div class="mb-10px">
+          <base-button v-permission="'system-role-add'" type="primary" icon="el-icon-plus" size="small"
+                       @click="roleAdd"/>
           <base-button v-permission="'system-role-update'" type="success" icon="el-icon-edit" size="small"
-                     @click="roleUpdate"/>
+                       @click="roleUpdate"/>
           <base-button v-permission="'system-role-delete'" type="danger" icon="el-icon-delete" size="small"
-                     @click="roleDelete"/>
+                       @click="roleDelete"/>
           <base-button v-permission="'system-role-copy'" type="warning" icon="el-icon-copy-document" size="small"
-                     @click="roleCopy"></base-button>
+                       @click="roleCopy"></base-button>
         </div>
         <!-- 角色管理表格 -->
         <el-table ref="roleTable" :data="tableData" stripe border class="w-95%"
@@ -39,8 +40,7 @@
         <!-- 添加修改弹窗 -->
         <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
                    v-model="dialogFormVisible" width="650px" @close="resetTemp">
-          <el-form ref="roleDateForm" :model="temp" label-position="left" label-width="100px"
-                   style="width: 500px; margin-left: 50px;">
+          <el-form ref="roleDateForm" :model="temp" label-position="left" label-width="100px" class="w-500px ml-50px">
             <el-form-item label="角色名称" prop="roleName" :rules="{required: true, message: '角色名称不能为空'}">
               <el-input v-model="temp.roleName"/>
             </el-form-item>
@@ -60,15 +60,15 @@
           </template>
         </el-dialog>
       </el-col>
-      <el-col :span="17" style="padding-left: 20px;border-left: 1px solid #dedede;" v-loading="isLoading">
-        <!--        资源权限表格-->
-        <div style="margin-bottom: 5px;">
+      <el-col :span="17" class="pl-20px b-l-1px b-l-solid b-l-#dedede" v-loading="isLoading">
+        <!-- 资源权限表格 -->
+        <div class="mb-5px">
           <base-button :disabled="!isSaveBtn" size="small" icon="el-icon-check"
-                     v-permission="'system-role-save-permission'" type="primary"
-                     @click="saveRolePermission()">保存角色权限
+                       v-permission="'system-role-save-permission'" type="primary"
+                       @click="saveRolePermission()">保存角色权限
           </base-button>
           <base-button size="small" @click="toggleTableOprate"
-                     :icon="isExpand?'el-icon-arrow-up':'el-icon-arrow-down'">
+                       :icon="isExpand?'el-icon-arrow-up':'el-icon-arrow-down'">
             全部{{ isExpand ? '收起' : '展开' }}
           </base-button>
         </div>
@@ -81,7 +81,7 @@
             <template #default="{row}">
               <el-tag v-if="row.permissionType === '0'" disable-transitions size="small">路由</el-tag>
               <el-tag v-if="row.permissionType === '2'" disable-transitions type="success" size="small">外链</el-tag>
-              <a style="cursor: pointer;margin-left: 5px;">{{ row.permissionTitle }}</a>
+              <a class="cursor-pointer ml-5px">{{ row.permissionTitle }}</a>
             </template>
           </el-table-column>
           <el-table-column label="按钮/其他" min-width="60%">
@@ -89,7 +89,7 @@
               <div @click.stop="">
                 <el-checkbox-group v-model="selectPermissionApiList">
                   <el-checkbox v-for="perm in row.buttonList" :key="perm.permissionId" :label="perm.permissionId"
-                               style="margin-left: 0px!important;" @change="(val)=>buttonCheckChange(val,row)">
+                               class="ml-0px!" @change="(val)=>buttonCheckChange(val,row)">
                     {{ perm.permissionTitle }}
                   </el-checkbox>
                 </el-checkbox-group>
@@ -103,15 +103,7 @@
 </template>
 
 <script>
-import {
-  addRole,
-  copyRole,
-  deleteRoles,
-  getPermissionList,
-  getRoleList,
-  saveRolePermission,
-  updateRole
-} from '@/api/role'
+import request from '@/utils/request'
 
 export default {
   data() {
@@ -149,11 +141,11 @@ export default {
     //加载角色列表
     loadRoleList() {
       this.isLoading2 = true
-      getRoleList(this.pager).then((response) => {
+      const params = {...this.pager}
+      request({url: '/role/list', method: 'get', params}).then((response) => {
         this.isLoading2 = false
-        const {data} = response
-        this.totalCount = data.total
-        this.tableData = data.records
+        this.totalCount = response.data.total
+        this.tableData = response.data.records
       })
     },
     //选中行
@@ -203,8 +195,8 @@ export default {
         }).then(() => {
           this.isLoading2 = true
           // 执行删除
-          const roleIds = this.tableSelectRows.map(r => r.roleId)
-          deleteRoles(roleIds).then(response => {
+          const data = this.tableSelectRows.map(r => r.roleId)
+          request({url: '/role/delete', method: 'post', data}).then(response => {
             const {code} = response
             if (code === '200') {
               this.$message({type: 'success', message: '删除成功！'})
@@ -224,7 +216,7 @@ export default {
       } else {
         this.isLoading2 = true
         let params = {'roleId': this.tableSelectRows[0].roleId}
-        copyRole(params).then(response => {
+        request({url: '/role/copy', method: 'post', params}).then(response => {
           this.$message({type: 'success', message: '复制角色成功！'})
           this.loadRoleList()
         })
@@ -233,14 +225,15 @@ export default {
     saveRoles() {
       this.$refs['roleDateForm'].validate((valid) => {
         if (valid) {
+          const data = {...this.temp}
           if (this.dialogType === 'update') {
-            updateRole(this.temp).then(response => {
+            request({url: `/role/update`, method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
               this.loadRoleList()
               this.dialogFormVisible = false
             })
           } else {
-            addRole(this.temp).then(response => {
+            request({url: '/role/add', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '添加成功！'})
               this.loadRoleList()
               this.dialogFormVisible = false
@@ -254,7 +247,7 @@ export default {
       this.isLoading = true
       let params = this.roleId === '' ? {} : {'roleId': this.roleId}
       this.$nextTick(() => {
-        getPermissionList(params).then(response => {
+        request({url: '/permission/listForRole', method: 'get', params}).then(response => {
           const {data} = response
           this.tableData2 = data
           this.$nextTick(() => {
@@ -480,7 +473,8 @@ export default {
       let pids = []
       pids.push(...this.selectPermissionApiList)
       pids.push(...this.selectPermissionApiList2)
-      saveRolePermission({'roleId': this.roleId, 'permissionIds': pids}).then(response => {
+      const data = {'roleId': this.roleId, 'permissionIds': pids}
+      request({url: '/role/permission/saveRolePermission', method: 'post', data}).then(response => {
         this.$notify({title: '保存成功', message: '保存权限成功！', type: 'success'})
         this.isLoading = false
       })
