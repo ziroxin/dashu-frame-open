@@ -1,29 +1,28 @@
 <template>
   <div class="app-container">
     <el-row>
-      <el-col :span="8">
+      <el-col :span="9" class="b-r-1px b-r-dashed b-r-#eee pr-15px">
         <!-- 字典类型 -->
-        <div style="margin-bottom: 10px;">
-          <el-input v-model="searchData.typeName" size="small" style="width: 160px;margin-right: 10px;"
-                    class="filter-item" placeholder="输入名称或code查询"/>
-          <el-button class="filter-item" type="primary" size="small"
-                     icon="el-icon-search" @click="searchBtnHandle">
-          </el-button>
-          <el-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</el-button>
-        </div>
-        <div style="margin-bottom: 10px">
-          <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
-                     v-permission="'dictType-zDictType-add'">新增
-          </el-button>
-          <el-button type="info" icon="el-icon-edit" @click="openUpdate(null)" size="small"
-                     v-permission="'dictType-zDictType-update'">修改
-          </el-button>
-          <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
-                     v-permission="'dictType-zDictType-delete'">删除
-          </el-button>
-          <el-button size="small" icon="el-icon-document"
-                     @click="dialogDictDataVisible=true">示例
-          </el-button>
+        <div class="searchPanel flex-wrap justify-left">
+          <div class="searchForm w-100%">
+            <el-input v-model="searchData.typeName" class="searchInput w-176px!" placeholder="名称或code" clearable/>
+            <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询
+            </base-button>
+            <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
+          </div>
+          <div class="w-100% flex mb-10px">
+            <base-button type="primary" icon="el-icon-plus" @click="openAdd"
+                         v-permission="'dictType-zDictType-add'">新增
+            </base-button>
+            <base-button type="info" icon="el-icon-edit" @click="openUpdate(null)"
+                         v-permission="'dictType-zDictType-update'">修改
+            </base-button>
+            <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)"
+                         v-permission="'dictType-zDictType-delete'">删除
+            </base-button>
+            <base-button icon="el-icon-document" @click="dialogDictDataVisible=true">示例
+            </base-button>
+          </div>
         </div>
         <!-- 字典类型-列表 -->
         <el-table ref="dataTable" :data="tableData" stripe border highlight-current-row
@@ -31,41 +30,38 @@
           <el-table-column type="selection" width="50" align="center" header-align="center"/>
           <el-table-column label="字典类型" min-width="50%" prop="typeName">
             <template #default="scope">
-              <div>{{ scope.row.typeName }}</div>
-              <div>
+              <div class="text-12px">{{ scope.row.typeName }}</div>
+              <div class="text-12px">
                 {{ scope.row.typeCode }}
-                <el-button link size="small" style="color: #00b42a;"
-                           v-clipboard:copy="scope.row.typeCode">
-                  <i class="el-icon-document-copy"/>复制
+                <el-button link size="small" class="color-#00b42a!" icon="el-icon-document-copy"
+                           v-clipboard:copy="scope.row.typeCode">复制
                 </el-button>
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="状态" width="60px" prop="status" align="center">
+          <el-table-column label="状态" width="65px" prop="status" align="center">
             <template #default="scope">
               <el-tag type="success" v-if="scope.row.status === '1'" size="small">正常</el-tag>
               <el-tag type="danger" v-else size="small">停用</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="50px" align="center">
+          <el-table-column label="操作" width="55px" align="center">
             <template #default="scope">
-              <el-button link type="primary" size="small" @click="openDictData(scope.row)" style="line-height: 14px;">
+              <el-button link type="primary" size="small" @click="openDictData(scope.row)" class="lh-14px!">
                 字典<br/>数据
               </el-button>
             </template>
           </el-table-column>
         </el-table>
         <!-- 字典类型-分页 -->
-        <el-pagination style="text-align: center;margin-top: 10px;" layout="total,prev,pager,next,sizes"
+        <el-pagination class="flex justify-center mt-10px" layout="total,prev,pager,next,sizes"
                        :page-size="pager.limit" :current-page="pager.page"
                        :total="pager.totalCount" @current-change="handleCurrentChange"
-                       @size-change="handleSizeChange"
-        />
+                       @size-change="handleSizeChange"/>
         <!-- 添加修改弹窗 -->
         <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
                    v-model="dialogFormVisible" @close="resetTemp" width="600px">
-          <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px"
-                   :disabled="dialogType==='view'">
+          <el-form ref="dataForm" :model="temp" label-width="100px" class="mt-10px" :disabled="dialogType==='view'">
             <el-form-item label="字典名称" prop="typeName"
                           :rules="[{required: true, message: '字典名称必填'}]">
               <el-input v-model="temp.typeName" placeholder="请输入字典名称"/>
@@ -77,8 +73,7 @@
             <el-form-item label="状态" prop="status"
                           :rules="[{required: true, message: '字典状态必填'}]">
               <el-switch v-model="temp.status" active-text="正常" inactive-text="停用"
-                         active-value="1" inactive-value="0">
-              </el-switch>
+                         active-value="1" inactive-value="0"/>
             </el-form-item>
           </el-form>
           <template #footer>
@@ -89,31 +84,29 @@
           </template>
         </el-dialog>
       </el-col>
-      <el-col :span="16">
+      <el-col :span="15">
         <!-- 字典数据 -->
-        <div v-if="!currentDictType.typeId">
+        <div v-if="!currentDictType.typeId" class="flex flex-col justify-center items-center">
+          <base-button class="mt-30px" type="danger" @click="clearDictCache(null)"
+                       icon="el-icon-refresh-right">更新字典缓存
+          </base-button>
+          <el-divider class="w-95%!"/>
           <el-empty description="请点击左侧字典类型表中的 [ 字典数据 ] 按钮"/>
-          <div style="text-align: center;">
-            <el-button class="filter-item" type="danger" size="small"
-                       @click="clearDictCache(null)" icon="el-icon-refresh-right">更新全部字典缓存
-            </el-button>
-          </div>
         </div>
-        <dict-data v-else :current-dict-type="currentDictType"></dict-data>
+        <dict-data v-else :current-dict-type="currentDictType"/>
       </el-col>
     </el-row>
     <el-dialog title="字典数据Demo" v-model="dialogDictDataVisible" width="400px">
-      <dict-data-demo></dict-data-demo>
+      <dict-data-demo v-if="dialogDictDataVisible"/>
     </el-dialog>
   </div>
 </template>
 
 <script>
-
 import request from '@/utils/request'
 import DictData from '@/views/system/dictData/index.vue'
-import { clearDictCache } from '@/api/dicts'
 import DictDataDemo from '@/views/system/dictData/dictDataDemo.vue'
+import { clearDictCache } from '@/utils/dict-util'
 
 export default {
   components: {DictDataDemo, DictData},
@@ -236,7 +229,7 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          let data = {...this.temp}
+          const data = {...this.temp}
           if (this.dialogType === 'update') {
             request({url: '/dictType/zDictType/update', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})

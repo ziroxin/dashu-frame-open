@@ -1,39 +1,34 @@
 <template>
-  <div style="padding: 0px 0px 0px 15px;">
+  <div class="p-[0_0_0_15px]">
     <!-- 字典数据-管理按钮 -->
-    <div style="margin-bottom: 10px">
-      <el-tag size="small" style="min-width: 160px;margin-right: 10px;height: 33px;line-height: 33px;">
-        {{ '当前字典：' + currentDictType.typeName }}
-      </el-tag>
-      <el-input v-model="searchData.dictLabel" size="small" style="width: 160px;margin-right: 10px;"
-                class="filter-item" placeholder="输入数据标签/值查询"/>
-      <el-select v-model="searchData.status" size="small" style="width: 80px;margin-right: 10px;"
-                 class="filter-item" placeholder="状态">
-        <el-option key="2" label="全部" value=""/>
-        <el-option key="0" label="停用" value="0"/>
-        <el-option key="1" label="正常" value="1"/>
-      </el-select>
-      <el-button class="filter-item" type="primary" size="small"
-                 icon="el-icon-search" @click="searchBtnHandle">查询
-      </el-button>
-      <el-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</el-button>
-    </div>
-    <div style="margin-bottom: 10px;">
-      <el-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
-                 v-permission="'dictData-zDictData-add'">新增
-      </el-button>
-      <el-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
-                 v-permission="'dictData-zDictData-delete'">删除
-      </el-button>
-      <el-button v-permission="'dictData-zDictData-importExcel'" @click="dialogImportVisible=true"
-                 type="primary" size="small" icon="el-icon-upload2">导入
-      </el-button>
-      <el-button type="success" icon="el-icon-printer" @click="exportExcel" size="small"
-                 v-permission="'dictData-zDictData-exportExcel'">导出
-      </el-button>
-      <el-button class="filter-item" type="info" size="small"
-                 @click="clearDictCache(currentDictType.typeCode)" icon="el-icon-refresh-right">更新当前字典缓存
-      </el-button>
+    <div class="flex flex-wrap justify-left">
+      <div class="w-100% flex items-center! mb-10px">
+        <el-tag class="min-w-160px mr-10px" size="large">{{ '当前字典：' + currentDictType.typeName }}</el-tag>
+        <el-input v-model="searchData.dictLabel" class="mr-10px w-160px!" placeholder="数据标签/值"/>
+        <el-select v-model="searchData.status" class="mr-10px w-80px!" placeholder="状态">
+          <el-option key="2" label="全部" value=""/>
+          <el-option key="0" label="停用" value="0"/>
+          <el-option key="1" label="正常" value="1"/>
+        </el-select>
+        <base-button type="primary" icon="el-icon-search" @click="searchBtnHandle">查询</base-button>
+        <base-button type="info" icon="reset" @click="resetTableList">重置</base-button>
+      </div>
+      <div class="w-100% flex mb-10px">
+        <base-button type="primary" icon="el-icon-plus" @click="openAdd" v-permission="'dictData-zDictData-add'">新增
+        </base-button>
+        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)"
+                     v-permission="'dictData-zDictData-delete'">删除
+        </base-button>
+        <base-button type="primary" icon="el-icon-upload2" @click="dialogImportVisible=true"
+                     v-permission="'dictData-zDictData-importExcel'">导入
+        </base-button>
+        <base-button type="success" icon="el-icon-printer" @click="exportExcel"
+                     v-permission="'dictData-zDictData-exportExcel'">导出
+        </base-button>
+        <base-button type="danger" icon="el-icon-refresh-right" class="float-right!"
+                     @click="clearDictCache">更新字典缓存
+        </base-button>
+      </div>
     </div>
     <!-- 字典数据-列表 -->
     <el-table ref="dataTable" :data="tableData" stripe border v-loading="isLoading"
@@ -41,7 +36,7 @@
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="数据标签" prop="dictLabel" align="center"/>
       <el-table-column label="数据值" prop="dictValue" align="center" show-overflow-tooltip/>
-      <el-table-column label="状态" prop="status" align="center" width="60">
+      <el-table-column label="状态" prop="status" align="center" width="65">
         <template #default="scope">
           <el-tag :type="scope.row.status === '1' ? 'success' : 'danger'" size="small">
             {{ scope.row.status === '1' ? '正常' : '停用' }}
@@ -49,16 +44,14 @@
         </template>
       </el-table-column>
       <el-table-column label="顺序" prop="orderIndex" align="center" width="60"/>
-      <el-table-column fixed="right" label="操作" width="120" align="center">
+      <el-table-column fixed="right" label="操作" width="140" align="center">
         <template #default="scope">
-          <el-button link style="color: #13ce66;"
-                     @click="openView(scope.row)">详情
-          </el-button>
+          <el-button link size="small" class="color-#13ce66!" @click="openView(scope.row)">详情</el-button>
           <el-button v-permission="'dictData-zDictData-update'"
-                     link type="primary" @click="openUpdate(scope.row)">修改
+                     link size="small" type="primary" @click="openUpdate(scope.row)">修改
           </el-button>
-          <el-button v-permission="'dictData-zDictData-delete'" style="color: #ff6d6d;"
-                     link @click="deleteByIds(scope.row)">删除
+          <el-button v-permission="'dictData-zDictData-delete'" class="color-#ff6d6d!"
+                     link size="small" @click="deleteByIds(scope.row)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -67,32 +60,26 @@
     <el-pagination class="flex justify-center mt-10px" layout="total,prev,pager,next,sizes,jumper"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
-                   @size-change="handleSizeChange"
-    />
+                   @size-change="handleSizeChange"/>
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
                v-model="dialogFormVisible" @close="resetTemp" width="600px">
-      <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
+      <el-form ref="dataForm" :model="temp" label-width="100px" :disabled="dialogType==='view'">
         <el-form-item label="当前字典">
-          <el-tag size="small" style="width: 100%;height: 60px;line-height: 30px;">
+          <el-tag class="w-100% h-60px! lh-24px! justify-left!">
             {{ '字典名称：' + currentDictType.typeName }}<br/>
             {{ '字典Code：' + currentDictType.typeCode }}
           </el-tag>
         </el-form-item>
-        <el-form-item label="数据标签" prop="dictLabel"
-                      :rules="[{required: true, message: '字典数据标签必填'}]">
+        <el-form-item label="数据标签" prop="dictLabel" :rules="[{required: true, message: '字典数据标签必填'}]">
           <el-input v-model="temp.dictLabel" placeholder="请输入字典数据标签"/>
         </el-form-item>
-        <el-form-item label="数据值" prop="dictValue"
-                      :rules="[{required: true, message: '字典数据值必填'}]">
+        <el-form-item label="数据值" prop="dictValue" :rules="[{required: true, message: '字典数据值必填'}]">
           <el-input v-model="temp.dictValue" placeholder="请输入字典数据值"/>
         </el-form-item>
-
-        <el-form-item label="状态" prop="status"
-                      :rules="[{required: true, message: '字典数据状态必填'}]">
+        <el-form-item label="状态" prop="status" :rules="[{required: true, message: '字典数据状态必填'}]">
           <el-switch v-model="temp.status" active-text="正常" inactive-text="停用"
-                     active-value="1" inactive-value="0">
-          </el-switch>
+                     active-value="1" inactive-value="0"/>
         </el-form-item>
         <el-form-item label="顺序" prop="orderIndex"
                       :rules="[{required: true, message: '顺序不能为空'},{type: 'number', message: '必须为数字'}]">
@@ -109,14 +96,13 @@
 
     <!-- 批量导入弹窗 -->
     <el-dialog title="批量导入" :close-on-click-modal="false" v-model="dialogImportVisible"
-               @close="dialogIndex++" width="600px" :key="'importDialog'+dialogIndex">
+               @closed="dialogIndex++" width="600px" :key="'importDialog'+dialogIndex">
       <el-form ref="importForm" label-width="120px" v-loading="isImportLoading">
         <el-form-item label="下载模板：">
-          <el-button type="success" plain @click="downloadExcelTemplate"
-                     icon="el-icon-download" size="small">下载Excel模板
-          </el-button>
+          <base-button type="success" plain @click="downloadExcelTemplate" icon="el-icon-download">下载Excel模板
+          </base-button>
         </el-form-item>
-        <el-divider></el-divider>
+        <el-divider/>
         <el-form-item label="导入：">
           <el-upload v-permission="'dictData-zDictData-importExcel'"
                      :action="$baseServer+'/dictData/zDictData/import/excel'"
@@ -124,10 +110,10 @@
                      :before-upload="beforeImportUpload" :on-error="importExcelError"
                      :on-success="importExcelSuccess" accept=".xls,.xlsx"
                      :show-file-list="false" :auto-upload="true">
-            <el-button type="primary" plain icon="el-icon-upload2" size="small">点击上传Excel并导入</el-button>
+            <base-button type="primary" plain icon="el-icon-upload2">点击上传Excel并导入</base-button>
           </el-upload>
-          <el-tag type="info" size="small">
-            说明：点击上方按钮上传Excel文件，上传成功后会自动开始导入！
+          <el-tag type="info" size="small" class="mt-5px">
+            说明：点击上方按钮选择Excel文件，上传成功后会自动开始导入！
           </el-tag>
         </el-form-item>
       </el-form>
@@ -141,11 +127,10 @@
 </template>
 
 <script>
-
 import request from '@/utils/request'
-import { clearDictCache } from '@/api/dicts'
 import downloadUtil from '@/utils/download-util'
 import { getTokenHeader } from '@/utils/auth'
+import { clearDictCache } from '@/utils/dict-util'
 
 export default {
   name: 'DictData',
@@ -272,14 +257,14 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          let data = {...this.temp}
+          const data = {...this.temp}
           // 字典code
           data.typeCode = this.currentDictType.typeCode
           if (this.dialogType === 'update') {
             request({url: '/dictData/zDictData/update', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '修改成功！'})
               // 更新当前字典缓存
-              this.clearDictCache(this.currentDictType.typeCode)
+              this.clearDictCache()
               this.loadTableList()
               this.dialogFormVisible = false
             })
@@ -287,7 +272,7 @@ export default {
             request({url: '/dictData/zDictData/add', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '添加成功！'})
               // 更新当前字典缓存
-              this.clearDictCache(this.currentDictType.typeCode)
+              this.clearDictCache()
               this.loadTableList()
               this.dialogFormVisible = false
             })
@@ -312,7 +297,7 @@ export default {
           request({url: '/dictData/zDictData/delete', method: 'post', data}).then(() => {
             this.$message({type: 'success', message: '删除成功！'})
             // 更新当前字典缓存
-            this.clearDictCache(this.currentDictType.typeCode)
+            this.clearDictCache()
             this.loadTableList()
           })
         })
@@ -340,6 +325,7 @@ export default {
       if (response.message === 'Success') {
         this.$message({type: 'success', message: '导入成功！'})
         this.dialogImportVisible = false
+        this.clearDictCache()
         this.loadTableList()
       } else {
         this.$alert(response.message, '提示',

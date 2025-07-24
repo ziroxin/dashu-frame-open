@@ -4,6 +4,7 @@
 import request from '@/utils/request'
 import storageKeys from '@/utils/storage-keys'
 import { getToken } from '@/utils/auth'
+import { ElMessage } from 'element-plus'
 
 /** 数据字典列表 */
 let dictList: any[]
@@ -40,8 +41,15 @@ export function getDict(code: string) {
 /**
  * 清除数据字典缓存
  */
-export function clearDictList() {
+export function clearDictCache() {
+  // 清除数据字典缓存
   dictList = []
   localStorage.removeItem(storageKeys.l_dictList)
+  // 清除服务器端字典缓存
+  request({url: '/dictData/zDictData/clearCache', method: 'get'}).then(() => {
+    // 重新初始化数据字典
+    setupDictList()
+    ElMessage({message: '更新缓存数据成功！', type: 'success', duration: 3 * 1000})
+  })
 }
 

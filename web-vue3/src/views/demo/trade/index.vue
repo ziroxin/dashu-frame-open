@@ -100,10 +100,10 @@
     <el-dialog title="退款窗口" v-model="dialogRefundFormVisible" width="95%" top="5vh" @closed="loadTableList">
       <trade-refund v-if="refundTradeInfo.payType===0" title="微信退款" :current-trade-info="refundTradeInfo"
                     :refund-refresh-index="refundRefreshIndex"
-                    ref="tradeRefund"></trade-refund>
+                    ref="tradeRefund"/>
       <trade-refund-alipay v-else title="支付宝退款" :current-trade-info="refundTradeInfo"
                            :refund-refresh-index="refundRefreshIndex"
-                           ref="tradeRefundAlipay"></trade-refund-alipay>
+                           ref="tradeRefundAlipay"/>
     </el-dialog>
   </div>
 </template>
