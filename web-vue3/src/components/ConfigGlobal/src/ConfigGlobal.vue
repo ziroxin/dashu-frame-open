@@ -23,7 +23,7 @@ const currentSize = computed(() => appStore.getCurrentSize)
 // 设置语言
 const currentLocale = computed(() => localeStore.getCurrentLocale.elLocale)
 // 链接样式：{underline: 'hover' (控制下划线是否出现 'always' | 'hover' | 'never' | boolean)}
-const currentLink = ref({underline: 'hover'})
+const currentLink = ref({underline: 'never'})
 
 // 初始化所有主题色
 onMounted(() => { appStore.setCssVarTheme() })
