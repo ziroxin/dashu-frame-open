@@ -294,10 +294,10 @@ public class ZDictDataServiceImpl extends ServiceImpl<ZDictDataMapper, ZDictData
         currentRowIdx = startRowIdx;
         for (ZDictDataExcelImportDTO entity : importData) {
             currentRowIdx++;
-            if (list.stream().anyMatch(d -> d.getDictValue().equals(entity.getDictLabel()))) {
+            if (list.stream().anyMatch(d -> d.getDictLabel().equals(entity.getDictLabel()))) {
                 errorMsg += "第" + currentRowIdx + "行，数据标签已存在！<br/>";
             }
-            if (list.stream().anyMatch(d -> d.getDictLabel().equals(entity.getDictValue()))) {
+            if (list.stream().anyMatch(d -> d.getDictValue().equals(entity.getDictValue()))) {
                 errorMsg += "第" + currentRowIdx + "行，数据值已存在！<br/>";
             }
         }
