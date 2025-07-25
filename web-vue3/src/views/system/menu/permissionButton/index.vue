@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <!--    操作按钮  -->
-    <div style="margin: 10px 0px;text-align: center;">
+    <div class="m-[10px_0] text-center">
       {{ currentPermissionRow.permissionTitle }}：
       <base-button type="primary" icon="el-icon-plus" circle @click="permissionButtonAdd"/>
       <base-button type="info" icon="el-icon-edit" circle @click="permissionButtonUpdate"/>
@@ -9,7 +9,7 @@
       <base-button type="warning" icon="el-icon-close" circle @click="permissionButtonClose"/>
     </div>
     <!--   表格部分 -->
-    <el-table :data="tableData" style="margin-bottom: 20px;" border @selection-change="selectionChangeHandlerOrder">
+    <el-table :data="tableData" class="mb-20px" border @selection-change="selectionChangeHandlerOrder">
       <el-table-column type="selection" width="55" header-align="center" align="center"/>
       <el-table-column label="元素名称" header-align="center" align="center">
         <template #default="{row}">
@@ -18,7 +18,7 @@
               <div :key="'tipcontent'+row.permissionId" class="lh-30px">
                 名称：{{ row.permissionTitle }}
                 标签：{{ row.permissionName }}
-                <br>描述：{{ row.permissionDescription }}
+                <br/>描述：{{ row.permissionDescription }}
               </div>
             </template>
             <div class="cursor-pointer">{{ row.permissionTitle }}</div>
@@ -28,8 +28,7 @@
       <el-table-column prop="permissionOrder" label="顺序" width="80" sortable align="center"/>
     </el-table>
 
-    <el-dialog :title="textMap[dialogStatus]" width="700px"
-               v-model="dialogFormVisible" :close-on-click-modal="false">
+    <el-dialog :title="textMap[dialogStatus]" width="700px" v-model="dialogFormVisible" :close-on-click-modal="false">
       <el-form ref="dataForm" :model="temp" :rules="rules" label-position="right" label-width="100px" class="w-650px">
         <el-form-item label="名称：" prop="permissionTitle">
           <el-input v-if="this.dialogStatus==='update'" v-model="temp.permissionTitle"
@@ -41,15 +40,15 @@
           <el-input v-model="temp.permissionName"
                     placeholder="唯一标记-用于控制权限，推荐格式：模块名-按钮名（例：system-menu-add）"/>
         </el-form-item>
+        <el-form-item label="图标：" prop="permissionIcon">
+          <icon-picker v-model="temp.permissionIcon"/>
+        </el-form-item>
         <el-form-item label="描述：" prop="permissionDescription">
           <el-input v-model="temp.permissionDescription" type="textarea" placeholder="按钮简介"/>
         </el-form-item>
         <el-form-item label="类型：" prop="permissionType">
           <el-radio v-model="temp.permissionType" value="1">按钮</el-radio>
           <el-radio v-model="temp.permissionType" value="3">其他</el-radio>
-        </el-form-item>
-        <el-form-item label="图标：" prop="permissionIcon">
-          <IconPicker v-model="temp.permissionIcon"/>
         </el-form-item>
         <el-form-item label="顺序：" prop="permissionOrder">
           <el-input-number v-model.number="temp.permissionOrder" :min="0"/>
@@ -66,9 +65,9 @@
 </template>
 
 <script>
-import { getListById, permissionAdd, permissionDelete, permissionUpdate } from '@/api/permission'
 // 引入图标选择器
-import IconPicker from '@/views/system/menu/IconPicker/index'
+import IconPicker from '@/views/system/menu/IconPicker/index.vue'
+import request from '@/utils/request'
 
 export default {
   name: 'PermissionButton',
@@ -99,10 +98,10 @@ export default {
       rules: {
         permissionName: [{required: true, message: '请填写标记', trigger: 'blur'}],
         permissionTitle: [{required: true, message: '请填写名称', trigger: 'blur'}],
-        permissionOrder: [{required: true, message: '请填写顺序', trigger: 'blur'}, {
-          type: 'number',
-          message: '请填写数字'
-        }]
+        permissionOrder: [
+          {required: true, message: '请填写顺序', trigger: 'blur'},
+          {type: 'number', message: '请填写数字'}
+        ]
       }
     }
   },
@@ -123,7 +122,8 @@ export default {
     },
     // 查询数据
     getList() {
-      getListById(this.currentPermissionRow.permissionId).then(response => {
+      const params = {permissionId: this.currentPermissionRow.permissionId}
+      request({url: '/permission/getListById', method: 'GET', params}).then(response => {
         this.listLoading = true
         this.tableData = response.data
         this.listLoading = false
@@ -164,19 +164,14 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          permissionAdd(this.temp).then(response => {
+          const data = {...this.temp}
+          request({url: '/permission/add', method: 'post', data}).then(response => {
             this.dialogFormVisible = false
             if (response.data) {
-              this.$message({
-                type: 'success',
-                message: '添加成功！'
-              })
+              this.$message({type: 'success', message: '添加成功！'})
               this.getList()
             } else {
-              this.$message({
-                type: 'error',
-                message: '添加失败！'
-              })
+              this.$message({type: 'error', message: '添加失败！'})
             }
           })
         }
@@ -185,15 +180,9 @@ export default {
     // 点击修改按钮后
     permissionButtonUpdate() {
       if (this.changeData.length <= 0) {
-        this.$message({
-          message: '请选择一条数据进行修改',
-          type: 'warning'
-        })
+        this.$message({message: '请选择一条数据进行修改', type: 'warning'})
       } else if (this.changeData.length > 1) {
-        this.$message({
-          message: '修改时只允许选择一条数据',
-          type: 'warning'
-        })
+        this.$message({message: '修改时只允许选择一条数据', type: 'warning'})
       } else {
         const changeData = this.changeData
         this.temp = Object.assign({}, changeData[0])
@@ -209,19 +198,14 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          permissionUpdate(this.temp).then(response => {
+          const data = {...this.temp}
+          request({url: '/permission/update', method: 'post', data}).then(response => {
             this.dialogFormVisible = false
             if (response.data) {
-              this.$message({
-                type: 'success',
-                message: '修改成功！'
-              })
+              this.$message({type: 'success', message: '修改成功！'})
               this.getList()
             } else {
-              this.$message({
-                type: 'error',
-                message: '修改失败！'
-              })
+              this.$message({type: 'error', message: '修改失败！'})
             }
           })
         }
@@ -230,39 +214,22 @@ export default {
     //删除按钮数据
     permissionButtonDelete() {
       if (this.changeData.length <= 0) {
-        this.$message({
-          message: '请选择一条数据进行删除!',
-          type: 'warning'
-        })
+        this.$message({message: '请选择一条数据进行删除!', type: 'warning'})
       } else {
-        const changeData = this.changeData
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+          confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
         }).then(() => {
-          for (let i = 0; i < changeData.length; i++) {
-            this.permissionIds.push(changeData[i].permissionId)
-          }
-          permissionDelete(this.permissionIds).then(response => {
+          const data = this.changeData.map(item => item.permissionId)
+          request({url: '/permission/delete', method: 'post', data}).then(response => {
             if (response.data) {
-              this.$message({
-                type: 'success',
-                message: '删除成功！'
-              })
+              this.$message({type: 'success', message: '删除成功！'})
               this.getList()
             } else {
-              this.$message({
-                type: 'error',
-                message: '删除失败！'
-              })
+              this.$message({type: 'error', message: '删除失败！'})
             }
           })
         }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
+          this.$message({type: 'info', message: '已取消删除'})
         })
       }
     },
@@ -273,7 +240,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

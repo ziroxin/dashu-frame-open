@@ -1,6 +1,6 @@
 <template>
   <el-button :class="`${prefixCls}`" v-bind="{ ...props,icon:null }" @click="handleClick">
-    <my-icon v-if="icon" :icon="icon" :class="hasDefaultSlot?'mr-5px!':''"/>
+    <my-icon v-if="icon" :icon="icon" :size="iconSize" :class="hasDefaultSlot?'mr-5px!':''"/>
     <slot></slot>
     <slot name="loading"></slot>
   </el-button>
@@ -30,7 +30,8 @@ const props = defineProps({
   autoInsertSpace: {type: Boolean, default: false},
   color: {type: String, default: ''},
   darker: {type: Boolean, default: false},
-  tag: {type: [String, Object] as PropType<string | Component>, default: 'button'}
+  tag: {type: [String, Object] as PropType<string | Component>, default: 'button'},
+  iconSize: {type: Number, default: 16}
 })
 
 // 默认插槽是否有值
