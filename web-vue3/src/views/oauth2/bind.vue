@@ -83,7 +83,7 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          let data = {...this.loginForm}
+          const data = {...this.loginForm}
           data.codeBaseImage = null
           data.isEncrypt = true
           data.userName = encryptRSA(this.loginForm.userName)

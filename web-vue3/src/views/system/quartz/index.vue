@@ -268,7 +268,7 @@ export default {
     // 启用/停用
     updateStatus(row, status) {
       row.status = status
-      let data = {...row}
+      const data = {...row}
       request({url: '/zquartz/zQuartz/update', method: 'post', data}).then(response => {
         if (status === '1') {
           this.$message({type: 'success', message: '启用成功！'})

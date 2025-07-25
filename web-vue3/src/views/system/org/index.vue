@@ -20,22 +20,22 @@
       </div>
     </div>
     <!-- 组织机构表-列表 -->
-    <el-table ref="dataTable" :data="tableData" :tree-props="{children: 'children',checkStrictly: checkStrictly}"
-              row-key="orgId"
-              v-loading="isLoading" default-expand-all border stripe @selection-change="handleTableSelectChange">
+    <el-table ref="dataTable" :data="tableData" :tree-props="{children: 'children',checkStrictly: true}"
+              row-key="orgId" v-loading="isLoading" default-expand-all border stripe
+              @selection-change="handleTableSelectChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="组织机构名称" prop="orgName" min-width="40%">
         <template #default="scope">
           <span>{{ scope.row.orgName }}</span>
           <div class="float-right">
             <base-button v-if="maxLevel===-1||scope.row.orgLevel<maxLevel" v-permission="'zorg-zOrganization-add'"
-                       link size="small" type="primary" @click="openAdd(scope.row)">添加下级
+                         link size="small" type="primary" @click="openAdd(scope.row)">添加下级
             </base-button>
             <base-button v-permission="'zorg-zOrganization-update'" link size="small" type="primary"
-                       @click="openUpdate(scope.row)">修改
+                         @click="openUpdate(scope.row)">修改
             </base-button>
             <base-button v-permission="'zorg-zOrganization-delete'" class="color-#f56c6c!"
-                       link size="small" @click="deleteByIds(scope.row)">删除
+                         link size="small" @click="deleteByIds(scope.row)">删除
             </base-button>
           </div>
         </template>
@@ -147,9 +147,7 @@ export default {
       dialogIndex: 0,
       // 导入弹窗
       dialogImportVisible: false,
-      isImportLoading: false,
-      // 上下级关联选择
-      checkStrictly: true
+      isImportLoading: false
     }
   },
   created() {

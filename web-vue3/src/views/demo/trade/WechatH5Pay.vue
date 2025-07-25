@@ -57,7 +57,7 @@ export default {
       // 支付信息
       this.payData = {...JSON.parse(window.sessionStorage.getItem(this.$storageKeys.payData))}
       // 调用微信支付
-      let data = {...this.payData}
+      const data = {...this.payData}
       request({url: '/pay/wechat/getPayH5', method: 'post', data})
           .then((response) => {
             //https://wx.tenpay.com/cgi-bin/mmpayweb-bin/checkmweb?prepay_id=wx231804107332511b4813f57ef7095d0000&package=376201905

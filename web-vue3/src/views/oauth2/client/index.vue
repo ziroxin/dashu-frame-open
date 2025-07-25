@@ -272,7 +272,7 @@ export default {
     saveData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          let data = {...this.temp, scope: 'read,write'}
+          const data = {...this.temp, scope: 'read,write'}
           data.authorizedGrantTypes = this.temp.authorizedGrantTypesArr.join(',')
           if (this.dialogType === 'update' || this.dialogType === 'resetSecret') {
             request({url: '/oauth2.client/oauthClientDetails/update', method: 'post', data}).then(response => {

@@ -80,7 +80,8 @@
                      v-for="(item, index) in historyUrlList" :key="index">
             <span class="historyContent" :title="item">{{ item }}</span>
             <base-button link icon="el-icon-delete" @click="removeHistory(item)"
-                       class="historyDelete" title="删除"></base-button>
+                         class="historyDelete">删除
+            </base-button>
           </el-option>
         </el-select>
       </div>

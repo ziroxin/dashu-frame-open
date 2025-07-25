@@ -198,7 +198,7 @@ export default {
   .files-check-all {
     margin: 8px 0 0 8px;
 
-    ::v-deep .el-checkbox__inner, {
+    :deep(.el-checkbox__inner) {
       width: 24px;
       height: 24px;
 
@@ -210,7 +210,7 @@ export default {
       }
     }
 
-    ::v-deep .el-checkbox__input.is-indeterminate .el-checkbox__inner::before {
+    :deep(.el-checkbox__input.is-indeterminate .el-checkbox__inner::before) {
       top: 10px;
       height: 3px;
     }
@@ -235,7 +235,7 @@ export default {
         .el-checkbox {
           position: absolute;
 
-          ::v-deep .el-checkbox__inner {
+          :deep(.el-checkbox__inner) {
             margin: 8px;
             width: 24px;
             height: 24px;

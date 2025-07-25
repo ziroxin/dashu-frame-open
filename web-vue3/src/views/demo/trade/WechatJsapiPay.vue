@@ -45,23 +45,23 @@ export default {
       //     2. 且用户必须先（商户号关联的公众号）授权，需要先获取用户的openid
       // 商户后台设置回调域名：https://pay.weixin.qq.com/doc/v2/merchant/4011935208#%E4%BA%8C%E3%80%81%E8%AE%BE%E7%BD%AE%E6%8E%88%E6%9D%83%E5%9F%9F%E5%90%8D
 
-      // let data = {...this.payData, openId: 'o_IQK5AvUyFUouVr5byhnXocxKU4'}
-      let data = {...this.payData, openId: 'oA1uP6Q6ByzfrUpXr_N4dPuXmuQk'}
+      // const data = {...this.payData, openId: 'o_IQK5AvUyFUouVr5byhnXocxKU4'}
+      const data = {...this.payData, openId: 'oA1uP6Q6ByzfrUpXr_N4dPuXmuQk'}
       request({url: '/pay/wechat/getPayJsapi', method: 'post', data})
           .then((response) => {
-            let data = JSON.parse(response.data.payInfo)
+            const data1 = JSON.parse(response.data.payInfo)
             if (typeof WeixinJSBridge === 'undefined') {
               if (document.addEventListener) {
                 document.addEventListener('WeixinJSBridgeReady',
-                    this.onBridgeReady(data), false)
+                    this.onBridgeReady(data1), false)
               } else if (document.attachEvent) {
                 document.attachEvent('WeixinJSBridgeReady',
-                    this.onBridgeReady(data))
+                    this.onBridgeReady(data1))
                 document.attachEvent('onWeixinJSBridgeReady',
-                    this.onBridgeReady(data))
+                    this.onBridgeReady(data1))
               }
             } else {
-              this.onBridgeReady(data)
+              this.onBridgeReady(data1)
             }
             // 更新微信支付状态
             this.wechatPayUpdateStatus(response.data.tradeId)

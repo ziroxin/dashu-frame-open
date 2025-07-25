@@ -4,14 +4,14 @@
       <el-col :span="7">
         <!-- 角色管理按钮 -->
         <div class="mb-10px">
-          <base-button v-permission="'system-role-add'" type="primary" icon="el-icon-plus" size="small"
+          <base-button v-permission="'system-role-add'" type="primary" icon="el-icon-plus"
                        @click="roleAdd"/>
-          <base-button v-permission="'system-role-update'" type="success" icon="el-icon-edit" size="small"
+          <base-button v-permission="'system-role-update'" type="success" icon="el-icon-edit"
                        @click="roleUpdate"/>
-          <base-button v-permission="'system-role-delete'" type="danger" icon="el-icon-delete" size="small"
+          <base-button v-permission="'system-role-delete'" type="danger" icon="el-icon-delete"
                        @click="roleDelete"/>
-          <base-button v-permission="'system-role-copy'" type="warning" icon="el-icon-copy-document" size="small"
-                       @click="roleCopy"></base-button>
+          <base-button v-permission="'system-role-copy'" type="warning" icon="el-icon-copy-document"
+                       @click="roleCopy"/>
         </div>
         <!-- 角色管理表格 -->
         <el-table ref="roleTable" :data="tableData" stripe border class="w-95%"
@@ -63,18 +63,16 @@
       <el-col :span="17" class="pl-20px b-l-1px b-l-solid b-l-#dedede" v-loading="isLoading">
         <!-- 资源权限表格 -->
         <div class="mb-5px">
-          <base-button :disabled="!isSaveBtn" size="small" icon="el-icon-check"
-                       v-permission="'system-role-save-permission'" type="primary"
-                       @click="saveRolePermission()">保存角色权限
+          <base-button :disabled="!isSaveBtn" icon="el-icon-check" v-permission="'system-role-save-permission'"
+                       type="primary" @click="saveRolePermission()">保存角色权限
           </base-button>
-          <base-button size="small" @click="toggleTableOprate"
-                       :icon="isExpand?'el-icon-arrow-up':'el-icon-arrow-down'">
+          <base-button @click="toggleTableOprate" :icon="isExpand?'el-icon-arrow-up':'el-icon-arrow-down'">
             全部{{ isExpand ? '收起' : '展开' }}
           </base-button>
         </div>
         <el-table ref="permissionTable" class="w-100%"
                   :default-expand-all="isExpand" :data="tableData2" row-key="permissionId"
-                  :tree-props="{children: 'children'}" @row-click="table2RowClick"
+                  :tree-props="{children: 'children',checkStrictly: true}" @row-click="table2RowClick"
                   @select="table2RowSelect" @select-all="table2SelectAll" resizable border>
           <el-table-column type="selection" width="50" align="center" header-align="center"/>
           <el-table-column label="路由/外链" min-width="30%">
@@ -88,7 +86,7 @@
             <template #default="{row}">
               <div @click.stop="">
                 <el-checkbox-group v-model="selectPermissionApiList">
-                  <el-checkbox v-for="perm in row.buttonList" :key="perm.permissionId" :label="perm.permissionId"
+                  <el-checkbox v-for="perm in row.buttonList" :key="perm.permissionId" :value="perm.permissionId"
                                class="ml-0px!" @change="(val)=>buttonCheckChange(val,row)">
                     {{ perm.permissionTitle }}
                   </el-checkbox>

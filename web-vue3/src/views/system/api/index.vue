@@ -5,13 +5,13 @@
         <!-- 资源表格 -->
         <div class="mb-10px">
           <base-button @click="toggleTableOprate" :icon="isExpand?'el-icon-arrow-up':'el-icon-arrow-down'"
-                     size="small">全部{{ isExpand ? '收起' : '展开' }}
+                       size="small">全部{{ isExpand ? '收起' : '展开' }}
           </base-button>
         </div>
         <div class="grid-content bg-purple">
           <el-table ref="permissionTable" v-loading="listLoading" :default-expand-all="isExpand" class="w-96%"
-                    border :data="tableData" row-key="permissionId"
-                    highlight-current-row :tree-props="{children: 'children'}">
+                    border :data="tableData" row-key="permissionId" highlight-current-row
+                    :tree-props="{children: 'children',checkStrictly: true}">
             <el-table-column label="名称">
               <template #default="{row}">
                 <el-tag v-if="row.permissionType === '0'" disable-transitions size="small">路由</el-tag>
@@ -34,7 +34,7 @@
         <div class="grid-content bg-purple-light">
           <div class="mb-10px">
             <base-button type="primary" :disabled="isSaveBtn" icon="el-icon-check"
-                       size="small" @click="savePermissionApi()">保存关联API
+                         size="small" @click="savePermissionApi()">保存关联API
             </base-button>
             <div class="float-right">
               <base-button type="primary" size="small" @click="openGroupDialog()">设置分组</base-button>
@@ -316,7 +316,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-::v-deep .el-collapse-item {
+:deep(.el-collapse-item) {
   .el-collapse-item__header {
     background-color: #4080ff01 !important;
     border: 1px solid #4080ff;
@@ -350,7 +350,7 @@ export default {
   }
 }
 
-::v-deep .class-name-p {
+:deep(.class-name-p) {
   line-height: 5px;
   text-align: center;
   color: #4e5969;
