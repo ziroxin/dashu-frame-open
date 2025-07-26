@@ -14,9 +14,16 @@
     </el-affix>
     <div class="app-container">
       <div class="grid-icon">
-        <div v-for="item of showSvgIcons" :key="item" v-clipboard:copy="generateSvgIconCode(item)">
+        <div v-for="item of showSvgIcons" :key="item" v-clipboard:copy="item">
           <el-tooltip placement="top">
-            <template #content>{{ generateSvgIconCode(item) }}</template>
+            <template #content>
+              图标组件：{{ generateSvgIconCode(item) }}
+              <base-button type="primary" circle plain icon="el-icon-copy-document" size="small"
+                           class="ml-10px" v-clipboard:copy="generateSvgIconCode(item)"/>
+              <br/>图标名称：{{ item }}
+              <base-button type="primary" circle plain icon="el-icon-copy-document" size="small"
+                           class="ml-10px" v-clipboard:copy="item"/>
+            </template>
             <div class="icon-item">
               <my-icon :icon="item" :size="iconSize"/>
               <span class="text-12px text-center mt-10px text-#555 w-100px">
