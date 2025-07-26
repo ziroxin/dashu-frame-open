@@ -1,104 +1,95 @@
 <template>
   <div class="app-container">
-    <el-form ref="dataForm" :model="temp" label-position="right" label-width="120px"
-             class="width600"
-    >
-
+    <el-form ref="dataForm" :model="temp" label-position="right" label-width="120px" class="w-600px m-auto">
       <div class="tip">
-        <i class="el-icon-set-up"/> 密码复杂度设置
+        <my-icon icon="el-icon-lock" :size="20" class="mr-10px"/>
+        密码复杂度设置
       </div>
-
-      <el-form-item label="密码长度" style="width: 440px;">
-        <el-col :span="11">
-          <el-input v-model="temp.startLength" prop="startLength"
-                    :rules="[{required: true, message: '开始长度不能为空'}]"
-          />
-        </el-col>
-        <el-col class="line" :span="2" style="text-align: center;">-</el-col>
-        <el-col :span="11">
-          <el-input v-model="temp.endLength" prop="endLength"
-                    :rules="[{required: true, message: '结束长度不能为空'}]"
-          />
-        </el-col>
-      </el-form-item>
+      <div class="flex justify-start items-center">
+        <el-form-item label="密码长度" prop="startLength"
+                      :rules="[{required: true, message: '开始长度不能为空'}]">
+          <el-input v-model="temp.startLength" class="w-150px!"/>
+        </el-form-item>
+        <div class="w-20px h-50px text-center">-</div>
+        <el-form-item label="" label-width="0" prop="endLength"
+                      :rules="[{required: true, message: '结束长度不能为空'}]">
+          <el-input v-model="temp.endLength" class="w-150px!"/>
+        </el-form-item>
+      </div>
       <el-form-item label="密码强度" label-position="right">
-        <el-radio-group v-model="temp.lowercase" prop="lowercase" style="margin-bottom: 20px;">
-          <el-radio-button value="2">可有可无</el-radio-button>
-          <el-radio-button value="1">必须有小写字母</el-radio-button>
-          <el-radio-button value="0">无小写字母</el-radio-button>
+        <el-radio-group v-model="temp.lowercase" class="mb-20px">
+          <el-radio-button :value="2">可有可无</el-radio-button>
+          <el-radio-button :value="1">必须有小写字母</el-radio-button>
+          <el-radio-button :value="0">无小写字母</el-radio-button>
         </el-radio-group>
-        <el-radio-group v-model="temp.uppercase" prop="uppercase" style="margin-bottom: 20px;">
-          <el-radio-button value="2">可有可无</el-radio-button>
-          <el-radio-button value="1">必须有大写字母</el-radio-button>
-          <el-radio-button value="0">无大写字母</el-radio-button>
+        <el-radio-group v-model="temp.uppercase" class="mb-20px">
+          <el-radio-button :value="2">可有可无</el-radio-button>
+          <el-radio-button :value="1">必须有大写字母</el-radio-button>
+          <el-radio-button :value="0">无大写字母</el-radio-button>
         </el-radio-group>
-        <el-radio-group v-model="temp.numbers" prop="numbers" style="margin-bottom: 20px;">
-          <el-radio-button value="2">可有可无</el-radio-button>
-          <el-radio-button value="1">必须有数字</el-radio-button>
-          <el-radio-button value="0">无数字</el-radio-button>
+        <el-radio-group v-model="temp.numbers" class="mb-20px">
+          <el-radio-button :value="2">可有可无</el-radio-button>
+          <el-radio-button :value="1">必须有数字</el-radio-button>
+          <el-radio-button :value="0">无数字</el-radio-button>
         </el-radio-group>
-        <el-radio-group v-model="temp.specialCharacters" prop="specialCharacters" style="margin-bottom: 20px;">
-          <el-radio-button value="2">可有可无</el-radio-button>
-          <el-radio-button value="1">必须有特殊字符</el-radio-button>
-          <el-radio-button value="0">无特殊字符</el-radio-button>
+        <el-radio-group v-model="temp.specialCharacters" class="mb-20px">
+          <el-radio-button :value="2">可有可无</el-radio-button>
+          <el-radio-button :value="1">必须有特殊字符</el-radio-button>
+          <el-radio-button :value="0">无特殊字符</el-radio-button>
         </el-radio-group>
-        <el-switch v-model="temp.banUsername" style="margin-bottom: 20px;" prop="banUsername"
+        <el-switch v-model="temp.banUsername" class="mb-20px"
                    active-text="不能包含用户名" :active-value="1" active-color="#ff4949"
-                   inactive-text="可以包含用户名" :inactive-value="0"
-        />
+                   inactive-text="可以包含用户名" :inactive-value="0"/>
       </el-form-item>
 
-      <el-form-item label="规则不符提示" prop="prompt">
-        <el-input v-model="temp.prompt" :rules="[{required: true, message: '提示语不能为空'}]" type="textarea"
-                  maxlength="255"
-                  placeholder="请输入提示语"
-        />
+      <el-form-item label="规则不符提示" prop="prompt" :rules="[{required: true, message: '提示语不能为空'}]">
+        <el-input v-model="temp.prompt" type="textarea" class="w-440px!" :rows="3"
+                  maxlength="255" show-word-limit placeholder="请输入提示语"/>
       </el-form-item>
-      <el-form-item label="密码有效期" prop="validTime">
+      <el-form-item label="密码有效期" prop="validTime"
+                    :rules="[{required: true, message: '有效期不能为空，为空请填0'}]">
         <el-switch v-model="validTimeEnable" inactive-text="永不过期" active-text="过期时间"/>
-        <el-input v-show="validTimeEnable" v-model="temp.validTime"
-                  :rules="[{required: true, message: '有效期不能为空，为空请填0'}]"
-                  style="width: 150px;margin:0px 20px;" placeholder="请输入有效时间（为空请填0）"
-        />
+        <el-input v-show="validTimeEnable" v-model="temp.validTime" class="w-150px! m-[0_20px]"
+                  placeholder="请输入有效时间（为空请填0）"/>
         <span v-show="validTimeEnable">天</span>
       </el-form-item>
 
       <div class="tip">
-        <i class="el-icon-warning-outline"/> 登录安全设置
+        <my-icon icon="yzm" :size="24" class="mr-5px"/>
+        登录安全设置
       </div>
 
-      <el-form-item label="限制次数">
+      <el-form-item label="限制次数" prop="loginFailedTimes">
         <el-switch v-model="loginFailedTimesEnable" inactive-text="登录错误不锁定" active-text="登录错误几次锁定"/>
-        <el-input v-show="loginFailedTimesEnable" v-model="temp.loginFailedTimes" prop="loginFailedTimes"
-                  style="width: 150px;margin:0px 20px;" placeholder="请输入登录失败限制次数"
-        />
+        <el-input v-show="loginFailedTimesEnable" v-model="temp.loginFailedTimes"
+                  class="w-150px! m-[0_20px]" placeholder="请输入登录失败限制次数"/>
       </el-form-item>
-      <el-form-item v-show="loginFailedTimesEnable" label="锁定时间">
+      <el-form-item v-show="loginFailedTimesEnable" label="锁定时间" prop="lockTime">
         <el-switch v-model="lockTimeEnable" inactive-text="永久锁定" active-text="限时锁定"/>
-        <el-input v-show="lockTimeEnable" v-model="temp.lockTime" prop="lockTime"
-                  style="width: 150px;margin:0px 20px;" placeholder="请输入锁定时间（单位分钟）"
-        />
+        <el-input v-show="lockTimeEnable" v-model="temp.lockTime"
+                  class="w-150px! m-[0_20px]" placeholder="请输入锁定时间（单位分钟）"/>
         <span v-show="lockTimeEnable">分钟</span>
       </el-form-item>
-      <el-form-item label="默认密码" prop="defaultPassword">
-        <el-input v-model="temp.defaultPassword" :rules="[{required: true, message: '默认密码不能为空'}]"
-                  style="width: 200px;margin-right:20px;" placeholder="请输入默认密码"
-        />
+      <el-form-item label="默认密码" prop="defaultPassword" :rules="[{required: true, message: '默认密码不能为空'}]">
+        <el-input v-model="temp.defaultPassword" class="w-200px! mr-20px" placeholder="请输入默认密码"/>
         <span>（重置密码时的默认密码）</span>
       </el-form-item>
-    </el-form>
-    <template #footer>
-      <div class="dialog-footer width600">
-        <base-button type="primary" class="ml-120px" @click="saveData" icon="el-icon-check">保存配置</base-button>
+      <el-divider/>
+      <div class="text-center">
+        <base-button type="primary" icon="el-icon-check" size="large" class="w-160px ml-[-10px]"
+                     @click="saveData">保存配置
+        </base-button>
       </div>
-    </template>
+    </el-form>
   </div>
 </template>
 
 <script>
 import request from '@/utils/request'
+import { MyIcon } from '@/components/MyIcon'
 
 export default {
+  components: {MyIcon},
   data() {
     return {
       // 表单临时数据
@@ -170,10 +161,8 @@ export default {
   border-radius: 4px;
   border-left: 5px solid #50bfff;
   margin: 20px 0;
-}
-
-.width600 {
-  margin: 0px auto;
-  width: 600px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
 }
 </style>
