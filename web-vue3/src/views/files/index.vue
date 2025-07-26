@@ -1,23 +1,20 @@
 <template>
   <div class="app-container">
     <!-- 文件记录表-管理按钮 -->
-    <div style="margin-bottom: 10px;">
-      <el-input v-model="searchData.fileMd5" size="small" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="输入文件md5-模糊"/>
-      <el-input v-model="searchData.fileOldName" size="small" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="输入原文件名-模糊"/>
-      <el-input v-model="searchData.fileExtend" size="small" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="输入扩展名-模糊"/>
-      <base-button class="filter-item" type="primary" size="small"
-                 icon="el-icon-search" @click="searchBtnHandle">查询
-      </base-button>
-      <base-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</base-button>
-      <div style="float: right;">
-        <base-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
-                   v-permission="'files-zFiles-add'">新增
+    <div class="searchPanel">
+      <div class="searchForm">
+        <el-input v-model="searchData.fileMd5" class="searchInput" placeholder="文件md5-模糊"/>
+        <el-input v-model="searchData.fileOldName" class="searchInput" placeholder="原文件名-模糊"/>
+        <el-input v-model="searchData.fileExtend" class="searchInput" placeholder="扩展名-模糊"/>
+        <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询
         </base-button>
-        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
-                   v-permission="'files-zFiles-delete'">删除
+        <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
+      </div>
+      <div class="operatePanel">
+        <base-button type="primary" icon="el-icon-plus" @click="openAdd" v-permission="'files-zFiles-add'">新增
+        </base-button>
+        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)"
+                     v-permission="'files-zFiles-delete'">删除
         </base-button>
       </div>
     </div>
@@ -36,14 +33,12 @@
       <el-table-column label="创建时间" prop="createTime" align="center" width="100"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template #default="scope">
-          <base-button link style="color: #13ce66;"
-                     size="small" @click="openView(scope.row)">详情
+          <base-button link style="color: #13ce66;" size="small" @click="openView(scope.row)">详情
           </base-button>
-          <base-button link type="primary"
-                     size="small" @click="downloadFile(scope.row)">下载
+          <base-button link type="primary" size="small" @click="downloadFile(scope.row)">下载
           </base-button>
           <base-button v-permission="'files-zFiles-delete'" style="color: #ff6d6d;"
-                     link size="small" @click="deleteByIds(scope.row)">删除
+                       link size="small" @click="deleteByIds(scope.row)">删除
           </base-button>
         </template>
       </el-table-column>
@@ -52,69 +47,55 @@
     <el-pagination class="flex justify-center mt-10px" layout="total,prev,pager,next,sizes,jumper"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
-                   @size-change="handleSizeChange"
-    />
+                   @size-change="handleSizeChange"/>
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-               v-model="dialogFormVisible" @close="loadTableList();resetTemp();dialogIndex++;" width="600px"
+               v-model="dialogFormVisible" @close="closeDialog" width="600px"
                :key="'upload' + dialogIndex">
-      <div v-if="dialogType !== 'view'">
-        <div
-            style="text-align: center;font-size: 16px;padding-bottom: 20px;margin-bottom:20px;color: #2C7EEA;border-bottom: 1px dashed #CCCCCC;">
+      <div v-if="dialogType!=='view'" class="m-10px p-10px">
+        <div class="text-center text-16px pb-20px mb-20px color-#2C7EEA b-b-1px b-b-dashed b-b-#ccc">
           上传完成后，关闭窗口，会刷新table数据
         </div>
-        <file-second second-server-url="/upload/second/chunks" style="text-align: center;"
-                     second-md5-url="/upload/second/md5"
-                     upload-dir="testSecond"
-                     mime-types=".zip,.rar"
-                     :max-file-size="300*1024*1024" :chunk-size="10*1024*1024"
-                     :is-copy="true"></file-second>
+        <file-second second-server-url="/upload/second/chunks" class="text-center"
+                     second-md5-url="/upload/second/md5" upload-dir="testSecond" mime-types=".zip,.rar"
+                     :max-file-size="300*1024*1024" :chunk-size="10*1024*1024" :is-copy="true"/>
       </div>
-      <div v-else>
+      <template v-else>
         <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px"
                  :disabled="dialogType==='view'">
-          <el-form-item label="文件id" prop="fileId"
-                        :rules="[{required: true, message: '文件id不能为空'}]">
+          <el-form-item label="文件id" prop="fileId" :rules="[{required: true, message: '文件id不能为空'}]">
             <el-input v-model="temp.fileId" placeholder="请输入文件id"/>
           </el-form-item>
-          <el-form-item label="文件md5" prop="fileMd5"
-                        :rules="[]">
+          <el-form-item label="文件md5" prop="fileMd5">
             <el-input v-model="temp.fileMd5" placeholder="请输入文件md5"/>
           </el-form-item>
-          <el-form-item label="文件地址（文件访问地址）" prop="fileUrl"
-                        :rules="[]">
+          <el-form-item label="文件访问地址" prop="fileUrl">
             <el-input v-model="temp.fileUrl" placeholder="请输入文件地址（文件访问地址）"/>
           </el-form-item>
-          <el-form-item label="原文件名" prop="fileOldName"
-                        :rules="[]">
+          <el-form-item label="原文件名" prop="fileOldName">
             <el-input v-model="temp.fileOldName" placeholder="请输入原文件名"/>
           </el-form-item>
-          <el-form-item label="存储文件名" prop="fileName"
-                        :rules="[]">
+          <el-form-item label="存储文件名" prop="fileName">
             <el-input v-model="temp.fileName" placeholder="请输入存储文件名"/>
           </el-form-item>
-          <el-form-item label="文件扩展名" prop="fileExtend"
-                        :rules="[]">
+          <el-form-item label="文件扩展名" prop="fileExtend">
             <el-input v-model="temp.fileExtend" placeholder="请输入文件扩展名"/>
           </el-form-item>
-          <el-form-item label="文件大小" prop="fileSize"
-                        :rules="[{type: 'number', message: '必须为数字'}]">
+          <el-form-item label="文件大小" prop="fileSize" :rules="[{type: 'number', message: '必须为数字'}]">
             <el-input-number v-model.number="temp.fileSize" placeholder="请输入文件大小"/>
           </el-form-item>
         </el-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <base-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</base-button>
-            <base-button @click="dialogFormVisible=false">取消</base-button>
-          </div>
-        </template>
-      </div>
+      </template>
+      <template #footer>
+        <div class="dialog-footer">
+          <base-button @click="dialogFormVisible=false">关闭</base-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script>
-
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util'
 import FileSecond from '@/views/demo/files/FileSecond.vue'
@@ -183,6 +164,14 @@ export default {
     handleSizeChange(size) {
       this.pager.limit = size
       this.loadTableList()
+    },
+    // 关闭添加、修改、查看窗口
+    closeDialog() {
+      if (this.dialogType !== 'view') {
+        this.loadTableList()
+      }
+      this.dialogIndex++
+      this.resetTemp()
     },
     // 清空表单temp数据
     resetTemp() {
