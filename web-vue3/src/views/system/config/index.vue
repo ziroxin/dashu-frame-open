@@ -1,18 +1,15 @@
 <template>
   <div class="app-container">
     <!-- 参数参数配置-管理按钮 -->
-    <div style="margin-bottom: 10px;">
-      <el-input v-model="searchData.cfgName" size="small" clearable style="width: 170px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入参数名称查询"/>
-      <el-input v-model="searchData.cfgKey" size="small" clearable style="width: 170px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入参数键名查询"/>
-      <base-button class="filter-item" type="primary" size="small"
-                 icon="el-icon-search" @click="searchBtnHandle">查询
-      </base-button>
-      <base-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</base-button>
-      <div style="float: right;">
-        <base-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
-                   v-permission="'config-zConfig-add'">新增
+    <div class="searchPanel">
+      <div class="searchForm">
+        <el-input v-model="searchData.cfgName" clearable class="searchInput w-170px" placeholder="参数名称"/>
+        <el-input v-model="searchData.cfgKey" clearable class="searchInput w-170px" placeholder="参数键名"/>
+        <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询</base-button>
+        <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
+      </div>
+      <div class="operatePanel">
+        <base-button type="primary" icon="el-icon-plus" @click="openAdd" v-permission="'config-zConfig-add'">新增
         </base-button>
       </div>
     </div>
@@ -37,15 +34,12 @@
       <el-table-column label="顺序" prop="orderIndex" align="center" width="60"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template #default="scope">
-          <base-button link style="color: #13ce66;"
-                     size="small" @click="openView(scope.row)">详情
-          </base-button>
-          <base-button v-permission="'config-zConfig-update'"
-                     link type="primary" size="small" @click="openUpdate(scope.row)">修改
+          <base-button link style="color: #13ce66;" size="small" @click="openView(scope.row)">详情</base-button>
+          <base-button v-permission="'config-zConfig-update'" link type="primary" size="small"
+                       @click="openUpdate(scope.row)">修改
           </base-button>
           <base-button v-permission="'config-zConfig-delete'" v-if="scope.row.cfgIsSys === '0'"
-                     style="color: #ff6d6d;"
-                     link size="small" @click="deleteByIds(scope.row)">删除
+                       link size="small" style="color: #ff6d6d;" @click="deleteByIds(scope.row)">删除
           </base-button>
         </template>
       </el-table-column>
@@ -54,8 +48,7 @@
     <el-pagination class="flex justify-center mt-10px" layout="total,prev,pager,next,sizes,jumper"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
-                   @size-change="handleSizeChange"
-    />
+                   @size-change="handleSizeChange"/>
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
                v-model="dialogFormVisible" @close="resetTemp" width="600px" :key="'myDialog'+dialogIndex">
@@ -72,21 +65,20 @@
                       :rules="[{required: true, message: '参数键值不能为空'}]">
           <el-input v-model="temp.cfgValue" placeholder="请输入参数键值"/>
         </el-form-item>
-
         <el-form-item label="是否系统参数" prop="cfgIsSys"
                       :rules="[{required: true, message: '是否系统参数不能为空'}]">
           <!-- 系统参数，不能改成非系统参数 -->
-          <el-tag type="primary" v-if="dialogType==='update'&&temp.noUpdateCfgIsSys==='1'">是</el-tag>
-          <el-radio-group v-else v-model="temp.cfgIsSys" size="small">
+          <template v-if="dialogType==='view'||(dialogType==='update'&&temp.noUpdateCfgIsSys==='1')">
+            <el-tag type="primary" v-if="temp.cfgIsSys==='1'">是</el-tag>
+            <el-tag type="primary" v-if="temp.cfgIsSys==='0'">否</el-tag>
+          </template>
+          <el-radio-group v-else v-model="temp.cfgIsSys">
             <el-radio-button value="1">是</el-radio-button>
             <el-radio-button value="0">否</el-radio-button>
           </el-radio-group>
-          <el-tag type="danger" style="margin-left:10px;"
-                  v-if="temp.cfgIsSys==='1'">系统参数不能删除
-          </el-tag>
+          <el-tag type="danger" class="ml-10px" v-if="temp.cfgIsSys==='1'" disable-transitions>系统参数不能删除</el-tag>
         </el-form-item>
-        <el-form-item label="备注" prop="cfgRemark"
-                      :rules="[]">
+        <el-form-item label="备注" prop="cfgRemark" :rules="[]">
           <el-input type="textarea" v-model="temp.cfgRemark" placeholder="请输入备注"/>
         </el-form-item>
         <el-form-item label="顺序" prop="orderIndex"
@@ -105,7 +97,6 @@
 </template>
 
 <script>
-
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util'
 
