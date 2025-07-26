@@ -3,8 +3,8 @@
     <!-- 参数参数配置-管理按钮 -->
     <div class="searchPanel">
       <div class="searchForm">
-        <el-input v-model="searchData.cfgName" clearable class="searchInput w-170px" placeholder="参数名称"/>
-        <el-input v-model="searchData.cfgKey" clearable class="searchInput w-170px" placeholder="参数键名"/>
+        <el-input v-model="searchData.cfgName" clearable class="searchInput w-170px!" placeholder="参数名称"/>
+        <el-input v-model="searchData.cfgKey" clearable class="searchInput w-170px!" placeholder="参数键名"/>
         <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询</base-button>
         <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
       </div>

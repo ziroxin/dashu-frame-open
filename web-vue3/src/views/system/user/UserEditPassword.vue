@@ -138,8 +138,8 @@ export default {
             const data = {...this.temp, isDefaultPassword: this.isDefaultPassword}
             request({url: '/user/edit/password', method: 'post', data}).then(response => {
               this.$message({type: 'success', message: '密码修改成功！下次登录请使用新密码'})
-              sessionStorage.setItem(this.$storageKeys.isDefaultPassword, false)
-              sessionStorage.setItem(this.$storageKeys.isInvalidPassword, false)
+              sessionStorage.setItem(this.$storageKeys.s_isDefaultPassword, false)
+              sessionStorage.setItem(this.$storageKeys.s_isInvalidPassword, false)
               this.innerVisible = false
             })
           } else {

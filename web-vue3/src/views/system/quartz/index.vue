@@ -3,8 +3,8 @@
     <!-- 定时任务调度表-管理按钮 -->
     <div class="searchPanel">
       <div class="searchForm">
-        <el-input v-model="searchData.jobName" class="searchInput w-150px" placeholder="名称"/>
-        <el-input v-model="searchData.jobClass" class="searchInput w-150px" placeholder="类名"/>
+        <el-input v-model="searchData.jobName" class="searchInput w-150px!" placeholder="名称"/>
+        <el-input v-model="searchData.jobClass" class="searchInput w-150px!" placeholder="类名"/>
         <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询</base-button>
         <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
       </div>

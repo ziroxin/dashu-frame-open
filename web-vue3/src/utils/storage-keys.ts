@@ -26,6 +26,8 @@ const storageKeys = {
   s_isInvalidPassword: `${key_prefix}_is_invalid_password`,
   // request.js中存储的旧请求对象的key
   s_oldReqObj: `${key_prefix}_old_req_obj`,
+  // 支付相关数据缓存的key
+  s_payData: `${key_prefix}_pay_data`,
   // 记住密码相关，存储当前用户信息的key
   l_rememberMeData: `${key_prefix}_remember_me_data`,
   // 最近访问的路由记录的key
@@ -42,16 +44,14 @@ const storageKeys = {
   l_lockStore: `${key_prefix}_store_lock`,
   // 数据字典持久化key
   l_dictList: `${key_prefix}_dicts_list`,
+  // 简易postman页historyKeys
+  l_historyKeys: `${key_prefix}_history_keys`,
   // 侧边栏状态的key
   sidebarStatus: `${key_prefix}_sidebar_status`,
   // 系统整体大小（字体等：default、medium、small、mini）的key
   size: `${key_prefix}_size`,
-  // 简易postman页historyKeys
-  historyKeys: `${key_prefix}_history_keys`,
   // 综合布局下，当前激活菜单项的key
-  activeTopMenu: `${key_prefix}_active_top_menu`,
-  // 支付相关数据缓存的key
-  payData: `${key_prefix}_pay_data`
+  activeTopMenu: `${key_prefix}_active_top_menu`
 }
 
 export default storageKeys
