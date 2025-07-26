@@ -14,15 +14,14 @@ export default {
     const params = {loginId: this.$route.query.loginId}
     request({url: '/oauth2/client/login/check', method: 'get', params}).then((response) => {
       const {data} = response
-      let errArr = data.successMsg.split('|')
+      const errArr = data.successMsg.split('|')
       if (errArr && errArr.length === 2 && errArr[0] === 'error') {
         this.$router.push({path: '/oauth2/error', query: {err: errArr[1]}})
       } else {
-        // 写入登录状态（同/store/modules/user.js:login）
+        // 写入登录状态
         setToken(data.accessToken, new Date(data.accessTokenValidTime))
-        this.$store.commit('user/SET_TOKEN', data.accessToken)
-        sessionStorage.setItem(this.$storageKeys.isDefaultPassword, data.defaultPassword)
-        sessionStorage.setItem(this.$storageKeys.isInvalidPassword, data.invalidPassword)
+        sessionStorage.setItem(this.$storageKeys.s_isDefaultPassword, data.defaultPassword)
+        sessionStorage.setItem(this.$storageKeys.s_isInvalidPassword, data.invalidPassword)
         // 跳转
         this.$router.push({path: this.redirect || '/', query: this.otherQuery})
       }

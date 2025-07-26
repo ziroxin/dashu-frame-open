@@ -1,21 +1,19 @@
 <template>
   <div class="app-container">
     <!-- 应用信息表-管理按钮 -->
-    <div style="margin-bottom: 10px;">
-      <el-input v-model="searchData.clientId" size="small" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入应用ID查询"/>
-      <el-input v-model="searchData.webServerRedirectUri" size="small" style="width: 190px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入应用回调地址查询"/>
-      <base-button class="filter-item" type="primary" size="small"
-                 icon="el-icon-search" @click="searchBtnHandle">查询
-      </base-button>
-      <base-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</base-button>
-      <div style="float: right;">
-        <base-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
-                   v-permission="'oauth2.client-oauthClientDetails-add'">新增
+    <div class="searchPanel">
+      <div class="searchForm">
+        <el-input v-model="searchData.clientId" class="searchInput w-150px!" placeholder="应用ID"/>
+        <el-input v-model="searchData.webServerRedirectUri" class="searchInput w-190px!" placeholder="应用回调地址"/>
+        <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询</base-button>
+        <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
+      </div>
+      <div class="operatePanel">
+        <base-button type="primary" icon="el-icon-plus" @click="openAdd"
+                     v-permission="'oauth2.client-oauthClientDetails-add'">新增
         </base-button>
-        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
-                   v-permission="'oauth2.client-oauthClientDetails-delete'">删除
+        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)"
+                     v-permission="'oauth2.client-oauthClientDetails-delete'">删除
         </base-button>
       </div>
     </div>
@@ -34,22 +32,19 @@
           <el-tag type="success" v-else-if="scope.row.autoapprove==='true'">自动授权</el-tag>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="130" align="center">
+      <el-table-column label="操作" width="140" align="left" header-align="center">
         <template #default="scope">
-          <base-button link style="color: #13ce66;"
-                     size="small" @click="openView(scope.row)">详情
-          </base-button>
+          <base-button link style="color: #13ce66;" size="small" @click="openView(scope.row)">详情</base-button>
           <base-button v-permission="'oauth2.client-oauthClientDetails-update'"
-                     link type="primary" size="small" @click="openUpdate(scope.row)">修改
+                       link type="primary" size="small" @click="openUpdate(scope.row)">修改
           </base-button>
           <base-button v-permission="'oauth2.client-oauthClientDetails-delete'" style="color: #ff6d6d;"
-                     link size="small" @click="deleteByIds(scope.row)">删除
+                       link size="small" @click="deleteByIds(scope.row)">删除
           </base-button>
-          <base-button link type="primary"
-                     size="small" @click="testOauth(scope.row)">测试
-          </base-button>
+          <br/>
+          <base-button link type="primary" size="small" @click="testOauth(scope.row)">测试</base-button>
           <base-button v-permission="'oauth2.client-oauthClientDetails-resetSecret'" style="color: #ff6d6d;"
-                     link size="small" @click="resetSecret(scope.row)">重置Secret
+                       link size="small" @click="resetSecret(scope.row)">重置Secret
           </base-button>
         </template>
       </el-table-column>
@@ -58,45 +53,46 @@
     <el-pagination class="flex justify-center mt-10px" layout="total,prev,pager,next,sizes,jumper"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
-                   @size-change="handleSizeChange"
-    />
+                   @size-change="handleSizeChange"/>
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-               v-model="dialogFormVisible" @close="resetTemp" width="660px">
+               v-model="dialogFormVisible" @close="resetTemp" width="700px">
       <!-- 重置Secret -->
-      <el-form ref="dataForm" :model="temp" label-position="right" label-width="150px"
-               v-if="dialogType === 'resetSecret'">
+      <el-form v-if="dialogType==='resetSecret'" ref="dataForm" :model="temp"
+               label-position="right" label-width="150px">
         <el-form-item label-width="0px">
-          <div style="font-size: 16px;font-weight: bold;text-align: center;color: #dd1f29;">
+          <div class="text-16px font-bold m-auto color-#dd1f29">
             请妥善保管好应用Secret，不要泄露；不可找回，若丢失只能重置！
           </div>
         </el-form-item>
-        <el-form-item label="应用Secret" prop="clientSecret"
-                      :rules="[{required: true, message: '应用Secret不能为空'}]">
-          <el-input v-model="temp.clientSecret" placeholder="请输入应用Secret（点击下方按钮可随机生成）"/>
-          <base-button type="primary" @click="generateRandomPassword(16)">随机生成Secret</base-button>
-          <base-button type="success" v-clipboard:copy="temp.clientSecret">复制当前Secret</base-button>
+        <el-form-item label="应用Secret" prop="clientSecret" :rules="[{required: true, message: '应用Secret不能为空'}]">
+          <el-input v-model="temp.clientSecret" class="mb-10px" placeholder="请输入应用Secret（点击下方按钮可随机生成）"/>
+          <base-button type="primary" size="small" @click="generateRandomPassword(16)">随机生成Secret</base-button>
+          <base-button type="success" size="small" v-if="temp.clientSecret"
+                       v-clipboard:copy="temp.clientSecret">复制当前Secret
+          </base-button>
         </el-form-item>
       </el-form>
       <!-- 添加、修改、查看 -->
-      <el-form ref="dataForm" :model="temp" label-position="right" label-width="150px"
-               v-else :disabled="dialogType==='view'">
+      <el-form v-else ref="dataForm" :model="temp" label-width="156px" :disabled="dialogType==='view'">
         <!-- 应用ID -->
         <el-form-item label="应用ID" prop="clientId" v-if="dialogType === 'add'"
                       :rules="[{required: true, message: '应用ID不能为空'}]">
           <el-input v-model="temp.clientId" maxlength="256" placeholder="请输入应用ID（注意：应用ID添加后不能修改）"/>
         </el-form-item>
         <el-form-item label="应用ID" v-if="dialogType === 'update'">
-          <span style="color: #dd1f29;font-weight: bold;font-size: 20px;">{{ temp.clientId }}</span>
-          <span style="color: #2C7EEA;margin-left: 10px;">(不能修改)</span>
+          <span class="color-#dd1f29 font-bold text-20px">{{ temp.clientId }}</span>
+          <span class="color-#2c7eea ml-10px">(不能修改)</span>
         </el-form-item>
         <!-- 应用Secret -->
         <el-form-item label="应用Secret" prop="clientSecret" v-if="dialogType === 'add'"
                       :rules="[{required: true, message: '应用Secret不能为空'}]">
           <el-input v-model="temp.clientSecret" placeholder="请输入应用Secret（点击下方按钮可随机生成）"/>
-          <div style="color: #dd1f29;">请妥善保管好应用Secret，不要泄露；不可找回，若丢失只能重置！</div>
-          <base-button type="primary" @click="generateRandomPassword(16)">随机生成Secret</base-button>
-          <base-button type="success" v-clipboard:copy="temp.clientSecret">复制当前Secret</base-button>
+          <div class="color-#dd1f29">请妥善保管好应用Secret，不要泄露；不可找回，若丢失只能重置！</div>
+          <base-button type="primary" size="small" @click="generateRandomPassword(16)">随机生成Secret</base-button>
+          <base-button type="success" size="small" v-if="temp.clientSecret"
+                       v-clipboard:copy="temp.clientSecret">复制当前Secret
+          </base-button>
         </el-form-item>
         <!-- 回调地址 -->
         <el-form-item label="回调地址" prop="webServerRedirectUri"
@@ -106,36 +102,35 @@
         <!-- 授权模式 -->
         <el-form-item label="授权模式" prop="authorizedGrantTypesArr"
                       :rules="[{required: true, message: '授权模式不能为空'}]">
-          <el-checkbox-group v-model="temp.authorizedGrantTypesArr" size="small">
-            <el-checkbox label="authorization_code" name="type" border>授权码模式</el-checkbox>
-            <el-checkbox label="refresh_token" name="type" border>刷新令牌</el-checkbox>
-            <el-checkbox label="password" name="type" border>密码模式</el-checkbox>
+          <el-checkbox-group v-model="temp.authorizedGrantTypesArr">
+            <el-checkbox value="authorization_code" name="type" border>授权码模式</el-checkbox>
+            <el-checkbox value="refresh_token" name="type" border>刷新令牌</el-checkbox>
+            <el-checkbox value="password" name="type" border>密码模式</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="access_token有效期" prop="accessTokenValidity"
                       :rules="[{type: 'number', message: '必须为数字'},{required: true, message: 'access_token有效期不能为空'}]">
-          <el-input-number v-model.number="temp.accessTokenValidity" size="small"
-                           placeholder="请输入access_token有效期，单位秒"/>
-          <span style="color: #2C7EEA;margin-left: 10px;">秒</span>
+          <el-input-number v-model.number="temp.accessTokenValidity" placeholder="请输入access_token有效期，单位秒"/>
+          <span class="color-#2c7eea ml-10px">秒</span>
         </el-form-item>
         <el-form-item label="refresh_token有效期" prop="refreshTokenValidity"
                       :rules="[{type: 'number', message: '必须为数字'},{required: true, message: 'refresh_token有效期不能为空'}]">
-          <el-input-number v-model.number="temp.refreshTokenValidity" size="small"
-                           placeholder="请输入refresh_token有效期，单位秒"/>
-          <span style="color: #2C7EEA;margin-left: 10px;">秒</span>
+          <el-input-number v-model.number="temp.refreshTokenValidity" placeholder="请输入refresh_token有效期，单位秒"/>
+          <span class="color-#2c7eea ml-10px">秒</span>
         </el-form-item>
         <el-form-item label="是否自动授权" prop="autoapprove"
                       :rules="[{required: true, message: '是否自动授权不能为空'}]">
-          <el-radio-group v-model="temp.autoapprove" size="small">
-            <el-radio-button :value="true">自动授权</el-radio-button>
-            <el-radio-button :value="false">用户手动确认</el-radio-button>
+          <el-radio-group v-model="temp.autoapprove">
+            <el-radio-button value="true">自动授权</el-radio-button>
+            <el-radio-button value="false">手动授权-用户手动确认</el-radio-button>
           </el-radio-group>
         </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <base-button type="primary" v-if="dialogType!=='view'" @click="saveData">保存</base-button>
-          <base-button @click="dialogFormVisible=false">取消</base-button>
+          <base-button type="primary" v-if="dialogType!=='view'"
+                       icon="el-icon-check" @click="saveData">保存</base-button>
+          <base-button icon="el-icon-close" @click="dialogFormVisible=false">取消</base-button>
         </div>
       </template>
     </el-dialog>
@@ -143,7 +138,6 @@
 </template>
 
 <script>
-
 import request from '@/utils/request'
 
 export default {
@@ -215,7 +209,7 @@ export default {
         authorizedGrantTypesArr: ['authorization_code', 'refresh_token'],
         accessTokenValidity: 3600,
         refreshTokenValidity: 3600,
-        autoapprove: true
+        autoapprove: 'true'
       }
       this.dialogFormVisible = false
     },
@@ -240,7 +234,7 @@ export default {
         this.$message({message: '修改时，只允许选择一条数据！', type: 'warning'})
       } else {
         // 修改弹窗
-        let updateData = this.tableSelectRows[0]
+        const updateData = this.tableSelectRows[0]
         updateData.authorizedGrantTypesArr = updateData.authorizedGrantTypes.split(',')
         this.temp = Object.assign({}, updateData)
         this.dialogType = 'update'
@@ -252,7 +246,7 @@ export default {
     },
     // 打开查看窗口
     openView(row) {
-      let viewData = row
+      const viewData = row
       viewData.authorizedGrantTypesArr = viewData.authorizedGrantTypes.split(',')
       this.temp = Object.assign({}, viewData)
       this.dialogType = 'view'
@@ -260,13 +254,17 @@ export default {
     },
     // 重置应用Secret
     resetSecret(row) {
-      let viewData = row
-      viewData.authorizedGrantTypesArr = viewData.authorizedGrantTypes.split(',')
-      this.temp = Object.assign({}, viewData)
-      // 重新生成密码
-      this.generateRandomPassword(16)
-      this.dialogType = 'resetSecret'
-      this.dialogFormVisible = true
+      this.$confirm('确定要重置应用的Secret吗，重置后旧的Secret将失效！', '重置确认', {
+        confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
+      }).then(() => {
+        const viewData = row
+        viewData.authorizedGrantTypesArr = viewData.authorizedGrantTypes.split(',')
+        this.temp = Object.assign({}, viewData)
+        // 重新生成密码
+        this.generateRandomPassword(16)
+        this.dialogType = 'resetSecret'
+        this.dialogFormVisible = true
+      })
     },
     // 添加/修改，保存事件
     saveData() {
@@ -313,13 +311,16 @@ export default {
     },
     // 生成随机密码
     generateRandomPassword(length) {
-      const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#-_=+'
-      let password = ''
-      for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * charset.length)
-        password += charset.charAt(randomIndex)
-      }
-      this.temp = {...this.temp, clientSecret: password}
+      this.temp.clientSecret = ''
+      setTimeout(() => {
+        const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#-_=+'
+        let password = ''
+        for (let i = 0; i < length; i++) {
+          const randomIndex = Math.floor(Math.random() * charset.length)
+          password += charset.charAt(randomIndex)
+        }
+        this.temp.clientSecret = password
+      }, 500)
     },
     // 测试认证
     testOauth(row) {

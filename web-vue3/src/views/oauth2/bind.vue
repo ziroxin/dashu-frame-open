@@ -3,8 +3,7 @@
     <h1>统一认证中心 · 绑定用户</h1>
     <div class="bind-info">首次登录，请先绑定您的用户！</div>
     <div class="bind-form">
-      <el-form ref="loginForm" class="login-form"
-               :model="loginForm" :rules="loginRules">
+      <el-form ref="loginForm" class="login-form" :model="loginForm" :rules="loginRules">
         <el-form-item prop="username">
           <el-input ref="username" v-model="loginForm.userName" prefix-icon="el-icon-user"
                     placeholder="请输入用户名" name="userName" autocomplete="off"/>
@@ -21,13 +20,11 @@
                         placeholder="请输入验证码" name="yzm" autocomplete="off"/>
             </el-col>
             <el-col :span="10">
-              <img class="yzmImg" :src="loginForm.codeBaseImage" @click="loadCaptacha">
+              <img class="yzmImg" :src="loginForm.codeBaseImage" @click="loadCaptacha"/>
             </el-col>
           </el-row>
         </el-form-item>
-        <base-button :loading="loading" type="primary" style="width: 300px;"
-                   @click.native.prevent="loginUserBind">绑 定
-        </base-button>
+        <base-button :loading="loading" type="primary" class="w-300px!" @click="loginUserBind">绑定用户</base-button>
       </el-form>
     </div>
   </div>
@@ -90,7 +87,7 @@ export default {
           data.password = encryptRSA(this.loginForm.password)
           request({url: '/oauth2/client/login/userBind', method: 'post', data}).then(response => {
             const {data} = response
-            let errArr = data.successMsg.split('|')
+            const errArr = data.successMsg.split('|')
             if (errArr && errArr.length === 2 && errArr[0] === 'error') {
               // 绑定失败
               this.$router.push({path: '/oauth2/error', query: {err: errArr[1]}})
@@ -100,8 +97,8 @@ export default {
               // 写入登录状态（同/store/modules/user.js:login）
               setToken(data.accessToken, new Date(data.accessTokenValidTime))
               this.$store.commit('user/SET_TOKEN', data.accessToken)
-              sessionStorage.setItem(this.$storageKeys.isDefaultPassword, data.defaultPassword)
-              sessionStorage.setItem(this.$storageKeys.isInvalidPassword, data.invalidPassword)
+              sessionStorage.setItem(this.$storageKeys.s_isDefaultPassword, data.defaultPassword)
+              sessionStorage.setItem(this.$storageKeys.s_isInvalidPassword, data.invalidPassword)
               // 跳转
               this.$router.push({path: this.redirect || '/', query: this.otherQuery})
             }
@@ -139,7 +136,7 @@ export default {
     width: 60%;
     line-height: 40px;
     border-radius: 10px;
-    background: #2C7EEA;
+    background: var(--el-color-primary);
     font-size: 18px;
     color: #ffffff;
     margin-top: 22px;
