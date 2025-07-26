@@ -1,28 +1,36 @@
 <template>
-  <div class="app-container">
+  <div class="app-container mb-0!">
     <el-row>
       <el-col :span="9">
         <!-- 资源表格 -->
         <div class="mb-10px">
-          <base-button @click="toggleTableOprate" :icon="isExpand?'el-icon-arrow-up':'el-icon-arrow-down'"
-                       size="small">全部{{ isExpand ? '收起' : '展开' }}
+          <base-button type="primary" plain :icon="isExpand?'el-icon-arrow-up':'el-icon-arrow-down'"
+                       @click="toggleTableOprate">全部{{ isExpand ? '收起' : '展开' }}
           </base-button>
         </div>
-        <div class="grid-content bg-purple">
-          <el-table ref="permissionTable" v-loading="listLoading" :default-expand-all="isExpand" class="w-96%"
+        <div class="overflow-x-hidden overflow-y-scroll h-[calc(var(--app-content-height)-67px)]">
+          <el-table ref="permissionTable" v-loading="listLoading" :default-expand-all="isExpand"
                     border :data="tableData" row-key="permissionId" highlight-current-row
                     :tree-props="{children: 'children',checkStrictly: true}">
-            <el-table-column label="名称">
+            <el-table-column label="名称" show-overflow-tooltip>
               <template #default="{row}">
-                <el-tag v-if="row.permissionType === '0'" disable-transitions size="small">路由</el-tag>
-                <el-tag v-if="row.permissionType === '1'" disable-transitions type="warning" size="small">按钮</el-tag>
-                <el-tag v-if="row.permissionType === '3'" disable-transitions type="success" size="small">其他</el-tag>
-                {{ row.permissionTitle }}{{ row.permissionRouter ? '(' + row.permissionRouter + ')' : '' }}
+                <el-tag v-if="row.permissionType==='0'" disable-transitions class="p-[0_2px]! h-18px!"
+                        size="small">路由
+                </el-tag>
+                <el-tag v-if="row.permissionType==='1'" disable-transitions class="p-[0_2px]! h-18px!"
+                        type="warning" size="small">按钮
+                </el-tag>
+                <el-tag v-if="row.permissionType==='3'" disable-transitions class="p-[0_2px]! h-18px!"
+                        type="success" size="small">其他
+                </el-tag>
+                <span class="ml-2px text-12px">
+                  {{ row.permissionTitle }}{{ row.permissionRouter ? '(' + row.permissionRouter + ')' : '' }}
+                </span>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="70px" align="center">
+            <el-table-column label="操作" width="75px" align="center">
               <template #default="{row}">
-                <base-button link type="primary" size="small" @click.native.prevent="setMyApi(row.permissionId)">设置API
+                <base-button link type="primary" size="small" @click="setMyApi(row.permissionId)">设置API
                 </base-button>
               </template>
             </el-table-column>
@@ -30,33 +38,31 @@
         </div>
       </el-col>
       <el-col :span="15" class="pl-10px b-l-1px b-l-solid b-l-#dedede" v-loading="listLoading2">
-        <!--        API列表-->
-        <div class="grid-content bg-purple-light">
+        <!-- API列表 -->
+        <div>
           <div class="mb-10px">
             <base-button type="primary" :disabled="isSaveBtn" icon="el-icon-check"
-                         size="small" @click="savePermissionApi()">保存关联API
+                         @click="savePermissionApi()">保存关联API
             </base-button>
             <div class="float-right">
-              <base-button type="primary" size="small" @click="openGroupDialog()">设置分组</base-button>
-              <base-button type="danger" size="small" @click="scanApi()">自动扫描API（增量）</base-button>
-              <base-button type="info" size="small" @click="clearApi()">清除无效API</base-button>
+              <base-button type="primary" @click="openGroupDialog()">设置分组</base-button>
+              <base-button type="danger" @click="scanApi()" icon="el-icon-refresh">自动扫描API（增量）</base-button>
+              <base-button type="info" @click="clearApi()" icon="el-icon-close">清除无效API</base-button>
             </div>
           </div>
-          <div class="overflow-y-auto h-[calc(100vh-200px)]">
-            <el-collapse v-model="activeNames" class="pt-5px">
+          <div class="overflow-x-hidden overflow-y-scroll h-[calc(var(--app-content-height)-67px)]">
+            <el-collapse v-model="activeNames" class="p-[5px_10px_5px_0]!">
               <el-collapse-item v-for="group2 in tableData2" :key="group2.apiGroupId" :name="group2.apiGroupId">
                 <template #title>
                   <div class="collapse-title">
                     <div>分组：{{ group2.groupName }}</div>
-                    <div class="ml-10px">
-                      <el-tooltip content="点击删除分组" placement="right">
-                        <i class="el-icon-delete color-#D7000F text-16px"
-                           v-if="group2.apiGroupId!=='no_group_api'" @click.stop="deleteGroup(group2.apiGroupId)"/>
-                      </el-tooltip>
-                    </div>
+                    <el-tooltip v-if="group2.apiGroupId!=='no_group_api'" content="点击删除分组" placement="right">
+                      <my-icon @click="deleteGroup(group2.apiGroupId)"
+                               icon="el-icon-delete" class="color-#D7000F text-16px ml-10px"/>
+                    </el-tooltip>
                   </div>
                 </template>
-                <el-checkbox-group v-model="selectPermissionApiList" style="line-height: 50px;">
+                <el-checkbox-group v-model="selectPermissionApiList" class="lh-50px">
                   <template v-for="cls in group2.apiClass" :key="cls.className">
                     <el-divider>
                       <p class="class-name-p">{{ cls.className.split('@')[0] }}</p>
@@ -68,13 +74,13 @@
                         <template #content>
                           <div :key="'tipcontent'+api2.apiId" class="lh-30px">
                             请求地址：{{ api2.apiRequestUrl }}
-                            <br>请求方式：{{ api2.apiRequestMethod }}
-                            <br>描述：{{ api2.apiDescription }}
+                            <br/>请求方式：{{ api2.apiRequestMethod }}
+                            <br/>描述：{{ api2.apiDescription }}
                           </div>
                         </template>
-                        <el-checkbox ref="apiCheckboxList" :key="api2.apiId" :label="api2.apiId"
-                                     border class="ml-0px! h-50px">
-                          {{ api2.apiName }}<br>{{ api2.apiRequestUrl }}
+                        <el-checkbox ref="apiCheckboxList" :key="api2.apiId" :value="api2.apiId"
+                                     border class="m-[5px_10px_5px_0px]! h-42px! font-normal! color-#333!">
+                          <span class="text-12px!">{{ api2.apiName }}<br/>{{ api2.apiRequestUrl }}</span>
                         </el-checkbox>
                       </el-tooltip>
                     </template>
@@ -116,17 +122,8 @@
   </div>
 </template>
 <script>
-import {
-  clearApi,
-  deleteApiGroup,
-  getApiList,
-  getApiListByPermissionId,
-  permissionTreeList,
-  saveApiGroup,
-  savePermissionApi,
-  scanApi
-} from '@/api/api'
 import request from '@/utils/request'
+import storageKeys from '@/utils/storage-keys'
 
 export default {
   data() {
@@ -148,7 +145,8 @@ export default {
         groupName: [{required: true, message: '分组名称必填', trigger: 'blur'}],
         groupOrder: [{required: true, message: '分组顺序必填'}]
       },
-      groupList: []
+      groupList: [],
+      contentHeight: localStorage.getItem(storageKeys.l_contentHeight)
     }
   },
   created() {
@@ -173,37 +171,35 @@ export default {
       })
     },
     // 左侧菜单列表
-    async getPermissionTreeList() {
+    getPermissionTreeList() {
       this.listLoading = true
-      const {data} = await permissionTreeList()
-      this.tableData = data
-      this.listLoading = false
+      request({url: '/permission/tree/list', method: 'get'}).then(response => {
+        const {data} = response
+        this.tableData = data
+        this.listLoading = false
+      })
     },
     // 右侧api列表
-    async getApiList() {
+    getApiList() {
       this.listLoading2 = true
-      const {data} = await getApiList()
-      this.activeNames = []
-      for (const group1 of data) {
-        this.activeNames.push(group1.apiGroupId)
-      }
-      this.tableData2 = data
-      this.listLoading2 = false
+      request({url: '/api/listGroupApi', method: 'get'}).then(response => {
+        const {data} = response
+        this.activeNames = data.map(item => item.apiGroupId) || []
+        this.tableData2 = data
+        this.listLoading2 = false
+      }).catch(error => {
+        console.log('加载api列表失败', error)
+        this.listLoading2 = false
+      })
     },
     // 扫描后台api列表
-    async scanApi() {
+    scanApi() {
       this.listLoading2 = true
-      const {code} = await scanApi()
-      if (code === '200') {
-        this.$notify({
-          title: '扫描成功',
-          message: '扫描所有api已完成，并存入数据库中',
-          type: 'success'
-        })
-      }
-      this.listLoading2 = true
-      // 刷新api列表
-      this.getApiList()
+      request({url: 'api/saveScanApi', method: 'get'}).then(response => {
+        this.$notify({title: '扫描成功', message: '扫描所有api已完成，并存入数据库中', type: 'success'})
+        // 刷新api列表
+        this.getApiList()
+      })
     },
     // 清除无效的API
     clearApi() {
@@ -211,29 +207,24 @@ export default {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
         this.listLoading2 = true
-        clearApi().then(response => {
-          const {code} = response
-          if (code === '200') {
-            this.$message({type: 'success', message: '清除无效的API成功！'})
-            this.getApiList()
-          } else {
-            this.$message({type: 'error', message: '操作失败！'})
-          }
-          this.listLoading2 = false
+        request({url: 'api/clearApi', method: 'get'}).then(response => {
+          this.$message({type: 'success', message: '清除无效的API成功！'})
+          this.getApiList()
         })
       })
     },
     // 设置api
     setMyApi(permissionId) {
       this.listLoading2 = true
-      getApiListByPermissionId({'permissionId': permissionId}).then((response) => {
+      const params = {permissionId: permissionId}
+      request({url: 'permission/api/getApiListByPermissionId', method: 'get', params}).then((response) => {
         const {data} = response
         this.selectPermissionApiList = data ? [...new Set(data)] : []
         this.currentPermissionId = permissionId
         this.isSaveBtn = false
         this.listLoading2 = false
-        let toApiId = data && data.length > 0 ? data[0] : this.tableData2[0].apiClass[0].apiList[0].apiId || ''
-        const chkBox = this.$refs.apiCheckboxList.find(ref => ref.label === toApiId)
+        const toApiId = data && data.length > 0 ? data[0] : this.tableData2[0].apiClass[0].apiList[0].apiId || ''
+        const chkBox = this.$refs.apiCheckboxList.find(ref => ref.value === toApiId)
         if (chkBox) {
           chkBox.$el.scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'})
         }
@@ -246,14 +237,10 @@ export default {
         return
       }
       this.listLoading2 = true
-      savePermissionApi({
-        'permissionId': this.currentPermissionId, 'apiIds': this.selectPermissionApiList
-      }).then((response) => {
-        const {code} = response
-        if (code === '200') {
-          this.$notify({title: '保存成功', message: '保存关联API成功！', type: 'success'})
-          this.listLoading2 = false
-        }
+      const data = {permissionId: this.currentPermissionId, apiIds: this.selectPermissionApiList}
+      request({url: 'permission/api/savePermissionApi', method: 'post', data}).then((response) => {
+        this.$notify({title: '保存成功', message: '保存关联API成功！', type: 'success'})
+        this.listLoading2 = false
       })
     },
     // 保存分组
@@ -286,9 +273,8 @@ export default {
       }
       this.$refs.groupDataForm.validate(valid => {
         if (valid) {
-          const data = {...this.temp}
-          data.apiIds = this.selectPermissionApiList
-          saveApiGroup(data).then((response) => {
+          const data = {...this.temp, apiIds: this.selectPermissionApiList}
+          request({url: 'api/group/add', method: 'post', data}).then((response) => {
             this.groupDialogShow = false
             this.$notify({title: '保存成功', message: '分组信息保存成功！', type: 'success'})
             this.selectPermissionApiList = []
@@ -302,12 +288,10 @@ export default {
       this.$confirm('确定要删除该分组吗?', '提醒', {
         confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(() => {
-        deleteApiGroup({'apiGroupId': apiGroupId}).then((response) => {
-          const {code} = response
-          if (code === '200') {
-            this.$notify({title: '删除成功', message: '删除API分组成功！', type: 'success'})
-            this.getApiList()
-          }
+        const params = {apiGroupId: apiGroupId}
+        request({url: 'api/group/delete', method: 'post', params}).then((response) => {
+          this.$notify({title: '删除成功', message: '删除API分组成功！', type: 'success'})
+          this.getApiList()
         })
       })
     }
@@ -316,47 +300,47 @@ export default {
 </script>
 
 <style lang="less" scoped>
-:deep(.el-collapse-item) {
-  .el-collapse-item__header {
-    background-color: #4080ff01 !important;
-    border: 1px solid #4080ff;
-    border-radius: 10px;
-    margin: 5px;
-    color: #4080ff !important;
-
-    &.is-active {
-      color: #828282;
-      background-color: #FFFFFF !important;
+.app-container {
+  :deep(.el-collapse-item) {
+    .el-collapse-item__header {
+      background-color: var(--el-color-primary-light-9) !important;
+      border: 1px solid var(--el-color-primary);
       border-radius: 10px;
-      border: 0px;
-      border-top: 1px solid #4080ff;
+      margin: 5px;
+      color: var(--el-color-primary) !important;
+      &.is-active {
+        color: #828282;
+        background-color: #FFFFFF !important;
+        border-radius: 10px 10px 0px 0px;
+        border: 0px;
+        border-top: 1px solid var(--el-color-primary);
+      }
+      .collapse-title {
+        color: var(--el-color-primary);
+        font-weight: bold;
+        text-align: center;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
     }
-
-    .collapse-title {
-      color: #4080ff;
-      font-weight: bold;
-      text-align: center;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    .el-collapse-item__wrap {
+      margin: 0 10px;
+      padding: 5px 10px;
+      border-radius: 10px;
+      border: 1px dotted var(--el-color-primary-light-5);
     }
   }
 
-  .el-collapse-item__wrap {
-    margin: 10px auto;
-    border-bottom: 1px solid #4080ff;
-    border-radius: 10px;
-  }
-}
-
-:deep(.class-name-p) {
-  line-height: 5px;
-  text-align: center;
-  color: #4e5969;
-
-  &.controller {
-    color: #999999;
+  :deep(.class-name-p) {
+    line-height: 20px;
+    text-align: center;
+    color: #4e5969;
+    &.controller {
+      color: #999999;
+      font-size: 12px;
+    }
   }
 }
 </style>
