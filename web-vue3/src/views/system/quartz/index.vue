@@ -1,24 +1,21 @@
 <template>
   <div class="app-container">
     <!-- 定时任务调度表-管理按钮 -->
-    <div style="margin-bottom: 10px;">
-      <el-input v-model="searchData.jobName" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入名称查询"/>
-      <el-input v-model="searchData.jobClass" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入类名查询"/>
-      <base-button class="filter-item" size="small" type="primary"
-                 icon="el-icon-search" @click="searchBtnHandle">查询
-      </base-button>
-      <base-button class="filter-item" size="small" type="info" icon="reset" @click="resetTableList">重置</base-button>
-      <div style="float: right;">
-        <base-button v-permission="'zquartz-zQuartz-add'" type="primary"
-                   size="small" icon="el-icon-plus" @click="openAdd">新增
+    <div class="searchPanel">
+      <div class="searchForm">
+        <el-input v-model="searchData.jobName" class="searchInput w-150px" placeholder="名称"/>
+        <el-input v-model="searchData.jobClass" class="searchInput w-150px" placeholder="类名"/>
+        <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询</base-button>
+        <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
+      </div>
+      <div class="operatePanel">
+        <base-button v-permission="'zquartz-zQuartz-add'" type="primary" icon="el-icon-plus" @click="openAdd">新增
         </base-button>
-        <base-button type="warning" size="small" v-permission="'zquartz-zQuartz-copy'"
-                   @click="copyById" icon="el-icon-copy-document">复制任务
+        <base-button type="warning" v-permission="'zquartz-zQuartz-copy'" icon="el-icon-copy-document"
+                     @click="copyById">复制任务
         </base-button>
-        <base-button v-permission="'zquartz-zQuartz-delete'" type="danger" size="small"
-                   @click="deleteByIds" icon="el-icon-delete">删除
+        <base-button v-permission="'zquartz-zQuartz-delete'" type="danger" icon="el-icon-delete"
+                     @click="deleteByIds">删除
         </base-button>
       </div>
     </div>
@@ -31,23 +28,23 @@
       <el-table-column label="任务描述" prop="description" align="center" min-width="20%" show-overflow-tooltip/>
       <el-table-column label="状态" align="center" min-width="10%">
         <template #default="scope">
-          <span v-if="scope.row.status==='1'" style="color: #2ac06d;">开启</span>
-          <span v-else style="color: #dd1100;">关闭</span>
+          <el-tag v-if="scope.row.status==='1'" type="success" disable-transitions>开启</el-tag>
+          <el-tag v-else type="danger" disable-transitions>关闭</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="状态" align="center" width="160px">
         <template #default="{row}">
           <template v-if="row.status==='1'">
             <el-tooltip effect="dark" content="请先停用！才能修改" placement="top">
-              <base-button type="info" icon="el-icon-edit">修改</base-button>
+              <base-button type="info" icon="el-icon-edit" size="small">修改</base-button>
             </el-tooltip>
-            <base-button type="danger" @click="updateStatus(row,0)">停用</base-button>
+            <base-button type="danger" @click="updateStatus(row,0)" size="small">停用</base-button>
           </template>
           <template v-else>
             <base-button type="primary" v-permission="'zquartz-zQuartz-update'"
-                       icon="el-icon-edit" @click="openUpdate(row)">修改
+                         icon="el-icon-edit" @click="openUpdate(row)" size="small">修改
             </base-button>
-            <base-button type="success" @click="updateStatus(row,1)">启用</base-button>
+            <base-button type="success" @click="updateStatus(row,1)" size="small">启用</base-button>
           </template>
         </template>
       </el-table-column>
@@ -56,41 +53,27 @@
     <el-pagination class="flex justify-center mt-10px" layout="total,prev,pager,next,sizes,jumper"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
-                   @size-change="handleSizeChange"
-    />
+                   @size-change="handleSizeChange"/>
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
                v-model="dialogFormVisible" width="660px" @close="resetTemp">
-      <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px"
-               style="width: 500px; margin-left: 50px;" :disabled="dialogType==='view'"
-      >
-        <el-form-item label="定时任务id" prop="quartzId" style="display: none;">
-          <el-input v-model="temp.quartzId" placeholder="请输入定时任务id"/>
-        </el-form-item>
-        <el-form-item label="任务名称" prop="jobName"
-                      :rules="[]"
-        >
+      <el-form ref="dataForm" :model="temp" label-position="right" label-width="110px"
+               class="w-500px ml-50px" :disabled="dialogType==='view'">
+        <el-form-item label="任务名称" prop="jobName" :rules="[{required: true, message: '请输入任务名称'}]">
           <el-input v-model="temp.jobName" placeholder="请输入任务名称（不能重复）"/>
         </el-form-item>
-        <el-form-item label="任务执行类" prop="jobClass"
-                      :rules="[]"
-        >
+        <el-form-item label="任务执行类" prop="jobClass" :rules="[{required: true, message: '请输入任务执行类'}]">
           <el-input v-model="temp.jobClass" placeholder="请输入任务执行类（该类必须实现org.quartz.Job）"/>
         </el-form-item>
         <el-form-item label="任务执行时间" prop="jobTimeCron"
-                      :rules="[]"
-        >
+                      :rules="[{required: true, message: '请输入任务执行时间'}]">
           <el-input v-model="temp.jobTimeCron" placeholder="请输入任务执行时间（Cron表达式：秒 分 时 日 月 年）"/>
         </el-form-item>
         <el-form-item label="任务描述" prop="description">
           <el-input type="textarea" autosize v-model="temp.description" placeholder="请输入任务描述"/>
         </el-form-item>
-        <el-form-item label="状态" prop="status"
-                      :rules="[]"
-        >
-          <el-switch v-model="temp.status" active-text="开启" inactive-text="关闭"
-                     active-value="1" inactive-value="0"
-          />
+        <el-form-item label="状态" prop="status">
+          <el-switch v-model="temp.status" active-text="开启" inactive-text="关闭" active-value="1" inactive-value="0"/>
         </el-form-item>
       </el-form>
       <template #footer>
