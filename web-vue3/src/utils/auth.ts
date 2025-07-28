@@ -63,7 +63,7 @@ export function refreshToken() {
       } else {
         reject(new Error('Token刷新失败')) // 如果数据不正确，拒绝Promise
       }
-      resolve('success')
+      resolve(data.accessToken)
     }).catch(error => {
       reject(error)
     })
