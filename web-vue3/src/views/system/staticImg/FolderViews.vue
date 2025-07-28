@@ -1,21 +1,21 @@
 <template>
   <div v-if="currentParentId">
-    <div v-for="item in folders" v-loading="isLoading">
+    <div v-for="item in folders" v-loading="isLoading" :key="item.fileId">
       <el-divider>当前文件夹：{{ item.fileOldName }}</el-divider>
       <!-- 文件显示 -->
       <files-view :file-list="item.children" :show-check="true" v-model="selectedFileList"/>
       <!-- 文件上传 -->
       <el-divider/>
-      <div style="display: flex;justify-content: space-between;align-items: center;">
-        <div style="margin-right: 15px;">
-          <base-button v-if="selectedFileList.length > 0" type="danger" @click="deleteFileList"
-                     icon="el-icon-delete" size="small">删除选中的文件
+      <div class="flex justify-between items-center">
+        <div class="mr-15px">
+          <base-button v-if="selectedFileList.length > 0" icon="el-icon-delete" type="danger"
+                       @click="deleteFileList">删除选中的文件
           </base-button>
-          <base-button type="info" v-else icon="el-icon-delete" size="small">请选择要删除的文件</base-button>
+          <base-button type="info" v-else icon="el-icon-delete">请选择要删除的文件</base-button>
         </div>
         <file-upload v-model="uploadFileList" :action="$baseServer+'/filesStatic/zFilesStatic/upload'"
-                     :params-data="{parentId: item.fileId}" :limit-size="1024*1024*2" :show-file-list="false"
-                     accept=".jpg,.jpeg,.png,.gif,.pdf" tip-info="只允许上传jpg、jpeg、png、gif、pdf格式文件，最大2MB"/>
+                     :params-data="{parentId: item.fileId}" :limit-size="1024*1024*5" :show-file-list="false"
+                     accept=".jpg,.jpeg,.png,.gif,.pdf" tip-info="只允许上传jpg、jpeg、png、gif、pdf格式文件，最大5MB"/>
       </div>
     </div>
   </div>

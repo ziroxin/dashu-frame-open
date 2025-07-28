@@ -1,24 +1,20 @@
 <template>
   <div class="app-container">
     <!-- 静态资源文件表-管理按钮 -->
-    <div style="margin-bottom: 10px;">
-      <el-input v-model="searchData.fileOldName" size="small" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="文件夹名称"/>
-      <base-button class="filter-item" type="primary" size="small"
-                 icon="el-icon-search" @click="searchBtnHandle">查询
-      </base-button>
-      <base-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</base-button>
-      <div style="float: right;">
-        <base-button type="primary" icon="el-icon-plus" @click="openAdd" size="small">新增
-        </base-button>
-        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small">删除
-        </base-button>
+    <div class="searchPanel">
+      <div class="searchForm">
+        <el-input v-model="searchData.fileOldName" class="searchInput w-200px!" placeholder="文件夹名称-模糊"/>
+        <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询</base-button>
+        <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
+      </div>
+      <div class="operatePanel">
+        <base-button type="primary" icon="el-icon-plus" @click="openAdd">新增</base-button>
+        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)">删除</base-button>
       </div>
     </div>
-    <div
-        style="margin-bottom:10px;font-size:12px;line-height:20px;color:#666;border:1px dashed #ddd;padding:5px;border-radius:5px;">
-      <b>用途：</b>静态资源管理&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <b>统一文件前缀：</b>{{ copyUrlBase }}<br/>
+    <div class="mb-10px text-12px lh-20px color-#666 b-1px b-dashed b-#ddd p-5px b-rd-5px">
+      <b>用途：</b>静态资源管理
+      <b class="ml-20px">统一文件前缀：</b>{{ copyUrlBase }}<br/>
       <b>说明：</b>静态资源上传后，不修改原文件名；如果上传同名文件，需要先删除旧文件<br/>
       <b>其他：</b>允许上传的文件格式、大小等，根据开发需要在FolderViews.vue文件中自行修改<br/>
       <b>举例：</b>小程序开发时，有文件大小限制等，可以将图片、附件等资源上传到这里，直接使用链接引用，建议统一设置文件前缀，方便后期修改域名
@@ -29,7 +25,11 @@
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="文件夹名称" prop="fileOldName" align="center"/>
       <el-table-column label="文件夹地址" prop="fileUrl" align="center" show-overflow-tooltip>
-        <template #default="scope">{{ copyUrlBase + scope.row.fileUrl }}</template>
+        <template #default="scope">
+          <base-button type="primary" circle plain icon="el-icon-document-copy" :icon-size="12" size="small"
+                       v-clipboard:copy="copyUrlBase+scope.row.fileUrl"/>
+          {{ copyUrlBase + scope.row.fileUrl }}
+        </template>
       </el-table-column>
       <el-table-column label="创建时间" prop="createTime" align="center"/>
       <el-table-column label="修改时间" prop="updateTime" align="center"/>
@@ -76,7 +76,6 @@
 </template>
 
 <script>
-
 import request from '@/utils/request'
 import FolderViews from '@/views/system/staticImg/FolderViews.vue'
 
@@ -131,7 +130,7 @@ export default {
     // 加载表格
     loadTableList() {
       this.isLoading = true
-      let obj = {...this.searchData, fileType: '0'}
+      const obj = {...this.searchData, fileType: '0'}
       const params = {...this.pager, params: JSON.stringify(obj)}
       request({url: '/filesStatic/zFilesStatic/list', method: 'get', params}).then((response) => {
         const {data} = response
