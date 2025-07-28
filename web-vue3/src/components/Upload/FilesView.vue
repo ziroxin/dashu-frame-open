@@ -15,15 +15,16 @@
     <div class="files-check-all">
       <el-checkbox v-if="showCheck" @change="handleCheckAllChange"
                    :indeterminate="selectedFileList.length>0&&selectedFileList.length<fileList.length"
-                   :value="selectedFileList.length>=fileList.length"> 全选
+                   :model-value="selectedFileList.length>=fileList.length"> 全选
       </el-checkbox>
     </div>
     <div class="files-view">
-      <div class="file-item" v-for="file in fileList">
+      <div class="file-item" v-for="file in fileList" :key="file.fileId">
         <!-- 图片文件 -->
         <template v-if="'jpg,jpeg,png,gif,bpm'.includes(file.fileExtend.toLowerCase())">
           <div class="file-img">
-            <el-checkbox v-if="showCheck" :value="selectedFileList.includes(file)" @change="checkFile($event,file)"/>
+            <el-checkbox v-if="showCheck" :model-value="selectedFileList.includes(file)"
+                         @change="checkFile($event,file)"/>
             <el-tooltip content="点击查看大图" placement="top">
               <el-image :src="$baseServer+file.fileUrl" fit="cover" class="icons"
                         :preview-src-list="[$baseServer+file.fileUrl]"/>
@@ -44,8 +45,9 @@
         <!-- mp3/mp4/wmv/avi文件 -->
         <template v-else-if="'mp3,mp4,wmv,avi'.includes(file.fileExtend.toLowerCase())">
           <div class="file-img">
-            <el-checkbox v-if="showCheck" :value="selectedFileList.includes(file)" @change="checkFile($event,file)"/>
-            <video :src="$baseServer+file.fileUrl" controls="controls" class="icons"/>
+            <el-checkbox v-if="showCheck" :model-value="selectedFileList.includes(file)"
+                         @change="checkFile($event,file)"/>
+            <video :src="$baseServer+file.fileUrl" controls="controls" class="icons"></video>
           </div>
           <div class="file-name">
             <el-tooltip :content="file.fileOldName"><span>{{ file.fileOldName }}</span></el-tooltip>
@@ -55,13 +57,14 @@
         <!-- xls/xlsx文件 -->
         <template v-else-if="'xls,xlsx'.includes(file.fileExtend.toLowerCase())">
           <div class="file-img">
-            <el-checkbox v-if="showCheck" :value="selectedFileList.includes(file)" @change="checkFile($event,file)"/>
-            <svg-icon icon-class="file-excel" class="icons"/>
+            <el-checkbox v-if="showCheck" :model-value="selectedFileList.includes(file)"
+                         @change="checkFile($event,file)"/>
+            <my-icon icon="file-excel" :size="60" class="icons"/>
           </div>
           <div class="file-name">
             <el-tooltip :content="file.fileOldName"><span>{{ file.fileOldName }}</span></el-tooltip>
             <div class="file-btn">
-              <span style="margin-right: 3px;" @click="handlePreview(file,'xlsx')">预览</span>
+              <span class="mr-3px" @click="handlePreview(file,'xlsx')">预览</span>
               <span @click="downloadFile(file)">下载</span>
             </div>
           </div>
@@ -69,13 +72,14 @@
         <!-- doc/docx文件 -->
         <template v-else-if="'doc,docx'.includes(file.fileExtend.toLowerCase())">
           <div class="file-img">
-            <el-checkbox v-if="showCheck" :value="selectedFileList.includes(file)" @change="checkFile($event,file)"/>
-            <svg-icon icon-class="file-word" class="icons"/>
+            <el-checkbox v-if="showCheck" :model-value="selectedFileList.includes(file)"
+                         @change="checkFile($event,file)"/>
+            <my-icon icon="file-word" :size="60" class="icons"/>
           </div>
           <div class="file-name">
             <el-tooltip :content="file.fileOldName"><span>{{ file.fileOldName }}</span></el-tooltip>
             <div class="file-btn">
-              <span style="margin-right: 3px;" @click="handlePreview(file,'docx')">预览</span>
+              <span class="mr-3px" @click="handlePreview(file,'docx')">预览</span>
               <span @click="downloadFile(file)">下载</span>
             </div>
           </div>
@@ -83,13 +87,14 @@
         <!-- pdf文件 -->
         <template v-else-if="'pdf'.includes(file.fileExtend.toLowerCase())">
           <div class="file-img">
-            <el-checkbox v-if="showCheck" :value="selectedFileList.includes(file)" @change="checkFile($event,file)"/>
-            <svg-icon icon-class="file-pdf" class="icons"/>
+            <el-checkbox v-if="showCheck" :model-value="selectedFileList.includes(file)"
+                         @change="checkFile($event,file)"/>
+            <my-icon icon="file-pdf" :size="60" class="icons"/>
           </div>
           <div class="file-name">
             <el-tooltip :content="file.fileOldName"><span>{{ file.fileOldName }}</span></el-tooltip>
             <div class="file-btn">
-              <span style="margin-right: 3px;" @click="handlePreview(file,'pdf')">预览</span>
+              <span class="mr-3px" @click="handlePreview(file,'pdf')">预览</span>
               <span @click="downloadFile(file)">下载</span>
             </div>
           </div>
@@ -97,8 +102,9 @@
         <!-- rar/zip/7z文件 -->
         <template v-else-if="'rar,zip,7z'.includes(file.fileExtend.toLowerCase())">
           <div class="file-img">
-            <el-checkbox v-if="showCheck" :value="selectedFileList.includes(file)" @change="checkFile($event,file)"/>
-            <svg-icon icon-class="file-zip" class="icons"/>
+            <el-checkbox v-if="showCheck" :model-value="selectedFileList.includes(file)"
+                         @change="checkFile($event,file)"/>
+            <my-icon icon="file-zip" :size="60" class="icons"/>
           </div>
           <div class="file-name">
             <el-tooltip :content="file.fileOldName"><span>{{ file.fileOldName }}</span></el-tooltip>
@@ -108,8 +114,9 @@
         <!-- 其他文件 -->
         <template v-else>
           <div class="file-img">
-            <el-checkbox v-if="showCheck" :value="selectedFileList.includes(file)" @change="checkFile($event,file)"/>
-            <svg-icon icon-class="file-other" class="icons"/>
+            <el-checkbox v-if="showCheck" :model-value="selectedFileList.includes(file)"
+                         @change="checkFile($event,file)"/>
+            <my-icon icon="file-other" :size="60" class="icons"/>
           </div>
           <div class="file-name">
             <el-tooltip :content="file.fileOldName"><span>{{ file.fileOldName }}</span></el-tooltip>
@@ -196,7 +203,7 @@ export default {
   width: 100%;
 
   .files-check-all {
-    margin: 8px 0 0 8px;
+    margin: 8px 0 8px 8px;
 
     :deep(.el-checkbox__inner) {
       width: 24px;
@@ -205,8 +212,8 @@ export default {
       &::after {
         width: 5px;
         height: 12px;
-        top: 3px;
-        left: 8px;
+        top: 10px;
+        left: 11px;
       }
     }
 
@@ -231,6 +238,7 @@ export default {
       .file-img {
         width: 100%;
         height: 70%;
+        height: 150px;
 
         .el-checkbox {
           position: absolute;
@@ -239,12 +247,13 @@ export default {
             margin: 8px;
             width: 24px;
             height: 24px;
+            top: 5px;
 
             &::after {
               width: 5px;
               height: 12px;
-              top: 3px;
-              left: 8px;
+              top: 10px;
+              left: 11px;
             }
           }
         }
@@ -252,7 +261,7 @@ export default {
         .icons {
           width: 100%;
           height: 100%;
-          max-height: 300px;
+          height: 150px;
           border: 1px solid #ccc;
           border-radius: 5px;
         }
@@ -269,7 +278,7 @@ export default {
         justify-content: space-between;
         align-items: center;
 
-        .el-tooltip {
+        .el-tooltip__trigger {
           color: #666;
           white-space: nowrap; /* 不换行 */
           overflow: hidden; /* 超出部分隐藏 */
