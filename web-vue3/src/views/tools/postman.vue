@@ -4,22 +4,21 @@
     <div class="row">
       <div class="label"><span class="color-#d7000f">*</span>接口地址：</div>
       <div class="input">
-        <el-input v-model="url" placeholder="请输入API地址"></el-input>
+        <el-input v-model="url" placeholder="请输入API地址"/>
         <div class="w-100%">
-          <base-button link type="primary" @click="demo('get')">Get示例(查询)</base-button>
-          <base-button link type="primary" @click="demo('post')">Post示例(新增)</base-button>
-          <base-button link type="primary" @click="demo('put')">Put示例(修改)</base-button>
-          <base-button link type="primary" @click="demo('delete')">Delete示例(删除)</base-button>
+          <base-button link size="small" type="primary" @click="demo('get')">Get示例(查询)</base-button>
+          <base-button link size="small" type="primary" @click="demo('post')">Post示例(新增)</base-button>
+          <base-button link size="small" type="primary" @click="demo('put')">Put示例(修改)</base-button>
+          <base-button link size="small" type="primary" @click="demo('delete')">Delete示例(删除)</base-button>
         </div>
       </div>
     </div>
-    <div class="row">
+    <div class="row flex items-center">
       <div class="label">请求头(Header)：</div>
-      <div class="input">
+      <div class="input pt-10px pb-10px">
         <div v-for="(item, index) in headers" :key="index" class="input-item">
-          <el-checkbox v-model="item.select" class="select"></el-checkbox>
-          <el-input v-model="item.key" @input="changeHeader(item, index)"
-                    placeholder="Content-Type" class="key">
+          <el-checkbox v-model="item.select" size="large"/>
+          <el-input v-model="item.key" @input="changeHeader(item, index)" placeholder="Content-Type" class="key">
             <template #prepend>KEY</template>
           </el-input>
           <el-input v-model="item.value" placeholder="text/json;charset=utf-8" class="value">
@@ -45,14 +44,14 @@
         <el-radio v-model="dataType" value="x-www-form-urlencoded">x-www-form-urlencoded</el-radio>
         <el-radio v-model="dataType" value="form-data">form-data</el-radio>
         <el-radio v-model="dataType" value="text">text</el-radio>
-        <div class="text-12px color-#d7000f tracking-1px">{{ dataTypeInfo[dataType] }}</div>
+        <div class="text-12px color-#d7000f tracking-1px lh-20px">{{ dataTypeInfo[dataType] }}</div>
       </div>
     </div>
-    <div class="row" v-if="method==='POST'||method==='PUT'||method==='DELETE'">
+    <div class="row flex items-center" v-if="method==='POST'||method==='PUT'||method==='DELETE'">
       <div class="label">请求体(Body)：</div>
-      <div class="input" v-if="dataType==='json'||dataType==='x-www-form-urlencoded'">
-        <div v-for="(item, index) in bodys" :key="index" class="input-item">
-          <el-checkbox v-model="item.select" class="select"></el-checkbox>
+      <div class="input pt-10px" v-if="dataType==='json'||dataType==='x-www-form-urlencoded'">
+        <div v-for="(item, index) in bodys" :key="index" class="input-item pb-10px">
+          <el-checkbox v-model="item.select" class="select"/>
           <el-input v-model="item.key" @input="changeBody(item, index)"
                     placeholder="参数名" class="key">
             <template #prepend>参数名</template>
@@ -65,23 +64,24 @@
       <div class="input" v-if="dataType==='form-data'">
         <input type="file" ref="myfile" name="myfile" class="myfile"/>
       </div>
-      <div class="input" v-if="dataType==='text'||dataType==='json-str'">
-        <textarea v-model="bodyText" class="el-input__inner text-left tracking-0 w-100% h-100px"/>
+      <div class="input p-[10px_0]" v-if="dataType==='text'||dataType==='json-str'">
+        <el-input type="textarea" v-model="bodyText" :rows="3"/>
       </div>
     </div>
     <div class="row">
       <div class="label mobileHidden"></div>
-      <div class="input">
+      <div class="input flex items-center">
         <base-button type="primary" @click="sendRequest" icon="el-icon-plus" round>发送请求</base-button>
         <base-button icon="reset" round @click="resetForm">重置</base-button>
-        <el-select placeholder="历史请求记录（永久保存；清空缓存可清理；重复请求会覆盖上次）"
-                   filterable clearable class="history" v-model="historyUrl" @change="changeHistoryUrl">
-          <el-option :value="item"
-                     v-for="(item, index) in historyUrlList" :key="index">
-            <span class="historyContent" :title="item">{{ item }}</span>
-            <base-button link icon="el-icon-delete" @click="removeHistory(item)"
-                         class="historyDelete">删除
-            </base-button>
+        <el-select placeholder="历史请求记录（永久保存；清空缓存可清理；重复请求会覆盖上次）" class="history mt-10px"
+                   v-model="historyUrl" filterable clearable @change="changeHistoryUrl">
+          <el-option :value="item" v-for="(item, index) in historyUrlList" :key="index">
+            <div class="flex items-center justify-start">
+              <base-button link type="danger" size="small" icon="el-icon-delete"
+                           @click="removeHistory(item)">删除
+              </base-button>
+              <span class="historyContent ml-10px text-12px" :title="item">{{ item }}</span>
+            </div>
           </el-option>
         </el-select>
       </div>
@@ -147,7 +147,7 @@ export default {
       }
       this.saveHistory()
       // 处理请求头，返回一个{key:value}格式的对象
-      let headerParams = {}
+      const headerParams = {}
       this.headers.filter(item => item.select && item.key).forEach(item => {
         headerParams[item.key] = item.value
       })
@@ -172,7 +172,7 @@ export default {
           bodyParams = JSON.parse(this.bodyText)
           data = bodyParams
         } else if (this.dataType === 'x-www-form-urlencoded') {
-          let params = new URLSearchParams()
+          const params = new URLSearchParams()
           this.bodys.filter(item => item.select && item.key).forEach(item => {
             params.append(item.key, item.value)
           })
@@ -381,6 +381,9 @@ export default {
       }
 
       .input-item {
+        display: flex;
+        justify-content: start;
+        align-items: center;
         .key {
           width: 30%;
           margin: auto 10px;
@@ -429,11 +432,5 @@ export default {
     /* 手机端 */
     max-width: 300px;
   }
-}
-
-.historyDelete {
-  float: left;
-  margin-right: 10px;
-  color: #d7000f;
 }
 </style>

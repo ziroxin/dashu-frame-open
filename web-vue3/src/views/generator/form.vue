@@ -1,14 +1,11 @@
 <template>
   <div class="home">
-    <div class="title" @click="back">
-      < 返回后台
-    </div>
-    <iframe :src="htmlPageURL" frameborder="0" style="overflow:hidden;"
-            width="100%" height="100%"></iframe>
+    <div class="title" @click="back">&lt; 返回后台</div>
+    <iframe :src="htmlPageURL" frameborder="0" width="100%" height="100%" class="overflow-hidden h-100vh"></iframe>
   </div>
 </template>
 <script>
-import {getLastedRoutes} from '@/utils/lasted-routes'
+import { getLastedRoutes } from '@/utils/lasted-routes'
 
 export default {
   data() {
@@ -44,22 +41,21 @@ export default {
 
   .title {
     position: absolute;
-    bottom: 2%;
-    left: 50px;
-    width: 140px;
-    height: 40px;
-    line-height: 40px;
+    bottom: 10px;
+    left: 10px;
     text-align: center;
-    font-size: 16px;
+    font-size: 14px;
+    padding: 10px 20px;
+    opacity: 0.7;
     background-color: #FE4C4C;
     color: #FFFFFF;
     border-radius: 5px;
 
     &:hover {
       cursor: pointer;
-      background-color: #FFFFFF;
-      color: #FE4C4C;
-      border: 1px solid #FE4C4C;
+      background-color: #FE4C4C;
+      color: #FFFFFF;
+      opacity: 1;
     }
   }
 }

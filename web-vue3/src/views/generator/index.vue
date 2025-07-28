@@ -1,28 +1,24 @@
 <template>
   <div class="app-container">
     <!-- 代码生成器表单-管理按钮 -->
-    <div style="margin-bottom: 10px;">
-      <el-input v-model="searchData.formName" size="small" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入表单名称查询"/>
-      <el-input v-model="searchData.tableName" size="small" style="width: 130px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入表名查询"/>
-      <el-input v-model="searchData.author" size="small" style="width: 130px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入作者查询"/>
-      <el-select v-model="searchData.status" size="small" style="width: 120px;margin-right: 10px;"
-                 class="filter-item" placeholder="请选择状态">
-        <el-option label="未生成" value="0"/>
-        <el-option label="已生成" value="1"/>
-      </el-select>
-      <base-button class="filter-item" type="primary" size="small"
-                 icon="el-icon-search" @click="searchBtnHandle">查询
-      </base-button>
-      <base-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</base-button>
-      <div style="float: right;">
-        <base-button type="primary" icon="el-icon-plus" @click="openAdd" size="small"
-                   v-permission="'generator-zFormGenerator-add'">新增
+    <div class="searchPanel">
+      <div class="searchForm">
+        <el-input v-model="searchData.formName" class="searchInput w-150px!" placeholder="表单名称"/>
+        <el-input v-model="searchData.tableName" class="searchInput w-130px!" placeholder="表名"/>
+        <el-input v-model="searchData.author" class="searchInput w-130px!" placeholder="作者"/>
+        <el-select v-model="searchData.status" class="searchInput" placeholder="状态">
+          <el-option label="未生成" value="0"/>
+          <el-option label="已生成" value="1"/>
+        </el-select>
+        <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询</base-button>
+        <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
+      </div>
+      <div class="operatePanel">
+        <base-button type="primary" icon="el-icon-plus" @click="openAdd"
+                     v-permission="'generator-zFormGenerator-add'">新增
         </base-button>
-        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
-                   v-permission="'generator-zFormGenerator-delete'">删除
+        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)"
+                     v-permission="'generator-zFormGenerator-delete'">删除
         </base-button>
       </div>
     </div>
@@ -47,12 +43,12 @@
       <el-table-column fixed="right" label="操作" width="100" align="center">
         <template #default="scope">
           <base-button v-permission="'generator-zFormGenerator-update'"
-                     link type="primary" @click="openUpdate(scope.row)">修改表单
+                       link size="small" type="primary" @click="openUpdate(scope.row)">修改表单
           </base-button>
           <br/>
-          <base-button link style="color: #13ce66;" @click="openView(scope.row)">详情</base-button>
+          <base-button link size="small" style="color: #13ce66;" @click="openView(scope.row)">详情</base-button>
           <base-button v-permission="'generator-zFormGenerator-delete'" style="color: #ff6d6d;"
-                     link @click="deleteByIds(scope.row)">删除
+                       link size="small" @click="deleteByIds(scope.row)">删除
           </base-button>
         </template>
       </el-table-column>
@@ -61,12 +57,11 @@
     <el-pagination class="flex justify-center mt-10px" layout="total,prev,pager,next,sizes,jumper"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
-                   @size-change="handleSizeChange"
-    />
+                   @size-change="handleSizeChange"/>
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-               v-model="dialogFormVisible" @close="resetTemp" width="90%">
-      <el-form ref="dataForm" :model="temp" label-position="right" label-width="150px" :disabled="dialogType==='view'">
+               v-model="dialogFormVisible" @close="resetTemp" width="90%" top="5vh">
+      <el-form ref="dataForm" :model="temp" label-position="right" label-width="130px" :disabled="dialogType==='view'">
         <el-form-item label="表单名称" prop="formName"
                       :rules="[{required: true, message: '表单名称不能为空'}]">
           <el-input v-model="temp.formName" placeholder="请输入表单名称"/>
