@@ -1,6 +1,6 @@
 <template>
   <!-- 顶部个人中心 -->
-  <el-dropdown class="top-tool-hover" :class="prefixCls" trigger="click">
+  <el-dropdown :id="`${variables.namespace}-userInfo`" class="top-tool-hover" :class="prefixCls" trigger="click">
     <!-- 头像、昵称 -->
     <div class="flex items-center h-100%">
       <img v-if="userInfo.avatar" :src="$baseServer+userInfo.avatar"
@@ -49,17 +49,18 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from '@/hooks/web/useI18n'
-import { useDesign } from '@/hooks/web/useDesign'
 import LockDialog from './components/LockDialog.vue'
 import LockPage from './components/LockPage.vue'
+import { useI18n } from '@/hooks/web/useI18n'
+import { useDesign } from '@/hooks/web/useDesign'
 import { useLockStore } from '@/store/modules/lock'
 import { useUserStore } from '@/store/modules/user'
 import { userRoute } from '@/router/constant-routes'
 import { MyIcon } from '@/components/MyIcon'
 
 const {t} = useI18n()
-const prefixCls = useDesign().getPrefixCls('user-info')
+const {getPrefixCls, variables} = useDesign()
+const prefixCls = getPrefixCls('user-info')
 
 // 用户信息
 const userStore = useUserStore()

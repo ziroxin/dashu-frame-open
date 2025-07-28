@@ -1,5 +1,6 @@
 <template>
-  <el-breadcrumb separator="/" :class="[prefixCls, 'flex items-center h-full ml-10']">
+  <el-breadcrumb :id="`${variables.namespace}-breadcrumb`" separator="/"
+                 :class="[prefixCls, 'flex items-center h-full ml-10']">
     <transition-group appear enter-active-class="animate__animated animate__fadeInRight">
       <el-breadcrumb-item v-for="v in breadcrumbList" :key="v.name" :to="{path:toPath(v)}">
         <template v-if="v.meta?.icon && showIcon">
@@ -20,7 +21,8 @@ import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
 
 const {t} = useI18n()
-const prefixCls = useDesign().getPrefixCls('breadcrumb')
+const {getPrefixCls, variables} = useDesign()
+const prefixCls = getPrefixCls('breadcrumb')
 
 const showIcon = computed(() => useAppStore().getBreadcrumbIcon)
 

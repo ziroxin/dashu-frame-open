@@ -1,5 +1,6 @@
 <template>
-  <section :class="['box-border w-full bg-[var(--app-content-bg-color)] dark:bg-[var(--el-bg-color)] pb-0']">
+  <section :id="`${variables.namespace}-app-container`"
+           :class="['box-border w-full bg-[var(--app-content-bg-color)] dark:bg-[var(--el-bg-color)] pb-0']">
     <!-- 最小高度，根据不同条件设置 -->
     <router-view :class="'!min-h-['+contentHeight+'] :root{--app-content-height:'+contentHeight+'}'">
       <template #default="{Component,route}">
@@ -15,7 +16,9 @@
 import { useTagsViewStore } from '@/store/modules/tagsView'
 import { useAppStore } from '@/store/modules/app'
 import { Footer } from '@/components/Footer'
+import { useDesign } from '@/hooks/web/useDesign'
 
+const {variables} = useDesign()
 const appStore = useAppStore()
 const tagsView = computed(() => appStore.getTagsView)
 const footer = computed(() => appStore.getFooter)

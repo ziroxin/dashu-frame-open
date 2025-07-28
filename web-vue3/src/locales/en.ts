@@ -27,6 +27,8 @@ export default {
     menuDes: 'Menu bar rendered in routed structure',
     collapse: 'Collapse',
     collapseDes: 'Expand and zoom the menu bar',
+    breadcrumb: 'Breadcrumb',
+    breadcrumbDes: 'Used to display the current page location',
     tagsView: 'Tags view',
     tagsViewDes: 'Used to record routing history',
     tool: 'Tool',

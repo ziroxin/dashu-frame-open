@@ -1,5 +1,5 @@
 <template>
-  <router-link to="/"
+  <router-link :id="`${variables.namespace}-logo`" to="/"
                :class="[prefixCls,layout!=='classic'?`${prefixCls}__Top`:'',
                           'flex !h-[var(--logo-height)] items-center cursor-pointer pl-8px relative decoration-none overflow-hidden']">
     <img src="@/assets/imgs/logo.png" class="w-[calc(var(--logo-height)-10px)] h-[calc(var(--logo-height)-10px)]"/>
@@ -15,7 +15,8 @@
 import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
 
-const prefixCls = useDesign().getPrefixCls('logo')
+const {getPrefixCls, variables} = useDesign()
+const prefixCls = getPrefixCls('logo')
 const appStore = useAppStore()
 const show = ref(true)
 const title = computed(() => appStore.getTitle)

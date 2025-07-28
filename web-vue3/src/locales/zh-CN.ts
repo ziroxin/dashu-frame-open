@@ -27,6 +27,8 @@ export default {
     menuDes: '以路由的结构渲染的菜单栏',
     collapse: '展开缩收',
     collapseDes: '展开和缩放菜单栏',
+    breadcrumb: '页面路径',
+    breadcrumbDes: '用于显示当前页面所在位置',
     tagsView: '标签页',
     tagsViewDes: '用于记录路由历史记录',
     tool: '工具',
