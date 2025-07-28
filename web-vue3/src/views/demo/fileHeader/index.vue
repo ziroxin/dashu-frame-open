@@ -5,50 +5,42 @@
         <el-col :span="12">
           <div v-loading="isLoading" class="left">
             <div class="title">
-              <base-button type="primary" @click="saveFileTypeMap" icon="el-icon-plus"
-                         size="small">保存
-              </base-button>
-              <base-button @click="refreshFileTypeMap" icon="el-icon-refresh"
-                         size="small">刷新
-              </base-button>
+              <base-button type="primary" icon="el-icon-plus" @click="saveFileTypeMap">保存</base-button>
+              <base-button icon="el-icon-refresh" @click="refreshFileTypeMap">刷新</base-button>
               <span class="info">注意：#开头的行是注释</span>
             </div>
-            <el-input type="textarea" class="content" autosize spellcheck="false"
-                      placeholder="请输入内容" v-model="fileTypeMap"
-                      style="font-size: 12px;"></el-input>
+            <el-input type="textarea" class="content text-12px!" autosize spellcheck="false"
+                      placeholder="请输入内容" v-model="fileTypeMap"/>
           </div>
         </el-col>
         <el-col :span="12">
           <div class="right">
             <div class="title">
-              <el-upload :action="$baseServer+'/upload/fileHeader'" :headers="getTokenHeader()"
-                         :on-success="uploadFileSuccess" :show-file-list="false" :auto-upload="true">
-                <base-button type="primary" icon="el-icon-upload2" size="small">点击选择文件上传，获取文件头</base-button>
+              <el-upload :action="$baseServer+'/upload/fileHeader'" :headers="getTokenHeader()" :show-file-list="false"
+                         :on-success="uploadFileSuccess" :before-upload="()=>{isLoading2=true}" :auto-upload="true">
+                <base-button type="primary" icon="el-icon-upload2">点击选择文件上传，获取文件头</base-button>
               </el-upload>
               <a href="http://docs.java119.cn/use/comm-fileupload.html#_4-%E6%96%87%E4%BB%B6%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%B5%8B"
                  target="_blank" class="help">
                 <base-button type="danger" icon="el-icon-question" plain>使用帮助</base-button>
               </a>
             </div>
-            <div class="info">
-              <p v-if="currentHeaderHash">
-                <span>
+            <div class="info lh-40px! text-16px color-#dd1f29" v-loading="isLoading2">
+              <div v-if="currentHeaderHash">
+                <div>
                   文件头：{{ currentHeaderHash[0] }}
-                  <base-button link size="small" style="color: #00b42a;"
-                             v-clipboard:copy="currentHeaderHash[0]">
-                    <i class="el-icon-document-copy"/>复制
+                  <base-button link icon="el-icon-document-copy" class="ml-10px color-#00b42a!"
+                               v-clipboard:copy="currentHeaderHash[0]">复制
                   </base-button>
-                </span>
-                <br/>
-                <span v-if="currentHeaderHash.length>1">
+                </div>
+                <div v-if="currentHeaderHash.length>1">
                   扩展名：{{ currentHeaderHash[1] }}
-                  <base-button link size="small" style="color: #00b42a;"
-                             v-clipboard:copy="currentHeaderHash[1]">
-                    <i class="el-icon-document-copy"/>复制
+                  <base-button link icon="el-icon-document-copy" class="ml-10px color-#00b42a!"
+                               v-clipboard:copy="currentHeaderHash[1]">复制
                   </base-button>
-                </span>
-              </p>
-              <p v-else>请先点击上方按钮上传文件</p>
+                </div>
+              </div>
+              <div v-else class="text-center">请先点击上方按钮上传文件</div>
             </div>
             <div class="help">
               1. 上传不同格式的文件，可获取文件头信息
@@ -70,7 +62,8 @@ export default {
     return {
       currentHeaderHash: null,
       fileTypeMap: '',
-      isLoading: false
+      isLoading: false,
+      isLoading2: false
     }
   },
   mounted() {
@@ -80,11 +73,16 @@ export default {
     getTokenHeader,
     // 上传
     uploadFileSuccess(response) {
+      this.isLoading2 = true
+      this.currentHeaderHash = null
       if (response.code === '200') {
-        this.currentHeaderHash = response.data.split('|')
-        this.$message({type: 'success', message: '获取文件头成功！'})
+        setTimeout(() => {
+          this.currentHeaderHash = response.data.split('|')
+          this.$message({type: 'success', message: '获取文件头成功！'})
+          this.isLoading2 = false
+        }, 500)
       } else {
-        this.currentHeaderHash = null
+        this.isLoading2 = false
         this.$message({type: 'error', message: response.message})
       }
     },
@@ -112,19 +110,15 @@ export default {
 <style scoped lang="less">
 .fileHeader {
   padding: 20px;
-
   h2 {
     text-align: center;
   }
-
   .uploadPanel {
     .left {
       padding-right: 20px;
       border-right: 1px dashed #dddddd;
-
       .title {
         margin: 0px auto 10px auto;
-
         .info {
           color: #dd1f29;
           font-size: 14px;
@@ -133,14 +127,11 @@ export default {
         }
       }
     }
-
     .right {
       margin-left: 20px;
-
       .title {
-        text-align: center;
+        text-align: left;
         margin: 0px auto 10px auto;
-
         .help {
           margin: 0px;
           padding: 0px;
@@ -149,20 +140,12 @@ export default {
           right: 0;
         }
       }
-
       .info {
         padding: 15px 20px;
         border: 1px dashed #ccc;
         border-radius: 10px;
         min-height: 100px;
-
-        p {
-          font-size: 16px;
-          color: #dd1f29;
-          line-height: 26px;
-        }
       }
-
       .help {
         margin-top: 10px;
         border-radius: 10px;

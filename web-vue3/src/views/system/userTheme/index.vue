@@ -1,18 +1,15 @@
 <template>
   <div class="app-container">
     <!-- 用户主题配置-管理按钮 -->
-    <div style="margin-bottom: 10px;">
-      <el-input v-model="searchData.userId" size="small" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入用户id查询"/>
-      <el-input v-model="searchData.userName" size="small" style="width: 150px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入用户名查询"/>
-      <base-button class="filter-item" type="primary" size="small"
-                 icon="el-icon-search" @click="searchBtnHandle">查询
-      </base-button>
-      <base-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</base-button>
-      <div style="float: right;">
-        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
-                   v-permission="'userTheme-zUserTheme-delete'">删除
+    <div class="searchPanel">
+      <div class="searchForm">
+        <el-input v-model="searchData.userName" class="searchInput w-200px!" placeholder="用户名"/>
+        <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询</base-button>
+        <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
+      </div>
+      <div class="operatePanel">
+        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)"
+                     v-permission="'userTheme-zUserTheme-delete'">删除
         </base-button>
       </div>
     </div>
@@ -25,15 +22,13 @@
       <el-table-column label="手机号" prop="phone" align="center"/>
       <el-table-column label="昵称" prop="nickName" align="center"/>
       <el-table-column label="主题内容json" prop="themeJson" align="center" show-overflow-tooltip/>
-      <el-table-column label="添加时间" prop="createTime" align="center"/>
-      <el-table-column label="修改时间" prop="updateTime" align="center"/>
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template #default="scope">
           <base-button link style="color: #13ce66;"
-                     size="small" @click="openView(scope.row)">详情
+                       size="small" @click="openView(scope.row)">详情
           </base-button>
           <base-button v-permission="'userTheme-zUserTheme-delete'" style="color: #ff6d6d;"
-                     link size="small" @click="deleteByIds(scope.row)">删除
+                       link size="small" @click="deleteByIds(scope.row)">删除
           </base-button>
         </template>
       </el-table-column>
@@ -52,10 +47,9 @@
                       :rules="[{required: true, message: '用户id不能为空'}]">
           <el-input v-model="temp.userId" placeholder="请输入用户id"/>
         </el-form-item>
-        <el-form-item label="主题内容json" prop="themeJson">
-          <el-input v-model="temp.themeJson" :rules="[{required: true, message: '主题内容json不能为空'}]"
-                    type="textarea"
-                    placeholder="请输入主题内容json" autosize/>
+        <el-form-item label="主题内容json" prop="themeJson"
+                      :rules="[{required: true, message: '主题内容json不能为空'}]">
+          <el-input v-model="temp.themeJson" type="textarea" autosize placeholder="请输入主题内容json"/>
         </el-form-item>
       </el-form>
       <template #footer>

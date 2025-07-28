@@ -1,18 +1,16 @@
 <template>
   <div class="app-container">
     <!-- ddos用户请求记录-管理按钮 -->
-    <div style="margin-bottom: 10px;">
-      <el-input v-model="searchData.userIp" size="small" style="width: 100px;margin-right: 10px;"
-                class="filter-item" placeholder="用户IP"/>
-      <el-input v-model="searchData.requestCount" size="small" style="width: 200px;margin-right: 10px;"
-                class="filter-item" placeholder="请求次数超过多少的"/>
-      <base-button class="filter-item" type="primary" size="small"
-                 icon="el-icon-search" @click="searchBtnHandle">查询
-      </base-button>
-      <base-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</base-button>
-      <div style="float: right;">
-        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small"
-                   v-permission="'ddos-zDdos-delete'">删除
+    <div class="searchPanel">
+      <div class="searchForm">
+        <el-input v-model="searchData.userIp" class="searchInput w-150px!" placeholder="用户IP"/>
+        <el-input v-model="searchData.requestCount" class="searchInput w-200px!" placeholder="请求次数超过多少的"/>
+        <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询</base-button>
+        <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
+      </div>
+      <div class="operatePanel">
+        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)"
+                     v-permission="'ddos-zDdos-delete'">删除
         </base-button>
       </div>
     </div>
@@ -30,13 +28,11 @@
     <el-pagination class="flex justify-center mt-10px" layout="total,prev,pager,next,sizes,jumper"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
-                   @size-change="handleSizeChange"
-    />
+                   @size-change="handleSizeChange"/>
   </div>
 </template>
 
 <script>
-
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util'
 

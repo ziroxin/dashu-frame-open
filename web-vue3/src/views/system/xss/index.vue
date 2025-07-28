@@ -1,16 +1,15 @@
 <template>
   <div class="app-container" v-loading="isLoading">
     <div class="title">
-      <span style="color: #dd1f29;margin-right: 20px;">
+      <span class="color-#dd1f29 mr-20px">
         # 开头表示注释；**结尾可以模糊匹配；
       </span>
       提示：使用快捷键 Ctrl+S 保存; Ctrl+Z 撤销; Ctrl+Y 重做;
-      <base-button type="danger" @click="reloadXss" icon="el-icon-refresh"
-                 size="small" style="float: right;">重新加载Xss忽略列表
+      <base-button type="danger" icon="el-icon-refresh" class="float-right" @click="reloadXss">重新加载Xss忽略列表
       </base-button>
     </div>
     <el-input type="textarea" class="content" autosize spellcheck="false"
-              placeholder="请输入内容" v-model="ignoreContent"></el-input>
+              placeholder="请输入内容" v-model="ignoreContent"/>
   </div>
 </template>
 <script>
@@ -71,11 +70,9 @@ export default {
     color: #999;
     margin-left: 16px;
   }
-
   .content {
     width: 100%;
     height: 100%;
   }
-
 }
 </style>
