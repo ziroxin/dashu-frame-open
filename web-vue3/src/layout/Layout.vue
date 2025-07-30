@@ -9,10 +9,10 @@
 </template>
 
 <script setup lang="ts">
+import RenderLayout from './components/RenderLayout.vue'
 import { useAppStore } from '@/store/modules/app'
 import { Backtop } from '@/components/Backtop'
 import { Setting } from '@/components/Setting'
-import RenderLayout from './components/RenderLayout.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 
 const prefixCls = useDesign().getPrefixCls('layout')

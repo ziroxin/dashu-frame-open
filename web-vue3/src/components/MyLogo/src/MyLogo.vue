@@ -5,7 +5,7 @@
     <img src="@/assets/imgs/logo.png" class="w-[calc(var(--logo-height)-10px)] h-[calc(var(--logo-height)-10px)]"/>
     <div v-if="show"
          :class="['ml-10px text-16px font-700',
-                 layout==='classic'?'text-[var(--logo-title-text-color)]':'text-[var(--top-header-text-color)]']">
+                 layout==='classic'?'text-[var(--logo-title-text-color)]!':'text-[var(--top-header-text-color)]!']">
       {{ title }}
     </div>
   </router-link>

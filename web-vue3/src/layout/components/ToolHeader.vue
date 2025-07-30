@@ -7,8 +7,7 @@
       <!-- 展开/收起菜单按钮 -->
       <div v-if="hamburger&&layout!=='cutMenu'" :class="prefixClsCollapse" class="top-tool-hover"
            @click="toggleCollapse">
-        <my-icon :size="18" color="var(--top-header-text-color)"
-                 class="cursor-pointer"
+        <my-icon :size="18" color="var(--top-header-text-color)" class="cursor-pointer"
                  :icon="collapse?'vi-ant-design:menu-unfold-outlined':'vi-ant-design:menu-fold-outlined'"/>
       </div>
       <!-- 面包屑 -->

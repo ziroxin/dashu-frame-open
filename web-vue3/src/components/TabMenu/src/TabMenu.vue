@@ -1,4 +1,5 @@
 <template>
+  <!-- cutMenu - 分栏菜单模式 -->
   <div :id="`${variables.namespace}-menu`" v-click-outside="clickOut"
        :class="[prefixCls,'relative bg-[var(--left-menu-bg-color)] layout-border__right',
                {'w-[var(--tab-menu-max-width)]':!collapse,'w-[var(--tab-menu-min-width)]':collapse}]">
@@ -6,7 +7,7 @@
     <el-scrollbar class="!h-[calc(100%-var(--tab-menu-collapse-height))]">
       <div>
         <div v-for="item in tabFirstRoutes" :key="item.path" @click="tabClick(item)"
-             :class="[`${prefixCls}__item`,
+             :class="[`${prefixCls}__item`,collapse?'b-rd-0!':'m-[1px_5px]! b-rd-6px!',
                      'text-center text-12px relative py-12px cursor-pointer',
                      {'is-active':item.path&&isActive(item.path)}]">
           <my-icon v-if="item.meta&&item.meta.icon" :icon="item.meta?.icon" :size="collapse?20:16"/>
@@ -14,18 +15,19 @@
         </div>
       </div>
     </el-scrollbar>
-    <!-- 折叠按钮 -->
+    <!-- 折叠按钮（显示/隐藏菜单名称） -->
     <div @click="setCollapse"
          :class="[`${prefixCls}--collapse`,'text-center h-[var(--tab-menu-collapse-height)] leading-[var(--tab-menu-collapse-height)] cursor-pointer']">
       <my-icon :icon="collapse?'vi-ep:d-arrow-right':'vi-ep:d-arrow-left'"/>
     </div>
     <!-- 子菜单 -->
-    <my-menu :class="['!absolute top-0 z-3000',
+    <my-menu :class="['!absolute top-1px z-3000 cut-menu',
                    {'!left-[var(--tab-menu-min-width)]':collapse,
                    '!left-[var(--tab-menu-max-width)]':!collapse,
                    '!w-[var(--left-menu-max-width)] border-r-1 border-r-solid border-[var(--el-border-color)]':showMenu||fixedMenu,
                    '!w-0':!showMenu&&!fixedMenu}]"
-             style="transition: width var(--transition-time-02), left var(--transition-time-02);"/>
+             style="transition: width var(--transition-time-02), left var(--transition-time-02);"
+             @mouseleave="clickOut"/>
   </div>
 </template>
 
@@ -61,7 +63,6 @@ watch(() => collapse.value, (collapse: boolean) => {
 
 // 处理菜单路由数据
 const menuRoutes = computed(() => permissionStore.getRoutes)
-console.log(menuRoutes.value)
 
 watch(() => menuRoutes.value, (routeList) => {
   initTabMap(routeList)
@@ -106,7 +107,6 @@ const setCollapse = () => {
 }
 // 不是固定菜单模式时：点击菜单外部则隐藏菜单
 const clickOut = () => {
-  console.log('clickOut')
   if (!fixedMenu.value) {
     showMenu.value = false
   }
@@ -144,10 +144,9 @@ const tabClick = (item: AppRouteRecordRaw) => {
   &__item {
     color: var(--left-menu-text-color);
     transition: all var(--transition-time-02);
-
     &:hover {
       color: var(--left-menu-text-active-color);
-      // background-color: var(--left-menu-bg-active-color);
+      background-color: var(--left-menu-bg-active-color);
     }
   }
 
@@ -159,6 +158,24 @@ const tabClick = (item: AppRouteRecordRaw) => {
   .is-active {
     color: var(--left-menu-text-active-color);
     background-color: var(--left-menu-bg-active-color);
+  }
+}
+
+.cut-menu {
+  // 设置子菜单样式
+  :deep(.@{elNamespace}-menu) {
+    .@{elNamespace}-sub-menu__title,
+    .@{elNamespace}-menu-item {
+      height: var(--left-menu-item-height);
+      border-radius: 10px !important;
+      margin: 3px 5px !important;
+      > :first-child {
+        margin-left: -5px;
+      }
+      &:hover {
+        background-color: var(--left-menu-bg-active-color) !important;
+      }
+    }
   }
 }
 </style>

@@ -9,7 +9,7 @@
                :collapse="(layout==='top'||layout==='cutMenu')?false:collapse"
                :unique-opened="layout==='top'?false:uniqueOpened"
                background-color="var(--left-menu-bg-color)"
-               text-color="var(--left-menu-text-color)"
+               :text-color="collapse?'#333':'var(--left-menu-text-color)'"
                active-text-color="var(--left-menu-text-active-color)"
                :popper-class="`${prefixCls}-popper--${menuMode}`"
                @select="handleMenuSelect">
@@ -22,7 +22,7 @@
              :collapse="(layout==='top'||layout==='cutMenu')?false:collapse"
              :unique-opened="layout==='top'?false:uniqueOpened"
              background-color="var(--left-menu-bg-color)"
-             text-color="var(--left-menu-text-color)"
+             :text-color="collapse?'#333':'var(--left-menu-text-color)'"
              active-text-color="var(--left-menu-text-active-color)"
              :popper-class="`${prefixCls}-popper--${menuMode}`"
              @select="handleMenuSelect">
@@ -119,7 +119,7 @@ const handleMenuSelect = (index: string) => {
     .@{elNamespace}-menu-item {
       &:hover {
         color: var(--left-menu-text-active-color) !important;
-        background-color: var(--left-menu-bg-color) !important;
+        background-color: var(--left-menu-bg-active-color) !important;
       }
     }
 
@@ -127,7 +127,6 @@ const handleMenuSelect = (index: string) => {
     .@{elNamespace}-menu-item.is-active {
       color: var(--left-menu-text-active-color) !important;
       background-color: var(--left-menu-bg-active-color) !important;
-
       &:hover {
         background-color: var(--left-menu-bg-active-color) !important;
       }
@@ -137,11 +136,22 @@ const handleMenuSelect = (index: string) => {
       position: relative;
     }
 
-    // 设置子菜单的背景颜色
+    // 设置子菜单样式
     .@{elNamespace}-menu {
+      background-color: var(--left-sub-menu-bg-color) !important;
+      padding: 1px 0 !important;
+
       .@{elNamespace}-sub-menu__title,
-      .@{elNamespace}-menu-item:not(.is-active) {
-        background-color: var(--left-menu-bg-light-color) !important;
+      .@{elNamespace}-menu-item {
+        height: var(--left-menu-item-height);
+        border-radius: 10px !important;
+        margin: 3px 5px !important;
+        > :first-child {
+          margin-left: -5px;
+        }
+        &:hover {
+          background-color: var(--left-menu-bg-active-color) !important;
+        }
       }
     }
   }
@@ -167,7 +177,6 @@ const handleMenuSelect = (index: string) => {
   // 水平菜单
   &__horizontal {
     height: calc(~'var(--top-tool-height)') !important;
-
     :deep(.@{elNamespace}-menu--horizontal) {
       height: calc(~'var(--top-tool-height)');
       border-bottom: none;
@@ -177,20 +186,23 @@ const handleMenuSelect = (index: string) => {
           border-bottom-color: var(--el-color-primary) !important;
         }
       }
-
       .@{elNamespace}-menu-item.is-active {
         position: relative;
-
         &::after {
           display: none !important;
         }
       }
-
       .@{prefix-cls}__title {
         /* stylelint-disable-next-line */
         max-height: calc(~'var(--top-tool-height) - 2px') !important;
         /* stylelint-disable-next-line */
         line-height: calc(~'var(--top-tool-height) - 2px');
+      }
+      // 更多按钮样式
+      .@{elNamespace}-sub-menu__hide-arrow {
+        .@{elNamespace}-sub-menu__title {
+          padding-right: 20px !important;
+        }
       }
     }
   }
@@ -231,7 +243,7 @@ const handleMenuSelect = (index: string) => {
 
 @submenu-prefix-cls: ~'@{adminNamespace}-submenu-popper';
 
-// 设置子菜单溢出时滚动样式
+// 设置 菜单折叠后，子菜单的样式
 .@{submenu-prefix-cls}--vertical {
   max-height: 100%;
   overflow-y: auto;
@@ -244,6 +256,73 @@ const handleMenuSelect = (index: string) => {
   &::-webkit-scrollbar-thumb {
     background-color: rgb(144 147 153 / 30%);
     border-radius: 4px;
+  }
+
+  // 设置选中时子标题的颜色
+  .is-active {
+    & > .@{elNamespace}-sub-menu__title {
+      color: var(--left-menu-text-active-color) !important;
+      background-color: var(--left-menu-bg-active-color) !important;
+    }
+  }
+
+  // 设置选中时的高亮背景和高亮颜色
+  .@{elNamespace}-menu-item.is-active {
+    color: var(--left-menu-text-active-color) !important;
+    background-color: var(--left-menu-bg-active-color) !important;
+    &:hover {
+      background-color: var(--left-menu-bg-active-color) !important;
+    }
+  }
+
+  // 设置子菜单样式
+  .@{elNamespace}-menu {
+    .@{elNamespace}-sub-menu__title,
+    .@{elNamespace}-menu-item {
+      height: var(--left-menu-item-height);
+      border-radius: 10px !important;
+      margin: 3px 5px !important;
+      > :first-child {
+        margin-left: -5px;
+      }
+      &:hover {
+        background-color: var(--left-menu-bg-active-color) !important;
+      }
+    }
+  }
+}
+
+// top模式：水平菜单样式
+.@{elNamespace}-popper {
+  .@{elNamespace}-menu--horizontal {
+    .@{elNamespace}-menu {
+      // 设置选中时的高亮背景和高亮颜色
+      .@{elNamespace}-sub-menu__title,
+      .@{elNamespace}-menu-item {
+        height: var(--left-menu-item-height);
+        border-radius: 10px !important;
+        margin: 3px 5px !important;
+        > :first-child {
+          margin-left: -5px;
+        }
+        &:hover {
+          color: var(--left-menu-text-active-color) !important;
+          background-color: var(--left-menu-bg-active-color) !important;
+        }
+        &.is-active {
+          color: var(--left-menu-text-active-color) !important;
+          background-color: var(--left-menu-bg-active-color) !important;
+        }
+      }
+
+      // 设置选中时子标题的颜色
+      .is-active {
+        & > .@{elNamespace}-sub-menu__title {
+          color: var(--left-menu-text-active-color) !important;
+          background-color: var(--left-menu-bg-active-color) !important;
+        }
+      }
+    }
   }
 }
 </style>

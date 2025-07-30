@@ -43,7 +43,7 @@
                   <my-icon v-if="canShowIcon(item)" :icon="item?.matched?.[1]?.meta?.icon||item?.meta?.icon"
                            :size="12" class="mr-5px"/>
                   {{ t(item?.meta?.title as string) }}
-                  <my-icon :class="`${prefixCls}__item--close`" color="#333" icon="vi-ant-design:close-outlined"
+                  <my-icon :class="`${prefixCls}__item--close`" icon="vi-ant-design:close-outlined"
                            :size="12" @click.prevent.stop="closeSelectedTag(item)"/>
                 </div>
               </router-link>
@@ -56,13 +56,13 @@
           class="w-[var(--tags-view-height)] h-[var(--tags-view-height)] flex items-center justify-center cursor-pointer"
           @click="move(200)">
       <my-icon icon="vi-ep:d-arrow-right" color="var(--el-text-color-placeholder)"
-               :hover-color="isDark ? '#fff' : 'var(--el-color-black)'"/>
+               :hover-color="isDark ? '#fff' : 'var(--top-header-text-color)'"/>
     </span>
     <span :class="`${prefixCls}__tool`"
           class="w-[var(--tags-view-height)] h-[var(--tags-view-height)] flex items-center justify-center cursor-pointer"
           @click="refreshSelectedTag(selectedTag)">
       <my-icon icon="vi-ant-design:reload-outlined" color="var(--el-text-color-placeholder)"
-               :hover-color="isDark ? '#fff' : 'var(--el-color-black)'"/>
+               :hover-color="isDark ? '#fff' : 'var(--top-header-text-color)'"/>
     </span>
     <context-menu trigger="click" :schema="[{
           icon: 'vi-ant-design:sync-outlined',label: t('common.reload'),
@@ -89,7 +89,7 @@
       <span :class="`${prefixCls}__tool`"
             class="w-[var(--tags-view-height)] h-[var(--tags-view-height)] flex items-center justify-center cursor-pointer block">
         <my-icon icon="vi-ant-design:setting-outlined" color="var(--el-text-color-placeholder)"
-                 :hover-color="isDark ? '#fff' : 'var(--el-color-black)'"/>
+                 :hover-color="isDark ? '#fff' : 'var(--top-header-text-color)'"/>
       </span>
     </context-menu>
   </div>

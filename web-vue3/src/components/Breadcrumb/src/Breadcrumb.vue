@@ -4,7 +4,7 @@
     <transition-group appear enter-active-class="animate__animated animate__fadeInRight">
       <el-breadcrumb-item v-for="v in breadcrumbList" :key="v.name" :to="{path:toPath(v)}">
         <template v-if="v.meta?.icon && showIcon">
-          <my-icon :icon="v.meta.icon" class="mr-[5px]"/>
+          <my-icon :icon="v.meta.icon" class="mr-5px"/>
         </template>
         {{ t(v.meta.title || '') }}
       </el-breadcrumb-item>
@@ -61,29 +61,27 @@ const toPath = (v: AppRouteRecordRaw) => {
       display: flex;
       align-items: center;
       color: var(--top-header-text-color);
-
       &:hover {
         color: var(--el-color-primary);
       }
     }
+    .el-breadcrumb__separator {
+      color: var(--el-text-color-disabled);
+    }
   }
-
   :deep(&__item):not(:last-child) {
     .@{prefix-cls}__inner {
       color: var(--top-header-text-color);
-
       &:hover {
         color: var(--el-color-primary);
       }
     }
   }
-
   :deep(&__item):last-child {
     .@{prefix-cls}__inner {
-      color: var(--el-text-color-placeholder);
-
+      color: var(--el-text-color-disabled);
       &:hover {
-        color: var(--el-text-color-placeholder);
+        color: var(--el-text-color-disabled);
       }
     }
   }

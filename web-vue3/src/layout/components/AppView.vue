@@ -2,7 +2,7 @@
   <section :id="`${variables.namespace}-app-container`"
            :class="['box-border w-full bg-[var(--app-content-bg-color)] dark:bg-[var(--el-bg-color)] pb-0']">
     <!-- 最小高度，根据不同条件设置 -->
-    <router-view :class="'!min-h-['+contentHeight+'] :root{--app-content-height:'+contentHeight+'}'">
+    <router-view :style="'min-height:'+contentHeight+' !important;'">
       <template #default="{Component,route}">
         <keep-alive :include="getCaches">
           <component :is="Component" :key="route.fullPath"/>

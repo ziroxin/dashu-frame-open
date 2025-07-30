@@ -26,7 +26,22 @@ export const filterMenusPath = (routes: AppRouteRecordRaw[], allRoutes: AppRoute
         res.push(data)
       }
       if (v.path && Reflect.has(tabPathMap, v.path)) {
-        tabPathMap[v.path].push(v.path)
+        // 遍历出所有子路由，写入到tabPathMap中
+        tabPathMap[v.path].push(...filterAllChildrenPath(v))
+      }
+    }
+  }
+  return res
+}
+
+// 遍历出所有子路由，写入到tabPathMap中
+const filterAllChildrenPath = (route) => {
+  const res = []
+  if (route.children) {
+    for (const v of route.children) {
+      if (v.meta && !v.meta.hidden && v.path) {
+        res.push(v.path)
+        res.push(...filterAllChildrenPath(v))
       }
     }
   }

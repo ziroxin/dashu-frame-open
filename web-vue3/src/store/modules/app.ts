@@ -11,8 +11,8 @@ interface AppState {
   breadcrumb: boolean
   breadcrumbIcon: boolean
   collapse: boolean
-  uniqueOpened: boolean
   hamburger: boolean
+  uniqueOpened: boolean
   screenfull: boolean
   size: boolean
   locale: boolean
@@ -21,8 +21,6 @@ interface AppState {
   logo: boolean
   fixedHeader: boolean
   greyMode: boolean
-  dynamicRouter: boolean
-  serverDynamicRouter: boolean
   pageLoading: boolean
   layout: LayoutType
   title: string
@@ -38,15 +36,15 @@ interface AppState {
 export const useAppStore = defineStore('app', {
   state: (): AppState => {
     return {
-      sizeMap: ['default', 'large', 'small'],
+      sizeMap: ['default', 'large', 'small'], // 尺寸选项
       mobile: false, // 是否是移动端
       title: import.meta.env.VITE_APP_TITLE, // 标题
-      pageLoading: false, // 路由跳转loading
+      pageLoading: true, // 路由跳转loading
       breadcrumb: true, // 面包屑
       breadcrumbIcon: true, // 面包屑图标
-      collapse: false, // 折叠菜单
-      uniqueOpened: false, // 是否只保持一个子菜单的展开
-      hamburger: true, // 折叠图标
+      collapse: false, // 折叠菜单（是否折叠的状态）
+      hamburger: true, // 折叠图标（是否显示折叠图标）
+      uniqueOpened: false, // 菜单手风琴（只展开一个子菜单）
       screenfull: true, // 全屏图标
       size: true, // 尺寸图标
       locale: true, // 多语言图标
@@ -56,8 +54,6 @@ export const useAppStore = defineStore('app', {
       fixedHeader: true, // 固定toolheader
       footer: true, // 显示页脚
       greyMode: false, // 是否开始灰色模式，用于特殊悼念日
-      dynamicRouter: true, // 是否动态路由
-      serverDynamicRouter: true, // 是否服务端渲染动态路由
       fixedMenu: false, // 是否固定菜单
       layout: 'classic', // layout布局：'classic'=经典左右布局 | 'topLeft'=顶部左侧布局 | 'top'=顶部菜单布局 | 'cutMenu'=分栏菜单布局
       isDark: false, // 是否是暗黑模式
@@ -134,12 +130,6 @@ export const useAppStore = defineStore('app', {
     getGreyMode(): boolean {
       return this.greyMode
     },
-    getDynamicRouter(): boolean {
-      return this.dynamicRouter
-    },
-    getServerDynamicRouter(): boolean {
-      return this.serverDynamicRouter
-    },
     getFixedMenu(): boolean {
       return this.fixedMenu
     },
@@ -211,12 +201,6 @@ export const useAppStore = defineStore('app', {
     setGreyMode(greyMode: boolean) {
       this.greyMode = greyMode
     },
-    setDynamicRouter(dynamicRouter: boolean) {
-      this.dynamicRouter = dynamicRouter
-    },
-    setServerDynamicRouter(serverDynamicRouter: boolean) {
-      this.serverDynamicRouter = serverDynamicRouter
-    },
     setFixedMenu(fixedMenu: boolean) {
       this.fixedMenu = fixedMenu
     },
@@ -276,6 +260,7 @@ export const useAppStore = defineStore('app', {
     setMenuTheme(color: string) {
       const primaryColor = useCssVar('--el-color-primary', document.documentElement)
       const isDarkColor = colorIsDark(color)
+      setCssVar(`--left-sub-menu-bg-color`, color.toLowerCase() === '#ffffff' ? '#00000006' : '#ffffff15')
       const theme: Recordable = {
         // 左侧菜单边框颜色
         leftMenuBorderColor: isDarkColor ? 'inherit' : '#eee',
@@ -288,11 +273,11 @@ export const useAppStore = defineStore('app', {
         // 左侧菜单收起选中背景颜色
         leftMenuCollapseBgActiveColor: isDarkColor ? 'var(--el-color-primary)' : hexToRGB(unref(primaryColor) as string, 0.1),
         // 左侧菜单字体颜色
-        leftMenuTextColor: isDarkColor ? '#bfcbd9' : '#333',
+        leftMenuTextColor: isDarkColor ? '#dedede' : '#333',
         // 左侧菜单选中字体颜色
-        leftMenuTextActiveColor: isDarkColor ? '#fff' : 'var(--el-color-primary)',
+        leftMenuTextActiveColor: isDarkColor ? '#ffffff' : 'var(--el-color-primary)',
         // logo字体颜色
-        logoTitleTextColor: isDarkColor ? '#fff' : 'inherit',
+        logoTitleTextColor: isDarkColor ? '#ffffff' : 'var(--el-color-primary)',
         // logo边框颜色
         logoBorderColor: isDarkColor ? color : '#eee'
       }

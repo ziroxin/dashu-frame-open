@@ -1,9 +1,10 @@
 <template>
-  <div :class="prefixCls" @click="drawer = true"
-       class="fixed bottom-[20%] right-0 w-40px h-40px flex items-center justify-center bg-[var(--el-color-primary)] cursor-pointer z-10">
+  <div :class="prefixCls" @click="drawer=true"
+       class="fixed bottom-[10%] right-0 w-40px h-40px flex items-center justify-center bg-[var(--el-color-primary)] cursor-pointer z-10">
     <my-icon icon="vi-ant-design:setting-outlined" color="#fff"/>
   </div>
-  <el-drawer v-model="drawer" direction="rtl" size="350px" :z-index="4000">
+  <el-drawer v-model="drawer" direction="rtl" size="350px" :z-index="4000"
+             header-class="mb-10px!" modal-class="bg-[#00000020]!">
     <template #header>
       <span class="text-16px font-700">{{ t('setting.projectSetting') }}</span>
     </template>
@@ -17,22 +18,35 @@
       <layout-radio-picker/>
       <!-- 系统主题 -->
       <el-divider>{{ t('setting.systemTheme') }}</el-divider>
-      <color-radio-picker v-model="systemTheme" @change="setSystemTheme"
-                          :schema="['#409eff','#009688','#536dfe','#ff5c93','#ee4f12','#0096c7','#9c27b0','#ff9800']"/>
+      <div class="flex justify-start items-center flex-wrap lh-30px">
+        <color-radio-picker v-model="systemTheme" @change="setSystemTheme"
+                            :schema="['#409eff','#009688','#f5222d','#fa541c','#faad14','#13c2c2','#52c41a','#722ed1']"/>
+        <br/>
+        <div class="text-14px color-#333">自定义颜色：</div>
+        <el-color-picker v-model="systemTheme" @change="setSystemTheme" :teleported="false" show-alpha/>
+      </div>
       <!-- 头部主题 -->
       <el-divider>{{ t('setting.headerTheme') }}</el-divider>
-      <color-radio-picker v-model="headerTheme" @change="setHeaderTheme"
-                          :schema="['#fff','#151515','#5172dc','#e74c3c','#24292e','#394664','#009688','#383f45']"/>
+      <div class="flex justify-start items-center">
+        <color-radio-picker v-model="headerTheme" @change="setHeaderTheme" class="mt-8px"
+                            :schema="['#ffffff','#151515','#001529']"/>
+        <div class="text-14px color-#333 pl-30px">自定义颜色：</div>
+        <el-color-picker v-model="headerTheme" @change="setHeaderTheme" :teleported="false" show-alpha/>
+      </div>
       <!-- 菜单主题 -->
       <el-divider>{{ t('setting.menuTheme') }}</el-divider>
-      <color-radio-picker v-model="menuTheme" @change="setMenuTheme"
-                          :schema="['#fff','#001529','#212121','#273352','#191b24','#383f45','#001628','#344058']"/>
+      <div class="flex justify-start items-center">
+        <color-radio-picker v-model="menuTheme" @change="setMenuTheme" class="mt-8px"
+                            :schema="['#ffffff','#151515','#001529']"/>
+        <div class="text-14px color-#333 pl-30px">自定义颜色：</div>
+        <el-color-picker v-model="menuTheme" @change="setMenuTheme" :teleported="false" show-alpha/>
+      </div>
     </div>
 
-    <!-- 界面显示 -->
-    <el-divider>{{ t('setting.interfaceDisplay') }}</el-divider>
+    <!-- 更多配置 -->
     <interface-display/>
 
+    <!-- 操作按钮 -->
     <el-divider/>
     <div>
       <base-button type="primary" class="w-full" @click="copyConfig">{{ t('setting.copy') }}</base-button>
@@ -44,15 +58,15 @@
 </template>
 
 <script setup lang="ts">
+import ColorRadioPicker from './components/ColorRadioPicker.vue'
+import InterfaceDisplay from './components/InterfaceDisplay.vue'
+import LayoutRadioPicker from './components/LayoutRadioPicker.vue'
 import { ElMessage } from 'element-plus'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ThemeSwitch } from '@/components/ThemeSwitch'
 import { useClipboard, useCssVar } from '@vueuse/core'
 import { useAppStore } from '@/store/modules/app'
 import { setCssVar, trim } from '@/utils'
-import ColorRadioPicker from './components/ColorRadioPicker.vue'
-import InterfaceDisplay from './components/InterfaceDisplay.vue'
-import LayoutRadioPicker from './components/LayoutRadioPicker.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import storageKeys from '@/utils/storage-keys'
 
@@ -82,19 +96,6 @@ const menuTheme = ref(appStore.getTheme.leftMenuBgColor || '')
 const setMenuTheme = (color: string) => {
   appStore.setMenuTheme(color)
 }
-
-// 监听layout变化，重置一些主题色
-// watch(
-//   () => layout.value,
-//   (n) => {
-//     if (n === 'top' && !appStore.getIsDark) {
-//       headerTheme.value = '#fff'
-//       setHeaderTheme('#fff')
-//     } else {
-//       setMenuTheme(unref(menuTheme))
-//     }
-//   }
-// )
 
 // 拷贝当前主题配置
 const copyConfig = async () => {
