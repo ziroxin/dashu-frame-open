@@ -4,7 +4,7 @@
     <el-card class="flex-[3] mr-15px">
       <template #header><span class="text-16px font-700">个人信息</span></template>
       <div class="flex items-center justify-center">
-        <el-image :src="$baseServer+temp.avatar" class="w-[150px] h-[150px] rounded-full"
+        <el-image :src="$baseServer+temp.avatar" class="w-[150px] h-[150px] rounded-full" fit="cover"
                   :preview-src-list="[$baseServer+temp.avatar]"/>
       </div>
       <el-divider/>

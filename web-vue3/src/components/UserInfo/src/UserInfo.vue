@@ -3,10 +3,10 @@
   <el-dropdown :id="`${variables.namespace}-userInfo`" class="top-tool-hover" :class="prefixCls" trigger="click">
     <!-- 头像、昵称 -->
     <div class="flex items-center h-100%">
-      <img v-if="userInfo.avatar" :src="$baseServer+userInfo.avatar"
-           class="w-[calc(var(--logo-height)-25px)] rounded-[50%]" alt=""/>
-      <img v-else src="@/assets/imgs/avatar.jpg"
-           class="w-[calc(var(--logo-height)-25px)] rounded-[50%]" alt=""/>
+      <img v-if="userInfo.avatar" :src="$baseServer+userInfo.avatar" :alt="'用户'+userInfo?.userName+'头像'"
+           class="w-[var(--logo-height)] h-[var(--logo-height)] rounded-full p-4px object-cover"/>
+      <img v-else src="@/assets/imgs/avatar.jpg" :alt="'用户'+userInfo?.userName+'默认头像'"
+           class="w-[var(--logo-height)] h-[var(--logo-height)] rounded-full p-4px object-cover"/>
       <span class="<lg:hidden text-14px pl-[5px] text-[var(--top-header-text-color)]">
         {{ userInfo?.name || userInfo?.nickName || userInfo?.userName }}
       </span>
