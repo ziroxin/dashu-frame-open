@@ -46,12 +46,6 @@ const storageKeys = {
   l_dictList: `${key_prefix}_dicts_list`,
   // 简易postman页historyKeys
   l_historyKeys: `${key_prefix}_history_keys`,
-  // 侧边栏状态的key
-  sidebarStatus: `${key_prefix}_sidebar_status`,
-  // 系统整体大小（字体等：default、medium、small、mini）的key
-  size: `${key_prefix}_size`,
-  // 综合布局下，当前激活菜单项的key
-  activeTopMenu: `${key_prefix}_active_top_menu`
 }
 
 export default storageKeys

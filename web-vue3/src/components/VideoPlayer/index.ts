@@ -2,7 +2,7 @@ import { VNode, createVNode, render } from 'vue'
 import VideoPlayer from './src/VideoPlayer.vue'
 import { isClient } from '@/utils/is'
 import { VideoPlayerViewer } from '@/components/VideoPlayerViewer'
-import { toAnyString } from '@/utils'
+import { generateUUID } from '@/utils/tools'
 
 export { VideoPlayer }
 
@@ -14,7 +14,7 @@ export function createVideoViewer(options: { url: string; poster?: string; show?
 
   const propsData: Partial<{ url: string; poster?: string; show?: boolean; id?: string }> = {}
   const container = document.createElement('div')
-  const id = toAnyString()
+  const id = generateUUID()
   container.id = id
   propsData.url = url
   propsData.poster = poster
