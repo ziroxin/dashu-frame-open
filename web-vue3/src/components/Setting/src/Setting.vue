@@ -92,7 +92,6 @@ const isLoading = ref(false)
 // 复制主题按钮
 const loadCopyButton = ref(false)
 watch(appStore, () => {
-  console.log(11122)
   loadCopyButton.value = false
   setTimeout(() => {loadCopyButton.value = true}, 500)
 }, {immediate: true, deep: true})

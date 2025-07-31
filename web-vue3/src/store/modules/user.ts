@@ -58,9 +58,7 @@ export const useUserStore = defineStore('user', {
     logoutConfirm() {
       const {t} = useI18n()
       ElMessageBox.confirm(t('common.loginOutMessage'), t('common.reminder'), {
-        confirmButtonText: t('common.ok'),
-        cancelButtonText: t('common.cancel'),
-        type: 'warning'
+        confirmButtonText: t('common.ok'), cancelButtonText: t('common.cancel'), type: 'warning'
       }).then(async () => {
         const res = await logoutApi()
         if (res) {
