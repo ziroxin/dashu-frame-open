@@ -57,8 +57,11 @@
     <div class="text-center mt-15px">
       <el-tooltip content="拷贝成功后，粘贴至[/src/store/modules/app.ts]中<br/>即可作为系统默认配置"
                   :raw-content="true" :teleported="false" placement="top">
-        <base-button type="success" icon="el-icon-copy-document" class="w-230px"
+        <base-button type="success" icon="el-icon-copy-document" class="w-230px" v-if="loadCopyButton"
                      v-clipboard:copy="copyTheme" v-clipboard:success="copySuccess">拷贝主题配置
+        </base-button>
+        <base-button type="success" icon="el-icon-copy-document" class="w-230px" v-else
+                     :loading="!loadCopyButton">拷贝主题配置
         </base-button>
       </el-tooltip>
     </div>
@@ -85,6 +88,14 @@ const appStore = useAppStore()
 
 const drawer = ref(false)
 const isLoading = ref(false)
+
+// 复制主题按钮
+const loadCopyButton = ref(false)
+watch(appStore, () => {
+  console.log(11122)
+  loadCopyButton.value = false
+  setTimeout(() => {loadCopyButton.value = true}, 500)
+}, {immediate: true, deep: true})
 
 // 主题色相关
 const systemTheme = ref(appStore.getTheme.elColorPrimary)

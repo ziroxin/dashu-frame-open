@@ -42,6 +42,7 @@ export const useAppStore = defineStore('app', {
       title: import.meta.env.VITE_APP_TITLE, // 标题
       pageLoading: true, // 路由跳转loading
       collapse: false, // 折叠菜单（是否折叠的状态）
+      // =============== 在 “主题配置” 面板中拷贝的配置项，从这行往下 ↓ 拷贝 ===============
       // 主题相关设置项
       isDark: false, // 是否是暗黑模式
       layout: 'classic', // layout布局：'classic'=经典左右布局 | 'topLeft'=顶部左侧布局 | 'top'=顶部菜单布局 | 'cutMenu'=分栏菜单布局
@@ -49,25 +50,25 @@ export const useAppStore = defineStore('app', {
         // 主题色
         elColorPrimary: '#409eff',
         // 左侧菜单边框颜色
-        leftMenuBorderColor: 'inherit',
+        leftMenuBorderColor: '#eee',
         // 左侧菜单背景颜色
-        leftMenuBgColor: '#001529',
+        leftMenuBgColor: '#ffffff',
         // 左侧菜单浅色背景颜色
-        leftMenuBgLightColor: '#0f2438',
+        leftMenuBgLightColor: '#ffffff',
         // 左侧菜单选中背景颜色
-        leftMenuBgActiveColor: 'var(--el-color-primary)',
+        leftMenuBgActiveColor: 'RGBA(64,158,255,0.1)',
         // 左侧菜单收起选中背景颜色
-        leftMenuCollapseBgActiveColor: 'var(--el-color-primary)',
+        leftMenuCollapseBgActiveColor: 'RGBA(64,158,255,0.1)',
         // 左侧菜单字体颜色
-        leftMenuTextColor: '#bfcbd9',
+        leftMenuTextColor: '#333',
         // 左侧菜单选中字体颜色
-        leftMenuTextActiveColor: '#fff',
+        leftMenuTextActiveColor: 'var(--el-color-primary)',
         // logo字体颜色
-        logoTitleTextColor: '#fff',
+        logoTitleTextColor: 'var(--el-color-primary)',
         // logo边框颜色
-        logoBorderColor: 'inherit',
+        logoBorderColor: '#eee',
         // 头部背景颜色
-        topHeaderBgColor: '#fff',
+        topHeaderBgColor: '#ffffff',
         // 头部字体颜色
         topHeaderTextColor: 'inherit',
         // 头部悬停颜色
@@ -89,6 +90,7 @@ export const useAppStore = defineStore('app', {
       uniqueOpened: false, // 菜单手风琴（只展开一个子菜单）
       greyMode: false, // 是否开始灰色模式，用于特殊悼念日
       fixedMenu: false // 是否固定菜单
+      // =============== 在 “主题配置” 面板中拷贝的配置项，从这行往上 ↑ 拷贝 ===============
     }
   },
   getters: {
@@ -222,7 +224,7 @@ export const useAppStore = defineStore('app', {
       isDark.value = this.getIsDark
       const newTitle = import.meta.env.VITE_APP_TITLE
       newTitle !== this.getTitle && this.setTitle(newTitle)
-    },
+    }
   },
   persist: {key: storageKeys.l_themeSetting}
 })
