@@ -2,7 +2,7 @@
   <div class="error-panel">
     <h1>统一认证中心 · 授权失败</h1>
     <div class="error-info">{{ errorInfo }}</div>
-    <div class="w-100% text-center m-[30px_auto]">
+    <div class="w-full text-center m-[30px_auto]!">
       <base-button @click="$router.go(-1)" type="primary" icon="el-icon-back" plain>返回上一页</base-button>
       <base-button @click="$router.push({path: loginRoute.path})" type="danger" icon="el-icon-s-home" plain>返回登录页
       </base-button>

@@ -96,7 +96,6 @@ export default {
               this.$message({type: 'success', message: '绑定成功！正在为您跳转，请稍等...'})
               // 写入登录状态（同/store/modules/user.js:login）
               setToken(data.accessToken, new Date(data.accessTokenValidTime))
-              this.$store.commit('user/SET_TOKEN', data.accessToken)
               sessionStorage.setItem(this.$storageKeys.s_isDefaultPassword, data.defaultPassword)
               sessionStorage.setItem(this.$storageKeys.s_isInvalidPassword, data.invalidPassword)
               // 跳转
