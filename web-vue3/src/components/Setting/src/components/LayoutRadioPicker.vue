@@ -1,25 +1,33 @@
 <template>
-  <div :class="prefixCls" class="flex flex-wrap space-x-14px">
+  <div :class="prefixCls" class="flex justify-between items-center">
     <!-- 经典布局（左右结构） -->
-    <el-tooltip content="经典布局" :append-to="`${prefixCls}__classic`" :teleported="false" placement="top">
-      <div :class="[`${prefixCls}__classic`,' relative w-56px h-48px cursor-pointer bg-gray-300',
-                  {'is-acitve': layout === 'classic'}]" @click="appStore.setLayout('classic')"></div>
+    <el-tooltip content="经典布局" :append-to="`${prefixCls}__classic`" :teleported="false" placement="bottom">
+      <div class="p-8px b-rd-5px hover:bg-#00000020" :class="{'bg-#00000010':layout==='classic'}">
+        <div :class="[`${prefixCls}__classic`,'relative w-56px h-48px cursor-pointer bg-gray-300',
+                  {'is-acitve':layout==='classic'}]" @click="appStore.setLayout('classic')"></div>
+      </div>
     </el-tooltip>
     <!-- 顶部左侧布局 -->
-    <el-tooltip content="顶部左侧布局" :append-to="`${prefixCls}__classic`" :teleported="false" placement="top">
-      <div :class="[`${prefixCls}__top-left`,'relative w-56px h-48px cursor-pointer bg-gray-300',
-                  {'is-acitve': layout === 'topLeft'}]" @click="appStore.setLayout('topLeft')"></div>
+    <el-tooltip content="顶部左侧布局" :append-to="`${prefixCls}__top-left`" :teleported="false" placement="bottom">
+      <div class="p-8px b-rd-5px hover:bg-#00000020" :class="{'bg-#00000010':layout==='topLeft'}">
+        <div :class="[`${prefixCls}__top-left`,'relative w-56px h-48px cursor-pointer bg-gray-300',
+                  {'is-acitve':layout==='topLeft'}]" @click="appStore.setLayout('topLeft')"></div>
+      </div>
     </el-tooltip>
     <!-- 顶部布局 -->
-    <el-tooltip content="顶部布局" :append-to="`${prefixCls}__classic`" :teleported="false" placement="top">
-      <div :class="[`${prefixCls}__top`,'relative w-56px h-48px cursor-pointer bg-gray-300',
-                  {'is-acitve': layout === 'top'}]" @click="appStore.setLayout('top')"></div>
+    <el-tooltip content="顶部布局" :append-to="`${prefixCls}__top`" :teleported="false" placement="bottom">
+      <div class="p-8px b-rd-5px hover:bg-#00000020" :class="{'bg-#00000010':layout==='top'}">
+        <div :class="[`${prefixCls}__top`,'relative w-56px h-48px cursor-pointer bg-gray-300',
+                  {'is-acitve':layout==='top'}]" @click="appStore.setLayout('top')"></div>
+      </div>
     </el-tooltip>
     <!-- 分栏菜单布局 -->
-    <el-tooltip content="分栏菜单布局" :append-to="`${prefixCls}__classic`" :teleported="false" placement="top">
-      <div :class="[`${prefixCls}__cut-menu`,'relative w-56px h-48px cursor-pointer bg-gray-300',
-                  {'is-acitve': layout === 'cutMenu'}]" @click="appStore.setLayout('cutMenu')">
-        <div class="absolute h-full w-[33%] top-0 left-[10%] bg-gray-200"></div>
+    <el-tooltip content="分栏菜单布局" :append-to="`${prefixCls}__cut-menu`" :teleported="false" placement="bottom">
+      <div class="p-8px b-rd-5px hover:bg-#00000020" :class="{'bg-#00000010':layout==='cutMenu'}">
+        <div :class="[`${prefixCls}__cut-menu`,'relative w-56px h-48px cursor-pointer bg-gray-300',
+                  {'is-acitve':layout==='cutMenu'}]" @click="appStore.setLayout('cutMenu')">
+          <div class="absolute h-full w-[33%] top-0 left-[10%] bg-gray-200"></div>
+        </div>
       </div>
     </el-tooltip>
   </div>

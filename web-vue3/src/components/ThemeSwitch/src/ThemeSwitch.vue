@@ -18,9 +18,7 @@ const CrescentMoon = useIcon({icon: 'vi-emojione-monotone:crescent-moon', color:
 const appStore = useAppStore()
 // 初始化获取是否是暗黑主题
 const isDark = computed({
-  get() {
-    return appStore.getIsDark
-  },
+  get() { return appStore.getIsDark },
   set(val: boolean) {
     appStore.setIsDark(val)
     const color = getCssVar('--el-bg-color')

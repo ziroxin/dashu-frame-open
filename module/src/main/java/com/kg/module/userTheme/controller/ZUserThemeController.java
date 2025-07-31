@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -44,11 +45,13 @@ public class ZUserThemeController {
 
     @ApiOperation(value = "/userTheme/zUserTheme/getByUser", notes = "获取当前用户的主题配置", httpMethod = "GET")
     @GetMapping("/getByUser")
-    public String getByUser() {
+    public String getByUser(String themeType) {
         try {
             ZUser currentUser = CurrentUserUtils.getCurrentUser();
-            Optional<ZUserTheme> userTheme = zUserThemeService
-                    .lambdaQuery().eq(ZUserTheme::getUserId, currentUser.getUserId()).last("LIMIT 1").oneOpt();
+            Optional<ZUserTheme> userTheme = zUserThemeService.lambdaQuery()
+                    .eq(StringUtils.hasText(themeType), ZUserTheme::getThemeType, themeType)
+                    .eq(ZUserTheme::getUserId, currentUser.getUserId())
+                    .orderByAsc(ZUserTheme::getThemeType).last("LIMIT 1").oneOpt();
             if (userTheme.isPresent()) {
                 return userTheme.get().getThemeJson();
             }

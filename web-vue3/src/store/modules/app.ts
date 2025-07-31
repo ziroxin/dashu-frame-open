@@ -8,28 +8,28 @@ import { unref } from 'vue'
 import storageKeys from '@/utils/storage-keys'
 
 interface AppState {
+  sizeMap: ComponentSize[]
+  currentSize: ComponentSize
+  mobile: boolean
+  title: string
+  pageLoading: boolean
+  collapse: boolean
+  isDark: boolean
+  layout: LayoutType
+  theme: ThemeTypes
+  tagsView: boolean
+  tagsViewIcon: boolean
+  fixedHeader: boolean
+  footer: boolean
+  logo: boolean
+  hamburger: boolean
   breadcrumb: boolean
   breadcrumbIcon: boolean
-  collapse: boolean
-  hamburger: boolean
-  uniqueOpened: boolean
   screenfull: boolean
   size: boolean
   locale: boolean
-  tagsView: boolean
-  tagsViewIcon: boolean
-  logo: boolean
-  fixedHeader: boolean
+  uniqueOpened: boolean
   greyMode: boolean
-  pageLoading: boolean
-  layout: LayoutType
-  title: string
-  isDark: boolean
-  currentSize: ComponentSize
-  sizeMap: ComponentSize[]
-  mobile: boolean
-  footer: boolean
-  theme: ThemeTypes
   fixedMenu: boolean
 }
 
@@ -37,27 +37,14 @@ export const useAppStore = defineStore('app', {
   state: (): AppState => {
     return {
       sizeMap: ['default', 'large', 'small'], // 尺寸选项
+      currentSize: 'default', // 组件尺寸
       mobile: false, // 是否是移动端
       title: import.meta.env.VITE_APP_TITLE, // 标题
       pageLoading: true, // 路由跳转loading
-      breadcrumb: true, // 面包屑
-      breadcrumbIcon: true, // 面包屑图标
       collapse: false, // 折叠菜单（是否折叠的状态）
-      hamburger: true, // 折叠图标（是否显示折叠图标）
-      uniqueOpened: false, // 菜单手风琴（只展开一个子菜单）
-      screenfull: true, // 全屏图标
-      size: true, // 尺寸图标
-      locale: true, // 多语言图标
-      tagsView: true, // 标签页
-      tagsViewIcon: true, // 是否显示标签图标
-      logo: true, // logo
-      fixedHeader: true, // 固定toolheader
-      footer: true, // 显示页脚
-      greyMode: false, // 是否开始灰色模式，用于特殊悼念日
-      fixedMenu: false, // 是否固定菜单
-      layout: 'classic', // layout布局：'classic'=经典左右布局 | 'topLeft'=顶部左侧布局 | 'top'=顶部菜单布局 | 'cutMenu'=分栏菜单布局
+      // 主题相关设置项
       isDark: false, // 是否是暗黑模式
-      currentSize: 'default', // 组件尺寸
+      layout: 'classic', // layout布局：'classic'=经典左右布局 | 'topLeft'=顶部左侧布局 | 'top'=顶部菜单布局 | 'cutMenu'=分栏菜单布局
       theme: {
         // 主题色
         elColorPrimary: '#409eff',
@@ -87,136 +74,54 @@ export const useAppStore = defineStore('app', {
         topHeaderHoverColor: '#f6f6f6',
         // 头部边框颜色
         topToolBorderColor: '#eee'
-      }
+      },
+      tagsView: true, // 标签页
+      tagsViewIcon: true, // 是否显示标签图标
+      fixedHeader: true, // 固定头部（头部+标签页）
+      footer: true, // 显示页脚
+      logo: true, // logo
+      hamburger: true, // 折叠图标（是否显示折叠图标）
+      breadcrumb: true, // 面包屑
+      breadcrumbIcon: true, // 面包屑图标
+      screenfull: true, // 全屏图标
+      size: true, // 尺寸图标
+      locale: true, // 多语言图标
+      uniqueOpened: false, // 菜单手风琴（只展开一个子菜单）
+      greyMode: false, // 是否开始灰色模式，用于特殊悼念日
+      fixedMenu: false // 是否固定菜单
     }
   },
   getters: {
-    getBreadcrumb(): boolean {
-      return this.breadcrumb
-    },
-    getBreadcrumbIcon(): boolean {
-      return this.breadcrumbIcon
-    },
-    getCollapse(): boolean {
-      return this.collapse
-    },
-    getUniqueOpened(): boolean {
-      return this.uniqueOpened
-    },
-    getHamburger(): boolean {
-      return this.hamburger
-    },
-    getScreenfull(): boolean {
-      return this.screenfull
-    },
-    getSize(): boolean {
-      return this.size
-    },
-    getLocale(): boolean {
-      return this.locale
-    },
-    getTagsView(): boolean {
-      return this.tagsView
-    },
-    getTagsViewIcon(): boolean {
-      return this.tagsViewIcon
-    },
-    getLogo(): boolean {
-      return this.logo
-    },
-    getFixedHeader(): boolean {
-      return this.fixedHeader
-    },
-    getGreyMode(): boolean {
-      return this.greyMode
-    },
-    getFixedMenu(): boolean {
-      return this.fixedMenu
-    },
-    getPageLoading(): boolean {
-      return this.pageLoading
-    },
-    getLayout(): LayoutType {
-      return this.layout
-    },
-    getTitle(): string {
-      return this.title
-    },
-    getIsDark(): boolean {
-      return this.isDark
-    },
-    getCurrentSize(): ComponentSize {
-      return this.currentSize
-    },
-    getSizeMap(): ComponentSize[] {
-      return this.sizeMap
-    },
-    getMobile(): boolean {
-      return this.mobile
-    },
-    getTheme(): ThemeTypes {
-      return this.theme
-    },
-    getFooter(): boolean {
-      return this.footer
-    }
+    getSizeMap(): ComponentSize[] { return this.sizeMap },
+    getCurrentSize(): ComponentSize { return this.currentSize },
+    getMobile(): boolean { return this.mobile },
+    getTitle(): string { return this.title },
+    getPageLoading(): boolean { return this.pageLoading },
+    getCollapse(): boolean { return this.collapse },
+    getIsDark(): boolean { return this.isDark },
+    getLayout(): LayoutType { return this.layout },
+    getTheme(): ThemeTypes { return this.theme },
+    getTagsView(): boolean { return this.tagsView },
+    getTagsViewIcon(): boolean { return this.tagsViewIcon },
+    getFixedHeader(): boolean { return this.fixedHeader },
+    getFooter(): boolean { return this.footer },
+    getLogo(): boolean { return this.logo },
+    getHamburger(): boolean { return this.hamburger },
+    getBreadcrumb(): boolean { return this.breadcrumb },
+    getBreadcrumbIcon(): boolean { return this.breadcrumbIcon },
+    getScreenfull(): boolean { return this.screenfull },
+    getSize(): boolean { return this.size },
+    getLocale(): boolean { return this.locale },
+    getUniqueOpened(): boolean { return this.uniqueOpened },
+    getGreyMode(): boolean { return this.greyMode },
+    getFixedMenu(): boolean { return this.fixedMenu }
   },
   actions: {
-    setBreadcrumb(breadcrumb: boolean) {
-      this.breadcrumb = breadcrumb
-    },
-    setBreadcrumbIcon(breadcrumbIcon: boolean) {
-      this.breadcrumbIcon = breadcrumbIcon
-    },
-    setCollapse(collapse: boolean) {
-      this.collapse = collapse
-    },
-    setUniqueOpened(uniqueOpened: boolean) {
-      this.uniqueOpened = uniqueOpened
-    },
-    setHamburger(hamburger: boolean) {
-      this.hamburger = hamburger
-    },
-    setScreenfull(screenfull: boolean) {
-      this.screenfull = screenfull
-    },
-    setSize(size: boolean) {
-      this.size = size
-    },
-    setLocale(locale: boolean) {
-      this.locale = locale
-    },
-    setTagsView(tagsView: boolean) {
-      this.tagsView = tagsView
-    },
-    setTagsViewIcon(tagsViewIcon: boolean) {
-      this.tagsViewIcon = tagsViewIcon
-    },
-    setLogo(logo: boolean) {
-      this.logo = logo
-    },
-    setFixedHeader(fixedHeader: boolean) {
-      this.fixedHeader = fixedHeader
-    },
-    setGreyMode(greyMode: boolean) {
-      this.greyMode = greyMode
-    },
-    setFixedMenu(fixedMenu: boolean) {
-      this.fixedMenu = fixedMenu
-    },
-    setPageLoading(pageLoading: boolean) {
-      this.pageLoading = pageLoading
-    },
-    setLayout(layout: LayoutType) {
-      if (this.mobile && layout !== 'classic') {
-        ElMessage.warning('移动端模式下不支持切换其它布局')
-        return
-      }
-      this.layout = layout
-    },
-    setTitle(title: string) {
-      this.title = title
-    },
+    setCurrentSize(currentSize: ComponentSize) { this.currentSize = currentSize },
+    setMobile(mobile: boolean) { this.mobile = mobile },
+    setTitle(title: string) { this.title = title },
+    setPageLoading(pageLoading: boolean) { this.pageLoading = pageLoading },
+    setCollapse(collapse: boolean) { this.collapse = collapse },
     setIsDark(isDark: boolean) {
       this.isDark = isDark
       if (this.isDark) {
@@ -228,23 +133,33 @@ export const useAppStore = defineStore('app', {
       }
       this.setPrimaryLight()
     },
-    setCurrentSize(currentSize: ComponentSize) {
-      this.currentSize = currentSize
+    setLayout(layout: LayoutType) {
+      if (this.mobile && layout !== 'classic') {
+        ElMessage.warning('移动端模式下不支持切换其它布局')
+        return
+      }
+      this.layout = layout
     },
-    setMobile(mobile: boolean) {
-      this.mobile = mobile
-    },
-    setTheme(theme: ThemeTypes) {
-      this.theme = Object.assign(this.theme, theme)
-    },
+    setTheme(theme: ThemeTypes) { this.theme = Object.assign(this.theme, theme) },
+    setTagsView(tagsView: boolean) { this.tagsView = tagsView },
+    setTagsViewIcon(tagsViewIcon: boolean) { this.tagsViewIcon = tagsViewIcon },
+    setFixedHeader(fixedHeader: boolean) { this.fixedHeader = fixedHeader },
+    setFooter(footer: boolean) { this.footer = footer },
+    setLogo(logo: boolean) { this.logo = logo },
+    setHamburger(hamburger: boolean) { this.hamburger = hamburger },
+    setBreadcrumb(breadcrumb: boolean) { this.breadcrumb = breadcrumb },
+    setBreadcrumbIcon(breadcrumbIcon: boolean) { this.breadcrumbIcon = breadcrumbIcon },
+    setScreenfull(screenfull: boolean) { this.screenfull = screenfull },
+    setSize(size: boolean) { this.size = size },
+    setLocale(locale: boolean) { this.locale = locale },
+    setUniqueOpened(uniqueOpened: boolean) { this.uniqueOpened = uniqueOpened },
+    setGreyMode(greyMode: boolean) { this.greyMode = greyMode },
+    setFixedMenu(fixedMenu: boolean) { this.fixedMenu = fixedMenu },
     setCssVarTheme() {
       for (const key in this.theme) {
         setCssVar(`--${humpToUnderline(key)}`, this.theme[key])
       }
       this.setPrimaryLight()
-    },
-    setFooter(footer: boolean) {
-      this.footer = footer
     },
     setPrimaryLight() {
       if (this.theme.elColorPrimary) {
@@ -303,14 +218,11 @@ export const useAppStore = defineStore('app', {
       }
     },
     initTheme() {
-      const isDark = useDark({
-        valueDark: 'dark',
-        valueLight: 'light'
-      })
+      const isDark = useDark({valueDark: 'dark', valueLight: 'light'})
       isDark.value = this.getIsDark
       const newTitle = import.meta.env.VITE_APP_TITLE
       newTitle !== this.getTitle && this.setTitle(newTitle)
-    }
+    },
   },
   persist: {key: storageKeys.l_themeSetting}
 })

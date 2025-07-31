@@ -34,6 +34,10 @@ public class ZUserTheme implements BaseEntity {
     @TableField("user_id")
     private String userId;
 
+    @ApiModelProperty("主题类型(vue2/vue3)")
+    @TableField("theme_type")
+    private String themeType;
+
     @ApiModelProperty("主题内容json")
     @TableField("theme_json")
     private String themeJson;

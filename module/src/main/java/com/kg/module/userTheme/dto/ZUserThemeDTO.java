@@ -43,6 +43,9 @@ public class ZUserThemeDTO implements BaseDTO {
     @ApiModelProperty("昵称")
     private String nickName;
 
+    @ApiModelProperty("主题类型(vue2/vue3)")
+    private String themeType;
+
     @ApiModelProperty("主题内容json")
     private String themeJson;
 

@@ -41,15 +41,13 @@
     />
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
-               v-model="dialogFormVisible" @close="resetTemp" width="600px">
+               v-model="dialogFormVisible" @close="resetTemp" width="800px" top="5vh">
       <el-form ref="dataForm" :model="temp" label-position="right" label-width="100px" :disabled="dialogType==='view'">
-        <el-form-item label="用户id" prop="userId"
-                      :rules="[{required: true, message: '用户id不能为空'}]">
-          <el-input v-model="temp.userId" placeholder="请输入用户id"/>
+        <el-form-item label="用户名" prop="userName">
+          <el-input v-model="temp.userName" placeholder=""/>
         </el-form-item>
-        <el-form-item label="主题内容json" prop="themeJson"
-                      :rules="[{required: true, message: '主题内容json不能为空'}]">
-          <el-input v-model="temp.themeJson" type="textarea" autosize placeholder="请输入主题内容json"/>
+        <el-form-item label="主题内容json" prop="themeJson">
+          <json-editor v-model="temp.themeJson"/>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -65,8 +63,10 @@
 <script>
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util'
+import { JsonEditor } from '@/components/JsonEditor'
 
 export default {
+  components: {JsonEditor},
   data() {
     return {
       // 分页数据
@@ -107,7 +107,8 @@ export default {
     // 加载表格
     loadTableList() {
       this.isLoading = true
-      const params = {...this.pager, params: JSON.stringify(this.searchData)}
+      // 只查询vue3的配置
+      const params = {...this.pager, params: JSON.stringify({...this.searchData, themeType: 'vue3'})}
       request({url: '/userTheme/zUserTheme/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
@@ -168,9 +169,7 @@ export default {
       this.temp = Object.assign({}, row)
       this.dialogType = 'view'
       this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+      this.temp.themeJson = JSON.parse(this.temp.themeJson)
     },
     // 添加/修改，保存事件
     saveData() {

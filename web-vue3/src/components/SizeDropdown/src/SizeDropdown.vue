@@ -25,6 +25,6 @@ const prefixCls = useDesign().getPrefixCls('size-dropdown')
 defineProps({color: propTypes.string.def('')})
 
 const appStore = useAppStore()
-const sizeMap = computed(() => appStore.sizeMap)
+const sizeMap = computed(() => appStore.getSizeMap)
 const setCurrentSize = (size) => { appStore.setCurrentSize(size) }
 </script>

@@ -76,6 +76,9 @@ public class ZUserThemeServiceImpl extends ServiceImpl<ZUserThemeMapper, ZUserTh
                     wrapper.lambda().eq(ZUserTheme::getUserId, "-0-");
                 }
             }
+            if (paramObj.containsKey("themeType")) {
+                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("themeType")), ZUserTheme::getThemeType, paramObj.getStr("themeType"));
+            }
             if (paramObj.containsKey("themeJson")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("themeJson")), ZUserTheme::getThemeJson, paramObj.getStr("themeJson"));
             }
