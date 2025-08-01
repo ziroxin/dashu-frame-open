@@ -11,7 +11,6 @@
 
     <div class="text-center">
       <!-- 浅色/暗黑（深色模式） -->
-      <el-divider>{{ t('setting.theme') }}</el-divider>
       <theme-switch/>
       <!-- 布局 -->
       <el-divider>{{ t('setting.layout') }}</el-divider>
@@ -20,7 +19,7 @@
       <el-divider>{{ t('setting.systemTheme') }}</el-divider>
       <div class="flex justify-start items-center flex-wrap lh-30px">
         <color-radio-picker v-model="systemTheme" @change="setSystemTheme"
-                            :schema="['#409eff','#009688','#f5222d','#fa541c','#faad14','#13c2c2','#52c41a','#722ed1']"/>
+                            :schema="['#409eff','#009688','#23ae6b','#f5222d','#fa541c','#faad14','#52c41a','#722ed1']"/>
         <br/>
         <div class="text-14px color-#333">自定义颜色：</div>
         <el-color-picker v-model="systemTheme" @change="setSystemTheme" :teleported="false" show-alpha/>
@@ -29,16 +28,16 @@
       <el-divider>{{ t('setting.headerTheme') }}</el-divider>
       <div class="flex justify-start items-center">
         <color-radio-picker v-model="headerTheme" @change="setHeaderTheme" class="mt-8px"
-                            :schema="['#ffffff','#151515','#001529']"/>
-        <div class="text-14px color-#333 pl-30px">自定义颜色：</div>
+                            :schema="['#ffffff','#151515','#001529','#d61c1c','#036acf']"/>
+        <div class="text-14px color-#333 pl-20px">自定义：</div>
         <el-color-picker v-model="headerTheme" @change="setHeaderTheme" :teleported="false" show-alpha/>
       </div>
       <!-- 菜单容器背景色 -->
       <el-divider>{{ t('setting.menuTheme') }}</el-divider>
       <div class="flex justify-start items-center">
         <color-radio-picker v-model="menuTheme" @change="setMenuTheme" class="mt-8px"
-                            :schema="['#ffffff','#151515','#001529']"/>
-        <div class="text-14px color-#333 pl-30px">自定义颜色：</div>
+                            :schema="['#ffffff','#151515','#001529','#d61c1c','#036acf']"/>
+        <div class="text-14px color-#333 pl-20px">自定义：</div>
         <el-color-picker v-model="menuTheme" @change="setMenuTheme" :teleported="false" show-alpha/>
       </div>
     </div>
@@ -72,7 +71,7 @@
 import ColorRadioPicker from './components/ColorRadioPicker.vue'
 import InterfaceDisplay from './components/InterfaceDisplay.vue'
 import LayoutRadioPicker from './components/LayoutRadioPicker.vue'
-import { ElNotification, ElMessageBox } from 'element-plus'
+import { ElMessageBox, ElNotification } from 'element-plus'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ThemeSwitch } from '@/components/ThemeSwitch'
 import { useCssVar } from '@vueuse/core'

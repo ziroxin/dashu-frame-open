@@ -60,16 +60,16 @@
   </el-form>
 </template>
 <script setup lang="ts">
-import { useI18n } from '@/hooks/web/useI18n'
 import request from '@/utils/request'
+import storageKeys from '@/utils/storage-keys'
+import { useI18n } from '@/hooks/web/useI18n'
 import { useIcon } from '@/hooks/web/useIcon'
 import { encryptRSA } from '@/utils/jsencrypt-util'
-import storageKeys from '@/utils/storage-keys'
 import { loginApi } from '@/api/login'
 import { setToken } from '@/utils/auth'
+import { useAppStore } from '@/store/modules/app'
 // 国际化
 const {t} = useI18n()
-
 // 登录表单数据
 const isLoading = ref(false)
 const loginFormRef = ref()
@@ -125,10 +125,26 @@ const signIn = () => {
         } else {
           localStorage.removeItem(storageKeys.l_rememberMeData)
         }
-        // 跳转页面
-        replace({path: currentRoute.value?.query?.redirect as string || '/'})
-        isLoading.value = false
-        location.reload()
+        // 如果有允许配置主题，则登录成功后，加载用户自己的主题
+        if (!!import.meta.env.VITE_HIDE_GLOBAL_SETTING) {
+          const params = {themeType: 'vue3'}
+          request({url: '/userTheme/zUserTheme/getByUser', method: 'get', params}).then((response) => {
+            const {data} = response
+            if (data) {
+              // 加载用户自己的主题
+              useAppStore().loadTheme(JSON.parse(data))
+            }
+            // 跳转页面
+            replace({path: currentRoute.value?.query?.redirect as string || '/'})
+            isLoading.value = false
+            location.reload()
+          })
+        } else {
+          // 跳转页面
+          replace({path: currentRoute.value?.query?.redirect as string || '/'})
+          isLoading.value = false
+          location.reload()
+        }
       }).catch(err => {
         console.log('login error!', err)
         isLoading.value = false

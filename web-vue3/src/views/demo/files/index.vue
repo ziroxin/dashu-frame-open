@@ -217,7 +217,7 @@ const openStsFile = () => {
 <style scoped lang="less">
 .title {
   text-align: center;
-  margin-bottom: 50px;
+  margin: 20px auto 30px auto;
 }
 
 .content {

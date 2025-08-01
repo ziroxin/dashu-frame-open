@@ -1,6 +1,10 @@
 <template>
-  <el-switch :class="prefixCls" v-model="isDark" inline-prompt :border-color="blackColor"
-             :active-color="blackColor" :inactive-color="blackColor" :active-icon="Sun" :inactive-icon="CrescentMoon"/>
+  <div class="flex justify-center items-center">
+    <span class="text-14px color-#333 mr-10px">深色模式/浅色模式：</span>
+    <el-switch :class="prefixCls" v-model="isDark" inline-prompt :border-color="blackColor"
+               :active-color="blackColor" :inactive-color="blackColor" :active-icon="Sun"
+               :inactive-icon="CrescentMoon"/>
+  </div>
 </template>
 
 <script setup lang="ts">

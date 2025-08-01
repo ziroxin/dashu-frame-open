@@ -224,6 +224,25 @@ export const useAppStore = defineStore('app', {
       isDark.value = this.getIsDark
       const newTitle = import.meta.env.VITE_APP_TITLE
       newTitle !== this.getTitle && this.setTitle(newTitle)
+    },
+    loadTheme(themeObj: any) {
+      this.setIsDark(themeObj.isDark)
+      this.setLayout(themeObj.layout)
+      this.setTheme(themeObj.theme)
+      this.setTagsView(themeObj.tagsView)
+      this.setTagsViewIcon(themeObj.tagsViewIcon)
+      this.setFixedHeader(themeObj.fixedHeader)
+      this.setFooter(themeObj.footer)
+      this.setLogo(themeObj.logo)
+      this.setHamburger(themeObj.hamburger)
+      this.setBreadcrumb(themeObj.breadcrumb)
+      this.setBreadcrumbIcon(themeObj.breadcrumbIcon)
+      this.setScreenfull(themeObj.screenfull)
+      this.setSize(themeObj.size)
+      this.setLocale(themeObj.locale)
+      this.setUniqueOpened(themeObj.uniqueOpened)
+      this.setGreyMode(themeObj.greyMode)
+      this.setFixedMenu(themeObj.fixedMenu)
     }
   },
   persist: {key: storageKeys.l_themeSetting}
