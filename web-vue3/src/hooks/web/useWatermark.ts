@@ -5,7 +5,7 @@ export function useWatermark(appendEl: HTMLElement | null = document.body) {
   let func: Fn = () => {}
   const id = domSymbol.toString()
   // 清除水印
-  const clear = () => {
+  const clearWatermark = () => {
     const domId = document.getElementById(id)
     if (domId) {
       const el = appendEl
@@ -15,7 +15,7 @@ export function useWatermark(appendEl: HTMLElement | null = document.body) {
   }
   // 创建水印
   const createWatermark = (str: string) => {
-    clear()
+    clearWatermark()
 
     const can = document.createElement('canvas')
     can.width = 300
@@ -52,5 +52,5 @@ export function useWatermark(appendEl: HTMLElement | null = document.body) {
     window.addEventListener('resize', func)
   }
   // 导出方法：设置水印、清空水印
-  return {setWatermark, clear}
+  return {setWatermark, clearWatermark}
 }

@@ -99,7 +99,9 @@ export default {
     uniqueOpened: '手风琴模式(只展开一个子菜单)',
     tagsViewIcon: '标签页图标',
     reExperienced: '请重新退出登录体验',
-    fixedMenu: '固定菜单(分栏模式)'
+    fixedMenu: '固定菜单(分栏模式)',
+    watermark: '水印',
+    watermarkTitle: '水印标题'
   },
   size: {
     default: '默认',

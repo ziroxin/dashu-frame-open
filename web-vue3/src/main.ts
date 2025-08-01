@@ -24,6 +24,8 @@ import { setupDirectives } from './directives'
 import { setupGlobalProperties } from '@/utils/global-properties'
 // 注册数据字典
 import { setupDictList } from '@/utils/dict-util'
+// 初始化水印
+import { setupWatermark } from '@/utils/watermark'
 // 引入App组件
 import { createApp } from 'vue'
 import App from './App.vue'
@@ -48,6 +50,8 @@ const setupAll = async () => {
   setupGlobalProperties(app)
   // 注册数据字典
   setupDictList()
+  // 初始化水印
+  setupWatermark()
   // 挂载
   app.mount('#app')
 }

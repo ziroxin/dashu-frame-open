@@ -31,6 +31,8 @@ interface AppState {
   uniqueOpened: boolean
   greyMode: boolean
   fixedMenu: boolean
+  watermark: boolean
+  watermarkTitle: string
 }
 
 export const useAppStore = defineStore('app', {
@@ -89,7 +91,9 @@ export const useAppStore = defineStore('app', {
       locale: true, // 多语言图标
       uniqueOpened: false, // 菜单手风琴（只展开一个子菜单）
       greyMode: false, // 是否开始灰色模式，用于特殊悼念日
-      fixedMenu: false // 是否固定菜单
+      fixedMenu: false, // 是否固定菜单
+      watermark: false, // 是否显示水印
+      watermarkTitle: import.meta.env.VITE_APP_TITLE // 水印标题
       // =============== 在 “主题配置” 面板中拷贝的配置项，从这行往上 ↑ 拷贝 ===============
     }
   },
@@ -116,7 +120,9 @@ export const useAppStore = defineStore('app', {
     getLocale(): boolean { return this.locale },
     getUniqueOpened(): boolean { return this.uniqueOpened },
     getGreyMode(): boolean { return this.greyMode },
-    getFixedMenu(): boolean { return this.fixedMenu }
+    getFixedMenu(): boolean { return this.fixedMenu },
+    getWatermark(): boolean { return this.watermark },
+    getWatermarkTitle(): string { return this.watermarkTitle }
   },
   actions: {
     setCurrentSize(currentSize: ComponentSize) { this.currentSize = currentSize },
@@ -157,6 +163,8 @@ export const useAppStore = defineStore('app', {
     setUniqueOpened(uniqueOpened: boolean) { this.uniqueOpened = uniqueOpened },
     setGreyMode(greyMode: boolean) { this.greyMode = greyMode },
     setFixedMenu(fixedMenu: boolean) { this.fixedMenu = fixedMenu },
+    setWatermark(watermark: boolean) { this.watermark = watermark },
+    setWatermarkTitle(watermarkTitle: string) { this.watermarkTitle = watermarkTitle },
     setCssVarTheme() {
       for (const key in this.theme) {
         setCssVar(`--${humpToUnderline(key)}`, this.theme[key])
@@ -243,6 +251,8 @@ export const useAppStore = defineStore('app', {
       this.setUniqueOpened(themeObj.uniqueOpened)
       this.setGreyMode(themeObj.greyMode)
       this.setFixedMenu(themeObj.fixedMenu)
+      this.setWatermark(themeObj.watermark)
+      this.setWatermarkTitle(themeObj.watermarkTitle)
     }
   },
   persist: {key: storageKeys.l_themeSetting}

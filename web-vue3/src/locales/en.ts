@@ -100,7 +100,9 @@ export default {
     uniqueOpened: 'AccordionMode(OnlyExpandOneSubmenu)',
     tagsViewIcon: 'Tags view icon',
     reExperienced: 'Please exit the login experience again',
-    fixedMenu: 'Fixed menu'
+    fixedMenu: 'Fixed menu',
+    watermark: 'Watermark',
+    watermarkTitle: 'Watermark title'
   },
   size: {
     default: 'Default',

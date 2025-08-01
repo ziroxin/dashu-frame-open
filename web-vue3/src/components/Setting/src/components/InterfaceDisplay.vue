@@ -77,6 +77,17 @@
       <span class="text-14px">{{ t('setting.greyMode') }}</span>
       <el-switch v-model="greyMode" @change="greyModeChange"/>
     </div>
+
+    <!-- 水印配置 -->
+    <el-divider>水印配置</el-divider>
+    <div class="flex justify-between items-center">
+      <span class="text-14px">{{ t('setting.watermark') }}</span>
+      <el-switch v-model="watermark" @change="watermarkChange"/>
+    </div>
+    <div class="flex justify-between items-center">
+      <span class="text-14px">{{ t('setting.watermarkTitle') }}</span>
+      <el-input v-model="watermarkTitle" @input="watermarkTitleChange" class="w-200px!" clearable/>
+    </div>
   </div>
 </template>
 
@@ -85,9 +96,10 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useAppStore } from '@/store/modules/app'
 import { setCssVar } from '@/utils'
+import { useWatermark } from '@/hooks/web/useWatermark'
 
-const prefixCls = useDesign().getPrefixCls('interface-display')
 const {t} = useI18n()
+const prefixCls = useDesign().getPrefixCls('interface-display')
 const appStore = useAppStore()
 // 面包屑
 const breadcrumb = ref(appStore.getBreadcrumb)
@@ -135,6 +147,27 @@ const greyModeChange = (show: boolean) => { appStore.setGreyMode(show) }
 // 固定菜单
 const fixedMenu = ref(appStore.getFixedMenu)
 const fixedMenuChange = (show: boolean) => { appStore.setFixedMenu(show) }
+
+const {setWatermark, clearWatermark} = useWatermark()
+// 水印
+const watermark = ref(appStore.getWatermark)
+const watermarkChange = (show: boolean) => {
+  if (show) {
+    setWatermark(watermarkTitle.value || import.meta.env.VITE_APP_TITLE)
+    appStore.setWatermark(show)
+  } else {
+    clearWatermark()
+    appStore.setWatermark(show)
+  }
+}
+// 水印标题
+const watermarkTitle = ref(appStore.getWatermarkTitle)
+const watermarkTitleChange = () => {
+  if (watermark.value) {
+    setWatermark(watermarkTitle.value)
+  }
+  appStore.setWatermarkTitle(watermarkTitle.value)
+}
 
 const layout = computed(() => appStore.getLayout)
 const showCollapse = ref(true)

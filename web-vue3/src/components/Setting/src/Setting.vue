@@ -71,6 +71,8 @@
 import ColorRadioPicker from './components/ColorRadioPicker.vue'
 import InterfaceDisplay from './components/InterfaceDisplay.vue'
 import LayoutRadioPicker from './components/LayoutRadioPicker.vue'
+import storageKeys from '@/utils/storage-keys'
+import request from '@/utils/request'
 import { ElMessageBox, ElNotification } from 'element-plus'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ThemeSwitch } from '@/components/ThemeSwitch'
@@ -78,8 +80,6 @@ import { useCssVar } from '@vueuse/core'
 import { useAppStore } from '@/store/modules/app'
 import { setCssVar, trim } from '@/utils'
 import { useDesign } from '@/hooks/web/useDesign'
-import storageKeys from '@/utils/storage-keys'
-import request from '@/utils/request'
 
 const {t} = useI18n()
 const prefixCls = useDesign().getPrefixCls('setting')
@@ -137,7 +137,9 @@ const saveTheme = () => {
     locale: appStore.getLocale,
     uniqueOpened: appStore.getUniqueOpened,
     greyMode: appStore.getGreyMode,
-    fixedMenu: appStore.getFixedMenu
+    fixedMenu: appStore.getFixedMenu,
+    watermark: appStore.getWatermark,
+    watermarkTitle: appStore.getWatermarkTitle
   }
   const data = {themeType: 'vue3', themeJson: JSON.stringify(themeObj)}
   request({url: '/userTheme/zUserTheme/updateByUser', method: 'post', data}).then(() => {
@@ -198,7 +200,9 @@ const copyTheme = computed(() => {
       locale: ${appStore.getLocale}, // 多语言图标
       uniqueOpened: ${appStore.getUniqueOpened}, // 菜单手风琴（只展开一个子菜单）
       greyMode: ${appStore.getGreyMode}, // 是否开始灰色模式，用于特殊悼念日
-      fixedMenu: ${appStore.getFixedMenu} // 是否固定菜单
+      fixedMenu: ${appStore.getFixedMenu}, // 是否固定菜单
+      watermark: ${appStore.getWatermark}, // 是否显示水印
+      watermarkTitle: '${appStore.getWatermarkTitle}' // 水印标题
   `
 })
 
