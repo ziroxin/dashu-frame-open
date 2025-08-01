@@ -373,7 +373,7 @@ export default {
     watermark: '水印',
     createdWatermark: '创建水印',
     clearWatermark: '清除水印',
-    resetWatermark: '重置水印'
+    resetWatermark: '重置水印标题'
   },
   qrcodeDemo: {
     qrcode: '二维码',

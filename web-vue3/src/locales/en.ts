@@ -380,7 +380,7 @@ export default {
     watermark: 'Watermark',
     createdWatermark: 'Created watermark',
     clearWatermark: 'Clear watermark',
-    resetWatermark: 'Reset watermark'
+    resetWatermark: 'Reset watermark title'
   },
   qrcodeDemo: {
     qrcode: 'Qrcode',
