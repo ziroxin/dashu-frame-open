@@ -11,6 +11,7 @@
 
     <div class="text-center">
       <!-- 浅色/暗黑（深色模式） -->
+      <el-divider>{{ t('setting.theme') }}</el-divider>
       <theme-switch/>
       <!-- 布局 -->
       <el-divider>{{ t('setting.layout') }}</el-divider>
