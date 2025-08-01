@@ -135,15 +135,11 @@ const signIn = () => {
               useAppStore().loadTheme(JSON.parse(data))
             }
             // 跳转页面
-            replace({path: currentRoute.value?.query?.redirect as string || '/'})
-            isLoading.value = false
-            location.reload()
+            loginSuccess()
           })
         } else {
           // 跳转页面
-          replace({path: currentRoute.value?.query?.redirect as string || '/'})
-          isLoading.value = false
-          location.reload()
+          loginSuccess()
         }
       }).catch(err => {
         console.log('login error!', err)
@@ -152,6 +148,11 @@ const signIn = () => {
       })
     }
   })
+}
+
+// 登录成功，跳转页面
+const loginSuccess = () => {
+  replace({path: currentRoute.value?.query?.redirect as string || '/'})
 }
 
 // 输入框图标
