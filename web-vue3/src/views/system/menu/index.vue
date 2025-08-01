@@ -532,7 +532,13 @@ export default {
     // 路由输入监听
     permissionRouterInput() {
       if (this.temp.permissionComponent === '' || this.temp.permissionComponent.endsWith('/index')) {
-        this.temp.permissionComponent = this.temp.permissionRouter + '/index'
+        if (this.temp.permissionComponent !== '/layout/index') {
+          if (this.temp.permissionRouter.endsWith('/index')) {
+            this.temp.permissionComponent = this.temp.permissionRouter
+          } else {
+            this.temp.permissionComponent = this.temp.permissionRouter + '/index'
+          }
+        }
       }
     }
   }
