@@ -50,6 +50,7 @@ export default {
     lengthRange: 'The length should be between {min} and {max}',
     notSpace: 'Spaces are not allowed',
     notSpecialCharacters: 'Special characters are not allowed',
+    editPassword: 'Edit password',
     isEqual: 'The two are not equal',
     // 列设置
     setting: 'Setting'

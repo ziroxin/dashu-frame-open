@@ -1,4 +1,4 @@
-import { VueTypeValidableDef, VueTypesInterface, createTypes, toValidableType } from 'vue-types'
+import { createTypes, toValidableType, VueTypesInterface, VueTypeValidableDef } from 'vue-types'
 import { CSSProperties } from 'vue'
 
 type PropTypes = VueTypesInterface & {
@@ -15,9 +15,7 @@ const newPropTypes = createTypes({
 
 class propTypes extends newPropTypes {
   static get style() {
-    return toValidableType('style', {
-      type: [String, Object]
-    })
+    return toValidableType('style', {type: [String, Object]})
   }
 }
 

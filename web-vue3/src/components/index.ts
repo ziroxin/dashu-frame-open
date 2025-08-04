@@ -1,6 +1,5 @@
 import type { App } from 'vue'
 import { MyIcon } from './MyIcon'
-import { Permission } from './Permission'
 import { BaseButton } from './BaseButton'
 
 /**
@@ -9,6 +8,5 @@ import { BaseButton } from './BaseButton'
  */
 export const setupGlobCom = (app: App<Element>): void => {
   app.component('MyIcon', MyIcon)
-  app.component('Permission', Permission)
   app.component('BaseButton', BaseButton)
 }

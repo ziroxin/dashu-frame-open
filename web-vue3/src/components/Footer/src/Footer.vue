@@ -1,6 +1,5 @@
 <template>
-  <div :class="prefixCls"
-       class="text-center text-[var(--el-text-color-placeholder)] bg-[var(--app-content-bg-color)] h-[var(--app-footer-height)] leading-[var(--app-footer-height)] dark:bg-[var(--el-bg-color)] overflow-hidden">
+  <div :class="prefixCls" class="text-center text-12px color-#909399 h-[var(--app-footer-height)] overflow-hidden">
     Copyright ©2022-2032 {{ title }}
   </div>
 </template>

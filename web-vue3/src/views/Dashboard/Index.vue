@@ -29,9 +29,9 @@
 <script setup lang="ts">
 import PanelGroup from './components/PanelGroup.vue'
 import { Echart } from '@/components/Echart'
+import { EChartsOption } from 'echarts'
 import { barOptions, lineOptions, pieOptions } from './echarts-data'
 import { set } from 'lodash-es'
-import { EChartsOption } from 'echarts'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useAppStore } from '@/store/modules/app'
 

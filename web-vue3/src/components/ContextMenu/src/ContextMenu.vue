@@ -1,4 +1,5 @@
 <template>
+  <!-- 右键菜单面板（标签页使用） -->
   <el-dropdown ref="elDropdownMenuRef" :class="prefixCls" :trigger="trigger" placement="bottom-start"
                @command="command" @visible-change="visibleChange" popper-class="v-context-menu-popper">
     <slot></slot>
@@ -18,7 +19,6 @@
 import { useI18n } from '@/hooks/web/useI18n'
 import { useDesign } from '@/hooks/web/useDesign'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
-import { ElDropdown } from 'element-plus'
 
 interface ContextMenuSchema {
   disabled?: boolean

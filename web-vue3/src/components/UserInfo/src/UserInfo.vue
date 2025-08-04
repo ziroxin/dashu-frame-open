@@ -15,10 +15,16 @@
     <template #dropdown>
       <el-dropdown-menu>
         <!-- 个人中心 -->
-        <el-dropdown-item @click="toUserPage()">
+        <el-dropdown-item @click="toUserPage">
           <div class="flex items-center">
             <my-icon icon="el-icon-user"/>
             {{ t('router.personalCenter') }}
+          </div>
+        </el-dropdown-item>
+        <el-dropdown-item @click="editPasswordOpen">
+          <div class="flex items-center">
+            <my-icon icon="el-icon-key"/>
+            {{ t('common.editPassword') }}
           </div>
         </el-dropdown-item>
         <!-- 锁屏 -->
@@ -39,6 +45,9 @@
     </template>
   </el-dropdown>
 
+  <!-- 修改密码弹窗 -->
+  <user-edit-password v-if="editPasswordDialogVisible" v-model="editPasswordDialogVisible" :info="editPasswordInfo"
+                      :is-default-password="isDefaultPassword" :show-close-btn="showCloseBtn"/>
   <!-- 锁屏弹窗 -->
   <lock-dialog v-if="dialogVisible" v-model="dialogVisible"/>
   <teleport to="body">
@@ -51,6 +60,8 @@
 <script setup lang="ts">
 import LockDialog from './components/LockDialog.vue'
 import LockPage from './components/LockPage.vue'
+import UserEditPassword from '@/views/system/user/UserEditPassword.vue'
+import storageKeys from '@/utils/storage-keys'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useLockStore } from '@/store/modules/lock'
@@ -65,13 +76,44 @@ const prefixCls = getPrefixCls('user-info')
 // 用户信息
 const userStore = useUserStore()
 const userInfo: any = computed(() => userStore.getUserInfo)
+
+// 修改密码
+const editPasswordDialogVisible = ref(false)
+const isDefaultPassword = ref(false)
+const showCloseBtn = ref(true)
+const editPasswordInfo = ref('')
+const editPasswordOpen = () => {
+  isDefaultPassword.value = false
+  showCloseBtn.value = true
+  editPasswordInfo.value = ''
+  editPasswordDialogVisible.value = true
+}
+// 判断默认密码和密码失效时，自动弹出修改密码弹窗
+onMounted(() => {
+  if (sessionStorage.getItem(storageKeys.s_isDefaultPassword) === 'true') {
+    isDefaultPassword.value = true
+    showCloseBtn.value = false
+    editPasswordInfo.value = '检测到您当前的密码，是系统默认密码，请及时修改！！！'
+    editPasswordDialogVisible.value = true
+  }
+  if (sessionStorage.getItem(storageKeys.s_isInvalidPassword) === 'true') {
+    isDefaultPassword.value = false
+    showCloseBtn.value = false
+    editPasswordInfo.value = '检测到您当前的密码，已失效，请及时修改！！！'
+    editPasswordDialogVisible.value = true
+  }
+})
+
 // 锁屏状态
 const getIsLock = computed(() => useLockStore().getLockInfo?.isLock ?? false)
 // 锁定弹窗
 const dialogVisible = ref<boolean>(false)
 const lockScreen = () => { dialogVisible.value = true }
 // 退出登录
-const loginOut = () => { userStore.logoutConfirm() }
+const loginOut = () => {
+  userStore.logoutConfirm()
+}
+
 // 个人中心
 const {push} = useRouter()
 const toUserPage = () => { push(userRoute.path) }
