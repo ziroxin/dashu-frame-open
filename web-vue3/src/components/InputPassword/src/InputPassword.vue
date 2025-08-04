@@ -1,68 +1,32 @@
-<script setup lang="ts">
-import { ref, unref, computed, watch } from 'vue'
-import { ElInput } from 'element-plus'
-import { propTypes } from '@/utils/propTypes'
-import { useConfigGlobal } from '@/hooks/web/useConfigGlobal'
-import { zxcvbn } from '@zxcvbn-ts/core'
-import type { ZxcvbnResult } from '@zxcvbn-ts/core'
-import { useDesign } from '@/hooks/web/useDesign'
-
-const { getPrefixCls } = useDesign()
-
-const prefixCls = getPrefixCls('input-password')
-
-const props = defineProps({
-  // 是否显示密码强度
-  strength: propTypes.bool.def(false),
-  modelValue: propTypes.string.def('')
-})
-
-watch(
-  () => props.modelValue,
-  (val: string) => {
-    if (val === unref(valueRef)) return
-    valueRef.value = val
-  }
-)
-
-const { configGlobal } = useConfigGlobal()
-
-const emit = defineEmits(['update:modelValue'])
-
-// 设置input的type属性
-const textType = ref<'password' | 'text'>('password')
-
-// 输入框的值
-const valueRef = ref(props.modelValue)
-
-// 监听
-watch(
-  () => valueRef.value,
-  (val: string) => {
-    emit('update:modelValue', val)
-  }
-)
-
-// 获取密码强度
-const getPasswordStrength = computed(() => {
-  const value = unref(valueRef)
-  const zxcvbnRef = zxcvbn(unref(valueRef)) as ZxcvbnResult
-  return value ? zxcvbnRef.score : -1
-})
-</script>
-
 <template>
-  <div :class="[prefixCls, `${prefixCls}--${configGlobal?.size}`]">
-    <ElInput v-bind="$attrs" v-model="valueRef" showPassword :type="textType" />
-    <div
-      v-if="strength"
-      :class="`${prefixCls}__bar`"
-      class="relative h-6px mt-10px mb-6px mr-auto ml-auto"
-    >
+  <!-- 密码输入框（带密码强度显示） -->
+  <div :class="[prefixCls, `${prefixCls}--${useConfigGlobal().configGlobal?.size}`]">
+    <el-input v-bind="$attrs" v-model="modelValue" showPassword type="password"/>
+    <div v-if="showStrength" :class="`${prefixCls}__bar`" class="relative h-6px mt-10px mb-6px mr-auto ml-auto">
       <div :class="`${prefixCls}__bar--fill`" :data-score="getPasswordStrength"></div>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { zxcvbn } from '@zxcvbn-ts/core'
+import { useConfigGlobal } from '@/hooks/web/useConfigGlobal'
+import { useDesign } from '@/hooks/web/useDesign'
+// 全局css
+const prefixCls = useDesign().getPrefixCls('input-password')
+
+// 传入参数
+const modelValue = defineModel<string>()
+const props = defineProps({
+  // 是否显示密码强度
+  showStrength: {type: Boolean, default: true}
+})
+
+// 获取密码强度
+const getPasswordStrength = computed(() => {
+  return modelValue.value ? zxcvbn(modelValue.value).score : -1
+})
+</script>
 
 <style lang="less" scoped>
 @prefix-cls: ~'@{adminNamespace}-input-password';
@@ -104,9 +68,8 @@ const getPasswordStrength = computed(() => {
       height: inherit;
       background-color: transparent;
       border-radius: inherit;
-      transition:
-        width 0.5s ease-in-out,
-        background 0.25s;
+      transition: width 0.5s ease-in-out,
+      background 0.25s;
 
       &[data-score='0'] {
         width: 20%;
