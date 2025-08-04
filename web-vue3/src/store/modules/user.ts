@@ -82,7 +82,7 @@ export const useUserStore = defineStore('user', {
       // 清理Cookie、localStorage、sessionStorage中的相关存储
       storageClear4Logout()
       // 跳转到登录页面
-      router.replace(loginRoute.path)
+      location.reload()
     },
     // 统一退出方法
     logout() {
