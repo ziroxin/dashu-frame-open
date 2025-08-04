@@ -8,6 +8,7 @@
         <el-radio-button value="chunkResume">断点续传</el-radio-button>
         <el-radio-button value="second">秒传</el-radio-button>
         <el-radio-button value="oss">OSS上传（阿里云）</el-radio-button>
+        <el-radio-button value="imgCrop">图片裁切</el-radio-button>
       </el-radio-group>
     </div>
 
@@ -153,6 +154,12 @@
         </a>
       </div>
     </div>
+
+    <!-- 图片裁切 -->
+    <el-divider content-position="center" v-if="uploadType==='imgCrop'">图片裁切 - DEMO</el-divider>
+    <div class="content" v-if="uploadType==='imgCrop'">
+      <image-cropping image-url="https://hips.hearstapps.com/hmg-prod/images/%E5%AE%8B%E6%99%BA%E5%AD%9D-1597774015.jpg"/>
+    </div>
   </div>
 </template>
 
@@ -164,6 +171,7 @@ import FileSecond from '@/views/demo/files/FileSecond.vue'
 import PluploadChunk from '@/views/demo/files/PluploadChunk.vue'
 import FileUploadBreakpointResume from '@/components/Upload/FileUploadBreakpointResume.vue'
 import { JsonEditor } from '@/components/JsonEditor'
+import { ImageCropping } from '@/components/ImageCropping'
 import request from '@/utils/request'
 import { getTokenHeader } from '@/utils/auth'
 
