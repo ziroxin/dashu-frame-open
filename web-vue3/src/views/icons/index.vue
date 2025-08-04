@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-affix :offset="10">
+    <el-affix :offset="0">
       <div class="app-container shadow b-1px b-solid b-#ddd">
         <div class="flex items-center justify-evenly">
           <el-input v-model="searchText" placeholder="搜索图标" class="w-300px! mr-30px" clearable/>
@@ -9,13 +9,16 @@
             <el-input-number v-model="iconSize" :min="10" :step="5"/>
           </div>
           <el-link @click="iconDialogVisible=true" underline="always" type="danger">图标组件使用说明</el-link>
+          <base-button type="primary" link icon="el-icon-position" plain @click="()=>{iconifyDialogVisible=true}">
+            在线图标
+          </base-button>
         </div>
       </div>
     </el-affix>
     <div class="app-container">
       <div class="grid-icon">
         <div v-for="item of showSvgIcons" :key="item" v-clipboard:copy="item">
-          <el-tooltip placement="top">
+          <el-tooltip placement="bottom">
             <template #content>
               图标组件：{{ generateSvgIconCode(item) }}
               <base-button type="primary" circle plain icon="el-icon-copy-document" size="small"
@@ -71,31 +74,43 @@
           </div>
           <div>注意：build打包时会自动打包成本地svg，无需手动导入</div>
           <div class="font-bold mt-10px b-t-1px b-t-dashed b-t-#ccc">在线图标测试</div>
-          <div class="flex items-center">
+          <div class="flex justify-center items-center">
             <el-input v-model="testOnlineIcon" placeholder="输入图标名称" clearable class="w-300px! mr-20px">
               <template #prefix><span class="m-[0_10px]">vi-</span></template>
             </el-input>
             <my-icon :icon="'vi-'+testOnlineIcon" :size="iconSize"/>
             <span v-if="testOnlineIcon" class="ml-20px">icon="{{ 'vi-' + testOnlineIcon }}"</span>
           </div>
+          <div class="font-bold mt-15px pt-10px b-t-1px b-t-dashed b-t-#ccc text-center">
+            <base-button type="primary" icon="el-icon-position" plain @click="()=>{iconifyDialogVisible=true}">
+              查看在线【Element Plus、Ant Design、TDesign】图标库
+            </base-button>
+          </div>
         </div>
       </div>
+    </el-dialog>
+    <!-- iconify在线图标库弹窗 -->
+    <el-dialog v-model="iconifyDialogVisible" title="iconify.design 常见在线图标库" width="95%" top="5vh" draggable>
+      <iconify-picker/>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import svgIcons from './svg-icons'
+import { IconifyPicker } from '@/components/IconifyPicker'
 
 export default {
   name: 'Icons',
+  components: {IconifyPicker},
   data() {
     return {
       svgIcons,
       searchText: '',
       iconSize: 30,
       iconDialogVisible: false,
-      testOnlineIcon: 'twemoji:flag-china'
+      testOnlineIcon: 'twemoji:flag-china',
+      iconifyDialogVisible: false
     }
   },
   computed: {

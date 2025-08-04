@@ -93,7 +93,7 @@ export default defineConfig(({command, mode}: ConfigEnv): UserConfig => {
       }
     },
     resolve: {
-      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.less', '.css'],
+      extensions: ['.ts', '.js', '.mjs', '.jsx', '.tsx', '.json', '.less', '.scss', '.css'],
       alias: [{
         find: 'vue-i18n',
         replacement: 'vue-i18n/dist/vue-i18n.cjs.js'
@@ -139,8 +139,8 @@ export default defineConfig(({command, mode}: ConfigEnv): UserConfig => {
       // 代理
       proxy: {
         '/dashuserver': {
-          target: 'http://localhost:8125',
-          // target: 'https://yanshi.java119.cn/dashuserver',
+          // target: 'http://localhost:8125',
+          target: 'http://yanshi.java119.cn/dashuserver',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/dashuserver/, '')
         }
