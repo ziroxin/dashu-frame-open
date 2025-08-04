@@ -140,7 +140,6 @@ export default defineConfig(({command, mode}: ConfigEnv): UserConfig => {
       proxy: {
         '/dashuserver': {
           // target: 'http://localhost:8125',
-          target: 'http://yanshi.java119.cn/dashuserver',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/dashuserver/, '')
         }
