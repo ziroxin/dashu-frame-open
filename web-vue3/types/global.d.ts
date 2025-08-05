@@ -1,52 +1,22 @@
-import { RawAxiosRequestHeaders } from 'axios'
-
 declare global {
+  // 定义一个泛型接口Fn，用于描述一个函数，该函数可以接受任意数量的参数，并返回与参数类型相同的值
   declare interface Fn<T = any> {
     (...arg: T[]): T
   }
 
-  declare type Nullable<T> = T | null
-
-  declare type ElRef<T extends HTMLElement = HTMLDivElement> = Nullable<T>
-
+  // 定义一个泛型类型Recordable，它基于内置的Record类型，但允许键的类型默认为string，或者在指定时可以为null或undefined
   declare type Recordable<T = any, K = string> = Record<K extends null | undefined ? string : K, T>
 
-  declare type RemoveReadonly<T> = {
-    -readonly [P in keyof T]: T[P]
-  }
-
+  // 定义一个泛型类型ComponentRef，它用于获取传入组件构造函数（T）的实例类型
   declare type ComponentRef<T> = InstanceType<T>
 
+  // 定义局部化类型LocaleType，表示支持的语言环境，当前仅支持中文（zh-CN）和英文（en）
   declare type LocaleType = 'zh-CN' | 'en'
 
-  declare type TimeoutHandle = ReturnType<typeof setTimeout>
-  declare type IntervalHandle = ReturnType<typeof setInterval>
-
-  declare type ElementPlusInfoType = 'success' | 'info' | 'warning' | 'danger'
-
+  // 定义布局类型LayoutType，列举了几种可能的布局选项，例如经典布局（classic）、顶部左侧布局（topLeft）、顶部布局（top）和分栏布局（cutMenu）
   declare type LayoutType = 'classic' | 'topLeft' | 'top' | 'cutMenu'
 
-  declare type AxiosContentType =
-    | 'application/json' | 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain'
-
-  declare type AxiosMethod = 'get' | 'post' | 'delete' | 'put'
-
-  declare type AxiosResponseType = 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream'
-
-  declare interface AxiosConfig {
-    params?: any
-    data?: any
-    url?: string
-    method?: AxiosMethod
-    headers?: RawAxiosRequestHeaders
-    responseType?: AxiosResponseType
-  }
-
-  declare interface IResponse<T = any> {
-    code: number
-    data: T extends any ? T : T & any
-  }
-
+  // 定义主题类型ThemeTypes，包含了一组可选的字符串属性，用于配置应用程序的主题样式，包括但不限于主色调、菜单边框颜色、背景颜色、文本颜色等
   declare interface ThemeTypes {
     elColorPrimary?: string
     leftMenuBorderColor?: string
@@ -64,6 +34,7 @@ declare global {
     topToolBorderColor?: string
   }
 
+  // 定义ImportMetaEnv接口，用于描述在Vite构建的应用程序中，可以通过import.meta.env访问的环境变量。这些环境变量通常是自定义的VITE_前缀的变量，在Vite配置文件中定义
   declare interface ImportMetaEnv {
     readonly VITE_NODE_ENV: string
     readonly VITE_APP_TITLE: string

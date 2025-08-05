@@ -48,7 +48,7 @@ export const constantRoutes: AppRouteRecordRaw[] = [
   },
   homeRoute,
   userRoute,
-  ...oauth2Routes,// todo: oauth客户端相关路由
+  ...oauth2Routes,
   ...otherRoutes// todo: 其他路由
 ]
 

@@ -17,12 +17,11 @@
 <script setup lang="ts">
 import { useLocaleStore } from '@/store/modules/locale'
 import { useLocale } from '@/hooks/web/useLocale'
-import { propTypes } from '@/utils/propTypes'
 import { useDesign } from '@/hooks/web/useDesign'
 
 const prefixCls = useDesign().getPrefixCls('locale-dropdown')
 
-defineProps({color: propTypes.string.def('')})
+defineProps({color: {type: String, default: ''}})
 
 const localeStore = useLocaleStore()
 const langMap = computed(() => localeStore.getLocaleMap)

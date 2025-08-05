@@ -253,8 +253,8 @@ const moveToCurrentTag = async () => {
 }
 const moveToTarget = (currentTag: RouteLocationNormalizedLoaded) => {
   const wrap$ = unref(scrollbarRef)?.wrapRef
-  let firstTag: Nullable<RouterLinkProps> = null
-  let lastTag: Nullable<RouterLinkProps> = null
+  let firstTag = null
+  let lastTag = null
   const tagList = unref(tagLinksRefs)
   // 查找第一个标签和最后一个标签
   if (tagList.length > 0) {

@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import { usePermissionStore } from '@/store/modules/permission'
 import { filterBreadcrumb } from './helper'
-import { filter, treeToList } from '@/utils/tree'
+import { filterTreeByCondition, treeToList } from '@/utils/tree'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
@@ -32,7 +32,7 @@ const menuRoutes = computed(() => { return filterBreadcrumb(usePermissionStore()
 const breadcrumbList = ref<AppRouteRecordRaw[]>([])
 const getBreadcrumb = (route) => {
   const currentPath = route.matched.slice(-1)[0].path
-  const treeRoutes = filter<AppRouteRecordRaw>(unref(menuRoutes), node => node.path === currentPath)
+  const treeRoutes = filterTreeByCondition(unref(menuRoutes), currentPath)
   breadcrumbList.value = treeToList(treeRoutes)
 }
 

@@ -16,7 +16,7 @@ export const initTabMap = (routeList: AppRouteRecordRaw[]) => {
 export const filterMenusPath = (routes: AppRouteRecordRaw[], allRoutes: AppRouteRecordRaw[]): AppRouteRecordRaw[] => {
   const res: AppRouteRecordRaw[] = []
   for (const v of routes) {
-    let data: Nullable<AppRouteRecordRaw> = null
+    let data = null
     if (v.meta && !v.meta.hidden && v.path) {
       data = cloneDeep(v)
       if (v.children && data) {

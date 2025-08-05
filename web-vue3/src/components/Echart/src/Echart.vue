@@ -25,8 +25,8 @@ const isDark = computed(() => appStore.getIsDark)
 const theme = computed(() => unref(isDark) ? 'dark' : 'auto')
 const options = computed(() => ({...props.options, darkMode: unref(theme)}))
 
-const elRef = ref<ElRef>()
-let echartRef: Nullable<echarts.ECharts> = null
+const elRef = ref()
+let echartRef = null
 const contentEl = ref<Element>()
 
 const styles = computed(() => {

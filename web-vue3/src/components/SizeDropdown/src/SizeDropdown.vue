@@ -16,13 +16,12 @@
 <script setup lang="ts">
 import { useAppStore } from '@/store/modules/app'
 import { useI18n } from '@/hooks/web/useI18n'
-import { propTypes } from '@/utils/propTypes'
 import { useDesign } from '@/hooks/web/useDesign'
 
 const {t} = useI18n()
 const prefixCls = useDesign().getPrefixCls('size-dropdown')
 
-defineProps({color: propTypes.string.def('')})
+defineProps({color: {type: String, default: ''}})
 
 const appStore = useAppStore()
 const sizeMap = computed(() => appStore.getSizeMap)

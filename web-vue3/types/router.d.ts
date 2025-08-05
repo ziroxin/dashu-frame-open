@@ -35,11 +35,6 @@ interface RouteMetaCustom extends Record<string | number | symbol, unknown> {
   permission?: string[]
 }
 
-declare module 'vue-router' {
-  interface RouteMeta extends RouteMetaCustom {
-  }
-}
-
 type Component<T = any> =
   | ReturnType<typeof defineComponent>
   | (() => Promise<typeof import('*.vue')>)

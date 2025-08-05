@@ -1,7 +1,4 @@
-import type { RouteLocationNormalized, Router, RouteRecordNormalized, RouteRecordRaw } from 'vue-router'
-import { createRouter, createWebHashHistory } from 'vue-router'
-import { isUrl } from '@/utils/is'
-import { cloneDeep, omit } from 'lodash-es'
+import type { RouteLocationNormalized, RouteRecordNormalized } from 'vue-router'
 import ErrorComponent from '@/views/Error/ErrorComponent.vue'
 
 // 顶级菜单使用：Layout组件
@@ -153,80 +150,4 @@ export const generateRoutes4HiddenByServer = (routes: Array<any>): AppRouteRecor
     }
   })
   return res
-}
-
-export const pathResolve = (parentPath: string, path: string) => {
-  if (isUrl(path)) return path
-  if (parentPath.includes(path) && path) return path
-  const resolveParentPath = parentPath ? parentPath : '/'
-  const childPath = path ? (path.startsWith('/') ? path : `/${path}`) : ''
-  return `${resolveParentPath}${childPath}`.replace(/\/\//g, '/').trim()
-}
-
-// 路由降级
-export const flatMultiLevelRoutes = (routes: AppRouteRecordRaw[]) => {
-  const modules: AppRouteRecordRaw[] = cloneDeep(routes)
-  for (let index = 0; index < modules.length; index++) {
-    const route = modules[index]
-    if (!isMultipleRoute(route)) {
-      continue
-    }
-    promoteRouteLevel(route)
-  }
-  return modules
-}
-
-// 层级是否大于2
-const isMultipleRoute = (route: AppRouteRecordRaw) => {
-  if (!route || !Reflect.has(route, 'children') || !route.children?.length) {
-    return false
-  }
-
-  const children = route.children
-
-  let flag = false
-  for (let index = 0; index < children.length; index++) {
-    const child = children[index]
-    if (child.children?.length) {
-      flag = true
-      break
-    }
-  }
-  return flag
-}
-
-// 生成二级路由
-const promoteRouteLevel = (route: AppRouteRecordRaw) => {
-  let router: Router | null = createRouter({
-    routes: [route as RouteRecordRaw],
-    history: createWebHashHistory()
-  })
-
-  const routes = router.getRoutes()
-  addToChildren(routes, route.children || [], route)
-  router = null
-
-  route.children = route.children?.map((item) => omit(item, 'children'))
-}
-
-// 添加所有子菜单
-const addToChildren = (
-  routes: RouteRecordNormalized[],
-  children: AppRouteRecordRaw[],
-  routeModule: AppRouteRecordRaw
-) => {
-  for (let index = 0; index < children.length; index++) {
-    const child = children[index]
-    const route = routes.find((item) => item.name === child.name)
-    if (!route) {
-      continue
-    }
-    routeModule.children = routeModule.children || []
-    if (!routeModule.children.find((item) => item.name === route.name)) {
-      routeModule.children?.push(route as unknown as AppRouteRecordRaw)
-    }
-    if (child.children?.length) {
-      addToChildren(routes, child.children, routeModule)
-    }
-  }
 }

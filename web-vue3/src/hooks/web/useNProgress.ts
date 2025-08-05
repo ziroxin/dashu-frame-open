@@ -11,7 +11,7 @@ export const useNProgress = () => {
 
   const initColor = async () => {
     await nextTick()
-    const bar = document.getElementById('nprogress')?.getElementsByClassName('bar')[0] as ElRef
+    const bar = document.getElementById('nprogress')?.getElementsByClassName('bar')[0]
     if (bar) {
       bar.style.background = unref(primaryColor.value) as string
     }
