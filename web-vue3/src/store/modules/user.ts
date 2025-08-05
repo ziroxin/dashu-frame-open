@@ -4,10 +4,9 @@ import { ElMessageBox } from 'element-plus'
 import { useI18n } from '@/hooks/web/useI18n'
 import { logoutApi } from '@/api/login'
 import { useTagsViewStoreWithOut } from './tagsView'
-import router, { resetRouter } from '@/router'
+import { resetRouter } from '@/router'
 import { removeToken } from '@/utils/auth'
 import { usePermissionStoreWithOut } from '@/store/modules/permission'
-import { loginRoute } from '@/router/constant-routes'
 import storageKeys, { storageClear4Logout } from '@/utils/storage-keys'
 
 // 定义用户信息类型
@@ -57,8 +56,8 @@ export const useUserStore = defineStore('user', {
     },
     logoutConfirm() {
       const {t} = useI18n()
-      ElMessageBox.confirm(t('common.loginOutMessage'), t('common.reminder'), {
-        confirmButtonText: t('common.ok'), cancelButtonText: t('common.cancel'), type: 'warning'
+      ElMessageBox.confirm(t('logout.cfmMessage'), t('logout.cfmTitle'), {
+        confirmButtonText: t('logout.cfmOk'), cancelButtonText: t('logout.cfmCancel'), type: 'warning'
       }).then(async () => {
         const res = await logoutApi()
         if (res) {

@@ -8,13 +8,13 @@
       </span>
     </div>
     <el-form ref="lockFormRef" :model="formData">
-      <el-form-item :label="t('lock.lockPassword')" :rules="[{required:true, message: t('common.required')}]">
+      <el-form-item :label="t('lock.lockPasswordLbl')" :rules="[{required:true, message: '锁屏密码不能为空'}]">
         <el-input ref="passwordRef" type="password" v-model="formData.password"
                   show-password @keydown.enter.stop="handleLock"/>
       </el-form-item>
     </el-form>
     <template #footer>
-      <base-button type="primary" @click="handleLock">{{ t('lock.lock') }}</base-button>
+      <base-button type="primary" @click="handleLock">{{ t('lock.lockBtn') }}</base-button>
     </template>
   </el-dialog>
 </template>

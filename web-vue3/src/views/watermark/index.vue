@@ -4,15 +4,9 @@
     <div class="w-full flex justify-center items-center">
       <div class="text-14px color-#666">水印标题：</div>
       <el-input v-model="title" clearable class="w-300px! mr-10px"/>
-      <base-button type="primary" icon="el-icon-check" @click="setWatermarkClick">
-        {{ t('watermarkDemo.createdWatermark') }}
-      </base-button>
-      <base-button type="danger" icon="el-icon-close" @click="clearWatermark">
-        {{ t('watermarkDemo.clearWatermark') }}
-      </base-button>
-      <base-button type="warning" icon="reset" @click="resetWatermarkClick">
-        {{ t('watermarkDemo.resetWatermark') }}
-      </base-button>
+      <base-button type="primary" icon="el-icon-check" @click="setWatermarkClick">创建水印</base-button>
+      <base-button type="danger" icon="el-icon-close" @click="clearWatermark">清除水印</base-button>
+      <base-button type="warning" icon="reset" @click="resetWatermarkClick">重置水印标题</base-button>
     </div>
     <h2 class="w-full text-center lh-100px!">
       <el-tag type="primary" size="large" effect="plain">

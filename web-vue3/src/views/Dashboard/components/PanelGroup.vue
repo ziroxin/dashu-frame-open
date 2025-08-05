@@ -11,11 +11,9 @@
                 </div>
               </div>
               <div class="flex flex-col justify-between">
-                <div :class="`${prefixCls}__item--text text-16px text-gray-500 text-right`">
-                  {{ t('analysis.newUser') }}
-                </div>
-                <count-to class="text-20px font-700 text-right" :start-val="0" :end-val="totalState.users"
-                          :duration="2600"/>
+                <div :class="`${prefixCls}__item--text text-16px text-gray-500 text-right`">新增用户</div>
+                <count-to class="text-20px font-700 text-right"
+                          :start-val="0" :end-val="totalState.users" :duration="2600"/>
               </div>
             </div>
           </template>
@@ -34,11 +32,9 @@
                 </div>
               </div>
               <div class="flex flex-col justify-between">
-                <div :class="`${prefixCls}__item--text text-16px text-gray-500 text-right`">
-                  {{ t('analysis.unreadInformation') }}
-                </div>
-                <count-to class="text-20px font-700 text-right" :start-val="0" :end-val="totalState.messages"
-                          :duration="2600"/>
+                <div :class="`${prefixCls}__item--text text-16px text-gray-500 text-right`">未读消息</div>
+                <count-to class="text-20px font-700 text-right"
+                          :start-val="0" :end-val="totalState.messages" :duration="2600"/>
               </div>
             </div>
           </template>
@@ -57,11 +53,9 @@
                 </div>
               </div>
               <div class="flex flex-col justify-between">
-                <div :class="`${prefixCls}__item--text text-16px text-gray-500 text-right`">
-                  {{ t('analysis.transactionAmount') }}
-                </div>
-                <count-to class="text-20px font-700 text-right" :start-val="0" :end-val="totalState.moneys"
-                          :duration="2600"/>
+                <div :class="`${prefixCls}__item--text text-16px text-gray-500 text-right`">成交金额</div>
+                <count-to class="text-20px font-700 text-right"
+                          :start-val="0" :end-val="totalState.moneys" :duration="2600"/>
               </div>
             </div>
           </template>
@@ -80,11 +74,9 @@
                 </div>
               </div>
               <div class="flex flex-col justify-between">
-                <div :class="`${prefixCls}__item--text text-16px text-gray-500 text-right`">
-                  {{ t('analysis.totalShopping') }}
-                </div>
-                <count-to class="text-20px font-700 text-right" :start-val="0" :end-val="totalState.shoppings"
-                          :duration="2600"/>
+                <div :class="`${prefixCls}__item--text text-16px text-gray-500 text-right`">购物总量</div>
+                <count-to class="text-20px font-700 text-right"
+                          :start-val="0" :end-val="totalState.shoppings" :duration="2600"/>
               </div>
             </div>
           </template>

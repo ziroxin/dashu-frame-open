@@ -4,18 +4,18 @@
     <el-row>
       <el-col :span="24">
         <el-form-item>
-          <h2 class="text-2xl font-bold text-center w-[100%]" v-text="t('login.login')"></h2>
+          <h2 class="text-2xl font-bold text-center w-[100%]" v-text="t('login.loginTitle')"></h2>
         </el-form-item>
       </el-col>
       <el-col :span="24">
-        <el-form-item :label="t('login.username')" prop="userName"
+        <el-form-item :label="t('login.userNameLabel')" prop="userName"
                       :rules="[{required: true, message: '用户名不能为空！'}]">
           <el-input v-model="loginForm.userName" :prefix-icon="iconMap.user"
-                    :placeholder="t('login.usernamePlaceholder')" style="width: 100%"/>
+                    :placeholder="t('login.userNamePlaceholder')" style="width: 100%"/>
         </el-form-item>
       </el-col>
       <el-col :span="24">
-        <el-form-item :label="t('login.password')" prop="password"
+        <el-form-item :label="t('login.passwordLabel')" prop="password"
                       :rules="[{required: true, message: '密码不能为空！'}]">
           <el-input type="password" v-model="loginForm.password" @keydown.enter.stop="signIn"
                     :prefix-icon="iconMap.password" show-password
@@ -23,12 +23,10 @@
         </el-form-item>
       </el-col>
       <el-col :span="24">
-        <el-form-item :label="t('login.code')" prop="yzm"
-                      :rules="[{required: true, message: '验证码不能为空！'}]">
+        <el-form-item :label="t('login.yzmLabel')" prop="yzm" :rules="[{required: true, message: '验证码不能为空！'}]">
           <div class="flex justify-between items-center w-[100%]">
-            <el-input ref="yzm" v-model="loginForm.yzm" @keydown.enter.stop="signIn"
-                      :prefix-icon="iconMap.yzm"
-                      class="w-[50%]" :placeholder="t('login.codePlaceholder')"/>
+            <el-input ref="yzm" v-model="loginForm.yzm" @keydown.enter.stop="signIn" :prefix-icon="iconMap.yzm"
+                      class="w-[50%]" :placeholder="t('login.yzmPlaceholder')"/>
             <img :src="loginForm.codeBaseImage" @click="loadCaptcha"/>
           </div>
         </el-form-item>
@@ -36,20 +34,20 @@
       <el-col :span="24">
         <el-form-item>
           <div class="flex justify-between items-center w-[100%]">
-            <el-checkbox v-model="loginForm.rememberMe" :label="t('login.remember')"/>
-            <el-link type="primary" underline="never" v-text="t('login.forgetPassword')"/>
+            <el-checkbox v-model="loginForm.rememberMe" :label="t('login.rememberChb')"/>
+            <el-link type="primary" underline="never" v-text="t('login.forgetPasswordLink')"/>
           </div>
         </el-form-item>
       </el-col>
       <el-col :span="24">
         <el-form-item class="w-[100%]">
           <base-button :loading="isLoading" type="primary" class="w-[100%]" @click="signIn">
-            {{ t('login.login') }}
+            {{ t('login.loginBtn') }}
           </base-button>
         </el-form-item>
       </el-col>
       <el-col :span="24">
-        <el-divider content-position="center" :content="t('login.otherLogin')"/>
+        <el-divider content-position="center" :content="t('login.otherLoginDivider')"/>
         <div class="flex justify-between w-[100%]">
           <my-icon v-for="item in ['github-filled', 'wechat-filled','alipay-circle-filled','weibo-circle-filled']"
                    :icon="'vi-ant-design:'+item" :key="item"
@@ -125,8 +123,8 @@ const signIn = () => {
         } else {
           localStorage.removeItem(storageKeys.l_rememberMeData)
         }
-        // 如果有允许配置主题，则登录成功后，加载用户自己的主题
-        if (!!import.meta.env.VITE_HIDE_GLOBAL_SETTING) {
+        // 如果“隐藏主题配置”不是true，则登录成功后，加载用户自己的主题
+        if (import.meta.env.VITE_HIDE_GLOBAL_SETTING !== 'true') {
           const params = {themeType: 'vue3'}
           request({url: '/userTheme/zUserTheme/getByUser', method: 'get', params}).then((response) => {
             const {data} = response

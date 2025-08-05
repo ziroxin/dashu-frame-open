@@ -4,7 +4,7 @@
     <div :class="`${prefixCls}__unlock`" @click="handleShowForm(true)"
          class="absolute top-0 left-1/2 flex pt-5 h-16 items-center justify-center sm:text-md xl:text-xl text-white flex-col cursor-pointer transform translate-x-1/2">
       <my-icon icon="vi-ep:unlock" :size="28"/>
-      <span>{{ t('lock.unlock') }}</span>
+      <span>{{ t('lock.unlockBtn') }}</span>
     </div>
     <!-- 时钟 -->
     <div class="flex w-screen h-screen justify-center items-center">
@@ -29,20 +29,20 @@
             </span>
           </div>
           <!-- 密码输入框 -->
-          <el-input type="password" :placeholder="t('lock.placeholder')" class="enter-x"
+          <el-input type="password" :placeholder="t('lock.lockPlaceholder')" class="enter-x"
                     v-model="password" @keydown.enter="unLock" ref="passwordInputRef"/>
           <!-- 错误提示 -->
           <span :class="`text-14px ${prefixCls}-entry__err-msg enter-x`" v-if="errMsg">{{ errMsg }}</span>
           <!-- 底部按钮 -->
           <div :class="`${prefixCls}-entry__footer enter-x mt-10px`">
             <base-button type="primary" size="small" class="mt-2 mr-2 enter-x" link @click="handleShowForm(false)">
-              {{ t('common.back') }}
+              {{ t('lock.lockBackBtn') }}
             </base-button>
             <base-button type="primary" size="small" class="mt-2 mr-2 enter-x" link @click="goLogin">
-              {{ t('lock.backToLogin') }}
+              {{ t('lock.lockToLogin') }}
             </base-button>
             <base-button type="primary" class="mt-2" size="small" link @click="unLock()">
-              {{ t('lock.entrySystem') }}
+              {{ t('lock.lockEntrySystem') }}
             </base-button>
           </div>
         </div>

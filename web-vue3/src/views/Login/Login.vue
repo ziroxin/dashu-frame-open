@@ -15,8 +15,8 @@
           <div class="flex justify-center items-center h-[calc(100%-60px)]">
             <transition-group appear tag="div" enter-active-class="animate__animated animate__bounceInLeft">
               <img src="@/assets/svgs/login-box-bg.svg" key="1" alt="" class="w-350px"/>
-              <div class="text-3xl text-white" key="2" v-text="t('login.welcome')"></div>
-              <div class="mt-5 font-normal text-white text-14px" key="3" v-text="t('login.message')"></div>
+              <div class="text-3xl text-white" key="2" v-text="t('login.welcomeTitle')"></div>
+              <div class="mt-5 font-normal text-white text-14px" key="3" v-text="t('login.welcomeMessage')"></div>
             </transition-group>
           </div>
         </div>

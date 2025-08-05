@@ -11,22 +11,22 @@
 
     <div class="text-center">
       <!-- 浅色/暗黑（深色模式） -->
-      <el-divider>{{ t('setting.theme') }}</el-divider>
+      <el-divider>{{ t('setting.themeDivider') }}</el-divider>
       <theme-switch/>
       <!-- 布局 -->
-      <el-divider>{{ t('setting.layout') }}</el-divider>
+      <el-divider>{{ t('setting.layoutDivider') }}</el-divider>
       <layout-radio-picker/>
       <!-- 主题颜色（背景、按钮、文字等颜色） -->
-      <el-divider>{{ t('setting.systemTheme') }}</el-divider>
+      <el-divider>{{ t('setting.themeColorDivider') }}</el-divider>
       <div class="flex justify-start items-center flex-wrap lh-30px">
-        <color-radio-picker v-model="systemTheme" @change="setSystemTheme"
+        <color-radio-picker v-model="themeColor" @change="setThemeColor"
                             :schema="['#409eff','#009688','#23ae6b','#f5222d','#fa541c','#faad14','#52c41a','#722ed1']"/>
         <br/>
         <div class="text-14px color-#333">自定义颜色：</div>
-        <el-color-picker v-model="systemTheme" @change="setSystemTheme" :teleported="false" show-alpha/>
+        <el-color-picker v-model="themeColor" @change="setThemeColor" :teleported="false" show-alpha/>
       </div>
       <!-- Header头部背景色 -->
-      <el-divider>{{ t('setting.headerTheme') }}</el-divider>
+      <el-divider>{{ t('setting.headerThemeDivider') }}</el-divider>
       <div class="flex justify-start items-center">
         <color-radio-picker v-model="headerTheme" @change="setHeaderTheme" class="mt-8px"
                             :schema="['#ffffff','#151515','#001529','#d61c1c','#036acf']"/>
@@ -34,7 +34,7 @@
         <el-color-picker v-model="headerTheme" @change="setHeaderTheme" :teleported="false" show-alpha/>
       </div>
       <!-- 菜单容器背景色 -->
-      <el-divider>{{ t('setting.menuTheme') }}</el-divider>
+      <el-divider>{{ t('setting.menuThemeDivider') }}</el-divider>
       <div class="flex justify-start items-center">
         <color-radio-picker v-model="menuTheme" @change="setMenuTheme" class="mt-8px"
                             :schema="['#ffffff','#151515','#001529','#d61c1c','#036acf']"/>
@@ -50,9 +50,9 @@
     <el-divider/>
     <div class="flex justify-center items-center">
       <base-button type="primary" icon="el-icon-check" :loading="isLoading"
-                   @click="saveTheme">{{ t('setting.saveText') }}
+                   @click="saveTheme">{{ t('setting.saveTextBtn') }}
       </base-button>
-      <base-button type="danger" icon="reset" @click="clear">{{ t('setting.clearAndReset') }}</base-button>
+      <base-button type="danger" icon="reset" @click="clear">{{ t('setting.clearAndResetBtn') }}</base-button>
     </div>
     <div class="text-center mt-15px">
       <el-tooltip content="拷贝成功后，粘贴至[/src/store/modules/app.ts]中<br/>即可作为系统默认配置"
@@ -97,8 +97,8 @@ watch(appStore, () => {
 }, {immediate: true, deep: true})
 
 // 主题色相关
-const systemTheme = ref(appStore.getTheme.elColorPrimary)
-const setSystemTheme = (color: string) => {
+const themeColor = ref(appStore.getTheme.elColorPrimary)
+const setThemeColor = (color: string) => {
   setCssVar('--el-color-primary', color)
   appStore.setTheme({elColorPrimary: color})
   const leftMenuBgColor = useCssVar('--left-menu-bg-color', document.documentElement)

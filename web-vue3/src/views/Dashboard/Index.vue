@@ -32,10 +32,7 @@ import { Echart } from '@/components/Echart'
 import { EChartsOption } from 'echarts'
 import { barOptions, lineOptions, pieOptions } from './echarts-data'
 import { set } from 'lodash-es'
-import { useI18n } from '@/hooks/web/useI18n'
 import { useAppStore } from '@/store/modules/app'
-
-const {t} = useI18n()
 
 const isDark = computed(() => useAppStore().getIsDark)
 // 是否加载中
@@ -52,46 +49,42 @@ setTimeout(() => {
 const pieOptionsData = reactive<EChartsOption>(pieOptions) as EChartsOption
 const getUserAccessSource = () => {
   const userAccessSourceArr = [
-    {value: 1000, name: 'analysis.directAccess'}, {value: 310, name: 'analysis.mailMarketing'},
-    {value: 234, name: 'analysis.allianceAdvertising'}, {value: 135, name: 'analysis.videoAdvertising'},
-    {value: 1548, name: 'analysis.searchEngines'}
+    {value: 1000, name: '直接访问'}, {value: 310, name: '邮件营销'}, {value: 234, name: '联盟广告'},
+    {value: 135, name: '视频广告'}, {value: 1548, name: '搜索引擎'}
   ]
-  set(pieOptionsData, 'legend.data', userAccessSourceArr.map((v) => t(v.name)))
-  pieOptionsData!.series![0].data = userAccessSourceArr.map((v) => ({name: t(v.name), value: v.value}))
+  set(pieOptionsData, 'legend.data', userAccessSourceArr.map((v) => v.name))
+  pieOptionsData!.series![0].data = userAccessSourceArr.map((v) => ({name: v.name, value: v.value}))
 }
 
 // 周活跃量
 const barOptionsData = reactive<EChartsOption>(barOptions) as EChartsOption
 const getWeeklyUserActivity = () => {
   const weeklyUserActivityArr = [
-    {value: 13253, name: 'analysis.monday'}, {value: 34235, name: 'analysis.tuesday'},
-    {value: 26321, name: 'analysis.wednesday'}, {value: 12340, name: 'analysis.thursday'},
-    {value: 24643, name: 'analysis.friday'}, {value: 1322, name: 'analysis.saturday'},
-    {value: 1324, name: 'analysis.sunday'}
+    {value: 1323, name: '周一'}, {value: 3423, name: '周二'}, {value: 2632, name: '周三'}, {value: 1340, name: '周四'},
+    {value: 24643, name: '周五'}, {value: 1322, name: '周六'}, {value: 1324, name: '周日'}
   ]
-  set(barOptionsData, 'xAxis.data', weeklyUserActivityArr.map((v) => t(v.name)))
-  set(barOptionsData, 'series',
-      [{name: t('analysis.activeQuantity'), data: weeklyUserActivityArr.map((v) => v.value), type: 'bar'}])
+  set(barOptionsData, 'xAxis.data', weeklyUserActivityArr.map((v) => v.name))
+  set(barOptionsData, 'series', [{name: '活跃量', data: weeklyUserActivityArr.map((v) => v.value), type: 'bar'}])
 }
 
 // 每月销售总额
 const lineOptionsData = reactive<EChartsOption>(lineOptions) as EChartsOption
 const getMonthlySales = () => {
   const monthlySalesArr = [
-    {estimate: 100, actual: 120, name: 'analysis.january'}, {estimate: 120, actual: 82, name: 'analysis.february'},
-    {estimate: 161, actual: 91, name: 'analysis.march'}, {estimate: 134, actual: 154, name: 'analysis.april'},
-    {estimate: 105, actual: 162, name: 'analysis.may'}, {estimate: 160, actual: 140, name: 'analysis.june'},
-    {estimate: 165, actual: 145, name: 'analysis.july'}, {estimate: 114, actual: 250, name: 'analysis.august'},
-    {estimate: 163, actual: 134, name: 'analysis.september'}, {estimate: 185, actual: 56, name: 'analysis.october'},
-    {estimate: 118, actual: 99, name: 'analysis.november'}, {estimate: 123, actual: 123, name: 'analysis.december'}
+    {estimate: 100, actual: 120, name: '一月'}, {estimate: 120, actual: 82, name: '二月'},
+    {estimate: 161, actual: 91, name: '三月'}, {estimate: 134, actual: 154, name: '四月'},
+    {estimate: 105, actual: 162, name: '五月'}, {estimate: 160, actual: 140, name: '六月'},
+    {estimate: 165, actual: 145, name: '七月'}, {estimate: 114, actual: 250, name: '八月'},
+    {estimate: 163, actual: 134, name: '九月'}, {estimate: 185, actual: 56, name: '十月'},
+    {estimate: 118, actual: 99, name: '十一月'}, {estimate: 123, actual: 123, name: '十二月'}
   ]
-  set(lineOptionsData, 'xAxis.data', monthlySalesArr.map((v) => t(v.name)))
+  set(lineOptionsData, 'xAxis.data', monthlySalesArr.map((v) => v.name))
   set(lineOptionsData, 'series', [{
-    name: t('analysis.estimate'), smooth: true, type: 'line',
+    name: '预计', smooth: true, type: 'line',
     data: monthlySalesArr.map((v) => v.estimate),
     animationDuration: 2800, animationEasing: 'cubicInOut'
   }, {
-    name: t('analysis.actual'), smooth: true, type: 'line', itemStyle: {},
+    name: '实际', smooth: true, type: 'line', itemStyle: {},
     data: monthlySalesArr.map((v) => v.actual),
     animationDuration: 2800, animationEasing: 'quadraticOut'
   }])

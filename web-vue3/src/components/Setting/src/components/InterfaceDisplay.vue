@@ -3,12 +3,12 @@
     <el-divider>页头/页脚</el-divider>
     <!-- 标签页 -->
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.tagsView') }}</span>
+      <span class="text-14px">{{ t('setting.tagsViewSwitch') }}</span>
       <el-switch v-model="tagsView" @change="tagsViewChange"/>
     </div>
     <!-- 标签页图标 -->
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.tagsViewIcon') }}</span>
+      <span class="text-14px">{{ t('setting.tagsViewIconSwitch') }}</span>
       <el-switch v-model="tagsViewIcon" @change="tagsViewIconChange"/>
     </div>
     <!-- 固定头部 -->
@@ -20,72 +20,72 @@
     </div>
     <!-- 页脚 -->
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.footer') }}</span>
+      <span class="text-14px">{{ t('setting.footerSwitch') }}</span>
       <el-switch v-model="footer" @change="footerChange"/>
     </div>
 
     <el-divider>各项控制图标</el-divider>
     <!-- Logo -->
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.logo') }}</span>
+      <span class="text-14px">{{ t('setting.logoSwitch') }}</span>
       <el-switch v-model="logo" @change="logoChange"/>
     </div>
     <!-- 折叠图标 -->
     <div class="flex justify-between items-center" v-if="showCollapse">
-      <span class="text-14px">{{ t('setting.hamburgerIcon') }}</span>
+      <span class="text-14px">{{ t('setting.hamburgerIconSwitch') }}</span>
       <el-switch v-model="hamburger" @change="hamburgerChange"/>
     </div>
     <!-- 面包屑 -->
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.breadcrumb') }}</span>
+      <span class="text-14px">{{ t('setting.breadcrumbSwitch') }}</span>
       <el-switch v-model="breadcrumb" @change="breadcrumbChange"/>
     </div>
     <!-- 面包屑图标 -->
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.breadcrumbIcon') }}</span>
+      <span class="text-14px">{{ t('setting.breadcrumbIconSwitch') }}</span>
       <el-switch v-model="breadcrumbIcon" @change="breadcrumbIconChange"/>
     </div>
     <!-- 全屏图标 -->
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.screenfullIcon') }}</span>
+      <span class="text-14px">{{ t('setting.screenfullIconSwitch') }}</span>
       <el-switch v-model="screenfull" @change="screenfullChange"/>
     </div>
     <!-- 尺寸图标 -->
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.sizeIcon') }}</span>
+      <span class="text-14px">{{ t('setting.sizeIconSwitch') }}</span>
       <el-switch v-model="size" @change="sizeChange"/>
     </div>
     <!-- 多语言图标 -->
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.localeIcon') }}</span>
+      <span class="text-14px">{{ t('setting.localeIconSwitch') }}</span>
       <el-switch v-model="locale" @change="localeChange"/>
     </div>
 
     <el-divider>其他</el-divider>
     <!-- 固定菜单(分栏模式) -->
     <div class="flex justify-between items-center" v-if="layout==='cutMenu'">
-      <span class="text-14px">{{ t('setting.fixedMenu') }}</span>
+      <span class="text-14px">{{ t('setting.fixedMenuSwitch') }}</span>
       <el-switch v-model="fixedMenu" @change="fixedMenuChange"/>
     </div>
     <!-- 菜单手风琴 -->
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.uniqueOpened') }}</span>
+      <span class="text-14px">{{ t('setting.uniqueOpenedSwitch') }}</span>
       <el-switch v-model="uniqueOpened" @change="uniqueOpenedChange"/>
     </div>
     <!-- 灰色模式 -->
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.greyMode') }}</span>
+      <span class="text-14px">{{ t('setting.greyModeSwitch') }}</span>
       <el-switch v-model="greyMode" @change="greyModeChange"/>
     </div>
 
     <!-- 水印配置 -->
     <el-divider>水印配置</el-divider>
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.watermark') }}</span>
+      <span class="text-14px">{{ t('setting.watermarkSwitch') }}</span>
       <el-switch v-model="watermark" @change="watermarkChange"/>
     </div>
     <div class="flex justify-between items-center">
-      <span class="text-14px">{{ t('setting.watermarkTitle') }}</span>
+      <span class="text-14px">{{ t('setting.watermarkTitleIpt') }}</span>
       <el-input v-model="watermarkTitle" @input="watermarkTitleChange" class="w-200px!" clearable/>
     </div>
   </div>

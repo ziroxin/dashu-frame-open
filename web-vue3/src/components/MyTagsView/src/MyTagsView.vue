@@ -9,34 +9,35 @@
     <div class="overflow-hidden flex-1">
       <el-scrollbar ref="scrollbarRef" class="h-full" @scroll="scroll">
         <div class="flex h-full">
-          <context-menu :ref="itemRefs.set" :schema="[{
-                icon: 'vi-ant-design:sync-outlined',label: t('common.reload'),
-                disabled: selectedTag?.fullPath !== item.fullPath,
-                command: () => {refreshSelectedTag(item)}
-              },{
-                icon: 'vi-ant-design:close-outlined',label: t('common.closeTab'),
-                disabled: !!(!!visitedViews?.length&&selectedTag?.meta.affix),
-                command: () => {closeSelectedTag(item)}
-              },{
-                divided: true,icon: 'vi-ant-design:vertical-right-outlined',
-                label: t('common.closeTheLeftTab'),
-                disabled:!!visitedViews?.length&&(item.fullPath===visitedViews[0].fullPath||selectedTag?.fullPath!==item.fullPath),
-                command: () => {closeLeftTags()}
-              },{
-                icon: 'vi-ant-design:vertical-left-outlined',label: t('common.closeTheRightTab'),
-                disabled:!!visitedViews?.length&&(item.fullPath===visitedViews[visitedViews.length-1].fullPath||selectedTag?.fullPath!==item.fullPath),
-                command: () => {closeRightTags()}
-              },{
-                divided: true,icon: 'vi-ant-design:tag-outlined',label: t('common.closeOther'),
-                disabled: selectedTag?.fullPath !== item.fullPath,
-                command: () => {closeOthersTags()}
-              },{
-                icon: 'vi-ant-design:line-outlined',label: t('common.closeAll'),
-                command: () => {closeAllTags()}
-              }]"
-                        v-for="item in visitedViews" :key="item.fullPath" :tag-item="item"
+          <context-menu :ref="itemRefs.set"
+                        :schema="[{
+                          icon: 'vi-ant-design:sync-outlined',label: t('tagsView.reloadCtxBtn'),
+                          disabled: selectedTag?.fullPath !== item.fullPath,
+                          command: () => {refreshSelectedTag(item)}
+                        },{
+                          icon: 'vi-ant-design:close-outlined',label: t('tagsView.closeTabCtxBtn'),
+                          disabled: !!(!!visitedViews?.length&&selectedTag?.meta.affix),
+                          command: () => {closeSelectedTag(item)}
+                        },{
+                          divided: true,icon: 'vi-ant-design:vertical-right-outlined',
+                          label: t('tagsView.closeLeftTabCtxBtn'),
+                          disabled:!!visitedViews?.length&&(item.fullPath===visitedViews[0].fullPath||selectedTag?.fullPath!==item.fullPath),
+                          command: () => {closeLeftTags()}
+                        },{
+                          icon: 'vi-ant-design:vertical-left-outlined',label: t('tagsView.closeRightTabCtxBtn'),
+                          disabled:!!visitedViews?.length&&(item.fullPath===visitedViews[visitedViews.length-1].fullPath||selectedTag?.fullPath!==item.fullPath),
+                          command: () => {closeRightTags()}
+                        },{
+                          divided: true,icon: 'vi-ant-design:tag-outlined',label: t('tagsView.closeOtherCtxBtn'),
+                          disabled: selectedTag?.fullPath !== item.fullPath,
+                          command: () => {closeOthersTags()}
+                        },{
+                          icon: 'vi-ant-design:line-outlined',label: t('tagsView.closeAllCtxBtn'),
+                          command: () => {closeAllTags()}
+                        }]"
                         :class="[`${prefixCls}__item`,item?.meta?.affix?`${prefixCls}__item--affix`:'',{'is-active': isActive(item)}]"
-                        @visible-change="visibleChange">
+                        v-for="item in visitedViews" :key="item.fullPath"
+                        :tag-item="item" @visible-change="visibleChange">
             <div>
               <router-link :ref="tagLinksRefs.set" :to="{ ...item }" custom #default="{ navigate }">
                 <div @click="navigate" class="h-full flex justify-center items-center whitespace-nowrap pl-15px">
@@ -65,25 +66,25 @@
                :hover-color="isDark ? '#fff' : 'var(--top-header-text-color)'"/>
     </span>
     <context-menu trigger="click" :schema="[{
-          icon: 'vi-ant-design:sync-outlined',label: t('common.reload'),
+          icon: 'vi-ant-design:sync-outlined',label: t('tagsView.reloadCtxBtn'),
           command: () => {refreshSelectedTag(selectedTag)}
         },{
-          icon: 'vi-ant-design:close-outlined',label: t('common.closeTab'),
+          icon: 'vi-ant-design:close-outlined',label: t('tagsView.closeTabCtxBtn'),
           disabled: !!(!!visitedViews?.length && selectedTag?.meta.affix),
           command: () => {closeSelectedTag(selectedTag!)}
         },{
-          divided: true,icon: 'vi-ant-design:vertical-right-outlined',label: t('common.closeTheLeftTab'),
+          divided: true,icon: 'vi-ant-design:vertical-right-outlined',label: t('tagsView.closeLeftTabCtxBtn'),
           disabled: !!visitedViews?.length && selectedTag?.fullPath === visitedViews[0].fullPath,
           command: () => {closeLeftTags()}
         },{
-          icon: 'vi-ant-design:vertical-left-outlined',label: t('common.closeTheRightTab'),
+          icon: 'vi-ant-design:vertical-left-outlined',label: t('tagsView.closeRightTabCtxBtn'),
           disabled:!!visitedViews?.length&&selectedTag?.fullPath===visitedViews[visitedViews.length-1].fullPath,
           command: () => {closeRightTags()}
         },{
-          divided: true,icon: 'vi-ant-design:tag-outlined',label: t('common.closeOther'),
+          divided: true,icon: 'vi-ant-design:tag-outlined',label: t('tagsView.closeOtherCtxBtn'),
           command: () => {closeOthersTags()}
         },{
-          icon: 'vi-ant-design:line-outlined',label: t('common.closeAll'),
+          icon: 'vi-ant-design:line-outlined',label: t('tagsView.closeAllCtxBtn'),
           command: () => {closeAllTags()}
         }]">
       <span :class="`${prefixCls}__tool`"

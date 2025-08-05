@@ -18,27 +18,27 @@
         <el-dropdown-item @click="toUserPage">
           <div class="flex items-center">
             <my-icon icon="el-icon-user"/>
-            {{ t('router.personalCenter') }}
+            {{ t('userInfo.userInfoBtn') }}
           </div>
         </el-dropdown-item>
         <el-dropdown-item @click="editPasswordOpen">
           <div class="flex items-center">
             <my-icon icon="el-icon-key"/>
-            {{ t('common.editPassword') }}
+            {{ t('userInfo.editPasswordBtn') }}
           </div>
         </el-dropdown-item>
         <!-- 锁屏 -->
         <el-dropdown-item divided @click="lockScreen">
           <div class="flex items-center">
             <my-icon icon="el-icon-lock"/>
-            {{ t('lock.lockScreen') }}
+            {{ t('userInfo.lockScreenBtn') }}
           </div>
         </el-dropdown-item>
         <!-- 退出登录 -->
         <el-dropdown-item @click="loginOut">
           <div class="flex items-center">
             <my-icon icon="exit"/>
-            {{ t('common.loginOut') }}
+            {{ t('userInfo.loginOutBtn') }}
           </div>
         </el-dropdown-item>
       </el-dropdown-menu>

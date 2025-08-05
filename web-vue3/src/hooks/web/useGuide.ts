@@ -3,44 +3,44 @@ import 'driver.js/dist/driver.css'
 import { useDesign } from '@/hooks/web/useDesign'
 import { useI18n } from '@/hooks/web/useI18n'
 
-const {t} = useI18n()
 const {variables} = useDesign()
+const {t} = useI18n()
 
 // 初始化driver.js，设置按钮文字（更多配置看文档 @link https://driverjs.com/docs/installation）
 export const useGuide = (options?: Config) => {
   const driverObj = driver(
     options || {
       showProgress: true,// 显示进度
-      nextBtnText: t('common.nextLabel'), // 上一步按钮
-      prevBtnText: t('common.prevLabel'), // 下一步按钮
-      doneBtnText: t('common.doneLabel'), // 结束按钮
+      nextBtnText: t('guide.nextGuideBtn'), // 下一步按钮
+      prevBtnText: t('guide.prevGuideBtn'), // 上一步按钮
+      doneBtnText: t('guide.doneGuideBtn'), // 结束按钮
       steps: [
         {
           element: `#${variables.namespace}-logo`,
           popover: {
-            title: 'Logo',
-            description: '用于显示系统Logo',
+            title: t('guide.logoStepTitle'),
+            description: t('guide.logoStepDesc'),
             side: 'right'
           }
         }, {
           element: `#${variables.namespace}-menu`,
           popover: {
-            title: t('common.menu'),
-            description: t('common.menuDes'),
+            title: t('guide.menuStepTitle'),
+            description: t('guide.menuStepDesc'),
             side: 'right'
           }
         }, {
           element: `#${variables.namespace}-tool-header`,
           popover: {
-            title: t('common.tool'),
-            description: t('common.toolDes'),
+            title: t('guide.toolStepTitle'),
+            description: t('guide.toolStepDesc'),
             side: 'left'
           }
         }, {
           element: `#${variables.namespace}-breadcrumb`,
           popover: {
-            title: t('common.breadcrumb'),
-            description: t('common.breadcrumbDes'),
+            title: t('guide.breadcrumbStepTitle'),
+            description: t('guide.breadcrumbStepDesc'),
             side: 'bottom'
           }
         }, {
@@ -74,15 +74,15 @@ export const useGuide = (options?: Config) => {
         }, {
           element: `#${variables.namespace}-tags-view`,
           popover: {
-            title: t('common.tagsView'),
-            description: t('common.tagsViewDes'),
+            title: t('guide.tagsViewStepTitle'),
+            description: t('guide.tagsViewStepDesc'),
             side: 'bottom'
           }
         }, {
           element: `#${variables.namespace}-app-container`,
           popover: {
-            title: '主内容区',
-            description: '页面内容显示区域',
+            title: t('guide.appContainerStepTitle'),
+            description: t('guide.appContainerStepDesc'),
             side: 'top'
           }
         }
@@ -90,7 +90,5 @@ export const useGuide = (options?: Config) => {
     }
   )
 
-  return {
-    ...driverObj
-  }
+  return {...driverObj}
 }
