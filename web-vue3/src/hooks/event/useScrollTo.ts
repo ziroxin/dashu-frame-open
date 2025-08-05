@@ -16,17 +16,12 @@ const easeInOutQuad = (t: number, b: number, c: number, d: number) => {
   t--
   return (-c / 2) * (t * (t - 2) - 1) + b
 }
+
 const move = (el: HTMLElement, position: string, amount: number) => {
   el[position] = amount
 }
 
-export function useScrollTo({
-  el,
-  position = 'scrollLeft',
-  to,
-  duration = 500,
-  callback
-}: ScrollToParams) {
+export function useScrollTo({el, position = 'scrollLeft', to, duration = 500, callback}: ScrollToParams) {
   const isActiveRef = ref(false)
   const start = el[position]
   const change = to - start
@@ -58,5 +53,5 @@ export function useScrollTo({
     isActiveRef.value = false
   }
 
-  return { start: run, stop }
+  return {start: run, stop}
 }

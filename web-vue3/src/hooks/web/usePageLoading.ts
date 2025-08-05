@@ -11,8 +11,5 @@ export const usePageLoading = () => {
     appStore.setPageLoading(false)
   }
 
-  return {
-    loadStart,
-    loadDone
-  }
+  return {loadStart, loadDone}
 }

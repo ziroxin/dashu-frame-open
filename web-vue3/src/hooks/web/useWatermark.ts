@@ -51,6 +51,7 @@ export function useWatermark(appendEl: HTMLElement | null = document.body) {
     func = () => { createWatermark(str) }
     window.addEventListener('resize', func)
   }
+
   // 导出方法：设置水印、清空水印
   return {setWatermark, clearWatermark}
 }

@@ -23,7 +23,5 @@ export const useLocale = () => {
     setI18nLanguage(locale)
   }
 
-  return {
-    changeLocale
-  }
+  return {changeLocale}
 }

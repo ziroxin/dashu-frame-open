@@ -5,7 +5,7 @@ import { computed, nextTick, unref } from 'vue'
 export const useTagsView = () => {
   const tagsViewStore = useTagsViewStoreWithOut()
 
-  const { replace, currentRoute } = useRouter()
+  const {replace, currentRoute} = useRouter()
 
   const selectedTag = computed(() => tagsViewStore.getSelectedTag)
 
@@ -38,12 +38,9 @@ export const useTagsView = () => {
 
   const refreshPage = async (view?: RouteLocationNormalizedLoaded, callback?: Fn) => {
     tagsViewStore.delCachedView()
-    const { path, query } = view || unref(currentRoute)
+    const {path, query} = view || unref(currentRoute)
     await nextTick()
-    replace({
-      path: '/redirect' + path,
-      query: query
-    })
+    replace({path: '/redirect' + path, query: query})
     callback?.()
   }
 
@@ -51,13 +48,5 @@ export const useTagsView = () => {
     tagsViewStore.setTitle(title, path)
   }
 
-  return {
-    closeAll,
-    closeLeft,
-    closeRight,
-    closeOther,
-    closeCurrent,
-    refreshPage,
-    setTitle
-  }
+  return {closeAll, closeLeft, closeRight, closeOther, closeCurrent, refreshPage, setTitle}
 }

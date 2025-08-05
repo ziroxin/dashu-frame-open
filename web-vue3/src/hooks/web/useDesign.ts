@@ -13,8 +13,5 @@ export const useDesign = () => {
     return `${lessVariables.namespace}-${scope}`
   }
 
-  return {
-    variables: lessVariables,
-    getPrefixCls
-  }
+  return {variables: lessVariables, getPrefixCls}
 }

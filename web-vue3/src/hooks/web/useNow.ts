@@ -52,9 +52,5 @@ export const useNow = (immediate = true) => {
     stop()
   })
 
-  return {
-    ...toRefs(state),
-    start,
-    stop
-  }
+  return {...toRefs(state), start, stop}
 }
