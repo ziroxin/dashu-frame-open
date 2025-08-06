@@ -40,12 +40,14 @@ const storageKeys = {
   l_permissionStore: `${key_prefix}_store_permission`,
   // 用户信息的store持久化key
   l_userStore: `${key_prefix}_store_user`,
+  // 消息中心的store持久化key
+  l_messageStore: `${key_prefix}_store_message`,
   // lock锁屏的store持久化key
   l_lockStore: `${key_prefix}_store_lock`,
   // 数据字典持久化key
   l_dictList: `${key_prefix}_dicts_list`,
   // 简易postman页historyKeys
-  l_historyKeys: `${key_prefix}_history_keys`,
+  l_historyKeys: `${key_prefix}_history_keys`
 }
 
 export default storageKeys
@@ -64,6 +66,7 @@ export function storageClear4Logout() {
   sessionStorage.removeItem(storageKeys.s_oldReqObj)
   // localStorage
   localStorage.removeItem(storageKeys.l_permissionStore)
+  localStorage.removeItem(storageKeys.l_messageStore)
   localStorage.removeItem(storageKeys.l_userStore)
   localStorage.removeItem(storageKeys.l_lockStore)
   localStorage.removeItem(storageKeys.l_dictList)

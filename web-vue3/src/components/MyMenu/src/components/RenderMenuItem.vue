@@ -1,12 +1,12 @@
 <template>
   <el-menu-item v-if="!routeData.alwaysShow && routeData.childCount<=1"
                 :index="routeData.onlyOneChild?.path||routeData.path">
-    <render-menu-title :meta="routeData.onlyOneChild?.meta||routeData.meta"/>
+    <render-menu-title :meta="routeData.onlyOneChild?.meta||routeData.meta" :name="routeData.name"/>
   </el-menu-item>
   <el-sub-menu v-else :index="routeData.path" teleported
                :popper-class="menuMode==='vertical'?`${prefixCls}-popper--vertical`:''">
     <template #title>
-      <render-menu-title :meta="routeData.meta"/>
+      <render-menu-title :meta="routeData.meta" :name="routeData.name"/>
     </template>
     <template #default>
       <render-menu-item :menu-mode="menuMode"
@@ -29,6 +29,7 @@ const {routeData, menuMode} = defineProps({
   menuMode: String
 })
 
+// 处理路由列表
 const getRouteList = (list: any[]) => {
   const result: any[] = []
   list.forEach((v: any) => {

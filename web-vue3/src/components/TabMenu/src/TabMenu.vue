@@ -21,7 +21,7 @@
       <my-icon :icon="collapse?'vi-ep:d-arrow-right':'vi-ep:d-arrow-left'"/>
     </div>
     <!-- 子菜单 -->
-    <my-menu :class="['!absolute top-1px z-3000 cut-menu',
+    <my-menu :class="['!absolute top-1px z-1000 cut-menu',
                    {'!left-[var(--tab-menu-min-width)]':collapse,
                    '!left-[var(--tab-menu-max-width)]':!collapse,
                    '!w-[var(--left-menu-max-width)] border-r-1 border-r-solid border-[var(--el-border-color)]':showMenu||fixedMenu,

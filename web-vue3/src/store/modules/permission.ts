@@ -21,15 +21,9 @@ export const usePermissionStore = defineStore('permission', {
     routesLoaded: false
   }),
   getters: {
-    getRoutes(): AppRouteRecordRaw[] {
-      return this.routes
-    },
-    getMenuTabRoutes(): AppRouteRecordRaw[] {
-      return this.menuTabRoutes
-    },
-    getRoutesLoaded(): boolean {
-      return this.routesLoaded
-    }
+    getRoutes(): AppRouteRecordRaw[] { return this.routes },
+    getMenuTabRoutes(): AppRouteRecordRaw[] { return this.menuTabRoutes },
+    getRoutesLoaded(): boolean { return this.routesLoaded }
   },
   actions: {
     generateRoutes(perRoutes: any[]) {

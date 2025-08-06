@@ -49,7 +49,7 @@ export const constantRoutes: AppRouteRecordRaw[] = [
   homeRoute,
   userRoute,
   ...oauth2Routes,
-  ...otherRoutes// todo: 其他路由
+  ...otherRoutes
 ]
 
 // 错误页跳转404

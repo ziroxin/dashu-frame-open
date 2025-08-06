@@ -17,7 +17,7 @@
     <div class="h-full flex items-center">
       <!-- 全屏按钮 -->
       <div v-if="screenFull" :class="prefixClsScreenfull" class="top-tool-hover" @click="toggleFullscreen">
-        <my-icon :id="`${variables.namespace}-screenFull`" :size="18" color="var(--top-header-text-color)"
+        <my-icon :id="`${variables.namespace}-screenFull`" :size="18" color="var(--el-text-color-regular)"
                  :icon="isFullscreen?'vi-zmdi:fullscreen-exit':'vi-zmdi:fullscreen'"/>
       </div>
       <!-- 字体大小切换按钮 -->
@@ -26,6 +26,8 @@
       <!-- 语言切换按钮 -->
       <locale-dropdown v-if="locale" :id="`${variables.namespace}-langSelect`"
                        class="top-tool-hover" color="var(--top-header-text-color)"/>
+      <!-- 消息中心 -->
+      <message-link/>
       <!-- 用户信息按钮 -->
       <user-info/>
     </div>
@@ -40,6 +42,7 @@ import { Breadcrumb } from '@/components/Breadcrumb'
 import { useFullscreen } from '@vueuse/core'
 import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
+import { MessageLink } from '@/components/MessageLink'
 
 const {getPrefixCls, variables} = useDesign()
 const prefixCls = getPrefixCls('tool-header')

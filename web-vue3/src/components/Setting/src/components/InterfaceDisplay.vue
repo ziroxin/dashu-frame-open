@@ -23,6 +23,11 @@
       <span class="text-14px">{{ t('setting.footerSwitch') }}</span>
       <el-switch v-model="footer" @change="footerChange"/>
     </div>
+    <!-- 固定菜单(分栏模式) -->
+    <div class="flex justify-between items-center" v-if="layout==='cutMenu'">
+      <span class="text-14px">{{ t('setting.fixedMenuSwitch') }}</span>
+      <el-switch v-model="fixedMenu" @change="fixedMenuChange"/>
+    </div>
 
     <el-divider>各项控制图标</el-divider>
     <!-- Logo -->
@@ -62,11 +67,6 @@
     </div>
 
     <el-divider>其他</el-divider>
-    <!-- 固定菜单(分栏模式) -->
-    <div class="flex justify-between items-center" v-if="layout==='cutMenu'">
-      <span class="text-14px">{{ t('setting.fixedMenuSwitch') }}</span>
-      <el-switch v-model="fixedMenu" @change="fixedMenuChange"/>
-    </div>
     <!-- 菜单手风琴 -->
     <div class="flex justify-between items-center">
       <span class="text-14px">{{ t('setting.uniqueOpenedSwitch') }}</span>

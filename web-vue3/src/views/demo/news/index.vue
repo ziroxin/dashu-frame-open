@@ -38,11 +38,11 @@
           <base-button v-permission="'news-news-update'" size="small" link @click="openUpdate(scope.row)">修改
           </base-button>
           <base-button v-permission="'news-news-delete'" size="small" link style="color: #f56c6c;"
-                     @click="deleteByIds(scope.row)">删除
+                       @click="deleteByIds(scope.row)">删除
           </base-button>
           <br/>
           <base-button v-if="scope.row.msgId" size="small" link style="color: red;"
-                     @click="messageRead(scope.row)">[标记已读]
+                       @click="messageRead(scope.row)">[标记已读]
           </base-button>
         </template>
       </el-table-column>
@@ -108,6 +108,7 @@ import { MyWangEditor } from '@/components/MyWangEditor'
 import { MessageSend } from '@/components/MessageSend'
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
 import { useMyGP } from '@/hooks/web/useMyGlobalProperties'
+import { useMessageStoreWithOut } from '@/store/modules/message'
 
 // 分页数据
 const pager = ref({page: 1, limit: 10, totalCount: 0})
@@ -287,8 +288,8 @@ const deleteByIds = (row) => {
 const messageRead = (row) => {
   const params = {msgId: row.msgId}
   request({url: '/message/zMessage/read', method: 'get', params}).then((response) => {
-    // 假设这里有一个方法来刷新消息计数
-    // this.$store.dispatch('message/refreshMessageCount')
+    // 刷新消息计数
+    useMessageStoreWithOut().refreshAllMessageCount()
     loadTableList()
   })
 }

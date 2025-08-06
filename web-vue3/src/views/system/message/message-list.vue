@@ -1,25 +1,20 @@
 <template>
   <div>
     <!-- 消息中心-管理按钮 -->
-    <div style="margin: 15px 0px 25px 0px;">
-      <el-input v-model="searchData.msgTitle" size="small" style="width: 240px;margin-right: 10px;"
-                class="filter-item" placeholder="请输入消息标题查询"/>
-      <base-button class="filter-item" type="primary" size="small"
-                 icon="el-icon-search" @click="searchBtnHandle">查询
-      </base-button>
-      <base-button class="filter-item" type="info" size="small" icon="reset" @click="resetTableList">重置</base-button>
-      <div style="float: right;">
-        <base-button type="primary" size="small" v-if="msgStatus !== '1'"
-                   icon="el-icon-check" @click="markAllRead">全部标记已读
+    <div class="m-[15px_0_25px_0]">
+      <el-input v-model="searchData.msgTitle" class="w-240px! mr-10px" placeholder="消息标题"/>
+      <base-button type="primary" icon="el-icon-search" @click="searchBtnHandle">查询</base-button>
+      <base-button type="info" icon="reset" @click="resetTableList">重置</base-button>
+      <div class="float-right">
+        <base-button type="primary" v-if="msgStatus!=='1'" icon="el-icon-check"
+                     @click="markAllRead">全部标记已读
         </base-button>
-        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)" size="small">批量删除
-        </base-button>
+        <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)">批量删除</base-button>
       </div>
     </div>
     <!-- 消息中心-列表 -->
-    <el-table ref="dataTable" :data="tableData" stripe :show-header="false"
-              @selection-change="handleTableSelectChange"
-              v-loading="isLoading">
+    <el-table ref="dataTable" :data="tableData" stripe :show-header="false" v-loading="isLoading"
+              @selection-change="handleTableSelectChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="消息标题" prop="msgTitle" max-width="50%">
         <template #default="scope">
@@ -27,25 +22,21 @@
             {{ scope.row.msgTitle }}
             <template v-if="scope.row.msgRouter">
               <el-link v-if="scope.row.msgRouter.indexOf('http')===0" target="_blank"
-                       :underline="false" type="primary" style="margin-left: 10px;"
+                       :underline="false" type="primary" class="ml-10px"
                        :href="scope.row.msgRouter" @click="$router.push(scope.row.msgRouter)">打开
               </el-link>
-              <el-link v-else underline="never" type="primary" style="margin-left: 10px;"
+              <el-link v-else underline="never" type="primary" class="ml-10px"
                        @click="$router.push(scope.row.msgRouter)">打开
               </el-link>
             </template>
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="消息创建时间" prop="createTime" width="150" align="center"/>
+      <el-table-column label="消息创建时间" prop="createTime" width="160" align="center"/>
       <el-table-column fixed="right" label="操作" width="150" align="center">
         <template #default="scope">
-          <base-button link type="primary"
-                     size="small" @click="openView(scope.row)">查看详情
-          </base-button>
-          <base-button style="color: #ff6d6d;"
-                     link size="small" @click="deleteByIds(scope.row)">删除
-          </base-button>
+          <base-button link type="primary" @click="openView(scope.row)">查看详情</base-button>
+          <base-button style="color: #ff6d6d;" link @click="deleteByIds(scope.row)">删除</base-button>
         </template>
       </el-table-column>
     </el-table>
@@ -53,8 +44,7 @@
     <el-pagination class="flex justify-center mt-10px" layout="total,prev,pager,next,sizes,jumper"
                    :page-size="pager.limit" :current-page="pager.page"
                    :total="pager.totalCount" @current-change="handleCurrentChange"
-                   @size-change="handleSizeChange"
-    />
+                   @size-change="handleSizeChange"/>
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
                v-model="dialogFormVisible" @close="resetTemp" width="600px" :key="'myDialog'+dialogIndex">
@@ -84,7 +74,6 @@
 </template>
 
 <script>
-
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util'
 
