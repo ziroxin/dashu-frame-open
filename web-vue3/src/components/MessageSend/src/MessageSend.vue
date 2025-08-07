@@ -1,3 +1,15 @@
+<!--
+ * 消息中心发送组件
+ * 参数说明：
+        modelValue: 可选，默认为空，传入后可回显已选的用户、角色、组织机构
+        type: 必填，发送消息对象的类型，可选值：user=用户、role=角色、org=组织机构
+        scope: 必填，发送消息对象范围，可选值：all=全部、children=下级、selfAndChildren=本机构及下级
+        labelWidth: 可选，默认：100px，左侧标签宽度
+        width: 可选，默认：100%，选择框宽度
+
+ * @Author: ziro
+ * @Date: 2025/08/07 10:55:29
+-->
 <template>
   <div class="message-to">
     <el-form-item v-if="type === 'user'"

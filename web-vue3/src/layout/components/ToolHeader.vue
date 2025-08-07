@@ -27,7 +27,7 @@
       <locale-dropdown v-if="locale" :id="`${variables.namespace}-langSelect`"
                        class="top-tool-hover" color="var(--top-header-text-color)"/>
       <!-- 消息中心 -->
-      <message-link/>
+      <message-link v-if="messageCenter"/>
       <!-- 用户信息按钮 -->
       <user-info/>
     </div>
@@ -56,6 +56,7 @@ const screenFull = computed(() => appStore.getScreenfull)
 const size = computed(() => appStore.getSize)
 const layout = computed(() => appStore.getLayout)
 const locale = computed(() => appStore.getLocale)
+const messageCenter = computed(() => appStore.getMessageCenter)
 
 // 菜单展开/收起
 const collapse = computed(() => appStore.getCollapse)

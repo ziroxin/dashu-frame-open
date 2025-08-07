@@ -7,13 +7,15 @@
 <script setup>
 import { useI18n } from '@/hooks/web/useI18n'
 import { useMessageStoreWithOut } from '@/store/modules/message'
+import { useAppStoreWithOut } from '@/store/modules/app'
 
 const {t} = useI18n()
 const {meta, name} = defineProps({
   meta: {type: Object, required: true},
   name: {type: String, required: true}
 })
-const badge = computed(() => useMessageStoreWithOut().getMenuUnreadCount(name))
+const isMessageCenter = computed(() => useAppStoreWithOut().getMessageCenter)
+const badge = computed(() => isMessageCenter.value ? useMessageStoreWithOut().getMenuUnreadCount(name) : 0)
 </script>
 
 <style lang="less" scoped>

@@ -136,6 +136,7 @@ const saveTheme = () => {
     screenfull: appStore.getScreenfull,
     size: appStore.getSize,
     locale: appStore.getLocale,
+    messageCenter: appStore.getMessageCenter,
     uniqueOpened: appStore.getUniqueOpened,
     greyMode: appStore.getGreyMode,
     fixedMenu: appStore.getFixedMenu,
@@ -199,6 +200,7 @@ const copyTheme = computed(() => {
       screenfull: ${appStore.getScreenfull}, // 全屏图标
       size: ${appStore.getSize}, // 尺寸图标
       locale: ${appStore.getLocale}, // 多语言图标
+      messageCenter: ${appStore.getMessageCenter}, // 消息中心图标
       uniqueOpened: ${appStore.getUniqueOpened}, // 菜单手风琴（只展开一个子菜单）
       greyMode: ${appStore.getGreyMode}, // 是否开始灰色模式，用于特殊悼念日
       fixedMenu: ${appStore.getFixedMenu}, // 是否固定菜单

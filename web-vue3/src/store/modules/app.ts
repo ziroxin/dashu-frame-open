@@ -28,6 +28,7 @@ interface AppState {
   screenfull: boolean
   size: boolean
   locale: boolean
+  messageCenter: boolean
   uniqueOpened: boolean
   greyMode: boolean
   fixedMenu: boolean
@@ -89,6 +90,7 @@ export const useAppStore = defineStore('app', {
       screenfull: true, // 全屏图标
       size: true, // 尺寸图标
       locale: true, // 多语言图标
+      messageCenter: true, // 消息中心图标
       uniqueOpened: false, // 菜单手风琴（只展开一个子菜单）
       greyMode: false, // 是否开始灰色模式，用于特殊悼念日
       fixedMenu: false, // 是否固定菜单
@@ -118,6 +120,7 @@ export const useAppStore = defineStore('app', {
     getScreenfull(): boolean { return this.screenfull },
     getSize(): boolean { return this.size },
     getLocale(): boolean { return this.locale },
+    getMessageCenter(): boolean { return this.messageCenter },
     getUniqueOpened(): boolean { return this.uniqueOpened },
     getGreyMode(): boolean { return this.greyMode },
     getFixedMenu(): boolean { return this.fixedMenu },
@@ -160,6 +163,7 @@ export const useAppStore = defineStore('app', {
     setScreenfull(screenfull: boolean) { this.screenfull = screenfull },
     setSize(size: boolean) { this.size = size },
     setLocale(locale: boolean) { this.locale = locale },
+    setMessageCenter(messageCenter: boolean) {this.messageCenter = messageCenter},
     setUniqueOpened(uniqueOpened: boolean) { this.uniqueOpened = uniqueOpened },
     setGreyMode(greyMode: boolean) { this.greyMode = greyMode },
     setFixedMenu(fixedMenu: boolean) { this.fixedMenu = fixedMenu },
@@ -248,6 +252,7 @@ export const useAppStore = defineStore('app', {
       this.setScreenfull(themeObj.screenfull)
       this.setSize(themeObj.size)
       this.setLocale(themeObj.locale)
+      this.setMessageCenter(themeObj.messageCenter)
       this.setUniqueOpened(themeObj.uniqueOpened)
       this.setGreyMode(themeObj.greyMode)
       this.setFixedMenu(themeObj.fixedMenu)

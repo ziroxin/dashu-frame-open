@@ -70,6 +70,7 @@ export default {
     screenfullIconSwitch: '全屏图标',
     sizeIconSwitch: '尺寸图标',
     localeIconSwitch: '多语言图标',
+    messageCenterIconSwitch: '消息中心图标',
     fixedMenuSwitch: '固定菜单(分栏模式)',
     uniqueOpenedSwitch: '手风琴模式(只展开一个子菜单)',
     greyModeSwitch: '灰色模式',

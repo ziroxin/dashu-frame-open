@@ -65,6 +65,11 @@
       <span class="text-14px">{{ t('setting.localeIconSwitch') }}</span>
       <el-switch v-model="locale" @change="localeChange"/>
     </div>
+    <!-- 消息中心图标 -->
+    <div class="flex justify-between items-center">
+      <span class="text-14px">{{ t('setting.messageCenterIconSwitch') }}</span>
+      <el-switch v-model="messageCenter" @change="messageCenterChange"/>
+    </div>
 
     <el-divider>其他</el-divider>
     <!-- 菜单手风琴 -->
@@ -119,6 +124,9 @@ const sizeChange = (show: boolean) => { appStore.setSize(show) }
 // 多语言图标
 const locale = ref(appStore.getLocale)
 const localeChange = (show: boolean) => { appStore.setLocale(show) }
+// 消息中心图标
+const messageCenter = ref(appStore.getMessageCenter)
+const messageCenterChange = (show: boolean) => { appStore.setMessageCenter(show) }
 // 标签页
 const tagsView = ref(appStore.getTagsView)
 const tagsViewChange = (show: boolean) => {
