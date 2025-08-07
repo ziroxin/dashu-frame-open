@@ -9,13 +9,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import { PropType, ref, unref, watch } from 'vue'
 import { useDesign } from '@/hooks/web/useDesign'
 
 const prefixCls = useDesign().getPrefixCls('color-radio-picker')
 
 const props = defineProps({
-  schema: {type: Array as PropType<string[]>, default: () => []},
+  schema: {type: Array, default: () => []},
   modelValue: {type: String, default: ''}
 })
 const emit = defineEmits(['update:modelValue', 'change'])

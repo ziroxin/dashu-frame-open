@@ -6,15 +6,14 @@
   </el-button>
 </template>
 <script setup lang="ts">
-import type { ButtonType, ComponentSize } from 'element-plus'
 import { MyIcon } from '@/components/MyIcon'
 import { useDesign } from '@/hooks/web/useDesign'
 
 const prefixCls = useDesign().getPrefixCls('button')
 // 传参
 const props = defineProps({
-  size: {type: String as PropType<ComponentSize>, default: undefined},
-  type: {type: String as PropType<ButtonType>, default: 'default'},
+  size: {type: String, default: undefined},
+  type: {type: String, default: 'default'},
   disabled: {type: Boolean, default: false},
   plain: {type: Boolean, default: false},
   text: {type: Boolean, default: false},
@@ -23,14 +22,14 @@ const props = defineProps({
   round: {type: Boolean, default: false},
   circle: {type: Boolean, default: false},
   loading: {type: Boolean, default: false},
-  loadingIcon: {type: [String, Object] as PropType<string | Component>, default: undefined},
+  loadingIcon: {type: [String, Object], default: undefined},
   icon: {type: String, default: undefined},
   autofocus: {type: Boolean, default: false},
-  nativeType: {type: String as PropType<'button' | 'submit' | 'reset'>, default: 'button'},
+  nativeType: {type: String, default: 'button'},
   autoInsertSpace: {type: Boolean, default: false},
   color: {type: String, default: ''},
   darker: {type: Boolean, default: false},
-  tag: {type: [String, Object] as PropType<string | Component>, default: 'button'},
+  tag: {type: [String, Object], default: 'button'},
   iconSize: {type: Number, default: 16}
 })
 

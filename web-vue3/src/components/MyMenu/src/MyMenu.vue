@@ -33,9 +33,9 @@
 </template>
 
 <script setup lang="ts">
+import RenderMenuItem from './components/RenderMenuItem.vue'
 import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
-import RenderMenuItem from './components/RenderMenuItem.vue'
 import { isUrl } from '@/utils/is'
 import { useDesign } from '@/hooks/web/useDesign'
 import { hasOneShowingChild } from './helper'
@@ -47,7 +47,7 @@ const {push, currentRoute} = useRouter()
 
 // 参数：菜单选中方法（非必填，若传入，优先调用该方法）
 const {menuSelect} = defineProps({
-  menuSelect: {type: Function as PropType<(index: string) => void>, default: undefined}
+  menuSelect: {type: Function, default: undefined}
 })
 
 // layout布局：'classic'=经典左右布局 | 'topLeft'=顶部左侧布局 | 'top'=顶部菜单布局 | 'cutMenu'=分栏菜单布局

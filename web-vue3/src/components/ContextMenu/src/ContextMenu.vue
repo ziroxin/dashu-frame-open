@@ -18,7 +18,6 @@
 <script setup lang="ts">
 import { useI18n } from '@/hooks/web/useI18n'
 import { useDesign } from '@/hooks/web/useDesign'
-import type { RouteLocationNormalizedLoaded } from 'vue-router'
 
 interface ContextMenuSchema {
   disabled?: boolean
@@ -32,9 +31,9 @@ const {t} = useI18n()
 const prefixCls = useDesign().getPrefixCls('context-menu')
 
 const props = defineProps({
-  schema: {type: Array as PropType<ContextMenuSchema[]>, default: () => []},
-  trigger: {type: String as PropType<'click' | 'hover' | 'focus' | 'contextmenu'>, default: 'contextmenu'},
-  tagItem: {type: Object as PropType<RouteLocationNormalizedLoaded>, default: () => ({})}
+  schema: {type: Array, default: () => []},
+  trigger: {type: String, default: 'contextmenu'},
+  tagItem: {type: Object, default: () => ({})}
 })
 
 const command = (item: ContextMenuSchema) => {
