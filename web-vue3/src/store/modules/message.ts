@@ -36,7 +36,7 @@ export const useMessageStore = defineStore('message', {
       })
     },
     getMenuUnreadCount(name: string): number {
-      return this.permissionUnreadJson.hasOwnProperty(name) ? this.permissionUnreadJson[name] : 0
+      return Object.prototype.hasOwnProperty.call(this.permissionUnreadJson, name) ? this.permissionUnreadJson[name] : 0
     }
   },
   persist: {key: storageKeys.l_messageStore}
