@@ -1,12 +1,12 @@
 <template>
   <el-breadcrumb :id="`${variables.namespace}-my-breadcrumb`" separator="/"
-                 :class="[prefixCls, 'flex items-center h-full ml-10']">
+                 :class="[prefixCls, 'flex items-center h-full pl-10']">
     <transition-group appear enter-active-class="animate__animated animate__fadeInRight">
       <el-breadcrumb-item v-for="v in breadcrumbList" :key="v.name" :to="{path:toPath(v)}">
-        <template v-if="v.meta?.icon && showIcon">
-          <my-icon :icon="v.meta.icon" class="mr-5px"/>
-        </template>
-        {{ t(v.meta.title || '') }}
+        <div class="flex items-center">
+          <my-icon v-if="v.meta?.icon && showIcon" :icon="v.meta.icon" class="mr-5px"/>
+          {{ t(v.meta.title || '') }}
+        </div>
       </el-breadcrumb-item>
     </transition-group>
   </el-breadcrumb>

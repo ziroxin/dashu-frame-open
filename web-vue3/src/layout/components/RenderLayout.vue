@@ -72,8 +72,10 @@
       <el-scrollbar :v-loading="pageLoading"
                     :class="[`${prefixCls}-content-scrollbar`,
                             {'!h-[100%]':!fixedHeader,
-                             '!h-[calc(100%-var(--top-tool-height))] mt-[calc(var(--top-tool-height))]': fixedHeader&&!tagsView,
-                             '!h-[calc(100%-var(--top-tool-height)-var(--tags-view-height))] mt-[calc(var(--top-tool-height)+var(--tags-view-height))]':fixedHeader&&tagsView}]">
+                             '!h-[calc(100%-var(--top-tool-height))] mt-[calc(var(--top-tool-height))]': fixedHeader&&!tagsView&&!breadcrumb,
+                             '!h-[calc(100%-var(--top-tool-height)-var(--tags-view-height))] mt-[calc(var(--top-tool-height)+var(--tags-view-height))]':fixedHeader&&tagsView&&!breadcrumb,
+                             '!h-[calc(100%-var(--top-tool-height)-var(--breadcrumb-height))] mt-[calc(var(--top-tool-height)+var(--breadcrumb-height))]':fixedHeader&&!tagsView&&breadcrumb,
+                             '!h-[calc(100%-var(--top-tool-height)-var(--tags-view-height)-var(--breadcrumb-height))] mt-[calc(var(--top-tool-height)+var(--tags-view-height)+var(--breadcrumb-height))]':fixedHeader&&tagsView&&breadcrumb,}]">
         <!-- C-顶部工具栏 -->
         <div :class="['flex items-center justify-between flex-wrap bg-[var(--top-header-bg-color)] layout-border__bottom',
                  {'!fixed top-0 left-0 w-full':fixedHeader}]">
@@ -88,9 +90,14 @@
           <!-- C-标签页（第2行） -->
           <my-tags-view v-if="tagsView" class="w-full layout-border__top"
                         style="transition: width var(--transition-time-02), left var(--transition-time-02);"/>
+          <!-- C-面包屑（第3行） -->
+          <div v-if="breadcrumb"
+               class="w-full h-[var(--breadcrumb-height)] b-t-1px b-t-solid b-t-[var(--el-border-color)]">
+            <my-breadcrumb/>
+          </div>
         </div>
         <!-- C-下方内容区域 -->
-        <app-view/>
+        <app-view :layout-type="layoutType"/>
       </el-scrollbar>
     </div>
   </template>
@@ -136,14 +143,15 @@
 </template>
 
 <script setup lang="ts">
+import AppView from './AppView.vue'
+import ToolHeader from './ToolHeader.vue'
 import { useAppStore } from '@/store/modules/app'
 import { TabMenu } from '@/components/TabMenu'
 import { MyTagsView } from '@/components/MyTagsView'
-import AppView from './AppView.vue'
-import ToolHeader from './ToolHeader.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { MyLogo } from '@/components/MyLogo'
 import { MyMenu } from '@/components/MyMenu'
+import { MyBreadcrumb } from '@/components/MyBreadcrumb'
 
 // 传参
 const {layoutType} = defineProps({layoutType: {type: String, default: 'classic'}})
@@ -159,6 +167,7 @@ const logo = computed(() => appStore.logo)
 const fixedHeader = computed(() => appStore.getFixedHeader)
 const mobile = computed(() => appStore.getMobile)
 const fixedMenu = computed(() => appStore.getFixedMenu)
+const breadcrumb = computed(() => appStore.getBreadcrumb)
 </script>
 
 <style scoped>

@@ -19,22 +19,29 @@ import { Footer } from '@/components/Footer'
 import { useDesign } from '@/hooks/web/useDesign'
 
 const {variables} = useDesign()
+const {layoutType} = defineProps({layoutType: {type: String, default: ''}})
 const appStore = useAppStore()
 const tagsView = computed(() => appStore.getTagsView)
 const footer = computed(() => appStore.getFooter)
+const breadcrumb = computed(() => appStore.getBreadcrumb)
 const getCaches = computed(() => useTagsViewStore().getCachedViews)
 
 // 计算内容区域高度
 const contentHeight = computed(() => {
   let result = ''
+  let breadcrumHeight = ''
+  if (layoutType === 'top' && breadcrumb.value) {
+    // 顶部模式下，需单独处理面包屑高度
+    breadcrumHeight = ' - var(--breadcrumb-height)'
+  }
   if (footer.value && tagsView.value) {
-    result = 'calc(100vh - 2 * var(--app-content-margin) - var(--top-tool-height) - var(--tags-view-height) - var(--app-footer-height))'
+    result = 'calc(100vh - 2 * var(--app-content-margin) - var(--top-tool-height) - var(--tags-view-height) - var(--app-footer-height)' + breadcrumHeight + ')'
   } else if (footer.value && !tagsView.value) {
-    result = 'calc(100vh - 2 * var(--app-content-margin) - var(--top-tool-height) - var(--app-footer-height))'
+    result = 'calc(100vh - 2 * var(--app-content-margin) - var(--top-tool-height) - var(--app-footer-height)' + breadcrumHeight + ')'
   } else if (!footer.value && tagsView.value) {
-    result = 'calc(100vh - 2 * var(--app-content-margin) - var(--top-tool-height) - var(--tags-view-height))'
+    result = 'calc(100vh - 2 * var(--app-content-margin) - var(--top-tool-height) - var(--tags-view-height)' + breadcrumHeight + ')'
   } else {
-    result = 'calc(100vh - 2 * var(--app-content-margin) - var(--top-tool-height))'
+    result = 'calc(100vh - 2 * var(--app-content-margin) - var(--top-tool-height)' + breadcrumHeight + ')'
   }
   document.documentElement.style.setProperty('--app-content-height', result)
   return result
