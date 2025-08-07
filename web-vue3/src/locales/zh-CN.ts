@@ -26,7 +26,7 @@ export default {
     lockPlaceholder: '请输入锁屏密码'
   },
   tagsView: {
-    reload: '重新加载',
+    reloadCtxBtn: '重新加载',
     closeTabCtxBtn: '关闭标签页',
     closeLeftTabCtxBtn: '关闭左侧标签页',
     closeRightTabCtxBtn: '关闭右侧标签页',
