@@ -11,6 +11,11 @@ export default {
     cfmOk: '确定',
     cfmCancel: '取消'
   },
+  sizeEnum: {
+    default: '默认',
+    large: '大',
+    small: '小'
+  },
   lock: {
     lockBackBtn: '返回',
     lockToLogin: '返回登录',

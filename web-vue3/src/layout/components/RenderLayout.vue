@@ -2,7 +2,7 @@
   <!-- 经典布局（A）  注意：手机端自动切换为“经典布局” -->
   <template v-if="layoutType === 'classic'">
     <!-- A-左侧 -->
-    <div :class="['absolute top-0 left-0 h-full layout-border__right',{'!fixed z-3000':mobile}]">
+    <div :class="['absolute top-0 left-0 h-full layout-border__right',{'!fixed z-1000':mobile}]">
       <div v-if="logo" style="transition: all var(--transition-time-02);"
            :class="['bg-[var(--left-menu-bg-color)] relative',
                         {'!pl-0':mobile&&collapse,'w-[var(--left-menu-min-width)]':collapse,'w-[var(--left-menu-max-width)]':!collapse}]">
@@ -22,7 +22,7 @@
                                '!h-[calc(100%-var(--top-tool-height))] mt-[calc(var(--top-tool-height))]': fixedHeader&&!tagsView,
                                '!h-[calc(100%-var(--top-tool-height)-var(--tags-view-height))] mt-[calc(var(--top-tool-height)+var(--tags-view-height))]':fixedHeader&&tagsView}]">
         <div style="transition: all var(--transition-time-02);"
-             :class="[{'fixed !w-full !left-0': mobile,
+             :class="[{'fixed !w-full !left-0 !top-0': mobile,
                        'fixed top-0 left-0 z-10':fixedHeader&&!mobile,
                        'w-[calc(100%-var(--left-menu-min-width))] !left-[var(--left-menu-min-width)]':collapse&&fixedHeader&&!mobile,
                        'w-[calc(100%-var(--left-menu-max-width))] !left-[var(--left-menu-max-width)]':!collapse&&fixedHeader&&!mobile}]">

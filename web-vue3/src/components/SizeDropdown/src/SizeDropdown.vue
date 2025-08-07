@@ -6,7 +6,7 @@
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item v-for="item in sizeMap" :key="item" :command="item">
-          {{ t(`size.${item}`) }}
+          {{ t(`sizeEnum.${item}`) }}
         </el-dropdown-item>
       </el-dropdown-menu>
     </template>

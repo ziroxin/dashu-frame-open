@@ -11,6 +11,11 @@ export default {
     cfmOk: 'OK',
     cfmCancel: 'Cancel'
   },
+  sizeEnum: {
+    default: 'Default',
+    large: 'Large',
+    small: 'Small'
+  },
   lock: {
     lockBackBtn: 'Back',
     lockToLogin: 'Back to login',
