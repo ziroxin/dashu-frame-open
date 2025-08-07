@@ -1,5 +1,5 @@
 <template>
-  <!-- 使用 VueJsonPretty 组件来显示和编辑 JSON 数据 -->
+  <!-- 使用 VueJsonPretty 组件来显示和编辑 JSON 数据 @link https://github.com/leezng/vue-json-pretty -->
   <vue-json-pretty v-model:data="localModelValue"
                    :deep="deep"
                    :show-length="showLength"
@@ -48,7 +48,7 @@ const props = defineProps({
   itemHeight: {type: Number, default: 20}, // 每个节点的高度，默认为 20px
   rootPath: {type: String, default: 'root'}, // 根节点的路径名称
   nodeSelectable: {type: Function}, // 节点是否可选的函数
-  selectableType: {type: ['multiple', 'single']}, // 选择类型，单选或多选
+  selectableType: {type: String}, // 选择类型，单选single或多选multiple
   showSelectController: {type: Boolean, default: false}, // 是否显示选择控制器
   selectOnClickNode: {type: Boolean, default: true}, // 点击节点时是否自动选择
   highlightSelectedNode: {type: Boolean, default: true}, // 选择节点时是否高亮显示
@@ -56,7 +56,7 @@ const props = defineProps({
   renderNodeKey: {type: Function}, // 自定义渲染节点键的函数
   renderNodeValue: {type: Function}, // 自定义渲染节点值的函数
   editable: {type: Boolean, default: true}, // 是否允许编辑 JSON 数据
-  editableTrigger: {type: ['click', 'dblclick'], default: 'click'}// 编辑触发方式，单击或双击
+  editableTrigger: {type: String, default: 'click'}// 编辑触发方式，单击click或双击dblclick
 })
 // 计算属性，用于处理 modelValue 的双向绑定
 const localModelValue = computed({
