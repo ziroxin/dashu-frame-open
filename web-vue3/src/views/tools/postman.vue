@@ -322,6 +322,11 @@ export default {
         this.bodys = value.bodys
         this.bodyText = value.bodyText
         this.dataType = value.dataType
+      } else {
+        this.historyUrlList = this.historyUrlList.filter(item => item !== url)
+        localStorage.setItem(this.$storageKeys.l_historyKeys, JSON.stringify(this.historyUrlList))
+        this.historyUrl = ''
+        this.$message({type: 'error', message: '请求记录不存在'})
       }
     }
   }

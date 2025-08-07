@@ -1,8 +1,3 @@
-<!--
- * 用户修改密码
- * @Author: ziro
- * @Date: 2023/01/04 08:37:40
- -->
 <template>
   <!--修改密码-->
   <el-dialog title="修改密码" v-model="innerVisible" width="600px" :show-close="showCloseBtn"
