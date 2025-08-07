@@ -1,11 +1,3 @@
-/** 生成uuid */
-export function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8)
-    return v.toString(16)
-  })
-}
-
 /**
  * 时间格式化
  * @param {(Object|string|number)} 时间
@@ -56,4 +48,12 @@ export function parseTime(time, cFormat) {
     return formatObj[key] || ''
   })
   return time_str
+}
+
+/** 生成uuid */
+export function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8)
+    return v.toString(16)
+  })
 }

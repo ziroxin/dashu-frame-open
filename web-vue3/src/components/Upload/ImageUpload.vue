@@ -36,7 +36,7 @@ export default {
   name: 'ImageUpload',
   props: {
     // 绑定值
-    value: {type: Array, default: () => []},
+    modelValue: {type: Array, default: () => []},
     // 传入参数
     paramsData: {type: Object, default: () => ({})},
     // file表单名称
@@ -105,7 +105,7 @@ export default {
         fileList.splice(fileList.indexOf(file), 1)
       }
       this.fileList = fileList.map(o => o.response && o.response.data.length > 0 ? o.response.data[0] : o)
-      this.$emit('input', this.fileList)
+      this.$emit('update:modelValue', this.fileList)
     },
     handleRemove(file, fileList) {
       try {
@@ -119,7 +119,7 @@ export default {
       } catch (e) {
       }
       this.fileList = fileList.map(o => o.response && o.response.data.length > 0 ? o.response.data[0] : o)
-      this.$emit('input', this.fileList)
+      this.$emit('update:modelValue', this.fileList)
     },
     formatSize(size) {
       let sizeStr = size + 'B'
