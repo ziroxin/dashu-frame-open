@@ -37,7 +37,7 @@ export const useGuide = (options?: Config) => {
             side: 'left'
           }
         }, {
-          element: `#${variables.namespace}-breadcrumb`,
+          element: `#${variables.namespace}-my-breadcrumb`,
           popover: {
             title: t('guide.breadcrumbStepTitle'),
             description: t('guide.breadcrumbStepDesc'),

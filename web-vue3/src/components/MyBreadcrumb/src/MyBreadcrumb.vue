@@ -1,5 +1,5 @@
 <template>
-  <el-breadcrumb :id="`${variables.namespace}-breadcrumb`" separator="/"
+  <el-breadcrumb :id="`${variables.namespace}-my-breadcrumb`" separator="/"
                  :class="[prefixCls, 'flex items-center h-full ml-10']">
     <transition-group appear enter-active-class="animate__animated animate__fadeInRight">
       <el-breadcrumb-item v-for="v in breadcrumbList" :key="v.name" :to="{path:toPath(v)}">
@@ -22,7 +22,7 @@ import { useDesign } from '@/hooks/web/useDesign'
 
 const {t} = useI18n()
 const {getPrefixCls, variables} = useDesign()
-const prefixCls = getPrefixCls('breadcrumb')
+const prefixCls = getPrefixCls('my-breadcrumb')
 
 const showIcon = computed(() => useAppStore().getBreadcrumbIcon)
 
@@ -52,7 +52,7 @@ const toPath = (v: AppRouteRecordRaw) => {
 </script>
 
 <style lang="less" scoped>
-@prefix-cls: ~'@{elNamespace}-breadcrumb';
+@prefix-cls: ~'@{elNamespace}-my-breadcrumb';
 
 .@{prefix-cls} {
   :deep(&__item) {

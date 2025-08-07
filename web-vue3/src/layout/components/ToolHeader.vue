@@ -11,7 +11,7 @@
                  :icon="collapse?'vi-ant-design:menu-unfold-outlined':'vi-ant-design:menu-fold-outlined'"/>
       </div>
       <!-- 面包屑 -->
-      <Breadcrumb v-if="breadcrumb" class="<md:hidden"/>
+      <my-breadcrumb v-if="breadcrumb" class="<md:hidden"/>
     </div>
     <!-- 右侧按钮 -->
     <div class="h-full flex items-center">
@@ -38,11 +38,11 @@
 import { LocaleDropdown } from '@/components/LocaleDropdown'
 import { SizeDropdown } from '@/components/SizeDropdown'
 import { UserInfo } from '@/components/UserInfo'
-import { Breadcrumb } from '@/components/Breadcrumb'
 import { useFullscreen } from '@vueuse/core'
 import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
 import { MessageLink } from '@/components/MessageLink'
+import { MyBreadcrumb } from '@/components/MyBreadcrumb'
 
 const {getPrefixCls, variables} = useDesign()
 const prefixCls = getPrefixCls('tool-header')
