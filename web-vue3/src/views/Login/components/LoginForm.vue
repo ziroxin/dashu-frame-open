@@ -47,12 +47,10 @@
         </el-form-item>
       </el-col>
       <el-col :span="24">
-        <el-divider content-position="center" :content="t('login.otherLoginDivider')"/>
-        <div class="flex justify-between w-[100%]">
-          <my-icon v-for="item in ['github-filled', 'wechat-filled','alipay-circle-filled','weibo-circle-filled']"
-                   :icon="'vi-ant-design:'+item" :key="item"
-                   class="cursor-pointer ant-icon" :size="30" color="#999" hoverColor="var(--el-color-primary)"/>
-        </div>
+        <base-button link type="primary" @click="otherLoginVisible=true">{{ t('login.otherLoginBtn') }}</base-button>
+        <el-dialog title="其他方式登录" v-model="otherLoginVisible" draggable>
+          <social-signin/>
+        </el-dialog>
       </el-col>
     </el-row>
   </el-form>
@@ -66,6 +64,8 @@ import { encryptRSA } from '@/utils/jsencrypt-util'
 import { loginApi } from '@/api/login'
 import { setToken } from '@/utils/auth'
 import { useAppStore } from '@/store/modules/app'
+import { BaseButton } from '@/components/BaseButton'
+import SocialSignin from '@/views/Login/components/SocialSignin.vue'
 // 国际化
 const {t} = useI18n()
 // 登录表单数据
@@ -159,5 +159,6 @@ const iconMap = {
   password: useIcon({icon: 'lock'}),
   yzm: useIcon({icon: 'yzm', size: 20, color: '#777'})
 }
+const otherLoginVisible = ref(false)
 </script>
 

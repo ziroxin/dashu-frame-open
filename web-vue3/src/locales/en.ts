@@ -97,6 +97,6 @@ export default {
     rememberChb: 'Remember me',
     forgetPasswordLink: 'Forget password',
     loginBtn: 'Sign in',
-    otherLoginDivider: 'Sign in with'
+    otherLoginBtn: 'Others Login'
   }
 }

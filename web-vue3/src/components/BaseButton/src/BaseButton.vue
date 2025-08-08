@@ -1,6 +1,7 @@
 <template>
-  <el-button :class="`${prefixCls}`" v-bind="{ ...props,icon:null }" @click="handleClick">
-    <my-icon v-if="icon" :icon="icon" :size="iconSize" :class="hasDefaultSlot?'mr-5px!':''"/>
+  <el-button :class="prefixCls" :style="textColor?'color:'+textColor+'!important':''"
+             v-bind="{ ...props,icon:null }" @click="handleClick">
+    <my-icon v-if="icon" :icon="icon" :size="iconSize" :class="[hasDefaultSlot?'mr-5px!':'']"/>
     <slot></slot>
     <slot name="loading"></slot>
   </el-button>
@@ -30,7 +31,8 @@ const props = defineProps({
   color: {type: String, default: ''},
   darker: {type: Boolean, default: false},
   tag: {type: [String, Object], default: 'button'},
-  iconSize: {type: Number, default: 16}
+  iconSize: {type: Number, default: 16},
+  textColor: {type: String, default: ''}
 })
 
 // 默认插槽是否有值

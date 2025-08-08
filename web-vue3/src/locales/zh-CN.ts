@@ -97,6 +97,6 @@ export default {
     rememberChb: '记住密码',
     forgetPasswordLink: '忘记密码',
     loginBtn: '登录',
-    otherLoginDivider: '其它登录方式'
+    otherLoginBtn: '其他方式登录'
   }
 }
