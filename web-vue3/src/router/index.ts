@@ -38,7 +38,6 @@ export const constantRoutes: AppRouteRecordRaw[] = [
     name: 'ServerError',
     component: () => import('@/views/Error/500.vue'),
     meta: {hidden: true, title: '500', noTagsView: true}
-    // todo: register等其他路由
   }, {
     path: '/',
     name: 'Root',

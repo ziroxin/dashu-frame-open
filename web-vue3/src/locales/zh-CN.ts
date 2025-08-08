@@ -88,15 +88,19 @@ export default {
     welcomeTitle: '欢迎使用本系统',
     welcomeMessage: '开箱即用的中后台管理系统',
     loginTitle: '欢迎登录',
+    registerTitle: '用户注册',
     userNameLabel: '用户名',
     userNamePlaceholder: '请输入用户名',
     passwordLabel: '密码',
     passwordPlaceholder: '请输入密码',
+    rePasswordLabel: '密码确认',
+    rePasswordPlaceholder: '请再次输入确认密码',
     yzmLabel: '验证码',
     yzmPlaceholder: '请输入验证码',
     rememberChb: '记住密码',
     forgetPasswordLink: '忘记密码',
     loginBtn: '登录',
+    registerBtn: '注册',
     otherLoginBtn: '其他方式登录'
   }
 }

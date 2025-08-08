@@ -10,23 +10,33 @@
       <el-col :span="24">
         <el-form-item :label="t('login.userNameLabel')" prop="userName"
                       :rules="[{required: true, message: '用户名不能为空！'}]">
-          <el-input v-model="loginForm.userName" :prefix-icon="iconMap.user"
-                    :placeholder="t('login.userNamePlaceholder')" style="width: 100%"/>
+          <el-input v-model="loginForm.userName" class="w-full" :placeholder="t('login.userNamePlaceholder')">
+            <template #prefix>
+              <my-icon icon="user"/>
+            </template>
+          </el-input>
         </el-form-item>
       </el-col>
       <el-col :span="24">
         <el-form-item :label="t('login.passwordLabel')" prop="password"
                       :rules="[{required: true, message: '密码不能为空！'}]">
-          <el-input type="password" v-model="loginForm.password" @keydown.enter.stop="signIn"
-                    :prefix-icon="iconMap.password" show-password
-                    :placeholder="t('login.passwordPlaceholder')" style="width: 100%"/>
+          <el-input type="password" v-model="loginForm.password" @keydown.enter.stop="signIn" class="w-full"
+                    show-password :placeholder="t('login.passwordPlaceholder')">
+            <template #prefix>
+              <my-icon icon="lock"/>
+            </template>
+          </el-input>
         </el-form-item>
       </el-col>
       <el-col :span="24">
         <el-form-item :label="t('login.yzmLabel')" prop="yzm" :rules="[{required: true, message: '验证码不能为空！'}]">
           <div class="flex justify-between items-center w-[100%]">
-            <el-input ref="yzm" v-model="loginForm.yzm" @keydown.enter.stop="signIn" :prefix-icon="iconMap.yzm"
-                      class="w-[50%]" :placeholder="t('login.yzmPlaceholder')"/>
+            <el-input ref="yzm" v-model="loginForm.yzm" @keydown.enter.stop="signIn" class="w-[50%]"
+                      :placeholder="t('login.yzmPlaceholder')">
+              <template #prefix>
+                <my-icon icon="yzm" :size="20" color="#777"/>
+              </template>
+            </el-input>
             <img :src="loginForm.codeBaseImage" @click="loadCaptcha"/>
           </div>
         </el-form-item>
@@ -47,7 +57,19 @@
         </el-form-item>
       </el-col>
       <el-col :span="24">
-        <base-button link type="primary" @click="otherLoginVisible=true">{{ t('login.otherLoginBtn') }}</base-button>
+        <div class="flex justify-center items-center mb-10px">
+          <el-link target="_blank" href="https://yanshi.java119.cn/protocol.html">《用户协议》</el-link>
+          <el-link target="_blank" href="https://yanshi.java119.cn/protocol.html">《隐私协议》</el-link>
+        </div>
+      </el-col>
+      <el-col :span="24">
+        <div class="flex justify-center items-center">
+          <div class="color-#666 text-14px flex items-center mr-20px">
+            <div>还没有账号?</div>
+            <base-button link type="primary" @click="toRegister">{{ t('login.registerBtn') }}</base-button>
+          </div>
+          <base-button link type="primary" @click="otherLoginVisible=true">{{ t('login.otherLoginBtn') }}</base-button>
+        </div>
         <el-dialog title="其他方式登录" v-model="otherLoginVisible" draggable>
           <social-signin/>
         </el-dialog>
@@ -59,13 +81,13 @@
 import request from '@/utils/request'
 import storageKeys from '@/utils/storage-keys'
 import { useI18n } from '@/hooks/web/useI18n'
-import { useIcon } from '@/hooks/web/useIcon'
 import { encryptRSA } from '@/utils/jsencrypt-util'
 import { loginApi } from '@/api/login'
 import { setToken } from '@/utils/auth'
 import { useAppStore } from '@/store/modules/app'
 import { BaseButton } from '@/components/BaseButton'
-import SocialSignin from '@/views/Login/components/SocialSignin.vue'
+import { MyIcon } from '@/components/MyIcon'
+import { SocialSignin } from './'
 // 国际化
 const {t} = useI18n()
 // 登录表单数据
@@ -153,12 +175,10 @@ const loginSuccess = () => {
   replace({path: currentRoute.value?.query?.redirect as string || '/'})
 }
 
-// 输入框图标
-const iconMap = {
-  user: useIcon({icon: 'user'}),
-  password: useIcon({icon: 'lock'}),
-  yzm: useIcon({icon: 'yzm', size: 20, color: '#777'})
-}
+// 注册
+const emit = defineEmits(['toRegister'])
+const toRegister = () => { emit('toRegister') }
+// 其他方式登录
 const otherLoginVisible = ref(false)
 </script>
 

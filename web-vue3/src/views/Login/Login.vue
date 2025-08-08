@@ -23,7 +23,7 @@
 
         <!-- 右侧 -->
         <div class="flex-1 p-30px lt-sm:p-10px dark:bg-[var(--login-bg-color)] relative">
-          <div class="flex justify-between items-center text-white at-2xl:justify-end at-xl:justify-end">
+          <div class="h-40px flex justify-between items-center text-white at-2xl:justify-end at-xl:justify-end">
             <!-- 右侧（手机端-展示logo） -->
             <div class="flex items-center at-2xl:hidden at-xl:hidden">
               <img src="@/assets/imgs/logo.png" alt="" class="w-48px h-48px mr-10px"/>
@@ -37,10 +37,17 @@
           </div>
 
           <!-- 登录表单 -->
-          <transition appear enter-active-class="animate__animated animate__bounceInRight">
+          <transition v-if="!registerVisible" appear enter-active-class="animate__animated animate__bounceInRight">
             <div
-                class="h-full flex items-center m-auto w-[100%] at-2xl:max-w-500px at-xl:max-w-500px at-md:max-w-500px at-lg:max-w-500px">
-              <login-form class="p-20px h-auto m-auto lt-xl:rounded-3xl lt-xl:light:bg-white"/>
+                class="flex items-center m-auto w-[100%] h-[calc(100%-40px)] at-2xl:max-w-500px at-xl:max-w-500px at-md:max-w-500px at-lg:max-w-500px">
+              <login-form @toRegister="toReg" class="p-20px h-auto m-auto lt-xl:rounded-3xl lt-xl:light:bg-white"/>
+            </div>
+          </transition>
+          <!-- 注册表单 -->
+          <transition v-else appear enter-active-class="animate__animated animate__bounceInRight">
+            <div
+                class="flex items-center m-auto w-[100%] h-[calc(100%-40px)] at-2xl:max-w-500px at-xl:max-w-500px at-md:max-w-500px at-lg:max-w-500px">
+              <register-form @toLogin="toLogin" class="p-20px h-auto m-auto lt-xl:rounded-3xl lt-xl:light:bg-white"/>
             </div>
           </transition>
         </div>
@@ -50,7 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import { LoginForm } from './components'
+import { LoginForm, RegisterForm } from './components'
 import { ThemeSwitch } from '@/components/ThemeSwitch'
 import { LocaleDropdown } from '@/components/LocaleDropdown'
 import { useAppStore } from '@/store/modules/app'
@@ -62,6 +69,10 @@ const {t} = useI18n()
 const appStore = useAppStore()
 // 获取命名空间前缀
 const prefixCls = useDesign().getPrefixCls('login')
+// 注册/登录
+const registerVisible = ref(false)
+const toReg = () => { registerVisible.value = true}
+const toLogin = () => { registerVisible.value = false}
 </script>
 
 <style lang="less" scoped>

@@ -88,15 +88,19 @@ export default {
     welcomeTitle: 'Welcome to the system',
     welcomeMessage: 'Backstage management system',
     loginTitle: 'Welcome to login',
+    registerTitle: 'Register User',
     userNameLabel: 'Username',
     userNamePlaceholder: 'Please input username',
     passwordLabel: 'Password',
     passwordPlaceholder: 'Please input password',
+    rePasswordLabel: 'Password Confirm',
+    rePasswordPlaceholder: 'Please input password again',
     yzmLabel: 'Verification code',
     yzmPlaceholder: 'Please input verification code',
     rememberChb: 'Remember me',
     forgetPasswordLink: 'Forget password',
     loginBtn: 'Sign in',
+    registerBtn: 'Register',
     otherLoginBtn: 'Others Login'
   }
 }
