@@ -61,7 +61,7 @@ const barOptionsData = reactive<EChartsOption>(barOptions) as EChartsOption
 const getWeeklyUserActivity = () => {
   const weeklyUserActivityArr = [
     {value: 1323, name: '周一'}, {value: 3423, name: '周二'}, {value: 2632, name: '周三'}, {value: 1340, name: '周四'},
-    {value: 24643, name: '周五'}, {value: 1322, name: '周六'}, {value: 1324, name: '周日'}
+    {value: 2464, name: '周五'}, {value: 1322, name: '周六'}, {value: 1324, name: '周日'}
   ]
   set(barOptionsData, 'xAxis.data', weeklyUserActivityArr.map((v) => v.name))
   set(barOptionsData, 'series', [{name: '活跃量', data: weeklyUserActivityArr.map((v) => v.value), type: 'bar'}])
