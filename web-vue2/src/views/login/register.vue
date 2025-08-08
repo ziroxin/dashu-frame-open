@@ -85,7 +85,7 @@
                         <el-input prefix-icon="el-icon-user" type="text" autocomplete="off" tabindex="9"
                                   v-model="regForm.name" placeholder="姓名"/>
                       </el-form-item>
-                      <el-form-item prop="phone">
+                      <el-form-item prop="phone" :rules="[{pattern: /^1[3456789]\d{9}$/, message: '手机号格式不正确'}]">
                         <el-input prefix-icon="el-icon-mobile-phone" type="text" tabindex="10"
                                   autocomplete="off" v-model="regForm.phone" placeholder="手机号"/>
                       </el-form-item>
@@ -115,9 +115,9 @@
 </template>
 
 <script>
-import {encryptRSA} from '@/utils/jsencrypt-util'
-import {imageAdeskVertical} from "@/utils/image-data-util";
-import SelectTree from "@/components/SelectTree/index.vue";
+import { encryptRSA } from '@/utils/jsencrypt-util'
+import { imageAdeskVertical } from '@/utils/image-data-util'
+import SelectTree from '@/components/SelectTree/index.vue'
 
 export default {
   name: 'Login',
@@ -178,7 +178,7 @@ export default {
   methods: {
     loadOrgList() {
       this.$request({url: '/register/org/list', method: 'get'}).then((rep) => {
-        this.orgList = rep.data;
+        this.orgList = rep.data
       })
     },
     checkCapslock(e) {
@@ -231,8 +231,8 @@ export default {
     //验证码
     loadCaptcha() {
       this.$request({url: '/captcha/get', method: 'get'}).then((rep) => {
-        this.regForm.codeUuid = rep.data.codeUuid;
-        this.regForm.codeBaseImage = rep.data.codeBaseImage;
+        this.regForm.codeUuid = rep.data.codeUuid
+        this.regForm.codeBaseImage = rep.data.codeBaseImage
       })
     },
     // 动态壁纸
@@ -266,7 +266,7 @@ export default {
     },
     handleImageError(event) {
       event.target.src = require('@/assets/images/loginbg.jpg')
-    },
+    }
   }
 }
 </script>
