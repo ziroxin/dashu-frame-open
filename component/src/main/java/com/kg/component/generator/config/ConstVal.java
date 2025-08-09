@@ -52,79 +52,42 @@ public interface ConstVal {
     String VUE_SUFFIX = ".vue";
     String SQL_SUFFIX = ".sql";
 
-    /**
-     * 实体模板路径
-     */
+    /** 实体模板路径 */
     String TEMPLATE_ENTITY_JAVA = "/templates/entity.java";
-
-    /**
-     * 实体模板路径(kotlin模板)
-     */
+    /** 实体模板路径(kotlin模板) */
     String TEMPLATE_ENTITY_KT = "/templates/entity.kt";
-
-    /**
-     * DTO模板路径
-     */
+    /** DTO模板路径 */
     String TEMPLATE_DTO = "/templates/dto.java";
-
-    /**
-     * Convert模板路径
-     */
+    /** Convert模板路径 */
     String TEMPLATE_DTOCONVERT = "/templates/dtoconvert.java";
-
-    /**
-     * Excel Constant模板路径
-     */
+    /** Excel Constant模板路径 */
     String TEMPLATE_EXCEL_CONSTANT = "/templates/excelconstant.java";
-
-    /**
-     * Excel Out模板路径
-     */
+    /** Excel Out模板路径 */
     String TEMPLATE_EXCEL_OUT = "/templates/excelout.java";
-
-    /**
-     * Excel Import模板路径
-     */
+    /** Excel Import模板路径 */
     String TEMPLATE_EXCEL_IMPORT = "/templates/excelimport.java";
-
-    /**
-     * 控制器模板路径
-     */
+    /** 控制器模板路径 */
     String TEMPLATE_CONTROLLER = "/templates/controller.java";
 
-    /**
-     * IndexVue模板路径
-     */
+    /** vue2 - IndexVue模板路径 */
     String TEMPLATE_INDEXVUE = "/templates/index.vue";
-
-    /**
-     * DeleteLogsVue模板路径
-     */
+    /** vue2 - DeleteLogsVue模板路径 */
     String TEMPLATE_DELETELOGSVUE = "/templates/deleteLogs.vue";
+    /** vue3 - Vue3Index模板路径 */
+    String TEMPLATE_VUE3_INDEX = "/templates/vue3Index.vue";
+    /** vue3 - Vue3DeleteLogs模板路径 */
+    String TEMPLATE_VUE3_DELETELOGS = "/templates/vue3DeleteLogs.vue";
 
-    /**
-     * 权限SQL文件模板路径
-     */
+    /** 权限SQL文件模板路径 */
     String TEMPLATE_PERMISSION_SQL = "/templates/permission.sql";
 
-    /**
-     * Mapper模板路径
-     */
+    /** Mapper模板路径 */
     String TEMPLATE_MAPPER = "/templates/mapper.java";
-
-    /**
-     * MapperXml模板路径
-     */
+    /** MapperXml模板路径 */
     String TEMPLATE_XML = "/templates/mapper.xml";
-
-    /**
-     * Service模板路径
-     */
+    /** Service模板路径 */
     String TEMPLATE_SERVICE = "/templates/service.java";
-
-    /**
-     * ServiceImpl模板路径
-     */
+    /** ServiceImpl模板路径 */
     String TEMPLATE_SERVICE_IMPL = "/templates/serviceImpl.java";
 
     String VM_LOAD_PATH_KEY = "file.resource.loader.class";

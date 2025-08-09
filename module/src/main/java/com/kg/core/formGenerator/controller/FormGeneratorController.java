@@ -175,7 +175,7 @@ public class FormGeneratorController {
         }
         childTableMap.put(tableDTO.getTableName(), childTableList);// 只有主表存储子表信息
         // ================================== 开始执行生成 =====================================
-        generatorCodeUtils.start(basePath, "module", basePackage, author, "web-vue2",
+        generatorCodeUtils.start(basePath, "module", basePackage, author, "web-vue2", "web-vue3",
                 tableNames, idTypes, packages, viewPaths, tableDTO, childTableMap, tableDTO.getIsDeleteLogs());
         // 打成压缩包
         String zipPath = basePath + ".zip";

@@ -30,77 +30,49 @@ public class TemplateConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplateConfig.class);
 
-    /**
-     * 设置实体模板路径
-     */
+    /** 设置实体模板路径 */
     private String entity;
-
-    /**
-     * 设置实体模板路径(kotlin模板)
-     */
+    /** 设置实体模板路径(kotlin模板) */
     private String entityKt;
 
-    /**
-     * 设置DTO模板路径
-     */
+    /** 设置DTO模板路径 */
     private String dto;
     private String dtoconvert;
 
-    /**
-     * 设置Excel模板路径
-     */
+    /** 设置Excel模板路径 */
     private String excelConstant;
     private String excelOut;
     private String excelImport;
 
-    /**
-     * 设置控制器模板路径
-     */
+    /** 设置控制器模板路径 */
     private String controller;
 
-    /**
-     * 设置indexVue模板路径
-     */
+    /** vue2 设置indexVue模板路径 */
     private String indexVue;
-
-    /**
-     * 设置deleteLogsVue模板路径
-     */
+    /** vue2 设置deleteLogsVue模板路径 */
     private String deleteLogsVue;
 
-    /**
-     * 设置permissionSQL模板路径
-     */
+    /** vue3 设置indexVue模板路径 */
+    private String vue3Index;
+    /** vue3 设置deleteLogsVue模板路径 */
+    private String vue3DeleteLogs;
+
+    /** 设置permissionSQL模板路径 */
     private String permissionSQL;
 
-    /**
-     * 设置Mapper模板路径
-     */
+    /** 设置Mapper模板路径 */
     private String mapper;
-
-    /**
-     * 设置MapperXml模板路径
-     */
+    /** 设置MapperXml模板路径 */
     private String xml;
-
-    /**
-     * 设置Service模板路径
-     */
+    /** 设置Service模板路径 */
     private String service;
-
-    /**
-     * 设置ServiceImpl模板路径
-     */
+    /** 设置ServiceImpl模板路径 */
     private String serviceImpl;
 
-    /**
-     * 是否禁用实体模板（默认 false）
-     */
+    /** 是否禁用实体模板（默认 false） */
     private boolean disableEntity;
 
-    /**
-     * 不对外爆露
-     */
+    /** 不对外暴露 */
     private TemplateConfig() {
         this.entity = ConstVal.TEMPLATE_ENTITY_JAVA;
         this.entityKt = ConstVal.TEMPLATE_ENTITY_KT;
@@ -110,9 +82,14 @@ public class TemplateConfig {
         this.excelOut = ConstVal.TEMPLATE_EXCEL_OUT;
         this.excelImport = ConstVal.TEMPLATE_EXCEL_IMPORT;
         this.controller = ConstVal.TEMPLATE_CONTROLLER;
+
         this.indexVue = ConstVal.TEMPLATE_INDEXVUE;
         this.deleteLogsVue = ConstVal.TEMPLATE_DELETELOGSVUE;
+        this.vue3Index = ConstVal.TEMPLATE_VUE3_INDEX;
+        this.vue3DeleteLogs = ConstVal.TEMPLATE_VUE3_DELETELOGS;
+
         this.permissionSQL = ConstVal.TEMPLATE_PERMISSION_SQL;
+
         this.mapper = ConstVal.TEMPLATE_MAPPER;
         this.xml = ConstVal.TEMPLATE_XML;
         this.service = ConstVal.TEMPLATE_SERVICE;
@@ -188,6 +165,11 @@ public class TemplateConfig {
                     case DELETELOGSVUE:
                         this.deleteLogsVue = null;
                         break;
+                    case VUE3INDEX:
+                        this.vue3Index = null;
+                        break;
+                    case VUE3DELETELOGS:
+                        this.vue3DeleteLogs = null;
                     case PERMISSIONSQL:
                         this.permissionSQL = null;
                         break;
@@ -266,6 +248,14 @@ public class TemplateConfig {
 
     public String getDeleteLogsVue() {
         return deleteLogsVue;
+    }
+
+    public String getVue3Index() {
+        return vue3Index;
+    }
+
+    public String getVue3DeleteLogs() {
+        return vue3DeleteLogs;
     }
 
     public String getPermissionSQL() {
@@ -432,7 +422,7 @@ public class TemplateConfig {
         }
 
         /**
-         * 设置IndexVue模板路径
+         * vue2 设置IndexVue模板路径
          *
          * @param indexVueTemplate IndexVue模板路径
          * @return this
@@ -443,13 +433,35 @@ public class TemplateConfig {
         }
 
         /**
-         * 设置DeleteLogsVue模板路径
+         * vue2 设置DeleteLogsVue模板路径
          *
          * @param deleteLogsVueTemplate DeleteLogsVue模板路径
          * @return this
          */
         public Builder deleteLogsVue(@NotNull String deleteLogsVueTemplate) {
             this.templateConfig.deleteLogsVue = deleteLogsVueTemplate;
+            return this;
+        }
+
+        /**
+         * vue3 设置Vue3Index模板路径
+         *
+         * @param vue3IndexTemplate Vue3Index模板路径
+         * @return this
+         */
+        public Builder vue3Index(@NotNull String vue3IndexTemplate) {
+            this.templateConfig.vue3Index = vue3IndexTemplate;
+            return this;
+        }
+
+        /**
+         * vue3 设置 Vue3DeleteLogs模板路径
+         *
+         * @param vue3DeleteLogsTemplate Vue3DeleteLogs模板路径
+         * @return this
+         */
+        public Builder vue3DeleteLogs(@NotNull String vue3DeleteLogsTemplate) {
+            this.templateConfig.vue3DeleteLogs = vue3DeleteLogsTemplate;
             return this;
         }
 

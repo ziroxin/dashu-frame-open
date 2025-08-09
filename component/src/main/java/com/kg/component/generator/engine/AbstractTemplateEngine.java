@@ -271,6 +271,42 @@ public abstract class AbstractTemplateEngine {
     }
 
     /**
+     * 输出vue3Index文件
+     *
+     * @param tableInfo 表信息
+     * @param objectMap 渲染数据
+     * @since 3.5.0
+     */
+    protected void outputVue3Index(@NotNull TableInfo tableInfo, @NotNull Map<String, Object> objectMap) {
+        // mp/vue3Index.vue
+        String vue3IndexPath = getPathInfo(OutputFile.vue3Index);
+        if (StringUtils.isNotBlank(vue3IndexPath)) {
+            getTemplateFilePath(TemplateConfig::getVue3Index).ifPresent(vue3Index -> {
+                String vue3IndexFile = vue3IndexPath + File.separator + objectMap.get("vue3IndexPackage") + File.separator + "index" + ConstVal.VUE_SUFFIX;
+                outputFile(new File(vue3IndexFile), objectMap, vue3Index, getConfigBuilder().getStrategyConfig().vue3Index().isFileOverride());
+            });
+        }
+    }
+
+    /**
+     * 输出vue3DeleteLogs文件
+     *
+     * @param tableInfo 表信息
+     * @param objectMap 渲染数据
+     * @since 3.5.0
+     */
+    protected void outputVue3DeleteLogs(@NotNull TableInfo tableInfo, @NotNull Map<String, Object> objectMap) {
+        // mp/vue3DeleteLogs.vue
+        String vue3DeleteLogsPath = getPathInfo(OutputFile.vue3DeleteLogs);
+        if (StringUtils.isNotBlank(vue3DeleteLogsPath)) {
+            getTemplateFilePath(TemplateConfig::getVue3DeleteLogs).ifPresent(vue3DeleteLogs -> {
+                String vue3DeleteLogsFile = vue3DeleteLogsPath + File.separator + objectMap.get("vue3DeleteLogsPackage") + ConstVal.VUE_SUFFIX;
+                outputFile(new File(vue3DeleteLogsFile), objectMap, vue3DeleteLogs, getConfigBuilder().getStrategyConfig().vue3DeleteLogs().isFileOverride());
+            });
+        }
+    }
+
+    /**
      * 输出permissionSQL文件
      *
      * @param tableInfo 表信息
@@ -386,16 +422,27 @@ public abstract class AbstractTemplateEngine {
 
                 // vue路径未配置时，不生成前端vue和权限sql
                 if (objectMap.get("permissionRouter") != null) {
-                    // indexVue
-                    outputIndexVue(tableInfo, objectMap);
+                    if (StringUtils.isNotBlank(config.getStrategyConfig().indexVue().getViewPath())) {
+                        // indexVue
+                        outputIndexVue(tableInfo, objectMap);
+                    }
+                    if (StringUtils.isNotBlank(config.getStrategyConfig().vue3Index().getViewPath())) {
+                        // vue3Index
+                        outputVue3Index(tableInfo, objectMap);
+                    }
                     // permissionSQL
                     outputPermissionSQL(tableInfo, objectMap);
                 }
                 // 根据需要生成deleteLogsVue的文件
                 if (config.getStrategyConfig().deleteLogsVue() != null
-                        && config.getStrategyConfig().deleteLogsVue().getViewPath() != null) {
+                        && StringUtils.isNotBlank(config.getStrategyConfig().deleteLogsVue().getViewPath())) {
                     // deleteLogsVue
                     outputDeleteLogsVue(tableInfo, objectMap);
+                }
+                if (config.getStrategyConfig().vue3DeleteLogs() != null
+                        && StringUtils.isNotBlank(config.getStrategyConfig().vue3DeleteLogs().getViewPath())) {
+                    // vue3DeleteLogs
+                    outputVue3DeleteLogs(tableInfo, objectMap);
                 }
             });
         } catch (Exception e) {
@@ -495,6 +542,8 @@ public abstract class AbstractTemplateEngine {
         objectMap.put("package", config.getPackageConfig().getPackageInfo());
         objectMap.put("indexVuePackage", strategyConfig.indexVue().getViewPath());
         objectMap.put("deleteLogsVuePackage", strategyConfig.deleteLogsVue().getViewPath());
+        objectMap.put("vue3IndexPackage", strategyConfig.vue3Index().getViewPath());
+        objectMap.put("vue3DeleteLogsPackage", strategyConfig.vue3DeleteLogs().getViewPath());
         GlobalConfig globalConfig = config.getGlobalConfig();
         objectMap.put("author", globalConfig.getAuthor());
         objectMap.put("kotlin", globalConfig.isKotlin());

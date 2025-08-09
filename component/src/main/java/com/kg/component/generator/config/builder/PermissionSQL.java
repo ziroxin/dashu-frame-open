@@ -44,11 +44,16 @@ public class PermissionSQL implements ITemplate {
             data.put("controllerAuthorizePre", tableInfo.getEntityPath() + ":");
             data.put("permissionName", tableInfo.getEntityPath());
         }
-        String permissionRouter = config.getStrategyConfig().indexVue().getViewPath();
-        // 路由
-        data.put("permissionRouter", permissionRouter);
-        // 组件
-        data.put("permissionCompontent", permissionRouter + "/index");
+        // 前端路由
+        String vue3IndexPath = config.getStrategyConfig().vue3Index().getViewPath();
+        String indexVuePath = config.getStrategyConfig().indexVue().getViewPath();
+        if (StringUtils.isNotBlank(vue3IndexPath) || StringUtils.isNotBlank(indexVuePath)) {
+            String vuePath = StringUtils.isNotBlank(vue3IndexPath) ? vue3IndexPath : indexVuePath;
+            // 生成sql路由
+            data.put("permissionRouter", vuePath);
+            // 生成sql组件
+            data.put("permissionCompontent", vuePath + "/index");
+        }
         // 待生成数据id组合
         data.put("menuId", GuidUtils.getUuid());
         data.put("addBtnId", GuidUtils.getUuid());

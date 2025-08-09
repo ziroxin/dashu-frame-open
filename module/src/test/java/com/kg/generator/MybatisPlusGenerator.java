@@ -31,6 +31,7 @@ public class MybatisPlusGenerator {
         String basePackage = "com.kg." + module;
         // vue项目文件夹
         String vueFolder = "web-vue2";
+        String vue3Folder = "web-vue3";
         // 作者
         String author = "ziro";
 
@@ -58,7 +59,7 @@ public class MybatisPlusGenerator {
         boolean isDeleteLog = true;
 
         // ======== 4 执行代码生成 =========
-        generatorCodeUtils.start(basePath, module, basePackage, author, vueFolder,
+        generatorCodeUtils.start(basePath, module, basePackage, author, vueFolder, vue3Folder,
                 tableNames, idTypes, packages, viewPaths, null, null, isDeleteLog);
     }
 }

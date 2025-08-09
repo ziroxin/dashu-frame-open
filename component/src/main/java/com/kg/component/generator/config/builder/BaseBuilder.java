@@ -64,6 +64,16 @@ public class BaseBuilder implements IConfigBuilder<StrategyConfig> {
     }
 
     @NotNull
+    public Vue3Index.Builder vue3IndexBuilder() {
+        return strategyConfig.vue3IndexBuilder();
+    }
+
+    @NotNull
+    public Vue3DeleteLogs.Builder vue3DeleteLogsBuilder() {
+        return strategyConfig.vue3DeleteLogsBuilder();
+    }
+
+    @NotNull
     public PermissionSQL.Builder permissionSQLBuilder() {
         return strategyConfig.permissionSqlBuilder();
     }

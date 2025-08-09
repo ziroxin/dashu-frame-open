@@ -50,6 +50,7 @@ public class GeneratorCodeUtils {
      * @param basePackage   包路径，如：com.kg.module
      * @param author        作者
      * @param vueFolder     前台代码文件夹，如：web-vue2
+     * @param vue3Folder    前台代码文件夹，如：web-vue3
      * @param tableNames    待生成表名列表
      * @param idTypes       主键类型列表
      * @param packages      包名列表
@@ -59,7 +60,8 @@ public class GeneratorCodeUtils {
      * @param hasDeleteLogs 是否生成删除日志表（默认不生成）
      *                      要求：1日志表名[表名_logs]； 2日志表字段包含全部主表字段，并增加[主键logs_id和删除时间delete_time]字段
      */
-    public void start(String basePath, String module, String basePackage, String author, String vueFolder,
+    public void start(String basePath, String module, String basePackage,
+                      String author, String vueFolder, String vue3Folder,
                       LinkedList<String> tableNames, LinkedList<IdType> idTypes,
                       LinkedList<String> packages, LinkedList<String> viewPaths,
                       TableDTO tableDTO, Map<String, Object> childTableMap, boolean hasDeleteLogs) {
@@ -71,9 +73,12 @@ public class GeneratorCodeUtils {
             String javaPath = basePath + "/" + module + "/src/main/java";
             // xml代码输出路径
             pathInfo.put(OutputFile.xml, basePath + "/" + module + "/src/main/resources/mapper");
-            // 前台代码，输出到vue
+            // 前台代码，输出到web-vue2
             pathInfo.put(OutputFile.indexVue, basePath + "/" + vueFolder + "/src/views");
             pathInfo.put(OutputFile.deleteLogsVue, basePath + "/" + vueFolder + "/src/views");
+            // 前台代码，输出到web-vue3
+            pathInfo.put(OutputFile.vue3Index, basePath + "/" + vue3Folder + "/src/views");
+            pathInfo.put(OutputFile.vue3DeleteLogs, basePath + "/" + vue3Folder + "/src/views");
             // 权限脚本，输出到sql
             pathInfo.put(OutputFile.permissionSql, basePath + "/sql");
             // 配置生成器
@@ -155,12 +160,13 @@ public class GeneratorCodeUtils {
                         builder.addInclude(tableName);
                         // ===============indexVue配置
                         if (StringUtils.hasText(indexViewPath)) {
+                            // vue2 代码
                             if (tableDTO == null) {
                                 builder.indexVueBuilder()// ===============indexVue配置
                                         .enableFileOverride()
                                         .viewPath(indexViewPath);// 前端文件路径
                             } else {
-                                builder.indexVueBuilder()
+                                builder.indexVueBuilder()// ===============indexVue配置
                                         .templateHtml(URLDecoder.decode(tableDTO.getTemplate(), "UTF-8"))
                                         .jsData(URLDecoder.decode(tableDTO.getJsData(), "UTF-8"))
                                         .jsCreated(URLDecoder.decode(tableDTO.getJsCreated(), "UTF-8"))
@@ -171,10 +177,17 @@ public class GeneratorCodeUtils {
                                         .enableFileOverride()
                                         .viewPath(indexViewPath);// 前端文件路径
                             }
+                            // vue3 代码
+                            builder.vue3IndexBuilder()// ===============vue3Index配置
+                                    .enableFileOverride()
+                                    .viewPath(indexViewPath);// 前端文件路径
                         }
                         // ===============deleteLogsVue配置
                         if (StringUtils.hasText(deleteLogsViewPath)) {
                             builder.deleteLogsVueBuilder()// ===============deleteLogsVue配置
+                                    .enableFileOverride()
+                                    .viewPath(deleteLogsViewPath);// 前端文件路径
+                            builder.vue3DeleteLogsBuilder()// ===============vue3DeleteLogs配置
                                     .enableFileOverride()
                                     .viewPath(deleteLogsViewPath);// 前端文件路径
                         }

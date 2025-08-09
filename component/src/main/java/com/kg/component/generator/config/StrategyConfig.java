@@ -125,6 +125,10 @@ public class StrategyConfig {
 
     private final DeleteLogsVue.Builder deleteLogsVueBuilder = new DeleteLogsVue.Builder(this);
 
+    private final Vue3Index.Builder vue3IndexBuilder = new Vue3Index.Builder(this);
+
+    private final Vue3DeleteLogs.Builder vue3DeleteLogsBuilder = new Vue3DeleteLogs.Builder(this);
+
     private final PermissionSQL.Builder permissionSQLBuilder = new PermissionSQL.Builder(this);
 
     private final Mapper.Builder mapperBuilder = new Mapper.Builder(this);
@@ -146,6 +150,10 @@ public class StrategyConfig {
     private IndexVue indexVue;
 
     private DeleteLogsVue deleteLogsVue;
+
+    private Vue3Index vue3Index;
+
+    private Vue3DeleteLogs vue3DeleteLogs;
 
     private PermissionSQL permissionSQL;
 
@@ -297,6 +305,56 @@ public class StrategyConfig {
             this.deleteLogsVue = deleteLogsVueBuilder.get();
         }
         return deleteLogsVue;
+    }
+
+    /**
+     * Vue3Index配置构建者
+     *
+     * @return Vue3Index配置构建者
+     * @since 3.5.0
+     */
+    @NotNull
+    public Vue3Index.Builder vue3IndexBuilder() {
+        return vue3IndexBuilder;
+    }
+
+    /**
+     * Vue3Index配置
+     *
+     * @return Vue3Index配置
+     * @since 3.5.0
+     */
+    @NotNull
+    public Vue3Index vue3Index() {
+        if (vue3Index == null) {
+            this.vue3Index = vue3IndexBuilder.get();
+        }
+        return vue3Index;
+    }
+
+    /**
+     * Vue3DeleteLogs配置构建者
+     *
+     * @return Vue3DeleteLogs配置构建者
+     * @since 3.5.0
+     */
+    @NotNull
+    public Vue3DeleteLogs.Builder vue3DeleteLogsBuilder() {
+        return vue3DeleteLogsBuilder;
+    }
+
+    /**
+     * Vue3DeleteLogs配置
+     *
+     * @return Vue3DeleteLogs配置
+     * @since 3.5.0
+     */
+    @NotNull
+    public Vue3DeleteLogs vue3DeleteLogs() {
+        if (vue3DeleteLogs == null) {
+            this.vue3DeleteLogs = vue3DeleteLogsBuilder.get();
+        }
+        return vue3DeleteLogs;
     }
 
     /**
