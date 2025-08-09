@@ -48,10 +48,10 @@
         <template #default="scope">
           <base-button link size="small" class="color-#13ce66!" @click="openView(scope.row)">详情</base-button>
           <base-button v-permission="'dictData-zDictData-update'"
-                     link size="small" type="primary" @click="openUpdate(scope.row)">修改
+                       link size="small" type="primary" @click="openUpdate(scope.row)">修改
           </base-button>
           <base-button v-permission="'dictData-zDictData-delete'" class="color-#ff6d6d!"
-                     link size="small" @click="deleteByIds(scope.row)">删除
+                       link size="small" @click="deleteByIds(scope.row)">删除
           </base-button>
         </template>
       </el-table-column>
@@ -95,8 +95,8 @@
     </el-dialog>
 
     <!-- 批量导入弹窗 -->
-    <el-dialog title="批量导入" :close-on-click-modal="false" v-model="dialogImportVisible"
-               @closed="dialogIndex++" width="600px" :key="'importDialog'+dialogIndex">
+    <el-dialog title="批量导入" v-model="dialogImportVisible" width="600px" :key="'importDialog'+dialogIndex"
+               :close-on-click-modal="false" @closed="dialogIndex++">
       <el-form ref="importForm" label-width="120px" v-loading="isImportLoading">
         <el-form-item label="下载模板：">
           <base-button type="success" plain @click="downloadExcelTemplate" icon="el-icon-download">下载Excel模板

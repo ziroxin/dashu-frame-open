@@ -61,7 +61,7 @@
         <!-- 添加修改弹窗 -->
         <el-dialog :title="titleMap[dialogType]" :close-on-click-modal="dialogType !== 'view' ? false : true"
                    v-model="dialogFormVisible" @close="resetTemp" width="600px">
-          <el-form ref="dataForm" :model="temp" label-width="100px" class="mt-10px" :disabled="dialogType==='view'">
+          <el-form ref="dataForm" :model="temp" label-width="auto" class="mt-10px" :disabled="dialogType==='view'">
             <el-form-item label="字典名称" prop="typeName"
                           :rules="[{required: true, message: '字典名称必填'}]">
               <el-input v-model="temp.typeName" placeholder="请输入字典名称"/>

@@ -5,8 +5,7 @@
       <div class="searchForm">
         <el-input v-model="searchData.newsTitle" class="searchInput w-50!" placeholder="请输入新闻标题查询"/>
         <el-input v-model="searchData.newsContent" class="searchInput w-50!" placeholder="请输入新闻内容查询"/>
-        <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询
-        </base-button>
+        <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询</base-button>
         <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
       </div>
       <div class="operatePanel">
@@ -33,8 +32,7 @@
       <el-table-column label="修改时间" prop="updateTime" align="center"/>
       <el-table-column fixed="right" label="操作" width="140" align="center">
         <template #default="scope">
-          <base-button size="small" link style="color: #4dd219;" @click="openView(scope.row)">详情
-          </base-button>
+          <base-button size="small" link style="color: #4dd219;" @click="openView(scope.row)">详情</base-button>
           <base-button v-permission="'news-news-update'" size="small" link @click="openUpdate(scope.row)">修改
           </base-button>
           <base-button v-permission="'news-news-delete'" size="small" link style="color: #f56c6c;"
