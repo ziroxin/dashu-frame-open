@@ -86,7 +86,7 @@ export const generateRoutesByServer = (routes: Array<any>, isTop: boolean): AppR
             ...temp,
             redirect: route.noRedirect,
             children: [{
-              path: 'index',
+              path: route.permissionRouter,
               name: route.permissionName || '',
               component: convertToComponent(route.permissionComponent, 0),
               meta: {
