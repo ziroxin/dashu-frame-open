@@ -6,8 +6,8 @@
         <el-input v-model="searchData.id" clearable class="searchInput" placeholder="主键"/>
         <el-input v-model="searchData.mobile" clearable class="searchInput" placeholder="手机号"/>
         <el-select v-model="searchData.state" clearable class="searchInput" placeholder="状态0禁用1启用">
-          <el-option value="0">禁用</el-option>
-          <el-option value="1">启用</el-option>
+          <el-option value="0">状态0</el-option>
+          <el-option value="1">状态1</el-option>
         </el-select>
         <el-input v-model="searchData.field101" clearable class="searchInput" placeholder="级联选择"/>
         <el-input v-model="searchData.field102" clearable class="searchInput" placeholder="多选框组"/>
@@ -58,9 +58,9 @@
           <el-input v-model="formData.mobile" placeholder="请输入手机号"/>
         </el-form-item>
         <el-form-item label="状态0禁用1启用" prop="state" :rules="[]">
-          <el-radio-group v-model="formData.state">
-            <el-radio value="0">禁用</el-radio>
-            <el-radio value="1">启用</el-radio>
+          <el-radio-group v-model="formData.state" placeholder="请选择状态0禁用1启用">
+            <el-radio value="0">状态0</el-radio>
+            <el-radio value="1">状态1</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="级联选择" prop="field101" :rules="[]">
