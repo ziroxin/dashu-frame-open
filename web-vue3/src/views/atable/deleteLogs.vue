@@ -6,8 +6,8 @@
         <el-input v-model="searchData.id" clearable class="searchInput" placeholder="主键"/>
         <el-input v-model="searchData.mobile" clearable class="searchInput" placeholder="手机号"/>
         <el-select v-model="searchData.state" clearable class="searchInput" placeholder="状态0禁用1启用">
-          <el-option value="0">状态0</el-option>
-          <el-option value="1">状态1</el-option>
+          <el-option label="状态0" value="0"/>
+          <el-option label="状态1" value="1"/>
         </el-select>
         <el-input v-model="searchData.field101" clearable class="searchInput" placeholder="级联选择"/>
         <el-input v-model="searchData.field102" clearable class="searchInput" placeholder="多选框组"/>
@@ -28,14 +28,19 @@
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
       <el-table-column label="主键" prop="id" align="center" sortable="custom"/>
       <el-table-column label="手机号" prop="mobile" align="center" sortable="custom"/>
-      <el-table-column label="状态0禁用1启用" prop="state" align="center" sortable="custom"/>
+      <el-table-column label="状态0禁用1启用" prop="state" align="center" sortable="custom">
+        <template v-slot="scope">
+          <el-tag type="info" v-if="scope.row.state==='0'">状态0</el-tag>
+          <el-tag type="primary" v-if="scope.row.state==='1'">状态1</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="级联选择" prop="field101" align="center" sortable="custom"/>
       <el-table-column label="多选框组" prop="field102" align="center" sortable="custom"/>
       <el-table-column label="顺序" prop="orderIndex" align="center" sortable="custom"/>
       <el-table-column label="ImageAvatar" prop="field114" align="center" sortable="custom"/>
       <el-table-column label="添加时间" prop="createTime" align="center" sortable="custom"/>
       <el-table-column label="删除时间" prop="deleteTime" align="center" sortable="custom"/>
-      <el-table-column fixed="right" label="操作" width="120" align="center">
+      <el-table-column fixed="right" label="操作" width="100" align="center">
         <template v-slot="scope">
           <base-button link style="color: #13ce66" size="small" @click="openView(scope.row)">详情</base-button>
           <base-button link style="color: #ff6d6d" size="small" @click="deleteByIds(scope.row)">删除</base-button>
