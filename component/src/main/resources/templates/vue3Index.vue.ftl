@@ -10,20 +10,27 @@
     <#if searchFields?seq_contains(field.annotationColumnName)>
       <#if field.propertyName=='createTime'>
         <el-date-picker v-model="searchData.createTimeRange" clearable class="searchInput w-340px!"
-                        type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间"
-                        value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+                        type="datetimerange" start-placeholder="添加时间开始时间" end-placeholder="添加时间结束时间"
+                        value-format="YYYY-MM-DD HH:mm:ss" format="YYYY-MM-DD HH:mm:ss"/>
       <#elseif field.propertyName=='updateTime'>
         <el-date-picker v-model="searchData.updateTimeRange" clearable class="searchInput w-340px!"
-                        type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间"
-                        value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+                        type="datetimerange" start-placeholder="修改时间开始时间" end-placeholder="修改时间结束时间"
+                        value-format="YYYY-MM-DD HH:mm:ss" format="YYYY-MM-DD HH:mm:ss"/>
       <#elseif field.propertyType=='LocalDate' || field.propertyType=='Date'>
         <el-date-picker v-model="searchData.${field.propertyName}" type="date" clearable class="searchInput"
-                        placeholder="${field.comment}" value-format="yyyy-MM-dd" format="yyyy-MM-dd"/>
+                        placeholder="${field.comment}" value-format="YYYY-MM-DD" format="YYYY-MM-DD"/>
       <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
         <el-date-picker v-model="searchData.${field.propertyName}" type="datetime" clearable class="searchInput"
-                        placeholder="${field.comment}" value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+                        placeholder="${field.comment}" value-format="YYYY-MM-DD HH:mm:ss" format="YYYY-MM-DD HH:mm:ss"/>
       <#else>
+        <#if field.propertyType=='String' && field.metaInfo.length==1>
+        <el-select v-model="searchData.${field.propertyName}" clearable class="searchInput" placeholder="${field.comment}">
+          <el-option label="状态0" value="0"/>
+          <el-option label="状态1" value="1"/>
+        </el-select>
+        <#else>
         <el-input v-model="searchData.${field.propertyName}" clearable class="searchInput" placeholder="${field.comment}"/>
+        </#if>
       </#if>
     </#if>
   </#list>
@@ -36,21 +43,28 @@
               && field.propertyName!='createTime' && field.propertyName!='updateTime'>
       <#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
         <el-date-picker v-model="searchData.${field.propertyName}" type="date" clearable class="searchInput"
-                        placeholder="${field.comment}" value-format="yyyy-MM-dd" format="yyyy-MM-dd"/>
+                        placeholder="${field.comment}" value-format="YYYY-MM-DD" format="YYYY-MM-DD"/>
       <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
         <el-date-picker v-model="searchData.${field.propertyName}" type="datetime" clearable class="searchInput"
-                        placeholder="${field.comment}" value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+                        placeholder="${field.comment}" value-format="YYYY-MM-DD HH:mm:ss" format="YYYY-MM-DD HH:mm:ss"/>
       <#else>
+        <#if field.propertyType=='String' && field.metaInfo.length==1>
+        <el-select v-model="searchData.${field.propertyName}" clearable class="searchInput" placeholder="${field.comment}">
+          <el-option label="状态0" value="0"/>
+          <el-option label="状态1" value="1"/>
+        </el-select>
+        <#else>
         <el-input v-model="searchData.${field.propertyName}" clearable class="searchInput" placeholder="${field.comment}"/>
+        </#if>
       </#if>
     <#elseif field.propertyName=='createTime'>
         <el-date-picker v-model="searchData.createTimeRange" clearable class="searchInput w-340px!"
-                        type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间"
-                        value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+                        type="datetimerange" start-placeholder="添加时间开始时间" end-placeholder="添加时间结束时间"
+                        value-format="YYYY-MM-DD HH:mm:ss" format="YYYY-MM-DD HH:mm:ss"/>
     <#elseif field.propertyName=='updateTime'>
         <el-date-picker v-model="searchData.updateTimeRange" clearable class="searchInput w-340px!"
-                        type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间"
-                        value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+                        type="datetimerange" start-placeholder="修改时间开始时间" end-placeholder="修改时间结束时间"
+                        value-format="YYYY-MM-DD HH:mm:ss" format="YYYY-MM-DD HH:mm:ss"/>
     </#if>
   </#list>
 </#if>
@@ -59,19 +73,19 @@
       </div>
       <div class="operatePanel w-685px!">
         <base-button type="primary" icon="el-icon-plus" @click="openAdd"
-                   v-permission="'${buttonNamePre}add'">新增
+                     v-permission="'${buttonNamePre}add'">新增
         </base-button>
         <base-button type="info" icon="el-icon-edit" @click="openUpdate(null)"
-                   v-permission="'${buttonNamePre}update'">修改
+                     v-permission="'${buttonNamePre}update'">修改
         </base-button>
         <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)"
-                   v-permission="'${buttonNamePre}delete'">删除
+                     v-permission="'${buttonNamePre}delete'">删除
         </base-button>
         <base-button v-permission="'${buttonNamePre}importExcel'" @click="dialogImportVisible=true"
-                   type="primary" icon="el-icon-upload2">导入Excel
+                     type="primary" icon="el-icon-upload2">导入Excel
         </base-button>
         <base-button type="success" icon="el-icon-printer" @click="exportExcel"
-                   v-permission="'${buttonNamePre}exportExcel'">导出Excel
+                     v-permission="'${buttonNamePre}exportExcel'">导出Excel
         </base-button>
 <#if hasDeleteLog?? && hasDeleteLog>
         <base-button type="warning" icon="el-icon-time" @click="deleteLogsDialogVisible=true">删除日志</base-button>
@@ -95,18 +109,27 @@
     <#-- 忽略字段：主键、更新时间、创建用户、更新用户 -->
     <#if field.propertyName!=entityKeyName && field.propertyName!='updateTime'
             && field.propertyName!='createUserId' && field.propertyName!='updateUserId'>
+      <#if field.propertyType=='String' && field.metaInfo.length==1>
+      <el-table-column label="${field.comment}" prop="${field.propertyName}" align="center" sortable="custom">
+        <template v-slot="scope">
+          <el-tag type="info" v-if="scope.row.${field.propertyName}==='0'">状态0</el-tag>
+          <el-tag type="primary" v-if="scope.row.${field.propertyName}==='1'">状态1</el-tag>
+        </template>
+      </el-table-column>
+      <#else>
       <el-table-column label="${field.comment}" prop="${field.propertyName}" align="center" sortable="custom"/>
+      </#if>
     </#if>
   </#list>
 </#if>
-      <el-table-column fixed="right" label="操作" width="120" align="center">
+      <el-table-column fixed="right" label="操作" width="140" align="center">
         <template v-slot="scope">
           <base-button link size="small" style="color: #13ce66" @click="openView(scope.row)">详情</base-button>
           <base-button v-permission="'${buttonNamePre}update'"
-                     link size="small" @click="openUpdate(scope.row)">修改
+                       link size="small" @click="openUpdate(scope.row)">修改
           </base-button>
           <base-button v-permission="'${buttonNamePre}delete'" style="color: #ff6d6d"
-                     link size="small" @click="deleteByIds(scope.row)">删除
+                       link size="small" @click="deleteByIds(scope.row)">删除
           </base-button>
         </template>
       </el-table-column>
@@ -142,10 +165,10 @@
         <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
           <el-input v-model="formData.${field.propertyName}" type="textarea" maxlength="${field.metaInfo.length}" placeholder="请输入${field.comment}"/>
         </el-form-item>
-        <#elseif field.metaInfo.length = 1>
+        <#elseif field.metaInfo.length==1>
         <#--长度=1时，使用单选框，一般代表状态-->
         <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
-          <el-radio-group v-model="formData.${field.propertyName}">
+          <el-radio-group v-model="formData.${field.propertyName}" placeholder="请选择${field.comment}">
             <el-radio value="0">状态0</el-radio>
             <el-radio value="1">状态1</el-radio>
           </el-radio-group>
@@ -167,12 +190,12 @@
       <#elseif field.propertyType=='LocalDate' || field.propertyType=='Date'>
         <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
           <el-date-picker v-model="formData.${field.propertyName}" type="date" clearable placeholder="请选择${field.comment}"
-                          value-format="yyyy-MM-dd" format="yyyy-MM-dd"/>
+                          value-format="YYYY-MM-DD" format="YYYY-MM-DD"/>
         </el-form-item>
       <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
         <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
           <el-date-picker v-model="formData.${field.propertyName}" type="datetime" clearable placeholder="请选择${field.comment}"
-                          value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+                          value-format="YYYY-MM-DD HH:mm:ss" format="YYYY-MM-DD HH:mm:ss"/>
         </el-form-item>
       <#else>
         <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
@@ -185,15 +208,15 @@
 </#if>
       <template #footer>
         <div class="dialog-footer">
-          <base-button type="primary" icon="el-icon-check" v-if="dialogType!=='view'"
-                       @click="saveData">保存</base-button>
+          <base-button type="primary" icon="el-icon-check" v-if="dialogType!=='view'" @click="saveData">保存
+          </base-button>
           <base-button icon="el-icon-close" @click="dialogFormVisible=false">取消</base-button>
         </div>
       </template>
     </el-dialog>
     <!-- 批量导入弹窗 -->
     <el-dialog title="批量导入" v-model="dialogImportVisible" draggable width="600px" :key="'importDialog'+dialogIndex"
-               :close-on-click-modal="false" @close="dialogIndex++">
+               :close-on-click-modal="false" @closed="dialogIndex++">
       <el-form ref="importForm" label-width="auto" v-loading="isImportLoading">
         <el-form-item label="下载模板：">
           <base-button type="success" plain icon="el-icon-download" @click="downloadExcelTemplate">下载Excel模板
@@ -222,7 +245,7 @@
 <#if hasDeleteLog?? && hasDeleteLog>
     <!-- 删除日志弹窗 -->
     <el-dialog title="删除日志" v-model="deleteLogsDialogVisible" width="95%" top="5vh"
-               @close="dialogIndex++" :key="'deleteLogsDialog'+dialogIndex">
+               @closed="dialogIndex++" :key="'deleteLogsDialog'+dialogIndex">
       <delete-logs/>
     </el-dialog>
 </#if>
@@ -233,6 +256,7 @@
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util'
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
+import { getTokenHeader } from '@/utils/auth'
 <#if templateHtml?? && templateHtml?contains("my-wang-editor")>
 import { MyWangEditor } from '@/components/MyWangEditor'
 </#if>
@@ -256,7 +280,6 @@ import deleteLogs from './deleteLogs.vue'
 // ==================== 1生命周期start ====================
 onMounted(() => {
   loadTableList()
-  resetTemp()
 })
 // ==================== 1生命周期end ====================
 
@@ -368,10 +391,10 @@ const dialogFormVisible = ref(false)
 // 弹窗索引
 const dialogIndex = ref(0)
 // 表单临时数据
-<#assign formDataObject = {}>
+<#assign formDataObject = ''>
 <#list table.fields as field>
   <#if field.propertyName=='orderIndex'>
-    <#assign formDataObject = {orderIndex: 0}>
+    <#assign formDataObject = '{orderIndex: 0}'>
   </#if>
 </#list>
 // 表单
@@ -380,6 +403,7 @@ const formData = ref(<#if formDataObject??>${formDataObject}<#else>{}</#if>)
 
 // 关闭弹窗（清空表单temp数据）
 const closeDialog = () => {
+  dialogFormVisible.value = false
   formData.value = <#if formDataObject??>${formDataObject}<#else>{}</#if>
   dialogIndex.value++
 }
@@ -387,7 +411,7 @@ const closeDialog = () => {
 const openAdd = () => {
   dialogFormVisible.value = true
   dialogType.value = 'add'
-  dataFormRef.value.clearValidate()
+  nextTick(() => { dataFormRef.value.clearValidate() })
 }
 // 打开修改窗口
 const openUpdate = (row) => {
@@ -404,15 +428,15 @@ const openUpdate = (row) => {
     formData.value = Object.assign({}, tableSelectRows.value[0])
     dialogType.value = 'update'
     dialogFormVisible.value = true
-    dataFormRef.value.clearValidate()
+    nextTick(() => { dataFormRef.value.clearValidate() })
   }
 }
 // 打开查看窗口
 const openView = (row) => {
+  dialogFormVisible.value = true
   formData.value = Object.assign({}, row)
   dialogType.value = 'view'
-  dialogFormVisible.value = true
-  dataFormRef.value.clearValidate()
+  nextTick(() => { dataFormRef.value.clearValidate() })
 }
 // 添加、修改，保存事件
 const saveData = () => {
@@ -455,13 +479,13 @@ const beforeImportUpload = (file) => {
 // 导入Excel成功
 const importExcelSuccess = (response) => {
   isImportLoading.value = false
-  if (response.message === "Success") {
+  if (response.message === 'Success') {
     ElMessage({type: 'success', message: '导入成功！', grouping: true})
     dialogImportVisible.value = false
     loadTableList()
   } else {
-    ElMessageBox.alert(response.message, "提示",
-            {confirmButtonText: "确定", dangerouslyUseHTMLString: true, customClass: 'w-800px!'})
+    ElMessageBox.alert(response.message, '提示',
+        {confirmButtonText: '确定', dangerouslyUseHTMLString: true, customClass: 'min-w-800px!'})
   }
 }
 // 导入Excel失败，取消loading状态

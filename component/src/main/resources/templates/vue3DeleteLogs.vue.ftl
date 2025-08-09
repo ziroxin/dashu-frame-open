@@ -9,12 +9,19 @@
   && field.propertyName!='createTime' && field.propertyName!='updateTime'>
       <#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
         <el-date-picker v-model="searchData.${field.propertyName}" type="date" clearable class="searchInput"
-                        placeholder="${field.comment}" value-format="yyyy-MM-dd" format="yyyy-MM-dd"/>
+                        placeholder="${field.comment}" value-format="YYYY-MM-DD" format="YYYY-MM-DD"/>
       <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
         <el-date-picker v-model="searchData.${field.propertyName}" type="datetime" clearable class="searchInput"
-                        placeholder="${field.comment}" value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+                        placeholder="${field.comment}" value-format="YYYY-MM-DD HH:mm:ss" format="YYYY-MM-DD HH:mm:ss"/>
       <#else>
+        <#if field.propertyType=='String' && field.metaInfo.length==1>
+        <el-select v-model="searchData.${field.propertyName}" clearable class="searchInput" placeholder="${field.comment}">
+          <el-option label="状态0" value="0"/>
+          <el-option label="状态1" value="1"/>
+        </el-select>
+        <#else>
         <el-input v-model="searchData.${field.propertyName}" clearable class="searchInput" placeholder="${field.comment}"/>
+        </#if>
       </#if>
   </#if>
 </#list>
@@ -33,10 +40,19 @@
 <#list table.fields as field>
     <#if field.propertyName!=entityKeyName && field.propertyName!='updateTime'
             && field.propertyName!='createUserId' && field.propertyName!='updateUserId'>
+      <#if field.propertyType=='String' && field.metaInfo.length==1>
+      <el-table-column label="${field.comment}" prop="${field.propertyName}" align="center" sortable="custom">
+        <template v-slot="scope">
+          <el-tag type="info" v-if="scope.row.${field.propertyName}==='0'">状态0</el-tag>
+          <el-tag type="primary" v-if="scope.row.${field.propertyName}==='1'">状态1</el-tag>
+        </template>
+      </el-table-column>
+      <#else>
       <el-table-column label="${field.comment}" prop="${field.propertyName}" align="center" sortable="custom"/>
+      </#if>
     </#if>
 </#list>
-      <el-table-column fixed="right" label="操作" width="120" align="center">
+      <el-table-column fixed="right" label="操作" width="100" align="center">
         <template v-slot="scope">
           <base-button link style="color: #13ce66" size="small" @click="openView(scope.row)">详情</base-button>
           <base-button link style="color: #ff6d6d" size="small" @click="deleteByIds(scope.row)">删除</base-button>
@@ -65,10 +81,20 @@
     <#assign rules1=field.metaInfo.nullable?string("","{required: true, message: '" + field.comment + "不能为空'}")>
     <#if field.propertyType=='String'>
       <#if field.metaInfo.length gte 255>
+        <#--字符串，长度>=255时，使用textarea-->
         <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
           <el-input v-model="formData.${field.propertyName}" type="textarea" maxlength="${field.metaInfo.length}" placeholder="请输入${field.comment}"/>
         </el-form-item>
+      <#elseif field.metaInfo.length==1>
+        <#--长度=1时，使用单选框，一般代表状态-->
+        <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
+          <el-radio-group v-model="formData.${field.propertyName}" placeholder="请选择${field.comment}">
+            <el-radio value="0">状态0</el-radio>
+            <el-radio value="1">状态1</el-radio>
+          </el-radio-group>
+        </el-form-item>
       <#else>
+        <#--其他情况，使用输入框-->
         <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
           <el-input v-model="formData.${field.propertyName}" placeholder="请输入${field.comment}"/>
         </el-form-item>
@@ -84,12 +110,12 @@
     <#elseif field.propertyType=='LocalDate' || field.propertyType=='Date'>
         <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
           <el-date-picker v-model="formData.${field.propertyName}" type="date" clearable placeholder="请选择${field.comment}"
-                          value-format="yyyy-MM-dd" format="yyyy-MM-dd"/>
+                          value-format="YYYY-MM-DD" format="YYYY-MM-DD"/>
         </el-form-item>
     <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
         <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
           <el-date-picker v-model="formData.${field.propertyName}" type="datetime" clearable placeholder="请选择${field.comment}"
-                          value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+                          value-format="YYYY-MM-DD HH:mm:ss" format="YYYY-MM-DD HH:mm:ss"/>
         </el-form-item>
     <#else>
         <el-form-item label="${field.comment}" prop="${field.propertyName}" :rules="[${rules1}]">
@@ -213,10 +239,10 @@ const dialogFormVisible = ref(false)
 // 弹窗索引
 const dialogIndex = ref(0)
 // 表单临时数据
-<#assign formDataObject = {}>
+<#assign formDataObject = ''>
 <#list table.fields as field>
   <#if field.propertyName=='orderIndex'>
-    <#assign formDataObject = {orderIndex: 0}>
+    <#assign formDataObject = '{orderIndex: 0}'>
   </#if>
 </#list>
 // 表单
@@ -225,14 +251,15 @@ const formData = ref(<#if formDataObject??>${formDataObject}<#else>{}</#if>)
 
 // 关闭弹窗（清空表单temp数据）
 const closeDialog = () => {
+  dialogFormVisible.value = false
   formData.value = <#if formDataObject??>${formDataObject}<#else>{}</#if>
   dialogIndex.value++
 }
 // 打开查看窗口
 const openView = (row) => {
-  formData.value = Object.assign({}, row)
   dialogFormVisible.value = true
-  dataFormRef.value.clearValidate()
+  formData.value = Object.assign({}, row)
+  nextTick(() => { dataFormRef.value.clearValidate() })
 }
 // ==================== 3删除日志详情end ====================
 

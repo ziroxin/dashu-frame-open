@@ -50,7 +50,7 @@ public class PermissionSQL implements ITemplate {
         if (StringUtils.isNotBlank(vue3IndexPath) || StringUtils.isNotBlank(indexVuePath)) {
             String vuePath = StringUtils.isNotBlank(vue3IndexPath) ? vue3IndexPath : indexVuePath;
             // 生成sql路由
-            data.put("permissionRouter", vuePath);
+            data.put("permissionRouter", vuePath + "/index");
             // 生成sql组件
             data.put("permissionCompontent", vuePath + "/index");
         }
