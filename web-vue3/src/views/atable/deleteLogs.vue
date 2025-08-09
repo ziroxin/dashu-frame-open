@@ -5,12 +5,15 @@
       <div class="searchForm">
         <el-input v-model="searchData.id" clearable class="searchInput" placeholder="主键"/>
         <el-input v-model="searchData.mobile" clearable class="searchInput" placeholder="手机号"/>
-        <el-input v-model="searchData.state" clearable class="searchInput" placeholder="状态0禁用1启用"/>
+        <el-select v-model="searchData.state" clearable class="searchInput" placeholder="状态0禁用1启用">
+          <el-option value="0">禁用</el-option>
+          <el-option value="1">启用</el-option>
+        </el-select>
         <el-input v-model="searchData.field101" clearable class="searchInput" placeholder="级联选择"/>
         <el-input v-model="searchData.field102" clearable class="searchInput" placeholder="多选框组"/>
         <el-input v-model="searchData.field114" clearable class="searchInput" placeholder="ImageAvatar"/>
         <el-date-picker v-model="searchData.deleteTime" type="datetime" clearable class="searchInput"
-                        placeholder="删除时间" value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+                        placeholder="删除时间" value-format="YYYY-MM-DD HH:mm:ss" format="YYYY-MM-DD HH:mm:ss"/>
         <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询</base-button>
         <base-button class="searchBtn" type="info" icon="el-icon-refresh" @click="resetTableList">重置</base-button>
       </div>
@@ -55,7 +58,10 @@
           <el-input v-model="formData.mobile" placeholder="请输入手机号"/>
         </el-form-item>
         <el-form-item label="状态0禁用1启用" prop="state" :rules="[]">
-          <el-input v-model="formData.state" placeholder="请输入状态0禁用1启用"/>
+          <el-radio-group v-model="formData.state">
+            <el-radio value="0">禁用</el-radio>
+            <el-radio value="1">启用</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="级联选择" prop="field101" :rules="[]">
           <el-input v-model="formData.field101" placeholder="请输入级联选择"/>
@@ -72,7 +78,7 @@
         </el-form-item>
         <el-form-item label="删除时间" prop="deleteTime" :rules="[{required: true, message: '删除时间不能为空'}]">
           <el-date-picker v-model="formData.deleteTime" type="datetime" clearable placeholder="请选择删除时间"
-                          value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+                          value-format="YYYY-MM-DD HH:mm:ss" format="YYYY-MM-DD HH:mm:ss"/>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -195,14 +201,15 @@ const formData = ref({orderIndex: 0})
 
 // 关闭弹窗（清空表单temp数据）
 const closeDialog = () => {
+  dialogFormVisible.value = false
   formData.value = {orderIndex: 0}
   dialogIndex.value++
 }
 // 打开查看窗口
 const openView = (row) => {
-  formData.value = Object.assign({}, row)
   dialogFormVisible.value = true
-  dataFormRef.value.clearValidate()
+  formData.value = Object.assign({}, row)
+  nextTick(() => { dataFormRef.value.clearValidate() })
 }
 // ==================== 3删除日志详情end ====================
 

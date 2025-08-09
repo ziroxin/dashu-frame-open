@@ -4,34 +4,37 @@
     <div class="searchPanel">
       <div class="searchForm">
         <el-input v-model="searchData.mobile" clearable class="searchInput" placeholder="手机号"/>
-        <el-input v-model="searchData.state" clearable class="searchInput" placeholder="状态0禁用1启用"/>
+        <el-select v-model="searchData.state" clearable class="searchInput" placeholder="状态0禁用1启用">
+          <el-option value="0">禁用</el-option>
+          <el-option value="1">启用</el-option>
+        </el-select>
         <el-input v-model="searchData.field101" clearable class="searchInput" placeholder="级联选择"/>
         <el-input v-model="searchData.field102" clearable class="searchInput" placeholder="多选框组"/>
         <el-input v-model="searchData.field114" clearable class="searchInput" placeholder="ImageAvatar"/>
         <el-date-picker v-model="searchData.createTimeRange" clearable class="searchInput w-340px!"
-                        type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间"
-                        value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+                        type="datetimerange" start-placeholder="添加时间开始时间" end-placeholder="添加时间结束时间"
+                        value-format="YYYY-MM-DD HH:mm:ss" format="YYYY-MM-DD HH:mm:ss"/>
         <el-date-picker v-model="searchData.updateTimeRange" clearable class="searchInput w-340px!"
-                        type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间"
-                        value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+                        type="datetimerange" start-placeholder="修改时间开始时间" end-placeholder="修改时间结束时间"
+                        value-format="YYYY-MM-DD HH:mm:ss" format="YYYY-MM-DD HH:mm:ss"/>
         <base-button class="searchBtn" type="primary" icon="el-icon-search" @click="searchBtnHandle">查询</base-button>
         <base-button class="searchBtn" type="info" icon="reset" @click="resetTableList">重置</base-button>
       </div>
       <div class="operatePanel w-685px!">
         <base-button type="primary" icon="el-icon-plus" @click="openAdd"
-                   v-permission="'a_table-aTable-add'">新增
+                     v-permission="'a_table-aTable-add'">新增
         </base-button>
         <base-button type="info" icon="el-icon-edit" @click="openUpdate(null)"
-                   v-permission="'a_table-aTable-update'">修改
+                     v-permission="'a_table-aTable-update'">修改
         </base-button>
         <base-button type="danger" icon="el-icon-delete" @click="deleteByIds(null)"
-                   v-permission="'a_table-aTable-delete'">删除
+                     v-permission="'a_table-aTable-delete'">删除
         </base-button>
         <base-button v-permission="'a_table-aTable-importExcel'" @click="dialogImportVisible=true"
-                   type="primary" icon="el-icon-upload2">导入Excel
+                     type="primary" icon="el-icon-upload2">导入Excel
         </base-button>
         <base-button type="success" icon="el-icon-printer" @click="exportExcel"
-                   v-permission="'a_table-aTable-exportExcel'">导出Excel
+                     v-permission="'a_table-aTable-exportExcel'">导出Excel
         </base-button>
         <base-button type="warning" icon="el-icon-time" @click="deleteLogsDialogVisible=true">删除日志</base-button>
       </div>
@@ -51,10 +54,10 @@
         <template v-slot="scope">
           <base-button link size="small" style="color: #13ce66" @click="openView(scope.row)">详情</base-button>
           <base-button v-permission="'a_table-aTable-update'"
-                     link size="small" @click="openUpdate(scope.row)">修改
+                       link size="small" @click="openUpdate(scope.row)">修改
           </base-button>
           <base-button v-permission="'a_table-aTable-delete'" style="color: #ff6d6d"
-                     link size="small" @click="deleteByIds(scope.row)">删除
+                       link size="small" @click="deleteByIds(scope.row)">删除
           </base-button>
         </template>
       </el-table-column>
@@ -73,8 +76,8 @@
         </el-form-item>
         <el-form-item label="状态0禁用1启用" prop="state" :rules="[]">
           <el-radio-group v-model="formData.state">
-            <el-radio value="0">状态0</el-radio>
-            <el-radio value="1">状态1</el-radio>
+            <el-radio value="0">禁用</el-radio>
+            <el-radio value="1">启用</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="级联选择" prop="field101" :rules="[]">
@@ -93,15 +96,15 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <base-button type="primary" icon="el-icon-check" v-if="dialogType!=='view'"
-                       @click="saveData">保存</base-button>
+          <base-button type="primary" icon="el-icon-check" v-if="dialogType!=='view'" @click="saveData">保存
+          </base-button>
           <base-button icon="el-icon-close" @click="dialogFormVisible=false">取消</base-button>
         </div>
       </template>
     </el-dialog>
     <!-- 批量导入弹窗 -->
     <el-dialog title="批量导入" v-model="dialogImportVisible" draggable width="600px" :key="'importDialog'+dialogIndex"
-               :close-on-click-modal="false" @close="dialogIndex++">
+               :close-on-click-modal="false" @closed="dialogIndex++">
       <el-form ref="importForm" label-width="auto" v-loading="isImportLoading">
         <el-form-item label="下载模板：">
           <base-button type="success" plain icon="el-icon-download" @click="downloadExcelTemplate">下载Excel模板
@@ -129,7 +132,7 @@
     </el-dialog>
     <!-- 删除日志弹窗 -->
     <el-dialog title="删除日志" v-model="deleteLogsDialogVisible" width="95%" top="5vh"
-               @close="dialogIndex++" :key="'deleteLogsDialog'+dialogIndex">
+               @closed="dialogIndex++" :key="'deleteLogsDialog'+dialogIndex">
       <delete-logs/>
     </el-dialog>
   </div>
@@ -139,13 +142,13 @@
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util'
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
+import { getTokenHeader } from '@/utils/auth'
 import deleteLogs from './deleteLogs.vue'
 
 
 // ==================== 1生命周期start ====================
 onMounted(() => {
   loadTableList()
-  resetTemp()
 })
 // ==================== 1生命周期end ====================
 
@@ -263,6 +266,7 @@ const formData = ref({orderIndex: 0})
 
 // 关闭弹窗（清空表单temp数据）
 const closeDialog = () => {
+  dialogFormVisible.value = false
   formData.value = {orderIndex: 0}
   dialogIndex.value++
 }
@@ -270,7 +274,7 @@ const closeDialog = () => {
 const openAdd = () => {
   dialogFormVisible.value = true
   dialogType.value = 'add'
-  dataFormRef.value.clearValidate()
+  nextTick(() => { dataFormRef.value.clearValidate() })
 }
 // 打开修改窗口
 const openUpdate = (row) => {
@@ -287,15 +291,15 @@ const openUpdate = (row) => {
     formData.value = Object.assign({}, tableSelectRows.value[0])
     dialogType.value = 'update'
     dialogFormVisible.value = true
-    dataFormRef.value.clearValidate()
+    nextTick(() => { dataFormRef.value.clearValidate() })
   }
 }
 // 打开查看窗口
 const openView = (row) => {
+  dialogFormVisible.value = true
   formData.value = Object.assign({}, row)
   dialogType.value = 'view'
-  dialogFormVisible.value = true
-  dataFormRef.value.clearValidate()
+  nextTick(() => { dataFormRef.value.clearValidate() })
 }
 // 添加、修改，保存事件
 const saveData = () => {
@@ -338,13 +342,13 @@ const beforeImportUpload = (file) => {
 // 导入Excel成功
 const importExcelSuccess = (response) => {
   isImportLoading.value = false
-  if (response.message === "Success") {
+  if (response.message === 'Success') {
     ElMessage({type: 'success', message: '导入成功！', grouping: true})
     dialogImportVisible.value = false
     loadTableList()
   } else {
-    ElMessageBox.alert(response.message, "提示",
-            {confirmButtonText: "确定", dangerouslyUseHTMLString: true, customClass: 'w-800px!'})
+    ElMessageBox.alert(response.message, '提示',
+        {confirmButtonText: '确定', dangerouslyUseHTMLString: true, customClass: 'w-800px!'})
   }
 }
 // 导入Excel失败，取消loading状态
