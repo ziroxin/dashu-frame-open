@@ -213,19 +213,19 @@ const dialogFormVisible = ref(false)
 // 弹窗索引
 const dialogIndex = ref(0)
 // 表单临时数据
-<#assign tempObject = {}>
+<#assign formDataObject = {}>
 <#list table.fields as field>
   <#if field.propertyName=='orderIndex'>
-    <#assign tempObject = {orderIndex: 0}>
+    <#assign formDataObject = {orderIndex: 0}>
   </#if>
 </#list>
 // 表单
 const dataFormRef = ref()
-const formData = ref(<#if tempObject??>${tempObject?json}<#else>{}</#if>)
+const formData = ref(<#if formDataObject??>${formDataObject}<#else>{}</#if>)
 
 // 关闭弹窗（清空表单temp数据）
 const closeDialog = () => {
-  formData.value = <#if tempObject??>${tempObject?json}<#else>{}</#if>
+  formData.value = <#if formDataObject??>${formDataObject}<#else>{}</#if>
   dialogIndex.value++
 }
 // 打开查看窗口
