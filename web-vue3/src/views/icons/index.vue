@@ -9,9 +9,6 @@
             <el-input-number v-model="iconSize" :min="10" :step="5"/>
           </div>
           <el-link @click="iconDialogVisible=true" underline="always" type="danger">图标组件使用说明</el-link>
-          <base-button type="primary" link icon="el-icon-position" plain @click="()=>{iconifyDialogVisible=true}">
-            在线图标
-          </base-button>
         </div>
       </div>
     </el-affix>
@@ -81,28 +78,17 @@
             <my-icon :icon="'vi-'+testOnlineIcon" :size="iconSize"/>
             <span v-if="testOnlineIcon" class="ml-20px">icon="{{ 'vi-' + testOnlineIcon }}"</span>
           </div>
-          <div class="font-bold mt-15px pt-10px b-t-1px b-t-dashed b-t-#ccc text-center">
-            <base-button type="primary" icon="el-icon-position" plain @click="()=>{iconifyDialogVisible=true}">
-              查看在线【Element Plus、Ant Design、TDesign】图标库
-            </base-button>
-          </div>
         </div>
       </div>
-    </el-dialog>
-    <!-- iconify在线图标库弹窗 -->
-    <el-dialog v-model="iconifyDialogVisible" title="iconify.design 常见在线图标库" width="95%" top="5vh" draggable>
-      <iconify-picker/>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import svgIcons from './svg-icons'
-import { IconifyPicker } from '@/components/IconifyPicker'
 
 export default {
   name: 'Icons',
-  components: {IconifyPicker},
   data() {
     return {
       svgIcons,
