@@ -96,7 +96,7 @@ export default {
     rePasswordLabel: 'Password Confirm',
     rePasswordPlaceholder: 'Please input password again',
     yzmLabel: 'Verification code',
-    yzmPlaceholder: 'Please input verification code',
+    yzmPlaceholder: 'Verification code',
     rememberChb: 'Remember me',
     forgetPasswordLink: 'Forget password',
     loginBtn: 'Sign in',

@@ -57,12 +57,6 @@
         </el-form-item>
       </el-col>
       <el-col :span="24">
-        <div class="flex justify-center items-center mb-10px">
-          <el-link target="_blank" href="./protocol.html">《用户协议》</el-link>
-          <el-link target="_blank" href="./protocol.html">《隐私协议》</el-link>
-        </div>
-      </el-col>
-      <el-col :span="24">
         <div class="flex justify-center items-center">
           <div class="color-#666 text-14px flex items-center mr-20px">
             <div>还没有账号?</div>
@@ -70,7 +64,7 @@
           </div>
           <base-button link type="primary" @click="otherLoginVisible=true">{{ t('login.otherLoginBtn') }}</base-button>
         </div>
-        <el-dialog title="其他方式登录" v-model="otherLoginVisible" draggable>
+        <el-dialog title="其他方式登录" v-model="otherLoginVisible" draggable width="500px">
           <social-signin/>
         </el-dialog>
       </el-col>

@@ -1,7 +1,7 @@
 <template>
   <!--修改密码-->
-  <el-dialog title="修改密码" v-model="innerVisible" width="600px" :show-close="showCloseBtn"
-             :close-on-click-modal="false" :close-on-press-escape="false">
+  <el-dialog title="修改密码" v-model="innerVisible" width="600px" :show-close="showCloseBtn" append-to-body
+             :close-on-click-modal="false" :close-on-press-escape="false" @close="closeDialog">
     <div v-if="info" class="text-center text-1em color-red m-[-10px_auto_20px_auto]">{{ info }}</div>
     <div class="m-10px">
       <el-form ref="editPassword" :model="temp" :rules="passwordRules">

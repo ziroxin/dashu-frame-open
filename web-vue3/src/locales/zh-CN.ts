@@ -96,7 +96,7 @@ export default {
     rePasswordLabel: '密码确认',
     rePasswordPlaceholder: '请再次输入确认密码',
     yzmLabel: '验证码',
-    yzmPlaceholder: '请输入验证码',
+    yzmPlaceholder: '验证码',
     rememberChb: '记住密码',
     forgetPasswordLink: '忘记密码',
     loginBtn: '登录',
