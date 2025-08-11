@@ -22,8 +22,8 @@
         </div>
 
         <!-- 右侧 -->
-        <div class="flex-1 p-30px lt-sm:p-10px dark:bg-[var(--login-bg-color)] relative">
-          <div class="h-40px flex justify-between items-center text-white at-2xl:justify-end at-xl:justify-end">
+        <div class="flex-1 p-30px lt-sm:p-10px dark:bg-[var(--login-bg-color)] relative overflow-x-hidden!">
+          <div class="flex justify-between items-center text-white at-2xl:justify-end at-xl:justify-end">
             <!-- 右侧（手机端-展示logo） -->
             <div class="flex items-center at-2xl:hidden at-xl:hidden">
               <img src="@/assets/imgs/logo.png" alt="" class="w-48px h-48px mr-10px"/>
