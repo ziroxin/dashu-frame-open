@@ -58,8 +58,8 @@
       </el-col>
       <el-col :span="24">
         <div class="flex justify-center items-center mb-10px">
-          <el-link target="_blank" href="https://yanshi.java119.cn/protocol.html">《用户协议》</el-link>
-          <el-link target="_blank" href="https://yanshi.java119.cn/protocol.html">《隐私协议》</el-link>
+          <el-link target="_blank" href="./protocol.html">《用户协议》</el-link>
+          <el-link target="_blank" href="./protocol.html">《隐私协议》</el-link>
         </div>
       </el-col>
       <el-col :span="24">

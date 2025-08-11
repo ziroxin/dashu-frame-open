@@ -110,11 +110,9 @@
       <el-col :span="24">
         <div class="flex justify-center items-center mb-10px">
           <el-checkbox v-model="regForm.agree" label="同意" size="large"/>
-          <el-link target="_blank" type="primary" underline="always" class="mx-5px"
-                   href="https://yanshi.java119.cn/protocol.html">用户协议
+          <el-link target="_blank" type="primary" underline="always" class="mx-5px" href="./protocol.html">用户协议
           </el-link>
-          <el-link target="_blank" type="primary" underline="always" class="mx-5px"
-                   href="https://yanshi.java119.cn/protocol.html">隐私协议
+          <el-link target="_blank" type="primary" underline="always" class="mx-5px" href="./protocol.html">隐私协议
           </el-link>
         </div>
       </el-col>

@@ -20,7 +20,7 @@
           <el-table-column label="角色" align="center">
             <template #default="scope">
               <el-popover trigger="hover" placement="right" :title="scope.row.roleName">
-                <p>顺序：{{ scope.row.roleOrder }}<br>描述：{{ scope.row.roleDescription }}</p>
+                <p>顺序：{{ scope.row.roleOrder }}<br/>描述：{{ scope.row.roleDescription }}</p>
                 <template #reference>
                   <span class="cursor-pointer">{{ scope.row.roleName }}</span>
                 </template>
@@ -213,7 +213,7 @@ export default {
         this.$message({message: '请选择一个角色进行复制！', type: 'error'})
       } else {
         this.isLoading2 = true
-        let params = {'roleId': this.tableSelectRows[0].roleId}
+        const params = {'roleId': this.tableSelectRows[0].roleId}
         request({url: '/role/copy', method: 'post', params}).then(response => {
           this.$message({type: 'success', message: '复制角色成功！'})
           this.loadRoleList()
@@ -243,7 +243,7 @@ export default {
     //加载资源列表树
     loadPermissionTreeList() {
       this.isLoading = true
-      let params = this.roleId === '' ? {} : {'roleId': this.roleId}
+      const params = this.roleId === '' ? {} : {'roleId': this.roleId}
       this.$nextTick(() => {
         request({url: '/permission/listForRole', method: 'get', params}).then(response => {
           const {data} = response
@@ -335,7 +335,7 @@ export default {
     },
     //行选中
     table2RowSelect(selection, row) {
-      let select = selection.filter(r => r.permissionId === row.permissionId).length > 0
+      const select = selection.filter(r => r.permissionId === row.permissionId).length > 0
       //设置当前行的选中状态
       if (select) {
         this.selectPermissionApiList2.push(row.permissionId)
@@ -357,7 +357,7 @@ export default {
     },
     //行点击
     table2RowClick(row) {
-      let hasSelected = this.selectPermissionApiList2.filter(o => o === row.permissionId).length > 0
+      const hasSelected = this.selectPermissionApiList2.filter(o => o === row.permissionId).length > 0
       //设置当前行的选中状态
       if (!hasSelected) {
         this.selectPermissionApiList2.push(row.permissionId)
@@ -468,7 +468,7 @@ export default {
     //保存角色权限
     saveRolePermission() {
       this.isLoading = true
-      let pids = []
+      const pids = []
       pids.push(...this.selectPermissionApiList)
       pids.push(...this.selectPermissionApiList2)
       const data = {'roleId': this.roleId, 'permissionIds': pids}

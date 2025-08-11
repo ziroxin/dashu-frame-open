@@ -69,7 +69,7 @@ export default {
       location.href = this.payRedirectUrl
     },
     wechatPayUpdateStatus(tradeId) {
-      let params = {tradeId: tradeId}
+      const params = {tradeId: tradeId}
       intervalIndex = setInterval(() => {
         request({url: '/pay/wechat/getPayResult', method: 'get', params}).then((response) => {
           if (response.data.tradeStatus === 1) {
