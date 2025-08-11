@@ -40,8 +40,8 @@ const setupAll = async () => {
   setupStore(app)
   // 全局组件
   setupGlobCom(app)
-  // 引入element-plus（引入方式：type==='all'全部引入;否则按需引入）
-  setupElementPlus(app, 'all')
+  // 引入element-plus
+  setupElementPlus(app)
   // 路由
   setupRouter(app)
   // 注册全局指令（例如：v-permission）

@@ -45,19 +45,6 @@ export default defineConfig(({command, mode}: ConfigEnv): UserConfig => {
       ServerUrlCopy(),
       // 打包时显示打包进度
       progress(),
-      // 是否全量引入element-plus样式
-      env.VITE_USE_ALL_ELEMENT_PLUS_STYLE === 'true' ? undefined :
-        // 按需引入
-        createStyleImportPlugin({
-          resolves: [ElementPlusResolve()],
-          libs: [{
-            libraryName: 'element-plus',
-            esModule: true,
-            resolveStyle: (name) => {
-              return name === 'click-outside' ? '' : `element-plus/es/components/${name.replace(/^el-/, '')}/style/css`
-            }
-          }]
-        }),
       // Eslint 代码检查
       EslintPlugin({
         cache: false,
