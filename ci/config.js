@@ -35,24 +35,24 @@
  *
  */
 
-// 本地项目路径
-const localProjectDir = 'E:\\......\\dashu-frame-open';
+  // 本地项目路径
+const localProjectDir = 'E:\\......\\dashu-frame-open'
 // 远程服务器IP（只支持ssh方式）
-const remoteHost = 'xxx.xxx.xxx.xxx';
+const remoteHost = 'xxx.xxx.xxx.xxx'
 // 远程服务器端口，如：22
-const remotePort = 22;
+const remotePort = 22
 // 远程服务器用户名，如：root
-const remoteUser = 'xxx';
+const remoteUser = 'xxx'
 // 远程服务器密码
-const remotePassword = 'xxx';
+const remotePassword = 'xxx'
 // 远程服务器目录，如：/home/docker
-const remoteHomeDirectory = '/home/docker';
+const remoteHomeDirectory = '/home/docker'
 // 数据库用户名
-const mysqlUser = 'xxx';
+const mysqlUser = 'xxx'
 // 数据库密码
-const mysqlPassword = 'xxx';
+const mysqlPassword = 'xxx'
 // 数据库名
-const mysqlDatabaseName = 'dashu_frame_open';
+const mysqlDatabaseName = 'dashu_frame_open'
 
 
 module.exports = {
@@ -65,4 +65,4 @@ module.exports = {
   mysqlUser,
   mysqlPassword,
   mysqlDatabaseName
-};
+}
