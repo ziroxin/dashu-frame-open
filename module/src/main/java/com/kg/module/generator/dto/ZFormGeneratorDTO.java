@@ -55,6 +55,9 @@ public class ZFormGeneratorDTO implements BaseDTO {
     @ApiModelProperty("代码生成状态（0未生成1已生成）")
     private String status;
 
+    @ApiModelProperty("类型(vue3/vue2)")
+    private String type;
+
     @ApiModelProperty("显示顺序")
     private Integer orderIndex;
 

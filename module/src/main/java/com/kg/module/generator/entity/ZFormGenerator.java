@@ -66,6 +66,10 @@ public class ZFormGenerator implements BaseEntity {
     @TableField("status")
     private String status;
 
+    @ApiModelProperty("类型(vue3/vue2)")
+    @TableField("type")
+    private String type;
+
     @ApiModelProperty("显示顺序")
     @TableField("order_index")
     private Integer orderIndex;

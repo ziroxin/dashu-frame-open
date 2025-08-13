@@ -85,6 +85,9 @@ public class ZFormGeneratorServiceImpl extends ServiceImpl<ZFormGeneratorMapper,
             if (paramObj.containsKey("status")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("status")), ZFormGenerator::getStatus, paramObj.getStr("status"));
             }
+            if (paramObj.containsKey("type")) {
+                wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("type")), ZFormGenerator::getType, paramObj.getStr("type"));
+            }
             if (paramObj.containsKey("orderIndex")) {
                 wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("orderIndex")), ZFormGenerator::getOrderIndex, paramObj.getStr("orderIndex"));
             }
@@ -189,6 +192,12 @@ public class ZFormGeneratorServiceImpl extends ServiceImpl<ZFormGeneratorMapper,
                 }
                 if (paramObj.containsKey("viewPath")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("viewPath")), ZFormGenerator::getViewPath, paramObj.getStr("viewPath"));
+                }
+                if (paramObj.containsKey("status")) {
+                    wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("status")), ZFormGenerator::getStatus, paramObj.getStr("status"));
+                }
+                if (paramObj.containsKey("type")) {
+                    wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("type")), ZFormGenerator::getType, paramObj.getStr("type"));
                 }
                 if (paramObj.containsKey("orderIndex")) {
                     wrapper.lambda().eq(StringUtils.hasText(paramObj.getStr("orderIndex")), ZFormGenerator::getOrderIndex, paramObj.getStr("orderIndex"));
