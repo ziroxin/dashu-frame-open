@@ -1,12 +1,12 @@
 /** 驼峰转下划线 */
 export const humpToUnderline = (str: string): string => {
-  return str.replace(/([A-Z])/g, '-$1').toLowerCase()
+  return str.replace(/([A-Z])/g, '_$1').toLowerCase()
 }
 
 /** 下划线转驼峰 */
 export const underlineToHump = (str: string): string => {
   if (!str) return ''
-  return str.replace(/\-(\w)/g, (_, letter: string) => letter.toUpperCase())
+  return str.replace(/_(\w)/g, (_, letter: string) => letter.toUpperCase())
 }
 
 /** 首字母大写 */
@@ -14,7 +14,7 @@ export function firstUpperCase(str: string) {
   return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase())
 }
 
-/** 驼峰转横杠 */
+/** 驼峰转中划线 */
 export const humpToDash = (str: string): string => {
   return str.replace(/([A-Z])/g, '-$1').toLowerCase()
 }

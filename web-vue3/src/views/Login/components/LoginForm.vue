@@ -88,7 +88,7 @@ const {t} = useI18n()
 const isLoading = ref(false)
 const loginFormRef = ref()
 const loginForm = ref({
-  userName: '', password: '', yzm: '', codeUuid: '', codeBaseImage: '', rememberMe: false
+  userName: 'dashuadmin', password: 'qwer@123', yzm: '', codeUuid: '', codeBaseImage: '', rememberMe: true
 })
 // 页面初始化
 onMounted(() => {

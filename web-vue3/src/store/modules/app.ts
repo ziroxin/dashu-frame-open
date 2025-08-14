@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { store } from '../index'
-import { humpToUnderline, setCssVar } from '@/utils'
+import { humpToDash, setCssVar } from '@/utils'
 import { colorIsDark, hexToRGB, lighten, mix } from '@/utils/color'
 import { ComponentSize, ElMessage } from 'element-plus'
 import { useCssVar, useDark } from '@vueuse/core'
@@ -171,7 +171,7 @@ export const useAppStore = defineStore('app', {
     setWatermarkTitle(watermarkTitle: string) { this.watermarkTitle = watermarkTitle },
     setCssVarTheme() {
       for (const key in this.theme) {
-        setCssVar(`--${humpToUnderline(key)}`, this.theme[key])
+        setCssVar(`--${humpToDash(key)}`, this.theme[key])
       }
       this.setPrimaryLight()
     },

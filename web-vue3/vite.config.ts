@@ -152,7 +152,7 @@ export default defineConfig(({command, mode}: ConfigEnv): UserConfig => {
         'echarts',
         'echarts-wordcloud',
         'qrcode',
-        '@wangeditor/editor ',
+        '@wangeditor/editor',
         '@wangeditor/editor-for-vue',
         'vue-json-pretty',
         '@zxcvbn-ts/core',
