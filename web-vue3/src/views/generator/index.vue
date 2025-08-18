@@ -163,7 +163,9 @@ export default {
     // 加载表格
     loadTableList() {
       this.isLoading = true
-      const params = {...this.pager, params: JSON.stringify(this.searchData)}
+      // 只查询vue3的表单
+      const obj = {...this.searchData, type: 'vue3'}
+      const params = {...this.pager, params: JSON.stringify(obj)}
       request({url: '/generator/zFormGenerator/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total

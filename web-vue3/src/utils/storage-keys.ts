@@ -47,7 +47,9 @@ const storageKeys = {
   // 数据字典持久化key
   l_dictList: `${key_prefix}_dicts_list`,
   // 简易postman页historyKeys
-  l_historyKeys: `${key_prefix}_history_keys`
+  l_historyKeys: `${key_prefix}_history_keys`,
+  // 在线编辑代码
+  l_codeCurrent: `${key_prefix}_code_current`
 }
 
 export default storageKeys
