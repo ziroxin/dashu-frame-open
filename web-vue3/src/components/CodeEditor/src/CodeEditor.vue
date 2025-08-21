@@ -1,51 +1,60 @@
 <template>
   <div class="w-full h-full">
-    <div class="my-10px text-left">
-      <el-select v-model="currentTheme" class="w-200px!" placeholder="请选择主题样式">
-        <el-option v-for="item in themeOptions" :key="item.value" :label="item.label" :value="item.value"/>
+    <div class="flex justify-between items-center b-b-1px b-b-solid b-b-#ccc px-10px">
+      <el-tabs v-model="currentTab" stretch class="w-320px h-39px!">
+        <el-tab-pane name="html" label="HTML"/>
+        <el-tab-pane name="ts" label="TypeScript"/>
+      </el-tabs>
+      <el-select v-model="theme" class="w-120px!" placeholder="请选择主题样式" size="small">
+        <el-option v-for="item in ['vs','vs-dark','hc-black','hc-light']"
+                   :key="item" :label="item" :value="item"/>
       </el-select>
-      <el-tag class="ml-10px">请把需要编辑的vue页面代码，直接粘贴至下方编辑器，切换预览模式即可看到效果。</el-tag>
     </div>
-    <div ref="monacoEditorRef" class="b-1px b-dashed b-#ccc w-full h-[calc(100%-50px)]"></div>
+    <div class="mt-10px w-full h-[calc(100%-50px)] flex">
+      <div v-show="currentTab==='html'" ref="htmlEditorRef" class="flex-1"></div>
+      <div v-show="currentTab==='ts'" ref="tsEditorRef" class="flex-1"></div>
+    </div>
   </div>
 </template>
 
 <script setup lang="tsx">
-import { changeTheme, createEditor, getEditor, updateEditorVal } from './helper'
+import { changeTheme, createEditor, updateEditorVal } from './helper'
+// Tab类型
+const currentTab = ref('html')
 
-const props = defineProps({
-  // 编辑器内容
-  modelValue: {type: String, default: ''},
-  // 主题
-  theme: {type: String, default: 'vs-dark'},
-  // 更多选项
-  options: {type: Object, default: () => ({})}
-})
+// 编辑器Model
+const html = defineModel('html', {type: String, default: ''})
+const ts = defineModel('ts', {type: String, default: ''})
 
 // 编辑器
-const monacoEditorRef = ref<HTMLElement>()
-const emits = defineEmits(['blur', 'update:modelValue'])
+const htmlEditorRef = ref<HTMLElement>()
+const tsEditorRef = ref<HTMLElement>()
+
+// 初始化editor
+let htmlEditor, tsEditor
 onMounted(() => {
-  // 初始化editor
-  const editor = createEditor(monacoEditorRef, props.options)
-  // 更新内容
-  updateValue(props.modelValue)
-  // 监听内容变化
-  editor?.onDidChangeModelContent(() => { emits('update:modelValue', editor!.getValue()) })
-  // 监听失焦
-  editor?.onDidBlurEditorText(() => { emits('blur') })
+  // html编辑器
+  htmlEditor = createEditor(htmlEditorRef, 'html')
+  htmlEditor?.onDidChangeModelContent(() => { html.value = htmlEditor!.getValue() })
+  updateValue(htmlEditor, html.value)
+  // typescript编辑器
+  tsEditor = createEditor(tsEditorRef, 'typescript')
+  tsEditor?.onDidChangeModelContent(() => { ts.value = tsEditor!.getValue() })
+  updateValue(tsEditor, ts.value)
 })
 
-// 监听 modelValue 变化
-watch(() => props.modelValue, () => { updateValue(props.modelValue) })
 // 更新编辑器内容
-const updateValue = (val: string) => { if (val !== getEditor()?.getValue()) updateEditorVal(val) }
+const updateValue = (editor: any, val: string) => {
+  if (val !== editor?.getValue()) {
+    updateEditorVal(editor, val)
+  }
+}
 
-// 主题选项
-const themeOptions = [
-  {label: 'vs', value: 'vs'}, {label: 'vs-dark', value: 'vs-dark'},
-  {label: 'hc-black', value: 'hc-black'}, {label: 'hc-light', value: 'hc-light'}
-]
-const currentTheme = ref(props.theme)
-watch(currentTheme, (val) => { changeTheme(val) })
+// 监听 modelValue 变化
+watch(() => html.value, () => { updateValue(htmlEditor, html.value) })
+watch(() => ts.value, () => { updateValue(tsEditor, ts.value) })
+
+// 主题切换
+const theme = ref('vs')
+watch(theme, () => { changeTheme(theme.value) })
 </script>

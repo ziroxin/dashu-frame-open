@@ -5,7 +5,7 @@
       <el-splitter-panel>
         <div class="flex justify-between items-center h-[var(--top-tool-height)] mx-10px">
           <!-- 顶左-Logo -->
-          <base-button icon="el-icon-back" plain type="danger" @click="back">返回后台</base-button>
+          <base-button icon="el-icon-back" link type="danger" @click="back">返回后台</base-button>
           <div class="ml-10px text-22px font-bold cursor-pointer text-[var(--el-color-primary)]">
             <el-tooltip content="所见即所得，在线编辑页面，代码直接拷贝到vue页面中，即可使用！">
               代码在线编辑
@@ -22,26 +22,26 @@
         </div>
         <!-- 代码模式 -->
         <div v-if="codeView"
-             class="b-t-1px b-t-dashed b-t-#ccc w-full px-10px h-[calc(100vh-var(--top-tool-height)-10px)]">
-          <code-editor v-model="currentCode"/>
+             class="b-t-1px b-t-dashed b-t-#ccc w-full h-[calc(100vh-var(--top-tool-height)-10px)]">
+          <code-editor v-model:html="htmlCode" v-model:ts="tsCode"/>
         </div>
         <!-- 预览模式 -->
         <template v-else>
           <div class="b-t-1px b-t-dashed b-t-#ccc h-[calc(100vh-var(--top-tool-height))] flex">
             <div class="p-15px w-[var(--left-menu-max-width)] bg-[var(--el-fill-color-light)]">
               <!-- 左-菜单栏 -->
-              <left-panel/>
+              <left-panel v-model="formItemList"/>
             </div>
             <div class="m-5px w-[calc(100%-var(--left-menu-max-width))] b-1px b-dashed b-#ccc b-rd-5px">
               <!-- 中-内容区域 -->
-              <center-panel/>
+              <center-panel v-model="formItemList" v-model:current="current" v-model:html="htmlCode" v-model:ts="tsCode"/>
             </div>
           </div>
         </template>
       </el-splitter-panel>
       <el-splitter-panel size="300px">
         <!-- 右-表单编辑区 -->
-        <right-panel/>
+        <right-panel v-model="current"/>
       </el-splitter-panel>
     </el-splitter>
   </div>
@@ -59,20 +59,28 @@ import storageKeys from '@/utils/storage-keys'
 // 返回按钮
 const {push} = useRouter()
 const back = () => { push('/generator') }
-// 导入代码
+
+// 切换代码模式
 const codeView = ref(false)
 const change = () => { codeView.value = !codeView.value }
+
 // 代码
-const currentCode = ref(localStorage.getItem(storageKeys.l_codeCurrent) || '')
-watch(currentCode, (val) => {
-  if (val) {
-    localStorage.setItem(storageKeys.l_codeCurrent, val)
-  } else {
-    localStorage.removeItem(storageKeys.l_codeCurrent)
-  }
-})
+const formItemList = ref(JSON.parse(localStorage.getItem(storageKeys.l_formItemList)) || [])
+const current = ref({})
+const htmlCode = ref(localStorage.getItem(storageKeys.l_htmlCode) || '')
+const tsCode = ref(localStorage.getItem(storageKeys.l_tsCode) || '')
+
+// 当前代码
+watch(() => formItemList.value, (val) => {
+  localStorage.setItem(storageKeys.l_formItemList, val ? JSON.stringify(val) : '')
+}, {deep: true})
+watch(() => htmlCode.value, (val) => { localStorage.setItem(storageKeys.l_htmlCode, val ? val : '')})
+watch(() => tsCode.value, (val) => { localStorage.setItem(storageKeys.l_tsCode, val ? val : '')})
+
 const clearCode = () => {
-  currentCode.value = ''
+  formItemList.value = []
+  htmlCode.value = ''
+  tsCode.value = ''
   ElMessage({message: '清空代码成功！', type: 'success', grouping: true})
 }
 </script>

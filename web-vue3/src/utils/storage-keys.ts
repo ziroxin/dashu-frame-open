@@ -49,7 +49,10 @@ const storageKeys = {
   // 简易postman页historyKeys
   l_historyKeys: `${key_prefix}_history_keys`,
   // 在线编辑代码
-  l_codeCurrent: `${key_prefix}_code_current`
+  l_formItemList: `${key_prefix}_form_item_list`,
+  l_htmlCode: `${key_prefix}_html_code`,
+  l_tsCode: `${key_prefix}_ts_code`,
+  l_cssCode: `${key_prefix}_css_code`
 }
 
 export default storageKeys
