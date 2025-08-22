@@ -21,6 +21,9 @@ import selectConfig from '@/views/generator/panel/config/selectConfig'
 import diyConfig from '@/views/generator/panel/config/diyConfig'
 import otherConfig from '@/views/generator/panel/config/otherConfig'
 import { generateUUID } from '@/utils/tools'
+import { ElMessageBox } from 'element-plus'
+import { cloneDeep } from 'lodash-es'
+
 // 组件配置
 const componentList = ref([
   {name: '原生组件', icon: 'el-icon-edit', list: inputConfig},
@@ -33,7 +36,12 @@ const modelValue = defineModel()
 
 // 添加
 const addToCenter = (item) => {
-  modelValue.value.push({...item, __id: generateUUID()})
+  // todo: 封装组件，在复制时也用到
+  ElMessageBox.prompt('请输入字段名称：', '字段名称', {confirmButtonText: '确定', cancelButtonText: '取消'})
+      .then(({value}) => {
+        const newItem = cloneDeep(item)
+        modelValue.value.push({...newItem, __id: generateUUID(), __modelName: value})
+      })
 }
 </script>
 

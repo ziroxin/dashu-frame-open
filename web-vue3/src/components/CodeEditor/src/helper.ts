@@ -56,7 +56,7 @@ export const createEditor = (editorRef: any, language: string = 'html') => {
 // 数据更新
 export const updateEditorVal = (editor: any, val: string) => {
   nextTick(() => {
-    let isReadOnly = editor?.getOption(monaco.editor.EditorOption.readOnly)
+    const isReadOnly = editor?.getOption(monaco.editor.EditorOption.readOnly)
     if (isReadOnly) {
       editor?.updateOptions({readOnly: false})
     }

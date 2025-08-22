@@ -32,16 +32,18 @@
               <!-- 左-菜单栏 -->
               <left-panel v-model="formItemList"/>
             </div>
-            <div class="m-5px w-[calc(100%-var(--left-menu-max-width))] b-1px b-dashed b-#ccc b-rd-5px">
+            <div
+                class="m-5px w-[calc(100%-var(--left-menu-max-width))] h-[calc(100%-10px)] overflow-y-auto b-1px b-dashed b-#ccc b-rd-5px">
               <!-- 中-内容区域 -->
-              <center-panel v-model="formItemList" v-model:current="current" v-model:html="htmlCode" v-model:ts="tsCode"/>
+              <center-panel v-model="formItemList" v-model:current="current" v-model:formProps="formProps"
+                            v-model:html="htmlCode" v-model:ts="tsCode"/>
             </div>
           </div>
         </template>
       </el-splitter-panel>
       <el-splitter-panel size="300px">
         <!-- 右-表单编辑区 -->
-        <right-panel v-model="current"/>
+        <right-panel v-model:current="current" v-model:formProps="formProps"/>
       </el-splitter-panel>
     </el-splitter>
   </div>
@@ -55,32 +57,60 @@ import LeftPanel from '@/views/generator/panel/LeftPanel.vue'
 import CenterPanel from '@/views/generator/panel/CenterPanel.vue'
 import RightPanel from '@/views/generator/panel/RightPanel.vue'
 import storageKeys from '@/utils/storage-keys'
-
+import formConfig from '@/views/generator/panel/config/formConfig'
 // 返回按钮
 const {push} = useRouter()
 const back = () => { push('/generator') }
-
-// 切换代码模式
+// 切换代码模式/预览模式
 const codeView = ref(false)
 const change = () => { codeView.value = !codeView.value }
 
-// 代码
+// 中间内容区域组件列表
 const formItemList = ref(JSON.parse(localStorage.getItem(storageKeys.l_formItemList)) || [])
 const current = ref({})
+watch(() => formItemList.value, (val) => {
+  if (val && val.length > 0) {
+    localStorage.setItem(storageKeys.l_formItemList, JSON.stringify(val))
+  } else {
+    current.value = {}
+    localStorage.removeItem(storageKeys.l_formItemList)
+  }
+}, {immediate: true, deep: true})
+watch(() => current.value, (val) => {
+  if (val) {
+    formItemList.value.forEach((item, index) => {
+      if (item.__id === val.__id) {
+        formItemList.value[index] = {...item, ...val}
+      }
+    })
+  }
+}, {immediate: true, deep: true})
+
+// 表单属性
+const formProps = ref(JSON.parse(localStorage.getItem(storageKeys.l_formProps)) || formConfig)
+watch(() => formProps.value, (val) => {
+  if (val) {
+    localStorage.setItem(storageKeys.l_formProps, JSON.stringify(val))
+  } else {
+    localStorage.removeItem(storageKeys.l_formProps)
+  }
+}, {immediate: true, deep: true})
+
+
 const htmlCode = ref(localStorage.getItem(storageKeys.l_htmlCode) || '')
 const tsCode = ref(localStorage.getItem(storageKeys.l_tsCode) || '')
-
-// 当前代码
-watch(() => formItemList.value, (val) => {
-  localStorage.setItem(storageKeys.l_formItemList, val ? JSON.stringify(val) : '')
-}, {deep: true})
 watch(() => htmlCode.value, (val) => { localStorage.setItem(storageKeys.l_htmlCode, val ? val : '')})
 watch(() => tsCode.value, (val) => { localStorage.setItem(storageKeys.l_tsCode, val ? val : '')})
 
+// 清空代码
 const clearCode = () => {
   formItemList.value = []
+  formProps.value = formConfig
+  localStorage.removeItem(storageKeys.l_htmlCode)
   htmlCode.value = ''
+  localStorage.removeItem(storageKeys.l_tsCode)
   tsCode.value = ''
+  current.value = {}
   ElMessage({message: '清空代码成功！', type: 'success', grouping: true})
 }
 </script>
