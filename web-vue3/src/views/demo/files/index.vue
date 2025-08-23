@@ -165,11 +165,11 @@
 
 <script setup>
 import { ElMessage } from 'element-plus'
-import FileOssUpload from '@/components/Upload/FileOssUpload.vue'
-import FileUpload from '@/components/Upload/FileUpload.vue'
-import FileSecond from '@/views/demo/files/FileSecond.vue'
-import PluploadChunk from '@/views/demo/files/PluploadChunk.vue'
-import FileUploadBreakpointResume from '@/components/Upload/FileUploadBreakpointResume.vue'
+import FileOssUpload from '@/components/Upload/FileOssUpload'
+import FileUpload from '@/components/Upload/FileUpload'
+import FileSecond from '@/views/demo/files/FileSecond'
+import PluploadChunk from '@/views/demo/files/PluploadChunk'
+import FileUploadBreakpointResume from '@/components/Upload/FileUploadBreakpointResume'
 import { JsonEditor } from '@/components/JsonEditor'
 import { ImageCropping } from '@/components/ImageCropping'
 import request from '@/utils/request'

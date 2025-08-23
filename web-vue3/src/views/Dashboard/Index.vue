@@ -27,7 +27,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import PanelGroup from './components/PanelGroup.vue'
+import PanelGroup from './components/PanelGroup'
 import { Echart } from '@/components/Echart'
 import { EChartsOption } from 'echarts'
 import { barOptions, lineOptions, pieOptions } from './echarts-data'

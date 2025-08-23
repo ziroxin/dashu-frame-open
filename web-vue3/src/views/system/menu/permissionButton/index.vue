@@ -66,7 +66,7 @@
 
 <script>
 // 引入图标选择器
-import IconPicker from '@/views/system/menu/IconPicker/index.vue'
+import IconPicker from '@/views/system/menu/IconPicker/index'
 import request from '@/utils/request'
 
 export default {

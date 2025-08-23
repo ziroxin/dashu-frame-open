@@ -17,10 +17,10 @@ export default {
     small: '小'
   },
   lock: {
-    lockBackBtn: '返回',
-    lockToLogin: '返回登录',
-    lockEntrySystem: '进入系统',
-    lockBtn: '锁定',
+    lockBackBtn: '取消',
+    lockToLogin: '去登录',
+    lockEntrySystem: '解锁系统',
+    lockBtn: '锁定系统',
     lockPasswordLbl: '锁屏密码',
     unlockBtn: '点击解锁',
     lockPlaceholder: '请输入锁屏密码'

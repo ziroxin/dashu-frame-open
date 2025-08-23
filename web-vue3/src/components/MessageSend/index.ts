@@ -1,3 +1,3 @@
-import MessageSend from './src/MessageSend.vue'
+import MessageSend from './src/MessageSend'
 
 export { MessageSend }

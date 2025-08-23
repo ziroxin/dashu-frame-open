@@ -1,3 +1,3 @@
-import SizeDropdown from './src/SizeDropdown.vue'
+import SizeDropdown from './src/SizeDropdown'
 
 export { SizeDropdown }

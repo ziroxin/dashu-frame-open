@@ -143,8 +143,8 @@
 </template>
 
 <script setup lang="ts">
-import AppView from './AppView.vue'
-import ToolHeader from './ToolHeader.vue'
+import AppView from './AppView'
+import ToolHeader from './ToolHeader'
 import { useAppStore } from '@/store/modules/app'
 import { TabMenu } from '@/components/TabMenu'
 import { MyTagsView } from '@/components/MyTagsView'

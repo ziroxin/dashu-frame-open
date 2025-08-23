@@ -24,8 +24,8 @@
 
 <script>
 import request from '@/utils/request'
-import FileUpload from '@/components/Upload/FileUpload.vue'
-import FilesView from '@/components/Upload/FilesView.vue'
+import FileUpload from '@/components/Upload/FileUpload'
+import FilesView from '@/components/Upload/FilesView'
 
 export default {
   props: ['currentParentId'],

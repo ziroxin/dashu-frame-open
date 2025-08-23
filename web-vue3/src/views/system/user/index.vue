@@ -147,7 +147,7 @@
   </div>
 </template>
 <script>
-import ImageAvatar from '@/components/Upload/ImageAvatar.vue'
+import ImageAvatar from '@/components/Upload/ImageAvatar'
 import request from '@/utils/request'
 
 export default {

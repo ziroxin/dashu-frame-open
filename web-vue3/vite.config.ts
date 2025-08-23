@@ -79,7 +79,7 @@ export default defineConfig(({command, mode}: ConfigEnv): UserConfig => {
       }
     },
     resolve: {
-      extensions: ['.ts', '.js', '.mjs', '.jsx', '.tsx', '.json', '.less', '.scss', '.css'],
+      extensions: ['.ts', '.js', '.vue', '.less', '.scss', '.css', '.jsx', '.tsx', '.mjs', '.json'],
       alias: [{
         find: 'vue-i18n',
         replacement: 'vue-i18n/dist/vue-i18n.cjs.js'

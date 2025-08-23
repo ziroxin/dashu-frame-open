@@ -1,3 +1,3 @@
-import CountTo from './src/CountTo.vue'
+import CountTo from './src/CountTo'
 
 export { CountTo }

@@ -98,7 +98,7 @@
 <script>
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util'
-import FileSecond from '@/views/demo/files/FileSecond.vue'
+import FileSecond from '@/views/demo/files/FileSecond'
 
 export default {
   components: {FileSecond},

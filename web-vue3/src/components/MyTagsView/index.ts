@@ -1,3 +1,3 @@
-import MyTagsView from './src/MyTagsView.vue'
+import MyTagsView from './src/MyTagsView'
 
 export { MyTagsView }

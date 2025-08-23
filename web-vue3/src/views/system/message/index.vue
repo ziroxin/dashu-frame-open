@@ -14,7 +14,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import MessageList from '@/views/system/message/message-list.vue'
+import MessageList from '@/views/system/message/message-list'
 import { useMessageStore } from '@/store/modules/message'
 
 const messageStore = useMessageStore()

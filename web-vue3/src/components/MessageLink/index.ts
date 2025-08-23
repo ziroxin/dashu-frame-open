@@ -1,3 +1,3 @@
-import MessageLink from './src/MessageLink.vue'
+import MessageLink from './src/MessageLink'
 
 export { MessageLink }

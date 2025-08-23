@@ -8,7 +8,7 @@
           <base-button icon="el-icon-back" link type="danger" @click="back">返回后台</base-button>
           <div class="ml-10px text-22px font-bold cursor-pointer text-[var(--el-color-primary)]">
             <el-tooltip content="所见即所得，在线编辑页面，代码直接拷贝到vue页面中，即可使用！">
-              代码在线编辑
+              代码在线编辑（开发中...）
             </el-tooltip>
           </div>
           <!-- 顶右-操作按钮 -->
@@ -53,9 +53,9 @@
 import { BaseButton } from '@/components/BaseButton'
 import { CodeEditor } from '@/components/CodeEditor'
 import { ElMessage } from 'element-plus'
-import LeftPanel from '@/views/generator/panel/LeftPanel.vue'
-import CenterPanel from '@/views/generator/panel/CenterPanel.vue'
-import RightPanel from '@/views/generator/panel/RightPanel.vue'
+import LeftPanel from '@/views/generator/panel/LeftPanel'
+import CenterPanel from '@/views/generator/panel/CenterPanel'
+import RightPanel from '@/views/generator/panel/RightPanel'
 import storageKeys from '@/utils/storage-keys'
 import formConfig from '@/views/generator/panel/config/formConfig'
 // 返回按钮

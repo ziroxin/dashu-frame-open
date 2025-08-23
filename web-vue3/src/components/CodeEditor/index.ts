@@ -1,3 +1,3 @@
-import CodeEditor from './src/CodeEditor.vue'
+import CodeEditor from './src/CodeEditor'
 
 export { CodeEditor }

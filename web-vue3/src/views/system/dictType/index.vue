@@ -104,8 +104,8 @@
 
 <script>
 import request from '@/utils/request'
-import DictData from '@/views/system/dictData/index.vue'
-import DictDataDemo from '@/views/system/dictData/dictDataDemo.vue'
+import DictData from '@/views/system/dictData/index'
+import DictDataDemo from '@/views/system/dictData/dictDataDemo'
 import { clearDictCache } from '@/utils/dict-util'
 
 export default {

@@ -200,8 +200,8 @@
   </div>
 </template>
 <script>
-import IconPicker from '@/views/system/menu/iconPicker/index.vue'
-import PermissionButton from '@/views/system/menu/permissionButton/index.vue'
+import IconPicker from '@/views/system/menu/iconPicker/index'
+import PermissionButton from '@/views/system/menu/permissionButton/index'
 import request from '@/utils/request'
 import { generateUUID } from '@/utils/tools'
 

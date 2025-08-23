@@ -153,7 +153,7 @@
 </template>
 
 <script setup lang="ts">
-import FormItemRules from '@/views/generator/panel/FormItemRules.vue'
+import FormItemRules from '@/views/generator/panel/FormItemRules'
 import inputConfig from '@/views/generator/panel/config/inputConfig'
 import selectConfig from '@/views/generator/panel/config/selectConfig'
 import diyConfig from '@/views/generator/panel/config/diyConfig'

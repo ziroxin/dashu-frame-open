@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import RenderLayout from './components/RenderLayout.vue'
+import RenderLayout from './components/RenderLayout'
 import { useAppStore } from '@/store/modules/app'
 import { Backtop } from '@/components/Backtop'
 import { Setting } from '@/components/Setting'

@@ -1,3 +1,3 @@
-import MyWangEditor from './src/MyWangEditor.vue'
+import MyWangEditor from './src/MyWangEditor'
 
 export { MyWangEditor }

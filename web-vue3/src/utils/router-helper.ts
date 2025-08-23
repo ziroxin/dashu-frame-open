@@ -1,8 +1,8 @@
 import type { RouteLocationNormalized, RouteRecordNormalized } from 'vue-router'
-import ErrorComponent from '@/views/Error/ErrorComponent.vue'
+import ErrorComponent from '@/views/Error/ErrorComponent'
 
 // 顶级菜单使用：Layout组件
-export const Layout = () => import('@/layout/Layout.vue')
+export const Layout = () => import('@/layout/Layout')
 
 const modules = import.meta.glob('../views/**/*.{vue,tsx}')
 // 模块 - 动态导入

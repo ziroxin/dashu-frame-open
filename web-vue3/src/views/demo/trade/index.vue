@@ -111,8 +111,8 @@
 <script>
 import request from '@/utils/request'
 import { getToken } from '@/utils/auth'
-import TradeRefund from '@/views/demo/tradeRefund/index.vue'
-import TradeRefundAlipay from '@/views/demo/tradeRefund/trade-refund-alipay.vue'
+import TradeRefund from '@/views/demo/tradeRefund/index'
+import TradeRefundAlipay from '@/views/demo/tradeRefund/trade-refund-alipay'
 
 export default {
   components: {TradeRefundAlipay, TradeRefund},

@@ -69,9 +69,9 @@
 </template>
 
 <script setup lang="ts">
-import ColorRadioPicker from './components/ColorRadioPicker.vue'
-import InterfaceDisplay from './components/InterfaceDisplay.vue'
-import LayoutRadioPicker from './components/LayoutRadioPicker.vue'
+import ColorRadioPicker from './components/ColorRadioPicker'
+import InterfaceDisplay from './components/InterfaceDisplay'
+import LayoutRadioPicker from './components/LayoutRadioPicker'
 import storageKeys from '@/utils/storage-keys'
 import request from '@/utils/request'
 import { ElMessageBox, ElNotification } from 'element-plus'

@@ -35,14 +35,14 @@
           <span :class="`text-14px ${prefixCls}-entry__err-msg enter-x`" v-if="errMsg">{{ errMsg }}</span>
           <!-- 底部按钮 -->
           <div :class="`${prefixCls}-entry__footer enter-x mt-10px`">
-            <base-button type="primary" size="small" class="mt-2 mr-2 enter-x" link @click="handleShowForm(false)">
+            <base-button type="info" size="small" class="mt-2 mr-2 enter-x" link @click="handleShowForm(false)">
               {{ t('lock.lockBackBtn') }}
+            </base-button>
+            <base-button type="danger" class="mt-2" size="small" link @click="unLock()">
+              {{ t('lock.lockEntrySystem') }}
             </base-button>
             <base-button type="primary" size="small" class="mt-2 mr-2 enter-x" link @click="goLogin">
               {{ t('lock.lockToLogin') }}
-            </base-button>
-            <base-button type="primary" class="mt-2" size="small" link @click="unLock()">
-              {{ t('lock.lockEntrySystem') }}
             </base-button>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import ContextMenu from './src/ContextMenu.vue'
+import ContextMenu from './src/ContextMenu'
 import { ElDropdown } from 'element-plus'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 

@@ -58,9 +58,9 @@
 </template>
 
 <script setup lang="ts">
-import LockDialog from './components/LockDialog.vue'
-import LockPage from './components/LockPage.vue'
-import UserEditPassword from '@/views/system/user/UserEditPassword.vue'
+import LockDialog from './components/LockDialog'
+import LockPage from './components/LockPage'
+import UserEditPassword from '@/views/system/user/UserEditPassword'
 import storageKeys from '@/utils/storage-keys'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useDesign } from '@/hooks/web/useDesign'

@@ -1,3 +1,3 @@
-import MyLogo from './src/MyLogo.vue'
+import MyLogo from './src/MyLogo'
 
 export { MyLogo }

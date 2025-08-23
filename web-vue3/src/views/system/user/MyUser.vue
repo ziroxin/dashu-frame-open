@@ -1,7 +1,7 @@
 <template>
   <div class="flex m-[var(--app-content-margin)]" v-loading="isLoading">
     <!-- 左侧个人信息 -->
-    <el-card class="flex-[3] mr-15px">
+    <el-card class="flex-[3] mr-15px text-14px">
       <template #header><span class="text-16px font-700">个人信息</span></template>
       <div class="flex items-center justify-center">
         <el-image :src="$baseServer+temp.avatar" class="w-[150px] h-[150px] rounded-full" fit="cover"
@@ -107,7 +107,7 @@
   </div>
 </template>
 <script>
-import ImageAvatar from '@/components/Upload/ImageAvatar.vue'
+import ImageAvatar from '@/components/Upload/ImageAvatar'
 import request from '@/utils/request'
 import { MyIcon } from '@/components/MyIcon'
 

@@ -77,7 +77,7 @@
 
 <script>
 import request from '@/utils/request'
-import FolderViews from '@/views/system/staticImg/FolderViews.vue'
+import FolderViews from '@/views/system/staticImg/FolderViews'
 
 export default {
   components: {FolderViews},

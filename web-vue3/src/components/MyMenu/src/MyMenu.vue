@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import RenderMenuItem from './components/RenderMenuItem.vue'
+import RenderMenuItem from './components/RenderMenuItem'
 import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
 import { isUrl } from '@/utils/is'

@@ -1,4 +1,4 @@
-import ConfigGlobal from './src/ConfigGlobal.vue'
+import ConfigGlobal from './src/ConfigGlobal'
 
 export type { ConfigGlobalTypes } from './src/types'
 

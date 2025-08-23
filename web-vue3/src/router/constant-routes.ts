@@ -5,7 +5,7 @@ export const loginRoute = {
   path: '/login',
   name: 'Login',
   title: '登录页',
-  component: () => import('@/views/Login/Login.vue'),
+  component: () => import('@/views/Login/Login'),
   meta: {hidden: true, title: '登录页', noTagsView: true}
 }
 
@@ -18,7 +18,7 @@ export const homeRoute = {
   children: [{
     path: '/dashboard/index',
     name: 'DashboardIndex',
-    component: () => import('@/views/Dashboard/Index.vue'),
+    component: () => import('@/views/Dashboard/Index'),
     meta: {
       title: '首页',
       icon: 'vi-ant-design:dashboard-filled',
@@ -37,7 +37,7 @@ export const userRoute = {
   children: [{
     path: '/system/user/MyUser',
     name: 'MyUserIndex',
-    component: () => import('@/views/system/user/MyUser.vue'),
+    component: () => import('@/views/system/user/MyUser'),
     meta: {title: '个人中心'}
   }]
 }
@@ -47,17 +47,17 @@ export const oauth2Routes = [
   {
     path: '/oauth2/error',
     name: 'Oauth2Error',
-    component: () => import('@/views/oauth2/error.vue'),
+    component: () => import('@/views/oauth2/error'),
     meta: {hidden: true}
   }, {
     path: '/oauth2/success',
     name: 'Oauth2Success',
-    component: () => import('@/views/oauth2/success.vue'),
+    component: () => import('@/views/oauth2/success'),
     meta: {hidden: true}
   }, {
     path: '/oauth2/bind',
     name: 'Oauth2Bind',
-    component: () => import('@/views/oauth2/bind.vue'),
+    component: () => import('@/views/oauth2/bind'),
     meta: {hidden: true}
   }
 ]
@@ -68,14 +68,14 @@ export const otherRoutes = [
   {
     path: '/swagger/home',
     name: 'Knife4jSwaggerHome',
-    component: () => import('@/views/swagger/home.vue'),
+    component: () => import('@/views/swagger/home'),
     meta: {hidden: true}
   },
   // 在线表单代码生成器 静态页
   {
     path: '/generator/form',
     name: 'GeneratorForm',
-    component: () => import('@/views/generator/form.vue'),
+    component: () => import('@/views/generator/form'),
     meta: {hidden: true}
   },
   // 消息中心（登录可用）
@@ -87,7 +87,7 @@ export const otherRoutes = [
     children: [{
       path: '/system/message',
       name: 'SystemMessageIndex',
-      component: () => import('@/views/system/message/index.vue'),
+      component: () => import('@/views/system/message/index'),
       meta: {title: '消息中心'}
     }]
   }

@@ -1,4 +1,4 @@
-import LocaleDropdown from './src/LocaleDropdown.vue'
+import LocaleDropdown from './src/LocaleDropdown'
 
 export type { Language, LocaleDropdownType } from './src/types'
 

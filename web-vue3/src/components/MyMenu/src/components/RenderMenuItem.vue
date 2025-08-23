@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import RenderMenuTitle from './RenderMenuTitle.vue'
+import RenderMenuTitle from './RenderMenuTitle'
 import { useDesign } from '@/hooks/web/useDesign'
 import { hasOneShowingChild } from '@/components/MyMenu/src/helper'
 

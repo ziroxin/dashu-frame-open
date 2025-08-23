@@ -1,3 +1,3 @@
-import MyMenu from './src/MyMenu.vue'
+import MyMenu from './src/MyMenu'
 
 export { MyMenu }

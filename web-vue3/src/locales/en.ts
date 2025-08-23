@@ -17,10 +17,10 @@ export default {
     small: 'Small'
   },
   lock: {
-    lockBackBtn: 'Back',
+    lockBackBtn: 'Cancel',
     lockToLogin: 'Back to login',
-    lockEntrySystem: 'Entry the system',
-    lockBtn: 'Lock',
+    lockEntrySystem: 'Unlock system',
+    lockBtn: 'Lock system',
     lockPasswordLbl: 'Lock screen password',
     unlockBtn: 'Click to unlock',
     lockPlaceholder: 'Please enter the lock screen password'

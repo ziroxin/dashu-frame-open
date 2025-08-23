@@ -13,7 +13,7 @@ export const constantRoutes: AppRouteRecordRaw[] = [
     children: [{
       path: '/redirect/:path(.*)',
       name: 'Redirect',
-      component: () => import('@/views/Redirect/Redirect.vue'),
+      component: () => import('@/views/Redirect/Redirect'),
       meta: {}
     }]
   },
@@ -21,22 +21,22 @@ export const constantRoutes: AppRouteRecordRaw[] = [
   {
     path: '/401',
     name: 'Unauthorized',
-    component: () => import('@/views/Error/401.vue'),
+    component: () => import('@/views/Error/401'),
     meta: {hidden: true, title: '401', noTagsView: true}
   }, {
     path: '/403',
     name: 'Forbidden',
-    component: () => import('@/views/Error/403.vue'),
+    component: () => import('@/views/Error/403'),
     meta: {hidden: true, title: '403', noTagsView: true}
   }, {
     path: '/404',
     name: 'NoFind',
-    component: () => import('@/views/Error/404.vue'),
+    component: () => import('@/views/Error/404'),
     meta: {hidden: true, title: '404', noTagsView: true}
   }, {
     path: '/500',
     name: 'ServerError',
-    component: () => import('@/views/Error/500.vue'),
+    component: () => import('@/views/Error/500'),
     meta: {hidden: true, title: '500', noTagsView: true}
   }, {
     path: '/',
