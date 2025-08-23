@@ -13,6 +13,8 @@
       </template>
     </div>
   </div>
+  <form-item-add v-if="addDialogVisible" v-model="addDialogVisible"
+                 v-model:addItem="addItem" v-model:formItemList="modelValue"/>
 </template>
 
 <script setup lang="ts">
@@ -20,8 +22,7 @@ import inputConfig from '@/views/generator/panel/config/inputConfig'
 import selectConfig from '@/views/generator/panel/config/selectConfig'
 import diyConfig from '@/views/generator/panel/config/diyConfig'
 import otherConfig from '@/views/generator/panel/config/otherConfig'
-import { generateUUID } from '@/utils/tools'
-import { ElMessageBox } from 'element-plus'
+import FormItemAdd from '@/views/generator/panel/FormItemAdd'
 import { cloneDeep } from 'lodash-es'
 
 // 组件配置
@@ -34,14 +35,12 @@ const componentList = ref([
 
 const modelValue = defineModel()
 
-// 添加
+// 添加弹窗
+const addDialogVisible = ref(false)
+const addItem = ref({})
 const addToCenter = (item) => {
-  // todo: 封装组件，在复制时也用到
-  ElMessageBox.prompt('请输入字段名称：', '字段名称', {confirmButtonText: '确定', cancelButtonText: '取消'})
-      .then(({value}) => {
-        const newItem = cloneDeep(item)
-        modelValue.value.push({...newItem, __id: generateUUID(), __modelName: value})
-      })
+  addDialogVisible.value = true
+  addItem.value = cloneDeep(item)
 }
 </script>
 

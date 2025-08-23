@@ -71,12 +71,17 @@
     <base-button @click="clearInterval" icon="el-icon-close" plain>重置表单</base-button>
     <el-tag type="info" class="ml-10px">此处按钮只用于测试表单，不生成代码！</el-tag>
   </div>
+  <!-- 复制表单项弹窗 -->
+  <form-item-add v-if="addDialogVisible" v-model="addDialogVisible"
+                 v-model:addItem="addItem" v-model:formItemList="formItemList"/>
 </template>
 
 <script setup lang="ts">
 import { VueDraggable } from 'vue-draggable-plus'
 import { MyWangEditor } from '@/components/MyWangEditor'
 import { BaseButton } from '@/components/BaseButton'
+import FormItemAdd from '@/views/generator/panel/FormItemAdd'
+import { cloneDeep } from 'lodash-es'
 
 // 编辑器Model
 const formItemList = defineModel()
@@ -90,17 +95,20 @@ onMounted(() => {
 
 const dataFormRef = ref()
 const formData = ref({})
-const copyC = (item) => {
-  const newItem = {...item, __id: generateUUID()}
-  formItemList.value.push(newItem)
-  setTimeout(() => { current.value = newItem }, 10)
-}
 const deleteC = (item) => {
   formItemList.value.splice(formItemList.value.indexOf(item), 1)
   setTimeout(() => { current.value = {} }, 10)
 }
 const changeC = (item) => {
   current.value = item ? {...item} : {}
+}
+
+// 复制表单项
+const addDialogVisible = ref(false)
+const addItem = ref({})
+const copyC = (item) => {
+  addDialogVisible.value = true
+  addItem.value = cloneDeep(item)
 }
 
 const check = () => {

@@ -23,7 +23,7 @@
         <!-- 代码模式 -->
         <div v-if="codeView"
              class="b-t-1px b-t-dashed b-t-#ccc w-full h-[calc(100vh-var(--top-tool-height)-10px)]">
-          <code-editor v-model:html="htmlCode" v-model:ts="tsCode"/>
+          <code-editor v-model:json="jsonCode" v-model:html="htmlCode" v-model:ts="tsCode"/>
         </div>
         <!-- 预览模式 -->
         <template v-else>
@@ -101,6 +101,7 @@ const htmlCode = ref(localStorage.getItem(storageKeys.l_htmlCode) || '')
 const tsCode = ref(localStorage.getItem(storageKeys.l_tsCode) || '')
 watch(() => htmlCode.value, (val) => { localStorage.setItem(storageKeys.l_htmlCode, val ? val : '')})
 watch(() => tsCode.value, (val) => { localStorage.setItem(storageKeys.l_tsCode, val ? val : '')})
+const jsonCode = computed(() => ({'表单属性': formProps.value, '表单项': formItemList.value}))
 
 // 清空代码
 const clearCode = () => {
@@ -112,6 +113,7 @@ const clearCode = () => {
   tsCode.value = ''
   current.value = {}
   ElMessage({message: '清空代码成功！', type: 'success', grouping: true})
+  setTimeout(() => { location.reload() }, 100)
 }
 </script>
 

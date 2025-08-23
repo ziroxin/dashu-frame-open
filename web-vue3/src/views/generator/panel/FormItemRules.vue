@@ -9,32 +9,32 @@
         </div>
         <el-form-item label="required">
           <el-radio-group v-model="item.required" size="small" @change="changeRequired(item)">
+            <el-radio-button label="Required" :value="true"/>
             <el-radio-button label="正则" value="pattern"/>
             <el-radio-button label="函数" value="validator"/>
-            <el-radio-button label="Required" :value="true"/>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="pattern" v-if="item.required==='pattern'">
-          <el-input v-model="item.pattern" placeholder="正则表达式"/>
-          <div class="color-gray">
-            常用：
-            <base-button type="primary" link @click="changePattern(item,'phone')">手机</base-button>
-            <base-button type="primary" link @click="changePattern(item,'email')">邮箱</base-button>
+          <el-input v-model="item.pattern" placeholder="正则表达式" size="small"/>
+          <div class="flex items-center">
+            <span class="color-gray text-12px">示例：</span>
+            <base-button type="primary" link @click="changePattern(item,'phone')" size="small">手机</base-button>
+            <base-button type="primary" link @click="changePattern(item,'email')" size="small">邮箱</base-button>
           </div>
         </el-form-item>
         <el-form-item label="validator" label-position="top" v-if="item.required==='validator'">
-          <div class="mt-[-38px] ml-60px flex items-center lh-22px">
-            <span class="color-gray">常用：</span>
-            <base-button type="primary" link @click="changeValidate(item,'rePwd')">确认密码</base-button>
+          <div class="mt-[-35px] ml-80px flex items-center">
+            <span class="color-gray text-12px lh-18px">示例：</span>
+            <base-button type="primary" link @click="changeValidate(item,'rePwd')" size="small">确认密码</base-button>
           </div>
-          <el-input type="textarea" v-model="item.validator" autosize placeholder="验证函数"/>
+          <el-input type="textarea" v-model="item.validator" autosize placeholder="验证函数" size="small"/>
         </el-form-item>
         <el-form-item label="message" v-if="item.required!=='validator'">
-          <el-input v-model="item.message" placeholder="错误提示信息"/>
+          <el-input v-model="item.message" placeholder="错误提示信息" size="small"/>
         </el-form-item>
         <el-form-item label="trigger" class="pb-10px mb-10px!">
           <el-radio-group v-model="item.trigger" size="small">
-            <el-radio-button label="无" :value="''"/>
+            <el-radio-button label="默认" :value="''"/>
             <el-radio-button label="blur" value="blur"/>
             <el-radio-button label="change" value="change"/>
           </el-radio-group>
