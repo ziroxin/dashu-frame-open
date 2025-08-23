@@ -18,7 +18,7 @@ export default {
   },
   lock: {
     lockBackBtn: 'Cancel',
-    lockToLogin: 'Back to login',
+    lockToLogin: 'Logout',
     lockEntrySystem: 'Unlock system',
     lockBtn: 'Lock system',
     lockPasswordLbl: 'Lock screen password',

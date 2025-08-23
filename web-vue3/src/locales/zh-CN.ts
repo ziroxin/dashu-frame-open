@@ -18,7 +18,7 @@ export default {
   },
   lock: {
     lockBackBtn: '取消',
-    lockToLogin: '去登录',
+    lockToLogin: '退出登录',
     lockEntrySystem: '解锁系统',
     lockBtn: '锁定系统',
     lockPasswordLbl: '锁屏密码',
