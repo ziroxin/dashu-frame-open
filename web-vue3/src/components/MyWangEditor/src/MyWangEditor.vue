@@ -9,6 +9,7 @@
     videoSizeLimit: 上传视频大小限制，默认：50MB
     toolbarKeys: 工具栏配置，例如：['bold', 'underline', 'italic']
     height: 编辑器内容区高度，默认：'400px'
+    disabled: 是否禁用（=只读），默认：false
 
 * 注意事项：
     若放在新增、编辑弹窗中使用，建议增加 :key="dialogFormVisible"，每次打开弹窗时重载编辑器，否则会有未知异常
@@ -19,7 +20,7 @@
 * @Date: 2025/04/26 15:40:52
 -->
 <template>
-  <div style="border: 1px solid #ccc;z-index: 9999;">
+  <div style="border: 1px solid #ccc;">
     <Toolbar
         style="border-bottom: 1px solid #ccc"
         :editor="editor"
@@ -59,7 +60,9 @@ const props = defineProps({
   // 工具栏配置 例如：['bold', 'underline', 'italic']
   toolbarKeys: {type: Array, default: () => []},
   // 编辑器内容区高度
-  height: {type: String, default: '400px'}
+  height: {type: String, default: '400px'},
+  // 是否禁用
+  disabled: {type: Boolean, default: false}
 })
 
 // 解码html
@@ -107,13 +110,15 @@ const emit = defineEmits(['update:modelValue'])
 // 监听 html 变化
 watch(html, (newHtml) => { emit('update:modelValue', newHtml) })
 // 监听 value 变化（防止value为空时报错）
-watch(() => props.modelValue, (newValue) => { html.value = newValue ? newValue : '' })
+watch(() => props.modelValue, (newVal) => { html.value = newVal ? newVal : '' })
+watch(() => props.disabled, (newVal) => { newVal ? editor.value.disable() : editor.value.enable()})
 
 // 处理编辑器创建
 const handleEditorCreated = (editorInstance) => {
   // 一定要用 Object.seal() ，否则会报错
   // Object.seal() 封闭对象，不能改变对象的属性字段，但能改变属性值
   editor.value = Object.seal(editorInstance)
+  props.disabled ? editor.value.disable() : editor.value.enable()
   // 获取全部 toolbarKeys
   // console.log(editor.value.getAllMenuKeys())
 }
