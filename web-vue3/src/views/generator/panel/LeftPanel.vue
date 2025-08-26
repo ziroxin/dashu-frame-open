@@ -18,20 +18,12 @@
 </template>
 
 <script setup lang="ts">
-import inputConfig from '@/views/generator/panel/config/inputConfig'
-import selectConfig from '@/views/generator/panel/config/selectConfig'
-import diyConfig from '@/views/generator/panel/config/diyConfig'
-import otherConfig from '@/views/generator/panel/config/otherConfig'
+import allConfig from '@/views/generator/panel/config/allConfig'
 import FormItemAdd from '@/views/generator/panel/FormItemAdd'
 import { cloneDeep } from 'lodash-es'
 
 // 组件配置
-const componentList = ref([
-  {name: '原生组件', icon: 'el-icon-edit', list: inputConfig},
-  {name: '选择组件', icon: 'el-icon-news', list: selectConfig},
-  {name: '自定义组件', icon: 'el-icon-menu', list: diyConfig},
-  {name: '其他组件', icon: 'el-icon-set-up', list: otherConfig}
-])
+const componentList = ref(allConfig)
 
 const modelValue = defineModel()
 

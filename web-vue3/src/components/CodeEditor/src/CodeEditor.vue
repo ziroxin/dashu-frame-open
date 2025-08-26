@@ -26,12 +26,16 @@
 import { changeTheme, createEditor, updateEditorVal } from './helper'
 // Tab类型
 const currentTab = ref('json')
+// 主题切换
+const theme = ref('vs')
+watch(theme, () => { changeTheme(theme.value) })
 
-// 编辑器Model
-const json = defineModel('json', {type: Object, default: () => {}})
-const html = defineModel('html', {type: String, default: ''})
-const ts = defineModel('ts', {type: String, default: ''})
-
+// 编辑器内容
+const props = defineProps({
+  json: {type: Object, default: () => {}},
+  html: {type: String, default: ''},
+  ts: {type: String, default: ''}
+})
 // 编辑器
 const jsonEditorRef = ref<HTMLElement>()
 const htmlEditorRef = ref<HTMLElement>()
@@ -42,17 +46,18 @@ let jsonEditor, htmlEditor, tsEditor
 onMounted(() => {
   // json编辑器
   jsonEditor = createEditor(jsonEditorRef, 'json')
-  jsonEditor?.onDidChangeModelContent(() => { json.value = jsonEditor!.getValue() })
-  updateValue(jsonEditor, `${JSON.stringify(json.value)}`)
+  updateValue(jsonEditor, `${JSON.stringify(props.json)}`)
   // html编辑器
   htmlEditor = createEditor(htmlEditorRef, 'html')
-  htmlEditor?.onDidChangeModelContent(() => { html.value = htmlEditor!.getValue() })
-  updateValue(htmlEditor, html.value)
+  updateValue(htmlEditor, props.html)
   // typescript编辑器
   tsEditor = createEditor(tsEditorRef, 'typescript')
-  tsEditor?.onDidChangeModelContent(() => { ts.value = tsEditor!.getValue() })
-  updateValue(tsEditor, ts.value)
+  updateValue(tsEditor, props.ts)
 })
+// 监听 modelValue 变化
+watch(() => props.json, () => { updateValue(jsonEditor, JSON.stringify(props.json)) })
+watch(() => props.html, () => { updateValue(htmlEditor, props.html) })
+watch(() => props.ts, () => { updateValue(tsEditor, props.ts) })
 
 // 更新编辑器内容
 const updateValue = (editor: any, val: string) => {
@@ -60,13 +65,4 @@ const updateValue = (editor: any, val: string) => {
     updateEditorVal(editor, val)
   }
 }
-
-// 监听 modelValue 变化
-watch(() => json.value, () => { updateValue(jsonEditor, json.value) })
-watch(() => html.value, () => { updateValue(htmlEditor, html.value) })
-watch(() => ts.value, () => { updateValue(tsEditor, ts.value) })
-
-// 主题切换
-const theme = ref('vs')
-watch(theme, () => { changeTheme(theme.value) })
 </script>

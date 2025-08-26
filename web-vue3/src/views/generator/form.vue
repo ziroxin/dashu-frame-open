@@ -14,6 +14,8 @@
           <!-- 顶右-操作按钮 -->
           <div class="flex items-center">
             <el-divider direction="vertical"/>
+            <base-button icon="el-icon-plus" link type="primary" @click="formItemAddBatchVisible=true">批量添加
+            </base-button>
             <base-button v-if="codeView" icon="el-icon-view" link type="primary" @click="change">预览模式</base-button>
             <base-button v-else icon="el-icon-edit-outline" link type="primary" @click="change">代码模式</base-button>
             <el-divider direction="vertical"/>
@@ -23,7 +25,7 @@
         <!-- 代码模式 -->
         <div v-if="codeView"
              class="b-t-1px b-t-dashed b-t-#ccc w-full h-[calc(100vh-var(--top-tool-height)-10px)]">
-          <code-editor v-model:json="jsonCode" v-model:html="htmlCode" v-model:ts="tsCode"/>
+          <code-editor :json="jsonCode" :html="htmlCode" :ts="tsCode"/>
         </div>
         <!-- 预览模式 -->
         <template v-else>
@@ -46,6 +48,12 @@
         <right-panel v-model:current="current" v-model:formProps="formProps"/>
       </el-splitter-panel>
     </el-splitter>
+    <!-- 批量添加表单项弹窗 -->
+    <el-dialog title="批量添加表单项" v-model="formItemAddBatchVisible" top="5vh" width="1000px"
+               :close-on-click-modal="false">
+      <form-item-add-batch v-if="formItemAddBatchVisible" v-model="formItemAddBatchVisible"
+                           v-model:formItemList="formItemList"/>
+    </el-dialog>
   </div>
 </template>
 
@@ -56,6 +64,7 @@ import { ElMessage } from 'element-plus'
 import LeftPanel from '@/views/generator/panel/LeftPanel'
 import CenterPanel from '@/views/generator/panel/CenterPanel'
 import RightPanel from '@/views/generator/panel/RightPanel'
+import FormItemAddBatch from '@/views/generator/panel/FormItemAddBatch'
 import storageKeys from '@/utils/storage-keys'
 import formConfig from '@/views/generator/panel/config/formConfig'
 // 返回按钮
@@ -85,6 +94,9 @@ watch(() => current.value, (val) => {
     })
   }
 }, {immediate: true, deep: true})
+
+// 批量添加表单项弹窗
+const formItemAddBatchVisible = ref(false)
 
 // 表单属性
 const formProps = ref(JSON.parse(localStorage.getItem(storageKeys.l_formProps)) || formConfig)

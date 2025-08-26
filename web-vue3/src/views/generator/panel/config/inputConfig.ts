@@ -9,7 +9,7 @@ export default [
       rules: [{required: true, message: '文本不能为空'}]
     },
     __attrs: {
-      type: 'text',// 'text' | 'textarea' | 'password'
+      type: 'text',// 常用：text|textarea|password
       placeholder: '请输入文本'
     }
   },

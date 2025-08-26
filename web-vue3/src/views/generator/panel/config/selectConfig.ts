@@ -14,5 +14,21 @@ export default [
       clearable: true,
       multiple: false
     }
+  },
+  {
+    __key: 'el-date-picker',
+    __name: '日期选择',
+    __icon: 'form-date',
+    __span: 24,
+    __formItemAttrs: {
+      label: '日期选择器',
+      rules: [{required: true, message: '日期必选'}]
+    },
+    __attrs: {
+      type: 'date',// 常用：date|datetime|daterange|datetimerange
+      placeholder: '请选择日期',
+      format: 'YYYY-MM-DD',
+      valueFormat: 'YYYY-MM-DD'
+    }
   }
 ]

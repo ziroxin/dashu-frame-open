@@ -6,7 +6,7 @@
       <template v-if="!formProps?.layout">
         <template v-for="item in formItemList" :key="item.__id">
           <!-- 表单内容-start -->
-          <div :class="{'isActived':current.__id===item.__id}" class="cursor-move m-5px p-10px b-rd-5px"
+          <div :class="{'isActived':current.__id===item.__id}" class="cursor-move mx-10px p-10px b-rd-5px"
                @click.stop="changeC(item)">
             <el-form-item v-bind="{...item.__formItemAttrs}" :prop="item.__modelName"
                           :rules="getRules(item.__formItemAttrs)">
@@ -35,7 +35,7 @@
           <template v-for="item in formItemList" :key="item.__id">
             <el-col :span="item?.__span">
               <!-- 表单内容-start -->
-              <div :class="{'isActived':current.__id===item.__id}" class="cursor-move m-5px p-10px b-rd-5px"
+              <div :class="{'isActived':current.__id===item.__id}" class="cursor-move mx-10px p-10px b-rd-5px"
                    @click.stop="changeC(item)">
                 <el-form-item v-bind="{...item.__formItemAttrs}" :prop="item.__modelName"
                               :rules="getRules(item.__formItemAttrs)">
@@ -62,7 +62,7 @@
         </el-row>
       </template>
     </vue-draggable>
-    <div v-if="!formItemList||formItemList.length<=0" class="text-center text-gray-500 bg-gray-500/5 rounded p-10px">
+    <div v-if="!formItemList||formItemList.length<=0" class="text-center text-[#6b7280] bg-[#6b728015] b-rd-5px m-5px p-10px">
       点击左侧组件添加表单项
     </div>
   </el-form>

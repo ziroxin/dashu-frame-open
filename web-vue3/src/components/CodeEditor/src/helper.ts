@@ -62,11 +62,12 @@ export const updateEditorVal = (editor: any, val: string) => {
     }
     editor?.setValue(val)
     setTimeout(async () => {
+      // 格式化代码
       await editor?.getAction('editor.action.formatDocument')?.run()
       if (isReadOnly) {
-        editor?.updateOptions({readOnly: true})
+        await editor?.updateOptions({readOnly: true})
       }
-    }, 10)
+    }, 100)
   })
 }
 

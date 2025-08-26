@@ -24,6 +24,7 @@
 
 <script setup lang="ts">
 import FormItemRules from '@/views/generator/panel/FormItemRules'
+import { ElMessage } from 'element-plus'
 import { generateUUID } from '@/utils/tools'
 
 const addDialogVisible = defineModel()
@@ -38,11 +39,11 @@ const addClick = () => {
   addFormRef.value.validate((valid) => {
     if (valid) {
       if (formItemList.value.some(item => item.__id === addItem.value.__id)) {
-        ElMessage({message: '组件ID重复，请修改！', type: 'success', grouping: true})
+        ElMessage({message: '组件ID重复，请修改！', type: 'error', grouping: true})
         return
       }
       if (formItemList.value.some(item => item.__modelName === addItem.value.__modelName)) {
-        ElMessage({message: '字段名称重复，请修改！', type: 'success', grouping: true})
+        ElMessage({message: '字段名称重复，请修改！', type: 'error', grouping: true})
         return
       }
       formItemList.value.push({...addItem.value})

@@ -36,6 +36,11 @@
             <el-input v-model="current.__attrs.placeholder"/>
           </el-form-item>
 
+          <el-divider>更多属性</el-divider>
+          <el-form-item label="MaxLength">
+            <el-input-number v-model="current.__attrs.maxlength"/>
+          </el-form-item>
+
           <el-divider>表单规则</el-divider>
           <form-item-rules v-if="current?.__id" :key="current.__id" v-model="currentRules"/>
 
@@ -153,18 +158,10 @@
 </template>
 
 <script setup lang="ts">
+import allConfig from '@/views/generator/panel/config/allConfig'
 import FormItemRules from '@/views/generator/panel/FormItemRules'
-import inputConfig from '@/views/generator/panel/config/inputConfig'
-import selectConfig from '@/views/generator/panel/config/selectConfig'
-import diyConfig from '@/views/generator/panel/config/diyConfig'
-import otherConfig from '@/views/generator/panel/config/otherConfig'
 // 组件配置
-const componentList = ref([
-  {name: '原生组件', icon: 'el-icon-edit', list: inputConfig},
-  {name: '选择组件', icon: 'el-icon-news', list: selectConfig},
-  {name: '自定义组件', icon: 'el-icon-menu', list: diyConfig},
-  {name: '其他组件', icon: 'el-icon-set-up', list: otherConfig}
-])
+const componentList = ref(allConfig)
 // 组件属性
 const current = defineModel('current', {type: Object, default: () => {}})
 // 表单属性
