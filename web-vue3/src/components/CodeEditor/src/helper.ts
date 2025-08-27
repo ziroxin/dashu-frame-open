@@ -5,6 +5,9 @@ import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 
+// 定义编辑器实例
+let editor: any
+
 self.MonacoEnvironment = {
   getWorker(_, label) {
     if (label === 'json') {
@@ -22,9 +25,9 @@ self.MonacoEnvironment = {
 }
 
 // 初始化编辑器
-export const createEditor = (editorRef: any, language: string = 'html') => {
+export const createEditor = (editorRef: any, theme: string = 'vs', language: string = 'html') => {
   if (!editorRef.value) return undefined
-  const editor = monaco.editor.create(editorRef.value, {
+  editor = monaco.editor.create(editorRef.value, {
     // 初始模型
     model: monaco.editor.createModel('', language),
     // 是否启用预览图
@@ -32,7 +35,7 @@ export const createEditor = (editorRef: any, language: string = 'html') => {
     // 圆角
     roundedSelection: true,
     // 主题
-    theme: 'vs',
+    theme: theme,
     // 主键
     multiCursorModifier: 'ctrlCmd',
     // 滚动条
@@ -53,19 +56,22 @@ export const createEditor = (editorRef: any, language: string = 'html') => {
   return editor
 }
 
+// 获取编辑器实例
+export const getEditor = () => editor
+
 // 数据更新
-export const updateEditorVal = (editor: any, val: string) => {
+export const updateEditorVal = (val: string) => {
   nextTick(() => {
-    const isReadOnly = editor?.getOption(monaco.editor.EditorOption.readOnly)
+    const isReadOnly = editor.getOption(monaco.editor.EditorOption.readOnly)
     if (isReadOnly) {
-      editor?.updateOptions({readOnly: false})
+      editor.updateOptions({readOnly: false})
     }
-    editor?.setValue(val)
+    editor.setValue(val)
     setTimeout(async () => {
       // 格式化代码
-      await editor?.getAction('editor.action.formatDocument')?.run()
+      await editor.getAction('editor.action.formatDocument')?.run()
       if (isReadOnly) {
-        await editor?.updateOptions({readOnly: true})
+        await editor.updateOptions({readOnly: true})
       }
     }, 100)
   })
@@ -74,4 +80,9 @@ export const updateEditorVal = (editor: any, val: string) => {
 // 切换主题
 export const changeTheme = (newTheme: string) => {
   monaco.editor.setTheme(newTheme)
+}
+
+// 切换语言
+export const changeLanguage = (newLanguage: string) => {
+  editor.setModel(monaco.editor.createModel('', newLanguage))
 }
