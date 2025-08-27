@@ -1,6 +1,11 @@
 <template>
   <!-- 顶部-Logo、操作按钮、菜单栏、内容区域 -->
-  <div class="h-100vh">
+  <!-- 代码模式 -->
+  <div v-if="codeView"
+       class="b-t-1px b-t-dashed b-t-#ccc w-full h-[calc(100vh-var(--top-tool-height)-10px)]">
+    <code-panel v-model="formItemList" v-model:formProps="formProps" v-model:codeView="codeView"/>
+  </div>
+  <div v-else class="h-100vh">
     <el-splitter>
       <el-splitter-panel>
         <div class="flex justify-between items-center h-[var(--top-tool-height)] mx-10px">
@@ -16,32 +21,23 @@
             <el-divider direction="vertical"/>
             <base-button icon="el-icon-plus" link type="primary" @click="formItemAddBatchVisible=true">批量添加
             </base-button>
-            <base-button v-if="codeView" icon="el-icon-view" link type="primary" @click="change">预览模式</base-button>
-            <base-button v-else icon="el-icon-edit-outline" link type="primary" @click="change">代码模式</base-button>
+            <base-button icon="el-icon-edit-outline" link type="primary" @click="codeView=true">代码模式</base-button>
             <el-divider direction="vertical"/>
             <base-button icon="el-icon-delete" link type="danger" @click="clearCode">清空</base-button>
           </div>
         </div>
-        <!-- 代码模式 -->
-        <div v-if="codeView"
-             class="b-t-1px b-t-dashed b-t-#ccc w-full h-[calc(100vh-var(--top-tool-height)-10px)]">
-          <code-editor :json="jsonCode" :html="htmlCode" :ts="tsCode"/>
-        </div>
         <!-- 预览模式 -->
-        <template v-else>
-          <div class="b-t-1px b-t-dashed b-t-#ccc h-[calc(100vh-var(--top-tool-height))] flex">
-            <div class="p-15px w-[var(--left-menu-max-width)] bg-[var(--el-fill-color-light)]">
-              <!-- 左-菜单栏 -->
-              <left-panel v-model="formItemList"/>
-            </div>
-            <div
-                class="m-5px w-[calc(100%-var(--left-menu-max-width))] h-[calc(100%-10px)] overflow-y-auto b-1px b-dashed b-#ccc b-rd-5px">
-              <!-- 中-内容区域 -->
-              <center-panel v-model="formItemList" v-model:current="current" v-model:formProps="formProps"
-                            v-model:html="htmlCode" v-model:ts="tsCode"/>
-            </div>
+        <div class="b-t-1px b-t-dashed b-t-#ccc h-[calc(100vh-var(--top-tool-height))] flex">
+          <div class="p-15px w-[var(--left-menu-max-width)] bg-[var(--el-fill-color-light)]">
+            <!-- 左-菜单栏 -->
+            <left-panel v-model="formItemList"/>
           </div>
-        </template>
+          <div
+              class="m-5px w-[calc(100%-var(--left-menu-max-width))] h-[calc(100%-10px)] overflow-y-auto b-1px b-dashed b-#ccc b-rd-5px">
+            <!-- 中-内容区域 -->
+            <center-panel v-model="formItemList" v-model:current="current" v-model:formProps="formProps"/>
+          </div>
+        </div>
       </el-splitter-panel>
       <el-splitter-panel size="300px">
         <!-- 右-表单编辑区 -->
@@ -58,25 +54,53 @@
 </template>
 
 <script setup lang="ts">
-import { BaseButton } from '@/components/BaseButton'
-import { CodeEditor } from '@/components/CodeEditor'
 import { ElMessage } from 'element-plus'
 import LeftPanel from '@/views/generator/panel/LeftPanel'
 import CenterPanel from '@/views/generator/panel/CenterPanel'
+import CodePanel from '@/views/generator/panel/CodePanel'
 import RightPanel from '@/views/generator/panel/RightPanel'
 import FormItemAddBatch from '@/views/generator/panel/FormItemAddBatch'
 import storageKeys from '@/utils/storage-keys'
 import formConfig from '@/views/generator/panel/config/formConfig'
+
+
+// ==================== 顶部按钮组start ====================
 // 返回按钮
 const {push} = useRouter()
 const back = () => { push('/generator') }
+// 批量添加表单项弹窗
+const formItemAddBatchVisible = ref(false)
 // 切换代码模式/预览模式
 const codeView = ref(false)
-const change = () => { codeView.value = !codeView.value }
+// 清空代码
+const clearCode = () => {
+  formProps.value = formConfig
+  formItemList.value = []
+  current.value = {}
+  ElMessage({message: '清空代码成功！', type: 'success', grouping: true})
+  setTimeout(() => { location.reload() }, 100)
+}
+// ==================== 顶部按钮组end ====================
 
-// 中间内容区域组件列表
+// ==================== 表单属性start ====================
+// 表单属性
+const formProps = ref(JSON.parse(localStorage.getItem(storageKeys.l_formProps)) || formConfig)
+// 监听表单属性修改
+watch(() => formProps.value, (val) => {
+  if (val) {
+    localStorage.setItem(storageKeys.l_formProps, JSON.stringify(val))
+  } else {
+    localStorage.removeItem(storageKeys.l_formProps)
+  }
+}, {immediate: true, deep: true})
+// ==================== 表单属性end ====================
+
+// ==================== 表单项start ====================
+// 中间内容-表单项列表
 const formItemList = ref(JSON.parse(localStorage.getItem(storageKeys.l_formItemList)) || [])
+// 当前选中表单项
 const current = ref({})
+// 监听表单项列表修改
 watch(() => formItemList.value, (val) => {
   if (val && val.length > 0) {
     localStorage.setItem(storageKeys.l_formItemList, JSON.stringify(val))
@@ -85,48 +109,15 @@ watch(() => formItemList.value, (val) => {
     localStorage.removeItem(storageKeys.l_formItemList)
   }
 }, {immediate: true, deep: true})
+// 监听当前选中表单项属性修改
 watch(() => current.value, (val) => {
   if (val) {
     formItemList.value.forEach((item, index) => {
-      if (item.__id === val.__id) {
-        formItemList.value[index] = {...item, ...val}
-      }
+      if (item.__id === val.__id) formItemList.value[index] = {...item, ...val}
     })
   }
 }, {immediate: true, deep: true})
-
-// 批量添加表单项弹窗
-const formItemAddBatchVisible = ref(false)
-
-// 表单属性
-const formProps = ref(JSON.parse(localStorage.getItem(storageKeys.l_formProps)) || formConfig)
-watch(() => formProps.value, (val) => {
-  if (val) {
-    localStorage.setItem(storageKeys.l_formProps, JSON.stringify(val))
-  } else {
-    localStorage.removeItem(storageKeys.l_formProps)
-  }
-}, {immediate: true, deep: true})
-
-
-const htmlCode = ref(localStorage.getItem(storageKeys.l_htmlCode) || '')
-const tsCode = ref(localStorage.getItem(storageKeys.l_tsCode) || '')
-watch(() => htmlCode.value, (val) => { localStorage.setItem(storageKeys.l_htmlCode, val ? val : '')})
-watch(() => tsCode.value, (val) => { localStorage.setItem(storageKeys.l_tsCode, val ? val : '')})
-const jsonCode = computed(() => ({'表单属性': formProps.value, '表单项': formItemList.value}))
-
-// 清空代码
-const clearCode = () => {
-  formItemList.value = []
-  formProps.value = formConfig
-  localStorage.removeItem(storageKeys.l_htmlCode)
-  htmlCode.value = ''
-  localStorage.removeItem(storageKeys.l_tsCode)
-  tsCode.value = ''
-  current.value = {}
-  ElMessage({message: '清空代码成功！', type: 'success', grouping: true})
-  setTimeout(() => { location.reload() }, 100)
-}
+// ==================== 表单项end ====================
 </script>
 
 <style lang="less" scoped>

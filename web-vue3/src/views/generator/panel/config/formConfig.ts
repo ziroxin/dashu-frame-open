@@ -1,4 +1,5 @@
 export default {
+  // Form属性
   labelPosition: 'right',// 标签对齐
   labelWidth: 'auto',// 标签宽度
   labelSuffix: ':',// 标签后缀
@@ -10,6 +11,7 @@ export default {
   size: 'default',// 用于控制该表单内组件的尺寸
   disabled: false,// 是否禁用该表单内的所有组件
   scrollToError: true,// 是否当校验失败时，滚动到第一个错误表单项
+  // 布局属性（非form属性）
   layout: false,// 是否使用栅格布局
   gutter: 0,// 栅格间隔
   justify: 'start',// 栅格水平排列方式
