@@ -23,7 +23,7 @@ export const useNow = (immediate = true) => {
   const start = () => {
     update()
     clearInterval(timer)
-    timer = setInterval(() => update(), 1000)
+    timer = setInterval(() => update(), 1000) as number
   }
   const stop = () => { clearInterval(timer) }
 
