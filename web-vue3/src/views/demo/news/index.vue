@@ -60,7 +60,7 @@
           <el-input v-model="formData.newsTitle" maxlength="30" :show-word-limit="true" placeholder="请输入新闻标题"/>
         </el-form-item>
         <el-form-item label-width="0px" prop="newsContent" :rules="[{required:true,message:'新闻内容不能为空'}]">
-          <my-wang-editor ref="myEditor" v-model="formData.newsContent" :key="'myWangEditor'+dialogIndex"
+          <my-wang-editor v-model="formData.newsContent" :key="'myWangEditor'+dialogIndex"
                           height="300px" :disabled="dialogType==='view'" placeholder="请输入新闻内容"/>
         </el-form-item>
         <el-row>
