@@ -50,9 +50,7 @@ const storageKeys = {
   l_historyKeys: `${key_prefix}_history_keys`,
   // 在线编辑代码
   l_formItemList: `${key_prefix}_form_item_list`,
-  l_formProps: `${key_prefix}_form_props`,
-  l_htmlCode: `${key_prefix}_html_code`,
-  l_tsCode: `${key_prefix}_ts_code`
+  l_formProps: `${key_prefix}_form_props`
 }
 
 export default storageKeys
