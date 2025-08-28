@@ -47,7 +47,7 @@ const getCode = (tab) => {
 }
 const getJsonCode = () => JSON.stringify({formProps: formProps.value, formItemList: formItemList.value})
 const getHtmlCode = () => {
-  const f = formProps.value
+  const fl = formProps.value.__layout
   // 1. 遍历处理el-form-item
   const itemHtmlArr: string[] = []
   formItemList.value.forEach((item: any) => {
@@ -60,7 +60,7 @@ const getHtmlCode = () => {
         </el-form-item>`
 
     // 1.2处理栅格布局el-col
-    if (f.layout) {
+    if (fl.layout) {
       itemHtmlArr.push(`<el-col :span="${item?.__span || 24}">
           ${innerHtml}
         </el-col>`)
@@ -71,11 +71,11 @@ const getHtmlCode = () => {
 
   // 2.处理栅格布局el-row
   let rowHtml = ``
-  if (f.layout) {
+  if (fl.layout) {
     let rowAttrs = ``
-    if (f.gutter && f.gutter !== 0) rowAttrs += ` :gutter="${f.gutter}"`
-    if (f.justify && f.justify !== 'start') rowAttrs += ` justify="${f.justify}"`
-    if (f.align) rowAttrs += ` align="${f.align}"`
+    if (fl.gutter && fl.gutter !== 0) rowAttrs += ` :gutter="${fl.gutter}"`
+    if (fl.justify && fl.justify !== 'start') rowAttrs += ` justify="${fl.justify}"`
+    if (fl.align) rowAttrs += ` align="${fl.align}"`
     rowHtml = `<el-row ${rowAttrs}>
         ${itemHtmlArr.join('\n')}
       </el-row>`
@@ -84,6 +84,7 @@ const getHtmlCode = () => {
   }
 
   // 3. 处理el-form
+  const f = formProps.value.__attrs
   let formAttrs = ``
   if (f.labelPosition && f.labelPosition !== 'right') formAttrs += ` label-position="${f.labelPosition}"`
   formAttrs += f.labelWidth && f.labelWidth !== 'auto' ? ` label-width="${f.labelWidth}"` : ` label-width="auto"`

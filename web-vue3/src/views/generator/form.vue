@@ -37,13 +37,13 @@
         <right-panel v-model:current="current" v-model:formProps="formProps"/>
       </el-splitter-panel>
     </el-splitter>
+    <!-- 代码模式 -->
+    <el-dialog v-model="codeDialogVisible" fullscreen class="p-0!"
+               header-class="hidden!" footer-class="hidden!" body-class="h-94vh p-0!">
+      <code-panel v-if="codeDialogVisible" v-model:codeDialogVisible="codeDialogVisible"
+                  v-model="formItemList" v-model:formProps="formProps"/>
+    </el-dialog>
   </div>
-  <!-- 代码模式 -->
-  <el-dialog v-model="codeDialogVisible" fullscreen class="p-0!"
-             header-class="hidden!" footer-class="hidden!" body-class="h-94vh p-0!">
-    <code-panel v-if="codeDialogVisible" v-model:codeDialogVisible="codeDialogVisible"
-                v-model="formItemList" v-model:formProps="formProps"/>
-  </el-dialog>
 </template>
 
 <script setup lang="ts">

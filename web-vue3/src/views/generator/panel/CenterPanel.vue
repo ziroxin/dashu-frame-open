@@ -1,9 +1,9 @@
 <template>
-  <el-form ref="dataFormRef" :model="formData" v-bind="{...formProps}" class="min-h-[calc(100%-54px)]">
+  <el-form ref="dataFormRef" :model="formData" v-bind="{...formProps.__attrs}" class="min-h-[calc(100%-54px)]">
     <vue-draggable v-model="formItemList" :animation="150" group="content" @click="changeC(null)"
                    class="flex flex-col h-[calc(100vh-var(--top-header-height)-30px)] overflow-auto">
       <!-- 普通布局 -->
-      <template v-if="!formProps?.layout">
+      <template v-if="!formProps?.__layout?.layout">
         <template v-for="item in formItemList" :key="item.__id">
           <!-- 表单内容-start -->
           <div :class="{'isActived':current.__id===item.__id}" class="cursor-move mx-10px p-10px b-rd-5px"
@@ -31,7 +31,8 @@
       </template>
       <!-- 栅格布局 -->
       <template v-else>
-        <el-row :gutter="formProps.gutter" :justify="formProps.justify" :align="formProps.align" class="w-full">
+        <el-row :gutter="formProps.__layout.gutter" :justify="formProps.__layout.justify"
+                :align="formProps.__layout.align" class="w-full">
           <template v-for="item in formItemList" :key="item.__id">
             <el-col :span="item?.__span">
               <!-- 表单内容-start -->
