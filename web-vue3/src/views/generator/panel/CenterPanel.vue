@@ -62,7 +62,8 @@
         </el-row>
       </template>
     </vue-draggable>
-    <div v-if="!formItemList||formItemList.length<=0" class="text-center text-[#6b7280] bg-[#6b728015] b-rd-5px m-5px p-10px">
+    <div v-if="!formItemList||formItemList.length<=0"
+         class="text-center text-[#6b7280] bg-[#6b728015] b-rd-5px m-5px p-10px">
       点击左侧组件添加表单项
     </div>
   </el-form>
@@ -77,11 +78,11 @@
 </template>
 
 <script setup lang="ts">
+import { cloneDeep } from 'lodash-es'
 import { VueDraggable } from 'vue-draggable-plus'
 import { MyWangEditor } from '@/components/MyWangEditor'
 import { BaseButton } from '@/components/BaseButton'
 import FormItemAdd from '@/views/generator/panel/FormItemAdd'
-import { cloneDeep } from 'lodash-es'
 
 // 编辑器Model
 const formItemList = defineModel()

@@ -1,5 +1,16 @@
 <template>
-  <div v-for="row in componentList" :key="row.name" class="b-b-1px b-b-dashed b-b-#bbb mb-15px">
+  <!-- 批量添加按钮 -->
+  <div class="el-divider el-divider--horizontal">
+    <div class="el-divider__text is-center bg-[var(--el-fill-color-light)]! text-12px!">批量添加</div>
+  </div>
+  <div class="w-full px-15px">
+    <base-button icon="el-icon-plus" class="w-full" @click="formItemAddBatchVisible=true">批量添加</base-button>
+  </div>
+  <!-- 单个添加-组件列表 -->
+  <div class="el-divider el-divider--horizontal">
+    <div class="el-divider__text is-center bg-[var(--el-fill-color-light)]! text-12px!">单个添加</div>
+  </div>
+  <div v-for="row in componentList" :key="row.name" class="b-b-1px b-b-dashed b-b-#bbb mb-15px mx-15px">
     <div class="left-title">
       <my-icon :icon="row.icon" class="mr-5px"/>
       {{ row.name }}
@@ -13,27 +24,38 @@
       </template>
     </div>
   </div>
+  <!-- 单个添加弹窗 -->
   <form-item-add v-if="addDialogVisible" v-model="addDialogVisible"
-                 v-model:addItem="addItem" v-model:formItemList="modelValue"/>
+                 v-model:addItem="addItem" v-model:formItemList="formItemList"/>
+  <!-- 批量添加表单项弹窗 -->
+  <el-dialog title="批量添加表单项" v-model="formItemAddBatchVisible" top="5vh" width="1000px"
+             :close-on-click-modal="false">
+    <form-item-add-batch v-if="formItemAddBatchVisible" v-model="formItemAddBatchVisible"
+                         v-model:formItemList="formItemList"/>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
+import { cloneDeep } from 'lodash-es'
 import allConfig from '@/views/generator/panel/config/allConfig'
 import FormItemAdd from '@/views/generator/panel/FormItemAdd'
-import { cloneDeep } from 'lodash-es'
+import FormItemAddBatch from '@/views/generator/panel/FormItemAddBatch'
 
 // 组件配置
 const componentList = ref(allConfig)
 
-const modelValue = defineModel()
+const formItemList = defineModel()
 
-// 添加弹窗
+// 单个添加弹窗
 const addDialogVisible = ref(false)
 const addItem = ref({})
 const addToCenter = (item) => {
   addDialogVisible.value = true
   addItem.value = cloneDeep(item)
 }
+
+// 批量添加表单项弹窗
+const formItemAddBatchVisible = ref(false)
 </script>
 
 <style lang="less" scoped>

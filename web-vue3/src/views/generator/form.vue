@@ -1,11 +1,6 @@
 <template>
   <!-- 顶部-Logo、操作按钮、菜单栏、内容区域 -->
-  <!-- 代码模式 -->
-  <div v-if="codeView"
-       class="b-t-1px b-t-dashed b-t-#ccc w-full h-[calc(100vh-var(--top-tool-height)-10px)]">
-    <code-panel v-model="formItemList" v-model:formProps="formProps" v-model:codeView="codeView"/>
-  </div>
-  <div v-else class="h-100vh">
+  <div class="h-100vh">
     <el-splitter>
       <el-splitter-panel>
         <div class="flex justify-between items-center h-[var(--top-tool-height)] mx-10px">
@@ -19,16 +14,14 @@
           <!-- 顶右-操作按钮 -->
           <div class="flex items-center">
             <el-divider direction="vertical"/>
-            <base-button icon="el-icon-plus" link type="primary" @click="formItemAddBatchVisible=true">批量添加
-            </base-button>
-            <base-button icon="el-icon-edit-outline" link type="primary" @click="codeView=true">代码模式</base-button>
+            <base-button icon="el-icon-edit-outline" link type="primary" @click="openCodeDialog">打开代码</base-button>
             <el-divider direction="vertical"/>
             <base-button icon="el-icon-delete" link type="danger" @click="clearCode">清空</base-button>
           </div>
         </div>
         <!-- 预览模式 -->
         <div class="b-t-1px b-t-dashed b-t-#ccc h-[calc(100vh-var(--top-tool-height))] flex">
-          <div class="p-15px w-[var(--left-menu-max-width)] bg-[var(--el-fill-color-light)]">
+          <div class="w-[var(--left-menu-max-width)] bg-[var(--el-fill-color-light)]">
             <!-- 左-菜单栏 -->
             <left-panel v-model="formItemList"/>
           </div>
@@ -44,13 +37,13 @@
         <right-panel v-model:current="current" v-model:formProps="formProps"/>
       </el-splitter-panel>
     </el-splitter>
-    <!-- 批量添加表单项弹窗 -->
-    <el-dialog title="批量添加表单项" v-model="formItemAddBatchVisible" top="5vh" width="1000px"
-               :close-on-click-modal="false">
-      <form-item-add-batch v-if="formItemAddBatchVisible" v-model="formItemAddBatchVisible"
-                           v-model:formItemList="formItemList"/>
-    </el-dialog>
   </div>
+  <!-- 代码模式 -->
+  <el-dialog v-model="codeDialogVisible" fullscreen class="p-0!"
+             header-class="hidden!" footer-class="hidden!" body-class="h-94vh p-0!">
+    <code-panel v-if="codeDialogVisible" v-model:codeDialogVisible="codeDialogVisible"
+                v-model="formItemList" v-model:formProps="formProps"/>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
@@ -59,19 +52,16 @@ import LeftPanel from '@/views/generator/panel/LeftPanel'
 import CenterPanel from '@/views/generator/panel/CenterPanel'
 import CodePanel from '@/views/generator/panel/CodePanel'
 import RightPanel from '@/views/generator/panel/RightPanel'
-import FormItemAddBatch from '@/views/generator/panel/FormItemAddBatch'
 import storageKeys from '@/utils/storage-keys'
 import formConfig from '@/views/generator/panel/config/formConfig'
-
 
 // ==================== 顶部按钮组start ====================
 // 返回按钮
 const {push} = useRouter()
 const back = () => { push('/generator') }
-// 批量添加表单项弹窗
-const formItemAddBatchVisible = ref(false)
 // 切换代码模式/预览模式
-const codeView = ref(false)
+const codeDialogVisible = ref(false)
+const openCodeDialog = () => { codeDialogVisible.value = true }
 // 清空代码
 const clearCode = () => {
   formProps.value = formConfig

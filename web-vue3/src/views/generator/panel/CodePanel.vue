@@ -1,27 +1,26 @@
 <template>
   <div class="w-full h-full">
-    <div class="flex justify-between items-center b-b-1px b-b-solid b-b-#ccc px-10px">
-      <el-tabs v-model="currentTab" stretch class="w-320px h-39px!">
+    <div class="flex justify-between items-center b-b-2px b-b-solid b-b-[var(--el-border-color-light)] px-10px">
+      <el-tabs v-model="currentTab" stretch class="w-320px h-38px!">
         <el-tab-pane name="json" label="JSON"/>
         <el-tab-pane name="html" label="HTML"/>
-        <el-tab-pane name="ts" label="TypeScript"/>
+        <el-tab-pane name="typescript" label="TypeScript"/>
       </el-tabs>
       <div class="flex items-center">
-        <base-button icon="el-icon-view" link type="primary" class="mr-10px"
-                     @click="codeView=false">返回预览模式
-        </base-button>
-        <el-divider direction="vertical"/>
         <span class="text-12px color-gray mr-5px">主题：</span>
         <el-select v-model="theme" class="w-120px!" placeholder="请选择主题样式" size="small">
           <el-option v-for="item in ['vs','vs-dark','hc-black','hc-light']"
                      :key="item" :label="item" :value="item"/>
         </el-select>
+        <el-divider direction="vertical"/>
+
+        <base-button icon="el-icon-close" link type="primary" class="mr-10px"
+                     @click="closeCodeDialog">关闭
+        </base-button>
       </div>
     </div>
-    <div class="mt-10px w-full h-[calc(100%-50px)] flex">
-      <code-editor :key="'ce-'+currentTab" class="flex-1"
-                   :theme="theme" :language="currentTab" :content="getCode(currentTab)"/>
-    </div>
+    <code-editor :key="'ce-'+currentTab" class="mt-10px h-full"
+                 :theme="theme" :language="currentTab" :content="getCode(currentTab)"/>
   </div>
 </template>
 
@@ -33,15 +32,17 @@ const currentTab = ref('json')
 // 主题切换
 const theme = ref('vs')
 // 接收参数
-const formItemList = defineModel({type: Array, default: () => []})
+const formItemList = defineModel({type: Array<any>, default: () => []})
 const formProps = defineModel('formProps', {type: Object, default: () => {}})
-const codeView = defineModel('codeView', {type: Boolean, default: true})
+// 关闭代码弹窗
+const codeDialogVisible = defineModel('codeDialogVisible', {type: Boolean})
+const closeCodeDialog = () => {codeDialogVisible.value = false}
 
 // 计算
 const getCode = (tab) => {
   if (tab === 'json') return getJsonCode()
   if (tab === 'html') return getHtmlCode()
-  if (tab === 'ts') return getTsCode()
+  if (tab === 'typescript') return getTsCode()
   return ''
 }
 const getJsonCode = () => JSON.stringify({formProps: formProps.value, formItemList: formItemList.value})
@@ -50,13 +51,16 @@ const getHtmlCode = () => {
   // 1. 遍历处理el-form-item
   const itemHtmlArr: string[] = []
   formItemList.value.forEach((item: any) => {
+    // 1.1处理表单及属性
     const attrsStr = Object.keys(item.__attrs).map(key => `${key}="${item.__attrs[key]}"`).join(' ')
+    const wangEditorDisable = item.__key === 'my-wang-editor' ? ` :disabled="dialogType==='view'"` : ''
     const innerHtml = `<el-form-item label="${item.__formItemAttrs.label}" prop="${item.__modelName}"
                       :rules="${getRules(item.__formItemAttrs)}">
-          <${item.__key} v-model="formData.${item.__modelName}" ${attrsStr}/>
+          <${item.__key} v-model="formData.${item.__modelName}" ${attrsStr}${wangEditorDisable}/>
         </el-form-item>`
+
+    // 1.2处理栅格布局el-col
     if (f.layout) {
-      // 处理栅格布局
       itemHtmlArr.push(`<el-col :span="${item?.__span || 24}">
           ${innerHtml}
         </el-col>`)
@@ -65,7 +69,21 @@ const getHtmlCode = () => {
     }
   })
 
-  // 2. 处理el-form
+  // 2.处理栅格布局el-row
+  let rowHtml = ``
+  if (f.layout) {
+    let rowAttrs = ``
+    if (f.gutter && f.gutter !== 0) rowAttrs += ` :gutter="${f.gutter}"`
+    if (f.justify && f.justify !== 'start') rowAttrs += ` justify="${f.justify}"`
+    if (f.align) rowAttrs += ` align="${f.align}"`
+    rowHtml = `<el-row ${rowAttrs}>
+        ${itemHtmlArr.join('\n')}
+      </el-row>`
+  } else {
+    rowHtml = itemHtmlArr.join('\n')
+  }
+
+  // 3. 处理el-form
   let formAttrs = ``
   if (f.labelPosition && f.labelPosition !== 'right') formAttrs += ` label-position="${f.labelPosition}"`
   formAttrs += f.labelWidth && f.labelWidth !== 'auto' ? ` label-width="${f.labelWidth}"` : ` label-width="auto"`
@@ -78,31 +96,35 @@ const getHtmlCode = () => {
   if (f.size && f.size !== 'default') formAttrs += ` size="${f.size}"`
   if (f.disabled) formAttrs += ` disabled`
   if (!f.scrollToError) formAttrs += ` :scroll-to-error="false"`
-  // 3.是否栅格布局
-  let rowHtml = ``
-  if (f.layout) {
-    let rowAttrs = ``
-    if (f.gutter && f.gutter !== 0) rowAttrs += ` :gutter="${f.gutter}"`
-    if (f.justify && f.justify !== 'start') rowAttrs += ` justify="${f.justify}"`
-    if (f.align) rowAttrs += ` align="${f.align}"`
-    rowHtml = `
-      <el-row ${rowAttrs}>
-        ${itemHtmlArr.join('\n')}
-      </el-row>`
-  } else {
-    rowHtml = itemHtmlArr.join('\n')
-  }
+
+  // 4. 组装el-form
   return `<el-form ref="dataFormRef" :model="formData" ${formAttrs} :disabled="dialogType==='view'">
       ${rowHtml}
     </el-form>`
 }
 const getTsCode = () => {
-  const formDataDefault = formItemList.value.filter(item => item.__key === 'el-input-number')
-      .map(item => `${item.__modelName}:0`).join(', ')
-  return `
+  const list = formItemList.value
+  // 1表单数据默认值
+  const formDataDefault = list.filter(o => o.__key === 'el-input-number').map(item => `${item.__modelName}:0`).join(', ')
+  // 2自定义组件导入
+  const wangEditorImport = list.some(o => o.__key === 'my-wang-editor') ? `import { MyWangEditor } from '@/components/MyWangEditor'` : ''
+  // 3返回ts代码
+  return `${wangEditorImport}
+    // 弹窗显示隐藏
+    const dialogFormVisible = ref(false)
+    // 弹窗索引
+    const dialogIndex = ref(0)
+
     // 表单
     const dataFormRef = ref()
-    const formData = ref({${formDataDefault})
+    const formData = ref({${formDataDefault}})
+
+    // 关闭弹窗（清空表单temp数据）
+    const closeDialog = () => {
+      dialogFormVisible.value = false
+      formData.value = {${formDataDefault}}
+      dialogIndex.value++
+    }
   `
 }
 
