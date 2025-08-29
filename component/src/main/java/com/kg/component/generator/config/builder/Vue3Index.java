@@ -25,20 +25,12 @@ public class Vue3Index implements ITemplate {
     private String viewPath;
     // 是否覆盖代码
     private boolean fileOverride;
-    // 生成代码-模板
-    private String templateHtml;
-    // 生成代码-脚本data
-    private String jsData;
-    // 生成代码-脚本created
-    private String jsCreated;
-    // 生成代码-脚本methods
-    private String jsMethods;
-    // 生成代码-样式
-    private String templateCss;
     // 查询字段列表
     private List<String> searchFields;
     // 列表字段列表
     private List<String> listFields;
+    // 附件字段名
+    private String attachmentField;
 
     public String getViewPath() {
         return this.viewPath;
@@ -48,32 +40,16 @@ public class Vue3Index implements ITemplate {
         return fileOverride;
     }
 
-    public String getTemplateHtml() {
-        return templateHtml;
-    }
-
-    public String getJsData() {
-        return jsData;
-    }
-
-    public String getJsCreated() {
-        return jsCreated;
-    }
-
-    public String getJsMethods() {
-        return jsMethods;
-    }
-
-    public String getTemplateCss() {
-        return templateCss;
-    }
-
     public List<String> getSearchFields() {
         return searchFields;
     }
 
     public List<String> getListFields() {
         return listFields;
+    }
+
+    public String getAttachmentField() {
+        return attachmentField;
     }
 
     @Override
@@ -90,14 +66,11 @@ public class Vue3Index implements ITemplate {
             data.put("controllerMapping", tableInfo.getEntityPath());
             data.put("buttonNamePre", tableInfo.getEntityPath() + "-");
         }
-        data.put("templateHtml", getTemplateHtml());
-        data.put("jsData", getJsData());
-        data.put("jsCreated", getJsCreated());
-        data.put("jsMethods", getJsMethods());
-        data.put("templateCss", getTemplateCss());
         data.put("searchFields", getSearchFields());
         data.put("listFields", getListFields());
         data.put("hasDeleteLog", config.getStrategyConfig().service().hasDeleteLog());
+
+        data.put("attachmentField", getAttachmentField());
         return data;
     }
 
@@ -114,31 +87,6 @@ public class Vue3Index implements ITemplate {
             return this;
         }
 
-        public Builder templateHtml(String templateHtml) {
-            this.vue3Index.templateHtml = templateHtml;
-            return this;
-        }
-
-        public Builder jsData(String jsData) {
-            this.vue3Index.jsData = jsData;
-            return this;
-        }
-
-        public Builder jsCreated(String jsCreated) {
-            this.vue3Index.jsCreated = jsCreated;
-            return this;
-        }
-
-        public Builder jsMethods(String jsMethods) {
-            this.vue3Index.jsMethods = jsMethods;
-            return this;
-        }
-
-        public Builder templateCss(String templateCss) {
-            this.vue3Index.templateCss = templateCss;
-            return this;
-        }
-
         public Builder searchFields(List<String> searchFields) {
             this.vue3Index.searchFields = searchFields;
             return this;
@@ -146,6 +94,11 @@ public class Vue3Index implements ITemplate {
 
         public Builder listFields(List<String> listFields) {
             this.vue3Index.listFields = listFields;
+            return this;
+        }
+
+        public Builder attachmentField(String attachmentField) {
+            this.vue3Index.attachmentField = attachmentField;
             return this;
         }
 

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 表单生成代码：表信息实体
@@ -58,4 +59,15 @@ public class TableDTO {
 
     /** 表单管理表id */
     private String formId;
+
+    /**
+     * 代码生成类型
+     * generateType='code' 时，表示com.kg.generator.MybatisPlusGenerator工具，生成前端代码
+     * 其他使用情况，用到时在这里增加注释
+     */
+    private String generateType;
+    // =============== 以下字段，均在 generateType='code' 时使用 ===================
+    // el-form-item附件字段名
+    private Map<String, String> attachmentField;
+
 }

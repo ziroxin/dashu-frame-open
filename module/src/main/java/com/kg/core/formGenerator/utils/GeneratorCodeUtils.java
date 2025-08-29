@@ -91,9 +91,11 @@ public class GeneratorCodeUtils {
             IdType idType = idTypes.get(finalIndex);
             // 包名
             String packageStr = packages.get(finalIndex);
+            // 附件子表信息
+            LinkedList<String> childTableList = childTableMap == null ? null : (LinkedList) childTableMap.get(tableName);
             // ========== 1. 生成主表代码 ==========
             generatorCode(author, javaPath, basePackage, pathInfo, tableName, indexViewPath, null,
-                    idType, packageStr, tableDTO, childTableMap, hasDeleteLogs);
+                    idType, packageStr, tableDTO, childTableList, hasDeleteLogs);
             // 是否生成删除日志，默认不生成
             if (hasDeleteLogs) {
                 // ========== 2. 生成删除日志表代码 ==========
@@ -121,14 +123,14 @@ public class GeneratorCodeUtils {
      * @param idType             主键类型
      * @param packageStr         生成代码包名
      * @param tableDTO           前端页面扩展代码（可视化代码生成器用）
-     * @param childTableMap      附件子表信息（可视化代码生成器用）
+     * @param childTableList     附件子表信息（可视化代码生成器用）
      * @param isDeleteLogs       是否生成删除日志表（主表代码生成时，是否输出删除日志相关的代码）
      */
     private void generatorCode(String author, String javaPath, String basePackage,
                                Map<OutputFile, String> pathInfo,
                                String tableName, String indexViewPath, String deleteLogsViewPath,
                                IdType idType, String packageStr,
-                               TableDTO tableDTO, Map<String, Object> childTableMap,
+                               TableDTO tableDTO, LinkedList<String> childTableList,
                                boolean isDeleteLogs) {
         FastAutoGenerator.create(dbUrl, dbUserName, dbPassword)
                 .globalConfig(builder -> {
@@ -165,6 +167,12 @@ public class GeneratorCodeUtils {
                                 builder.indexVueBuilder()// ===============indexVue配置
                                         .enableFileOverride()
                                         .viewPath(indexViewPath);// 前端文件路径
+                            } else if (tableDTO.getGenerateType().equals("code")) {
+                                builder.indexVueBuilder()// ===============indexVue配置
+                                        // 附件form-item名
+                                        .attachmentField(tableDTO.getAttachmentField().get(tableName))
+                                        .enableFileOverride()
+                                        .viewPath(indexViewPath);// 前端文件路径
                             } else {
                                 builder.indexVueBuilder()// ===============indexVue配置
                                         .templateHtml(URLDecoder.decode(tableDTO.getTemplate(), "UTF-8"))
@@ -178,9 +186,17 @@ public class GeneratorCodeUtils {
                                         .viewPath(indexViewPath);// 前端文件路径
                             }
                             // vue3 代码
-                            builder.vue3IndexBuilder()// ===============vue3Index配置
-                                    .enableFileOverride()
-                                    .viewPath(indexViewPath);// 前端文件路径
+                            if (tableDTO != null && tableDTO.getGenerateType().equals("code")) {
+                                builder.vue3IndexBuilder()// ===============vue3Index配置
+                                        // 附件form-item名
+                                        .attachmentField(tableDTO.getAttachmentField().get(tableName))
+                                        .enableFileOverride()
+                                        .viewPath(indexViewPath);// 前端文件路径
+                            } else {
+                                builder.vue3IndexBuilder()// ===============vue3Index配置
+                                        .enableFileOverride()
+                                        .viewPath(indexViewPath);// 前端文件路径
+                            }
                         }
                         // ===============deleteLogsVue配置
                         if (StringUtils.hasText(deleteLogsViewPath)) {
@@ -192,7 +208,6 @@ public class GeneratorCodeUtils {
                                     .viewPath(deleteLogsViewPath);// 前端文件路径
                         }
                         // ====================DTO配置（配置附件子表信息）
-                        LinkedList<String> childTableList = childTableMap == null ? null : (LinkedList) childTableMap.get(tableName);
                         if (childTableList != null && childTableList.size() > 0) {
                             builder.dtoBuilder()// ====================DTO配置（配置附件子表信息）
                                     .enableFileOverride()
@@ -288,5 +303,39 @@ public class GeneratorCodeUtils {
         String sql = "SHOW TABLES LIKE ?";
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, tableName);
         return list != null && list.size() > 0;
+    }
+
+    /**
+     * 生成[附件表]
+     *
+     * @param tableName  主表名
+     * @param tableName2 附件表名
+     */
+    public void createAttachmentTable(String tableName, String tableName2) {
+        // 判断附件是否有此表
+        if (hasTables(tableName2)) {
+            // 获取原表的创建语句
+            String sql = jdbcTemplate.queryForMap("SHOW CREATE TABLE " + tableName2).get("Create Table").toString();
+            // 替换新表名
+            String newTblName = tableName2 + "_bak_" + TimeUtils.now().toFormat("yyyyMMddHHmmss");
+            sql = sql.replace("CREATE TABLE `" + tableName2, "CREATE TABLE `" + newTblName);
+            // 备份
+            jdbcTemplate.execute(sql);
+        }
+        // 删除表
+        jdbcTemplate.execute("DROP TABLE IF EXISTS " + tableName2 + ";");
+        // 创建表
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS `" + tableName2 + "` (" +
+                "  `file_id` varchar(36) NOT NULL COMMENT '附件id'," +
+                "  `" + tableName + "_id` varchar(36) NULL COMMENT '主表id'," +
+                "  `file_url` varchar(100) NULL COMMENT '文件地址（文件访问地址）'," +
+                "  `file_old_name` varchar(200) NULL COMMENT '原文件名'," +
+                "  `file_name` varchar(100) NULL COMMENT '存储文件名'," +
+                "  `file_extend` varchar(20) NULL COMMENT '文件扩展名'," +
+                "  `file_size` bigint(20) NULL COMMENT '文件大小'," +
+                "  `order_index` int(10) DEFAULT NULL COMMENT '顺序'," +
+                "  `create_time` datetime(0) NULL COMMENT '附件上传时间'," +
+                "  PRIMARY KEY (`file_id`) USING BTREE" +
+                ") COMMENT = '" + tableName + "附件表';");
     }
 }

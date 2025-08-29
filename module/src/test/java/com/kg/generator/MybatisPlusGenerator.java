@@ -1,13 +1,17 @@
 package com.kg.generator;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.kg.core.formGenerator.dto.TableDTO;
 import com.kg.core.formGenerator.utils.GeneratorCodeUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * 基于Mybatis plus的代码生成器
@@ -52,14 +56,52 @@ public class MybatisPlusGenerator {
         viewPaths.add("/atest");// 允许为空，若为空则不生成前端页面
 
         // ========= 3 删除日志配置 =========
-        // 说明： 1. 日志表名，必须是[表名_logs]；
+        // 说明： 1. 日志表名，自动生成[主表名_logs]；
         //       2. 日志表字段包含全部主表字段，并增加2个字段：主键[logs_id]、删除时间[delete_time]
         //       3. [删除日志表]不要手动创建，由代码生成器自动生成（若存在同名表，会自动备份原表，然后生成新表）
         // 是否生成删除日志
         boolean isDeleteLog = true;
 
-        // ======== 4 执行代码生成 =========
+        // ========= 4 附件表配置 =========
+        // 说明： 1. 附件表名，自动生成[主表名_files]；
+        //       2. [附件表]不要手动创建，由代码生成器自动生成（若存在同名表，会自动备份原表，然后生成新表）
+        //       3. 附件表关联主表的字段名，自动生成[主表名_id]
+        // 是否生成附件表
+        boolean isAttachment = true;
+        // 自动处理附件相关信息
+        Map<String, Object> childTableMap = null;// 子表信息
+        TableDTO tableDTO = null;// 生成前端代码所需信息
+        if (isAttachment) {
+            tableDTO = new TableDTO();
+            // 该字段使用说明，详见实体属性注释
+            tableDTO.setGenerateType("code");
+            Map<String, String> attachmentFieldMap = new HashMap<>();
+            // 遍历生成附件表
+            tableNames.forEach(tableName -> {
+                String childTableName = tableName + "_files";
+                // 生成附件表
+                generatorCodeUtils.createAttachmentTable(tableName, childTableName);
+                // 创建childTableMap，用于生成附件相关代码
+                LinkedList<String> childTableList = new LinkedList<>();
+                tableNames.add(childTableName);// 子表名
+                idTypes.add(IdType.ASSIGN_UUID);// 子表字段类型
+                packages.add(StrUtil.toCamelCase(childTableName));// 子表包名
+                viewPaths.add("");// 子表前端（不生成前端，所以置空）
+                // 子表名，列表（驼峰）
+                childTableList.add(StrUtil.toCamelCase(childTableName));
+                // 只有主表存储子表信息
+                childTableMap.put(tableName, childTableList);
+                // 前端对应字段
+                attachmentFieldMap.put(tableName, StrUtil.toCamelCase(childTableName).toLowerCase() + "List");
+            });
+            tableDTO.setAttachmentField(attachmentFieldMap);
+        }
+
+        // ========= 5 其他配置 =========
+        // todo: 配置查询字段、表格字端、导入字段、导出字段
+
+        // ========= 6 执行代码生成 =========
         generatorCodeUtils.start(basePath, module, basePackage, author, vueFolder, vue3Folder,
-                tableNames, idTypes, packages, viewPaths, null, null, isDeleteLog);
+                tableNames, idTypes, packages, viewPaths, tableDTO, childTableMap, isDeleteLog);
     }
 }

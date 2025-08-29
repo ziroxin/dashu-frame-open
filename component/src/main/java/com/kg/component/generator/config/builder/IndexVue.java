@@ -39,6 +39,8 @@ public class IndexVue implements ITemplate {
     private List<String> searchFields;
     // 列表字段列表
     private List<String> listFields;
+    // 附件字段名
+    private String attachmentField;
 
     public String getViewPath() {
         return this.viewPath;
@@ -76,6 +78,10 @@ public class IndexVue implements ITemplate {
         return listFields;
     }
 
+    public String getAttachmentField() {
+        return attachmentField;
+    }
+
     @Override
     @NotNull
     public Map<String, Object> renderData(@NotNull ConfigBuilder config, @NotNull TableInfo tableInfo) {
@@ -98,6 +104,8 @@ public class IndexVue implements ITemplate {
         data.put("searchFields", getSearchFields());
         data.put("listFields", getListFields());
         data.put("hasDeleteLog", config.getStrategyConfig().service().hasDeleteLog());
+
+        data.put("attachmentField", getAttachmentField());
         return data;
     }
 
@@ -146,6 +154,11 @@ public class IndexVue implements ITemplate {
 
         public Builder listFields(List<String> listFields) {
             this.indexVue.listFields = listFields;
+            return this;
+        }
+
+        public Builder attachmentField(String attachmentField) {
+            this.indexVue.attachmentField = attachmentField;
             return this;
         }
 

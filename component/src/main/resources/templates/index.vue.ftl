@@ -176,6 +176,11 @@
           <el-input v-model="temp.${field.propertyName}" placeholder="请输入${field.comment}"/>
         </el-form-item>
       </#if>
+      <#if attachmentField??>
+        <el-form-item label="附件" prop="${attachmentField}">
+          <file-upload v-model="formData.${attachmentField}" :limit-size="1024"/>
+        </el-form-item>
+      </#if>
     </#if>
   </#list>
       </el-form>
@@ -246,6 +251,9 @@ import ImageUpload from '@/components/Upload/ImageUpload';
 </#if>
 <#if templateHtml?? && templateHtml?contains("file-upload")>
   <#assign componentsArr = componentsArr + ["FileUpload"]>
+import FileUpload from '@/components/Upload/FileUpload';
+</#if>
+<#if attachmentField??>
 import FileUpload from '@/components/Upload/FileUpload';
 </#if>
 <#if hasDeleteLog?? && hasDeleteLog>

@@ -142,11 +142,6 @@
     <!-- 添加修改弹窗 -->
     <el-dialog :title="titleMap[dialogType]" v-model="dialogFormVisible" width="800px" :key="'myDialog'+dialogIndex"
                :close-on-click-modal="dialogType==='view'" draggable @close="closeDialog">
-<#if templateHtml??>
-<#-- 在线表单，直接用表单生成的代码 -->
-      ${templateHtml}
-<#else>
-<#-- 非在线表单，使用以下代码生成 -->
       <el-form ref="dataFormRef" :model="formData" label-width="auto" :disabled="dialogType==='view'">
   <#list table.fields as field>
     <#if field.propertyName=='orderIndex'>
@@ -202,13 +197,17 @@
           <el-input v-model="formData.${field.propertyName}" placeholder="请输入${field.comment}"/>
         </el-form-item>
       </#if>
+      <#if attachmentField??>
+        <el-form-item label="附件" prop="${attachmentField}">
+          <file-upload v-model="formData.${attachmentField}" :limit-size="1024"/>
+        </el-form-item>
+      </#if>
     </#if>
   </#list>
       </el-form>
-</#if>
       <template #footer>
         <div class="dialog-footer">
-          <base-button type="primary" icon="el-icon-check" v-if="dialogType!=='view'" @click="saveData">保存
+          <base-button v-if="dialogType!=='view'" type="primary" icon="el-icon-check" @click="saveData">保存
           </base-button>
           <base-button icon="el-icon-close" @click="dialogFormVisible=false">取消</base-button>
         </div>
@@ -257,23 +256,11 @@ import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util'
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
 import { getTokenHeader } from '@/utils/auth'
-<#if templateHtml?? && templateHtml?contains("my-wang-editor")>
-import { MyWangEditor } from '@/components/MyWangEditor'
-</#if>
-<#if templateHtml?? && templateHtml?contains("image-avatar")>
-import ImageAvatar from '@/components/Upload/ImageAvatar.vue'
-</#if>
-<#if templateHtml?? && templateHtml?contains("image-one")>
-import ImageOne from '@/components/Upload/ImageOne.vue'
-</#if>
-<#if templateHtml?? && templateHtml?contains("image-upload")>
-import ImageUpload from '@/components/Upload/ImageUpload.vue'
-</#if>
-<#if templateHtml?? && templateHtml?contains("file-upload")>
-import FileUpload from '@/components/Upload/FileUpload.vue'
+<#if attachmentField??>
+import FileUpload from '@/components/Upload/FileUpload'
 </#if>
 <#if hasDeleteLog?? && hasDeleteLog>
-import deleteLogs from './deleteLogs.vue'
+import deleteLogs from './deleteLogs'
 </#if>
 
 
@@ -445,13 +432,13 @@ const saveData = () => {
       const data = {...formData.value}
       if (dialogType.value === 'update') {
         request({url: '${controllerMapping}/update', method: 'post', data}).then(response => {
-          ElMessage({type: 'success', message: '修改成功！', grouping: true})
+          ElNotification({message: '修改成功！', title: '操作成功', type: 'success'})
           loadTableList()
           dialogFormVisible.value = false
         })
       } else {
         request({url: '${controllerMapping}/add', method: 'post', data}).then(response => {
-          ElMessage({type: 'success', message: '添加成功！', grouping: true})
+          ElNotification({message: '添加成功！', title: '操作成功', type: 'success'})
           loadTableList()
           dialogFormVisible.value = false
         })
@@ -480,7 +467,7 @@ const beforeImportUpload = (file) => {
 const importExcelSuccess = (response) => {
   isImportLoading.value = false
   if (response.message === 'Success') {
-    ElMessage({type: 'success', message: '导入成功！', grouping: true})
+    ElNotification({message: '导入成功！', title: '操作成功', type: 'success'})
     dialogImportVisible.value = false
     loadTableList()
   } else {
