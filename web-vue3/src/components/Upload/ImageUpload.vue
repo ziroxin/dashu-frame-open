@@ -22,10 +22,14 @@
              :before-upload="handleBeforeUpload"
              :on-success="handleSuccess"
              :on-remove="handleRemove"
+             :on-preview="handlePreview"
              list-type="picture-card"
              accept="image/*">
-    <i class="el-icon-plus"/>
+    <my-icon icon="el-icon-plus" :size="28"/>
   </el-upload>
+  <el-dialog v-model="previewDialogVisible" top="5vh" width="90%">
+    <img :src="previewImg" alt="预览图片" class="w-full"/>
+  </el-dialog>
 </template>
 
 <script>
@@ -57,7 +61,10 @@ export default {
       // 图片列表
       fileList: [],
       // 回显图片列表
-      fileShowList: []
+      fileShowList: [],
+      // 预览
+      previewImg: '',
+      previewDialogVisible: false
     }
   },
   mounted() {
@@ -68,9 +75,9 @@ export default {
     getTokenHeader,
     // 加载回显图片列表
     loadFileShowList() {
-      if (this.value && this.value.length > 0) {
-        this.fileList = [...this.value]
-        this.fileShowList = [...this.value.map(item => ({
+      if (this.modelValue && this.modelValue.length > 0) {
+        this.fileList = [...this.modelValue]
+        this.fileShowList = [...this.modelValue.map(item => ({
           ...item,
           name: item.fileOldName,
           url: this.$baseServer + item.fileUrl
@@ -80,17 +87,17 @@ export default {
     // 文件图片前，校验图片大小和类型
     handleBeforeUpload(file) {
       // 判断图片大小
-      let isRightSize = file.size < this.limitSize
+      const isRightSize = file.size < this.limitSize
       if (!isRightSize) {
         this.$message.error('图片大小不能超过 ' + this.formatSize(this.limitSize))
       }
       // 判断图片扩展名
-      let isAccept = new RegExp('image/*').test(file.type)
+      const isAccept = new RegExp('image/*').test(file.type)
       if (!isAccept) {
         this.$message.error('请选择正确的图片！')
       }
       // 判断上传个数
-      let isLimitCount = this.limitCount <= 0 || this.fileList.length < this.limitCount
+      const isLimitCount = this.limitCount <= 0 || this.fileList.length < this.limitCount
       if (!isLimitCount) {
         this.$message.error('上传数量超过限制！最多上传' + this.limitCount + '张图片！')
       }
@@ -109,7 +116,7 @@ export default {
     },
     handleRemove(file, fileList) {
       try {
-        let params = {}
+        const params = {}
         if (file.response && file.response.data.length > 0) {
           params.fileUrl = file.response.data[0].fileUrl
         } else {
@@ -117,9 +124,14 @@ export default {
         }
         request({url: 'upload/deleteFile', method: 'get', params})
       } catch (e) {
+        console.log(e)
       }
       this.fileList = fileList.map(o => o.response && o.response.data.length > 0 ? o.response.data[0] : o)
       this.$emit('update:modelValue', this.fileList)
+    },
+    handlePreview(file) {
+      this.previewImg = file.url
+      this.previewDialogVisible = true
     },
     formatSize(size) {
       let sizeStr = size + 'B'

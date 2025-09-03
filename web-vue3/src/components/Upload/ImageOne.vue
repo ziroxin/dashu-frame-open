@@ -33,7 +33,7 @@
                :class="value!==''?'hidden-btn':''"
                list-type="picture-card"
                accept="image/*">
-      <i class="el-icon-plus"/>
+      <my-icon icon="el-icon-plus" :size="28"/>
     </el-upload>
   </div>
 </template>

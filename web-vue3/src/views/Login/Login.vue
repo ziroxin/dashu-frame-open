@@ -31,10 +31,18 @@
             </div>
             <!-- 右侧操作按钮：主题切换、语言切换 -->
             <div class="flex justify-end items-center space-x-10px">
+              <a href="https://yanshi.java119.cn/vue2/" target="_blank"
+                 class="text-12px text-#888 hover:text-[var(--el-color-primary)] decoration-none max-lg:hidden">
+                切换VUE2版
+              </a>
               <theme-switch/>
               <locale-dropdown class="lt-xl:text-white dark:text-white"/>
             </div>
           </div>
+          <a href="https://yanshi.java119.cn/vue2/" target="_blank"
+             class="text-12px text-#ccc float-right decoration-none at-2xl:hidden at-xl:hidden">
+            切换VUE2版
+          </a>
 
           <!-- 登录表单 -->
           <transition v-if="!registerVisible" appear enter-active-class="animate__animated animate__bounceInRight">
@@ -50,6 +58,7 @@
               <register-form @toLogin="toLogin" class="p-20px h-auto m-auto lt-xl:rounded-3xl lt-xl:light:bg-white"/>
             </div>
           </transition>
+
         </div>
       </div>
     </el-scrollbar>
