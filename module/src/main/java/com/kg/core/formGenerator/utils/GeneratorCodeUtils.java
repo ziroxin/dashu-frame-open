@@ -64,7 +64,7 @@ public class GeneratorCodeUtils {
                       String author, String vueFolder, String vue3Folder,
                       LinkedList<String> tableNames, LinkedList<IdType> idTypes,
                       LinkedList<String> packages, LinkedList<String> viewPaths,
-                      TableDTO tableDTO, Map<String, Object> childTableMap, boolean hasDeleteLogs) {
+                      TableDTO tableDTO, Map<String, Object> childTableMap, LinkedList<Boolean> hasDeleteLogs) {
         for (int i = 0; i < tableNames.size(); i++) {
             // ===========================================执行生成=======================
             // 配置文件路径
@@ -93,19 +93,27 @@ public class GeneratorCodeUtils {
             String packageStr = packages.get(finalIndex);
             // 附件子表信息
             LinkedList<String> childTableList = childTableMap == null ? null : (LinkedList) childTableMap.get(tableName);
+            // 是否生成删除日志
+            Boolean hasDeleteLog = hasDeleteLogs.get(finalIndex);
             // ========== 1. 生成主表代码 ==========
             generatorCode(author, javaPath, basePackage, pathInfo, tableName, indexViewPath, null,
-                    idType, packageStr, tableDTO, childTableList, hasDeleteLogs);
+                    idType, packageStr, tableDTO, childTableList, hasDeleteLog, null);
             // 是否生成删除日志，默认不生成
-            if (hasDeleteLogs) {
+            if (hasDeleteLog) {
                 // ========== 2. 生成删除日志表代码 ==========
                 String tableName2 = tableName + "_logs";
                 // 2.1 生成删除日志表
                 createDeleteLogsTable(tableName, tableName2);
                 // 2.2 生成删除日志功能代码
                 String deleteLogsViewPath = StringUtils.hasText(indexViewPath) ? indexViewPath + "/deleteLogs" : null;
+                // 附件子表信息
+                LinkedList<String> childTableList2 = childTableMap == null ? null : (LinkedList) childTableMap.get(tableName2);
+                // 查询并传递主表信息和主表主键
+                Map<String, String> parentTable = new HashMap<>();
+                parentTable.put("parentTable", tableName);
+                parentTable.put("parentKey", getTablePrimary(tableName));
                 generatorCode(author, javaPath, basePackage, pathInfo, tableName2, null, deleteLogsViewPath,
-                        IdType.ASSIGN_UUID, packageStr, null, null, false);
+                        IdType.ASSIGN_UUID, packageStr, tableDTO, childTableList2, false, parentTable);
             }
         }
     }
@@ -131,7 +139,7 @@ public class GeneratorCodeUtils {
                                String tableName, String indexViewPath, String deleteLogsViewPath,
                                IdType idType, String packageStr,
                                TableDTO tableDTO, LinkedList<String> childTableList,
-                               boolean isDeleteLogs) {
+                               boolean isDeleteLogs, Map<String, String> parentTable) {
         FastAutoGenerator.create(dbUrl, dbUserName, dbPassword)
                 .globalConfig(builder -> {
                     builder.author(author) // 设置作者
@@ -170,7 +178,7 @@ public class GeneratorCodeUtils {
                             } else if (tableDTO.getGenerateType().equals("code")) {
                                 builder.indexVueBuilder()// ===============indexVue配置
                                         // 附件form-item名
-                                        .attachmentField(tableDTO.getAttachmentField().get(tableName))
+                                        .attachmentField1(tableDTO.getAttachmentField().get(tableName))
                                         .enableFileOverride()
                                         .viewPath(indexViewPath);// 前端文件路径
                             } else {
@@ -189,7 +197,7 @@ public class GeneratorCodeUtils {
                             if (tableDTO != null && tableDTO.getGenerateType().equals("code")) {
                                 builder.vue3IndexBuilder()// ===============vue3Index配置
                                         // 附件form-item名
-                                        .attachmentField(tableDTO.getAttachmentField().get(tableName))
+                                        .attachmentField2(tableDTO.getAttachmentField().get(tableName))
                                         .enableFileOverride()
                                         .viewPath(indexViewPath);// 前端文件路径
                             } else {
@@ -200,12 +208,25 @@ public class GeneratorCodeUtils {
                         }
                         // ===============deleteLogsVue配置
                         if (StringUtils.hasText(deleteLogsViewPath)) {
-                            builder.deleteLogsVueBuilder()// ===============deleteLogsVue配置
-                                    .enableFileOverride()
-                                    .viewPath(deleteLogsViewPath);// 前端文件路径
-                            builder.vue3DeleteLogsBuilder()// ===============vue3DeleteLogs配置
-                                    .enableFileOverride()
-                                    .viewPath(deleteLogsViewPath);// 前端文件路径
+                            if (tableDTO != null && tableDTO.getGenerateType().equals("code")) {
+                                builder.deleteLogsVueBuilder()// ===============deleteLogsVue配置
+                                        // 附件form-item名
+                                        .attachmentField3(tableDTO.getAttachmentField().get(tableName))
+                                        .enableFileOverride()
+                                        .viewPath(deleteLogsViewPath);// 前端文件路径
+                                builder.vue3DeleteLogsBuilder()// ===============vue3DeleteLogs配置
+                                        // 附件form-item名
+                                        .attachmentField4(tableDTO.getAttachmentField().get(tableName))
+                                        .enableFileOverride()
+                                        .viewPath(deleteLogsViewPath);// 前端文件路径
+                            } else {
+                                builder.deleteLogsVueBuilder()// ===============deleteLogsVue配置
+                                        .enableFileOverride()
+                                        .viewPath(deleteLogsViewPath);// 前端文件路径
+                                builder.vue3DeleteLogsBuilder()// ===============vue3DeleteLogs配置
+                                        .enableFileOverride()
+                                        .viewPath(deleteLogsViewPath);// 前端文件路径
+                            }
                         }
                         // ====================DTO配置（配置附件子表信息）
                         if (childTableList != null && childTableList.size() > 0) {
@@ -221,7 +242,7 @@ public class GeneratorCodeUtils {
                                     .enableLombok();
                         }
                         // ====================excel配置
-                        if (tableDTO == null) {
+                        if (tableDTO == null || tableDTO.getImportFields() == null || tableDTO.getExportFields() == null) {
                             builder.excelsBuilder()// =================excel配置
                                     .enableFileOverride();
                         } else {
@@ -230,15 +251,23 @@ public class GeneratorCodeUtils {
                                     .setExportFields(tableDTO.getExportFields())
                                     .enableFileOverride();
                         }
+                        // ====================service配置
+                        if (parentTable == null) {
+                            builder.serviceBuilder()// ================service配置
+                                    .enableFileOverride()
+                                    .hasDeleteLogs(isDeleteLogs);
+                        } else {
+                            builder.serviceBuilder()// ================service配置
+                                    .enableFileOverride()
+                                    .parentTable(parentTable)
+                                    .hasDeleteLogs(isDeleteLogs);
+                        }
                         // ==========更多配置
                         builder.permissionSQLBuilder()// ==========permissionSQL配置
                                 .enableFileOverride()
                                 .controllerBuilder()// =============controller配置
                                 .enableFileOverride()
                                 .enableRestStyle()// 开启RestController
-                                .serviceBuilder()// ================service配置
-                                .enableFileOverride()
-                                .hasDeleteLogs(isDeleteLogs)
                                 .mapperBuilder()// =================mapper配置
                                 .enableFileOverride()
                                 .entityBuilder()// =================entity配置
@@ -303,6 +332,22 @@ public class GeneratorCodeUtils {
         String sql = "SHOW TABLES LIKE ?";
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, tableName);
         return list != null && list.size() > 0;
+    }
+
+    /**
+     * 获取表的主键
+     *
+     * @param tableName 表名
+     * @return 主键名
+     */
+    private String getTablePrimary(String tableName) {
+        String sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE " +
+                "WHERE TABLE_NAME = ? AND CONSTRAINT_NAME = 'PRIMARY'";
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, tableName);
+        if (list != null && list.size() > 0) {
+            return list.get(0).get("COLUMN_NAME").toString();
+        }
+        return null;
     }
 
     /**

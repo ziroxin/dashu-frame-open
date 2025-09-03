@@ -538,6 +538,13 @@ public abstract class AbstractTemplateEngine {
         objectMap.putAll(excelsData);
         Map<String, Object> indexVueData = strategyConfig.indexVue().renderData(config, tableInfo);
         objectMap.putAll(indexVueData);
+        Map<String, Object> deleteLogsVueData = strategyConfig.deleteLogsVue().renderData(config, tableInfo);
+        objectMap.putAll(deleteLogsVueData);
+        Map<String, Object> vue3IndexData = strategyConfig.vue3Index().renderData(config, tableInfo);
+        objectMap.putAll(vue3IndexData);
+        Map<String, Object> vue3DeleteLogsData = strategyConfig.vue3DeleteLogs().renderData(config, tableInfo);
+        objectMap.putAll(vue3DeleteLogsData);
+
         objectMap.put("config", config);
         objectMap.put("package", config.getPackageConfig().getPackageInfo());
         objectMap.put("indexVuePackage", strategyConfig.indexVue().getViewPath());

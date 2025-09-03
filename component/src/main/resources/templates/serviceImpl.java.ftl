@@ -116,14 +116,22 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             // 查询所有附件列表
     <#list childTableList as child>
             List<${child?cap_first}> all${child?cap_first}List = ${child}Service.lambdaQuery()
+        <#if pkn1??>
+                    .in(${child?cap_first}::get${pkn1}Id, list.stream().map(${dtoName}::get${pkn2}).collect(Collectors.toList()))
+        <#else>
                     .in(${child?cap_first}::get${entity}Id, list.stream().map(${dtoName}::get${entityKeyName?cap_first}).collect(Collectors.toList()))
+        </#if>
                     .orderByAsc(${child?cap_first}::getOrderIndex).list();
     </#list>
             // 过滤附件列表，放入实体中
             list.stream().forEach(dto -> {
     <#list childTableList as child>
                 dto.set${child?lower_case?cap_first}List(all${child?cap_first}List.stream()
+        <#if pkn1??>
+                        .filter(f -> f.get${pkn1}Id().equals(dto.get${pkn2}())).collect(Collectors.toList()));
+        <#else>
                         .filter(f -> f.get${entity}Id().equals(dto.get${entityKeyName?cap_first}())).collect(Collectors.toList()));
+        </#if>
     </#list>
             });
         }
@@ -162,7 +170,11 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             final int[] orderIndex = {1};
             List<${child?cap_first}> save${child?cap_first}List = ${dtoName?uncap_first}.get${child?lower_case?cap_first}List()
                     .stream().map(m -> {
+        <#if pkn1??>
+                        m.set${pkn1}Id(${entity?uncap_first}.get${pkn2}());
+        <#else>
                         m.set${entity}Id(${entity?uncap_first}.get${entityKeyName?cap_first}());
+        </#if>
                         m.setCreateTime(LocalDateTime.now());
                         m.setOrderIndex(orderIndex[0]++);
                         return m;
@@ -194,7 +206,11 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
 <#if childTableList??>
         // 先删除附件
     <#list childTableList as child>
+        <#if pkn1??>
+        ${child}Service.lambdaUpdate().eq(${child?cap_first}::get${pkn1}Id, ${entity?uncap_first}.get${pkn2}()).remove();
+        <#else>
         ${child}Service.lambdaUpdate().eq(${child?cap_first}::get${entity}Id, ${entity?uncap_first}.get${entityKeyName?cap_first}()).remove();
+        </#if>
     </#list>
         // 再保存附件
     <#list childTableList as child>
@@ -202,7 +218,11 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             final int[] orderIndex = {1};
             List<${child?cap_first}> save${child?cap_first}List = ${dtoName?uncap_first}.get${child?lower_case?cap_first}List()
                     .stream().map(m -> {
+        <#if pkn1??>
+                        m.set${pkn1}Id(${entity?uncap_first}.get${pkn2}());
+        <#else>
                         m.set${entity}Id(${entity?uncap_first}.get${entityKeyName?cap_first}());
+        </#if>
                         m.setCreateTime(LocalDateTime.now());
                         m.setOrderIndex(orderIndex[0]++);
                         return m;
@@ -234,10 +254,19 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         // 删除数据
         removeBatchByIds(idlist);
 <#if childTableList??>
+    <#if pkn1??>
         // 删除附件
-    <#list childTableList as child>
+        <#list childTableList as child>
+        ${child}Service.lambdaUpdate().in(${child?cap_first}::get${pkn1}Id, idlist).remove();
+        </#list>
+    <#else>
+        <#if !(hasDeleteLog??) || !hasDeleteLog>
+        // 删除附件
+            <#list childTableList as child>
         ${child}Service.lambdaUpdate().in(${child?cap_first}::get${entity}Id, idlist).remove();
-    </#list>
+            </#list>
+        </#if>
+    </#if>
 </#if>
     }
 

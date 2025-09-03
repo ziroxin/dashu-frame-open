@@ -102,6 +102,11 @@
     </#if>
   </#if>
 </#list>
+<#if attachmentField3??>
+        <el-form-item label="附件" prop="${attachmentField3}">
+          <file-upload v-model="formData.${attachmentField3}" :limit-size="1024*1024*10"/>
+        </el-form-item>
+</#if>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible=false">取消</el-button>
@@ -113,9 +118,17 @@
 <script>
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util';
+<#-- 初始化 componentsArr 数组 -->
+<#assign componentsArr = []>
+<#if attachmentField3??>
+  <#assign componentsArr = componentsArr + ["FileUpload"]>
+import FileUpload from '@/components/Upload/FileUpload';
+</#if>
 
 export default {
-  components: {},
+  <#if componentsArr??>
+  components: {<#list componentsArr as component>${component}<#if component_has_next>, </#if></#list>},
+  </#if>
   data() {
     return {
       // 分页数据

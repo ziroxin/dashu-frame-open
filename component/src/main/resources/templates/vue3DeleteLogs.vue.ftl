@@ -124,6 +124,11 @@
     </#if>
   </#if>
 </#list>
+  <#if attachmentField4??>
+        <el-form-item label="附件" prop="${attachmentField4}">
+          <file-upload v-model="formData.${attachmentField4}" :limit-size="1024*1024*10"/>
+        </el-form-item>
+  </#if>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -138,6 +143,9 @@
 import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util'
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
+<#if attachmentField4??>
+import FileUpload from '@/components/Upload/FileUpload'
+</#if>
 
 
 // ==================== 1生命周期start ====================

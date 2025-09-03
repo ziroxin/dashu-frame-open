@@ -30,7 +30,7 @@ public class Vue3Index implements ITemplate {
     // 列表字段列表
     private List<String> listFields;
     // 附件字段名
-    private String attachmentField;
+    private String attachmentField2;
 
     public String getViewPath() {
         return this.viewPath;
@@ -48,8 +48,8 @@ public class Vue3Index implements ITemplate {
         return listFields;
     }
 
-    public String getAttachmentField() {
-        return attachmentField;
+    public String getAttachmentField2() {
+        return attachmentField2;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class Vue3Index implements ITemplate {
         data.put("listFields", getListFields());
         data.put("hasDeleteLog", config.getStrategyConfig().service().hasDeleteLog());
 
-        data.put("attachmentField", getAttachmentField());
+        data.put("attachmentField2", getAttachmentField2());
         return data;
     }
 
@@ -97,8 +97,8 @@ public class Vue3Index implements ITemplate {
             return this;
         }
 
-        public Builder attachmentField(String attachmentField) {
-            this.vue3Index.attachmentField = attachmentField;
+        public Builder attachmentField2(String attachmentField2) {
+            this.vue3Index.attachmentField2 = attachmentField2;
             return this;
         }
 

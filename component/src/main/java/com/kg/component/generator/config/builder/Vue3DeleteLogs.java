@@ -24,6 +24,8 @@ public class Vue3DeleteLogs implements ITemplate {
     private String viewPath;
     // 是否覆盖代码
     private boolean fileOverride;
+    // 附件字段名
+    private String attachmentField4;
 
     public String getViewPath() {
         return this.viewPath;
@@ -31,6 +33,10 @@ public class Vue3DeleteLogs implements ITemplate {
 
     public boolean isFileOverride() {
         return fileOverride;
+    }
+
+    public String getAttachmentField4() {
+        return attachmentField4;
     }
 
     @Override
@@ -44,6 +50,9 @@ public class Vue3DeleteLogs implements ITemplate {
         } else {
             data.put("controllerMapping", tableInfo.getEntityPath());
         }
+
+        data.put("attachmentField4", getAttachmentField4());
+        System.out.println("vue3DeleteLogs data: " + data);
         return data;
     }
 
@@ -56,6 +65,11 @@ public class Vue3DeleteLogs implements ITemplate {
 
         public Vue3DeleteLogs.Builder viewPath(String viewPath) {
             this.vue3DeleteLogs.viewPath = viewPath;
+            return this;
+        }
+
+        public Vue3DeleteLogs.Builder attachmentField4(String attachmentField4) {
+            this.vue3DeleteLogs.attachmentField4 = attachmentField4;
             return this;
         }
 

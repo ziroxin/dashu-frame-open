@@ -161,6 +161,8 @@ public class FormGeneratorController {
         viewPaths.add(tableDTO.getViewPath());
         // 子表名List
         Map<String, Object> childTableMap = new HashMap<>();
+        LinkedList<Boolean> hasDeleteLogs = new LinkedList<>();
+        hasDeleteLogs.add(tableDTO.getIsDeleteLogs());
         LinkedList<String> childTableList = new LinkedList<>();
         // 处理附件子表
         for (TableFieldDTO field : tableDTO.getFields()) {
@@ -169,6 +171,7 @@ public class FormGeneratorController {
                 idTypes.add(IdType.ASSIGN_UUID);// 子表字段类型
                 packages.add(StrUtil.toCamelCase(field.getChildFileTable()));// 子表包名
                 viewPaths.add("");// 子表前端（不生成前端，所以置空）
+                hasDeleteLogs.add(false);// 子表是否生成删除日志
                 // 子表名，列表（驼峰）
                 childTableList.add(StrUtil.toCamelCase(field.getChildFileTable()));
             }
@@ -176,7 +179,7 @@ public class FormGeneratorController {
         childTableMap.put(tableDTO.getTableName(), childTableList);// 只有主表存储子表信息
         // ================================== 开始执行生成 =====================================
         generatorCodeUtils.start(basePath, "module", basePackage, author, "web-vue2", "web-vue3",
-                tableNames, idTypes, packages, viewPaths, tableDTO, childTableMap, tableDTO.getIsDeleteLogs());
+                tableNames, idTypes, packages, viewPaths, tableDTO, childTableMap, hasDeleteLogs);
         // 打成压缩包
         String zipPath = basePath + ".zip";
         ZipUtil.zip(basePath, zipPath);

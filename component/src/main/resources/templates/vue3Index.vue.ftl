@@ -197,13 +197,13 @@
           <el-input v-model="formData.${field.propertyName}" placeholder="请输入${field.comment}"/>
         </el-form-item>
       </#if>
-      <#if attachmentField??>
-        <el-form-item label="附件" prop="${attachmentField}">
-          <file-upload v-model="formData.${attachmentField}" :limit-size="1024"/>
-        </el-form-item>
-      </#if>
     </#if>
   </#list>
+  <#if attachmentField2??>
+        <el-form-item label="附件" prop="${attachmentField2}">
+          <file-upload v-model="formData.${attachmentField2}" :limit-size="1024*1024*10"/>
+        </el-form-item>
+  </#if>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -256,7 +256,7 @@ import request from '@/utils/request'
 import downloadUtil from '@/utils/download-util'
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
 import { getTokenHeader } from '@/utils/auth'
-<#if attachmentField??>
+<#if attachmentField2??>
 import FileUpload from '@/components/Upload/FileUpload'
 </#if>
 <#if hasDeleteLog?? && hasDeleteLog>

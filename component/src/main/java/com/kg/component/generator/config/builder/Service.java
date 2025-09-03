@@ -83,6 +83,11 @@ public class Service implements ITemplate {
      */
     private boolean hasDeleteLog = false;
 
+    /**
+     * 主表table数据
+     */
+    private Map<String, String> parentTable;
+
     @NotNull
     public ConverterFileName getConverterServiceFileName() {
         return converterServiceFileName;
@@ -101,6 +106,10 @@ public class Service implements ITemplate {
         return hasDeleteLog;
     }
 
+    public Map<String, String> getParentTable() {
+        return parentTable;
+    }
+
     @Override
     @NotNull
     public Map<String, Object> renderData(@NotNull ConfigBuilder config, @NotNull TableInfo tableInfo) {
@@ -110,7 +119,29 @@ public class Service implements ITemplate {
         data.put("superServiceImplClassPackage", this.superServiceImplClass);
         data.put("superServiceImplClass", ClassUtils.getSimpleName(this.superServiceImplClass));
         data.put("hasDeleteLog", hasDeleteLog);
+        if (parentTable != null) {
+            data.put("pkn1", toCamelCaseWithUpper(parentTable.get("parentTable")));
+            data.put("pkn2", toCamelCaseWithUpper(parentTable.get("parentKey")));
+        }
         return data;
+    }
+
+    private String toCamelCaseWithUpper(String input) {
+        StringBuilder sb = new StringBuilder();
+        boolean nextUpperCase = true;
+        for (char c : input.toCharArray()) {
+            if (c == '_') {
+                nextUpperCase = true;
+            } else {
+                if (nextUpperCase) {
+                    sb.append(Character.toUpperCase(c));
+                    nextUpperCase = false;
+                } else {
+                    sb.append(Character.toLowerCase(c));
+                }
+            }
+        }
+        return sb.toString();
     }
 
     public static class Builder extends BaseBuilder {
@@ -195,7 +226,7 @@ public class Service implements ITemplate {
          * @since 3.5.0
          */
         public Builder formatServiceFileName(@NotNull String format) {
-            return convertServiceFileName((entityName) -> String.format(format, entityName));
+            return convertServiceFileName((entityName) -> java.lang.String.format(format, entityName));
         }
 
         /**
@@ -206,7 +237,7 @@ public class Service implements ITemplate {
          * @since 3.5.0
          */
         public Builder formatServiceImplFileName(@NotNull String format) {
-            return convertServiceImplFileName((entityName) -> String.format(format, entityName));
+            return convertServiceImplFileName((entityName) -> java.lang.String.format(format, entityName));
         }
 
         /**
@@ -222,6 +253,14 @@ public class Service implements ITemplate {
          */
         public Builder hasDeleteLogs(boolean isDeleteLogs) {
             this.service.hasDeleteLog = isDeleteLogs;
+            return this;
+        }
+
+        /**
+         * 主表table数据
+         */
+        public Builder parentTable(Map<String, String> parentTable) {
+            this.service.parentTable = parentTable;
             return this;
         }
 

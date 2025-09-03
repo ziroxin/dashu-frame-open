@@ -24,6 +24,8 @@ public class DeleteLogsVue implements ITemplate {
     private String viewPath;
     // 是否覆盖代码
     private boolean fileOverride;
+    // 附件字段名
+    private String attachmentField3;
 
     public String getViewPath() {
         return this.viewPath;
@@ -31,6 +33,10 @@ public class DeleteLogsVue implements ITemplate {
 
     public boolean isFileOverride() {
         return fileOverride;
+    }
+
+    public String getAttachmentField3() {
+        return attachmentField3;
     }
 
     @Override
@@ -44,6 +50,8 @@ public class DeleteLogsVue implements ITemplate {
         } else {
             data.put("controllerMapping", tableInfo.getEntityPath());
         }
+
+        data.put("attachmentField3", getAttachmentField3());
         return data;
     }
 
@@ -56,6 +64,11 @@ public class DeleteLogsVue implements ITemplate {
 
         public DeleteLogsVue.Builder viewPath(String viewPath) {
             this.deleteLogsVue.viewPath = viewPath;
+            return this;
+        }
+
+        public DeleteLogsVue.Builder attachmentField3(String attachmentField3) {
+            this.deleteLogsVue.attachmentField3 = attachmentField3;
             return this;
         }
 
