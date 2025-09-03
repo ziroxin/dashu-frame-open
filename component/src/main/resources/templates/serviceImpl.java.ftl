@@ -251,13 +251,14 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         }).collect(Collectors.toList());
         ${entity?uncap_first}LogsService.saveBatch(logsList);
 </#if>
-        // 删除数据
-        removeBatchByIds(idlist);
 <#if childTableList??>
     <#if pkn1??>
         // 删除附件
         <#list childTableList as child>
-        ${child}Service.lambdaUpdate().in(${child?cap_first}::get${pkn1}Id, idlist).remove();
+        List<String> newIdlist = listByIds(idlist).stream().map(${entity}::get${pkn2}).distinct().collect(Collectors.toList());
+        if (newIdlist != null && newIdlist.size() > 0) {
+            ${child}Service.lambdaUpdate().in(${child?cap_first}::get${pkn1}Id, newIdlist).remove();
+        }
         </#list>
     <#else>
         <#if !(hasDeleteLog??) || !hasDeleteLog>
@@ -268,6 +269,8 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         </#if>
     </#if>
 </#if>
+        // 删除数据
+        removeBatchByIds(idlist);
     }
 
     /**
