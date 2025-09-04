@@ -3,11 +3,11 @@
     <!-- ${table.comment!}-管理按钮 -->
     <div class="searchPanel">
       <div class="searchForm">
-<#if searchFields??>
-  <#-- 根据前端配置searchFields - 生成查询字段 -->
+<#if searchFields2??>
+  <#-- 根据前端配置searchFields2 - 生成查询字段 -->
   <#list table.fields as field>
-    <#-- 只生成searchFields中指定的字段 -->
-    <#if searchFields?seq_contains(field.annotationColumnName)>
+    <#-- 只生成searchFields2中指定的字段 -->
+    <#if searchFields2?seq_contains(field.annotationColumnName)>
       <#if field.propertyName=='createTime'>
         <el-date-picker v-model="searchData.createTimeRange" clearable class="searchInput w-340px!"
                         type="datetimerange" start-placeholder="添加时间开始时间" end-placeholder="添加时间结束时间"
@@ -35,7 +35,7 @@
     </#if>
   </#list>
 <#else>
-  <#-- 没有配置searchFields的情况下，按照默认配置 - 生成查询字段 -->
+  <#-- 没有配置searchFields2的情况下，按照默认配置 - 生成查询字段 -->
   <#list table.fields as field>
     <#-- 忽略字段：主键、排序字段、创建时间、更新时间、创建用户、更新用户 -->
     <#if field.propertyName!=entityKeyName && field.propertyName!='orderIndex'
@@ -96,15 +96,16 @@
     <el-table ref="dataTableRef" :data="tableData" stripe border v-loading="isLoading"
               @selection-change="handleTableSelectChange" @sort-change="handleTableSortChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
-<#if listFields??>
-  <#-- 根据前端配置listFields - 生成列表字段 -->
+<#if listFields2??>
+  <#-- 根据前端配置listFields2 - 生成列表字段 -->
   <#list table.fields as field>
-    <#-- 只生成listFields中指定的字段 -->
-    <#if listFields?seq_contains(field.annotationColumnName)>
+    <#-- 只生成listFields2中指定的字段 -->
+    <#if listFields2?seq_contains(field.annotationColumnName)>
       <el-table-column label="${field.comment}" prop="${field.propertyName}" align="center" sortable="custom"/>
     </#if>
   </#list>
 <#else>
+  <#-- 没有配置listFields2的情况下，按照默认配置 - 生成列表字段 -->
   <#list table.fields as field>
     <#-- 忽略字段：主键、更新时间、创建用户、更新用户 -->
     <#if field.propertyName!=entityKeyName && field.propertyName!='updateTime'
@@ -303,16 +304,22 @@ const resetTableList = () => {
 const loadTableList = () => {
   isLoading.value = true
   const obj = {...searchData.value}
+<#list table.fields as field>
+  <#if field.propertyName=='createTime'>
   if (obj.createTimeRange && obj.createTimeRange.length > 0) {
     obj.createTimeStart = obj.createTimeRange[0]
     obj.createTimeEnd = obj.createTimeRange[1]
     delete obj.createTimeRange
   }
+  </#if>
+  <#if field.propertyName=='updateTime'>
   if (obj.updateTimeRange && obj.updateTimeRange.length > 0) {
     obj.updateTimeStart = obj.updateTimeRange[0]
     obj.updateTimeEnd = obj.updateTimeRange[1]
     delete obj.updateTimeRange
   }
+  </#if>
+</#list>
   const params = {...pager.value, params: JSON.stringify(obj), sorts: JSON.stringify(sortData.value)}
   request({url: '${controllerMapping}/list', method: 'get', params}).then((response) => {
     const {data} = response
@@ -456,7 +463,24 @@ const isImportLoading = ref(false)
 
 // 导出Excel文件
 const exportExcel = () => {
-  const params = {params: JSON.stringify(searchData.value), sorts: JSON.stringify(sortData.value)}
+  const obj = {...searchData.value}
+<#list table.fields as field>
+  <#if field.propertyName=='createTime'>
+  if (obj.createTimeRange && obj.createTimeRange.length > 0) {
+    obj.createTimeStart = obj.createTimeRange[0]
+    obj.createTimeEnd = obj.createTimeRange[1]
+    delete obj.createTimeRange
+  }
+  </#if>
+  <#if field.propertyName=='updateTime'>
+  if (obj.updateTimeRange && obj.updateTimeRange.length > 0) {
+    obj.updateTimeStart = obj.updateTimeRange[0]
+    obj.updateTimeEnd = obj.updateTimeRange[1]
+    delete obj.updateTimeRange
+  }
+  </#if>
+</#list>
+  const params = {params: JSON.stringify(obj), sorts: JSON.stringify(sortData.value)}
   downloadUtil.download('${controllerMapping}/export/excel', params, '${table.comment!}.xlsx')
 }
 // 导入Excel之前，显示loading

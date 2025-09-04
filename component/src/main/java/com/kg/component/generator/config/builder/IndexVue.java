@@ -101,10 +101,10 @@ public class IndexVue implements ITemplate {
         data.put("jsCreated", getJsCreated());
         data.put("jsMethods", getJsMethods());
         data.put("templateCss", getTemplateCss());
-        data.put("searchFields", getSearchFields());
-        data.put("listFields", getListFields());
         data.put("hasDeleteLog", config.getStrategyConfig().service().hasDeleteLog());
 
+        data.put("searchFields1", getSearchFields());
+        data.put("listFields1", getListFields());
         data.put("attachmentField1", getAttachmentField1());
         return data;
     }

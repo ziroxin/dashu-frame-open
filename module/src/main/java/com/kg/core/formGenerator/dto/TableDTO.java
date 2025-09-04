@@ -69,5 +69,13 @@ public class TableDTO {
     // =============== 以下字段，均在 generateType='code' 时使用 ===================
     // el-form-item附件字段名
     private Map<String, String> attachmentField;
+    // 查询字段
+    private Map<String, String> searchMap;
+    // 列表字段
+    private Map<String, String> listMap;
+    // 导入字段
+    private Map<String, String> importMap;
+    // 导出字段
+    private Map<String, String> exportMap;
 
 }

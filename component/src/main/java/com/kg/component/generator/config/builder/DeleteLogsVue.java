@@ -7,6 +7,7 @@ import com.kg.component.generator.config.po.TableInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,6 +25,10 @@ public class DeleteLogsVue implements ITemplate {
     private String viewPath;
     // 是否覆盖代码
     private boolean fileOverride;
+    // 查询字段列表
+    private List<String> searchFields;
+    // 列表字段列表
+    private List<String> listFields;
     // 附件字段名
     private String attachmentField3;
 
@@ -33,6 +38,14 @@ public class DeleteLogsVue implements ITemplate {
 
     public boolean isFileOverride() {
         return fileOverride;
+    }
+
+    public List<String> getSearchFields() {
+        return searchFields;
+    }
+
+    public List<String> getListFields() {
+        return listFields;
     }
 
     public String getAttachmentField3() {
@@ -51,6 +64,8 @@ public class DeleteLogsVue implements ITemplate {
             data.put("controllerMapping", tableInfo.getEntityPath());
         }
 
+        data.put("searchFields3", getSearchFields());
+        data.put("listFields3", getListFields());
         data.put("attachmentField3", getAttachmentField3());
         return data;
     }
@@ -64,6 +79,16 @@ public class DeleteLogsVue implements ITemplate {
 
         public DeleteLogsVue.Builder viewPath(String viewPath) {
             this.deleteLogsVue.viewPath = viewPath;
+            return this;
+        }
+
+        public DeleteLogsVue.Builder searchFields(List<String> searchFields) {
+            this.deleteLogsVue.searchFields = searchFields;
+            return this;
+        }
+
+        public DeleteLogsVue.Builder listFields(List<String> listFields) {
+            this.deleteLogsVue.listFields = listFields;
             return this;
         }
 

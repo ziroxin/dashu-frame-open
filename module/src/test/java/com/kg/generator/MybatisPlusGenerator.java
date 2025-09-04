@@ -41,27 +41,26 @@ public class MybatisPlusGenerator {
 
         // ========= 2 表、包、路径配置 =========
         // 说明：允许同时生成多个表的代码；
-        //      注意 [表名、主键类型、包名、前端view路径] 必须是一一对应的LinkedList，按顺序add
+        //      注意 [表名、主键类型、包名、前端view路径、删除日志、附件] 必须是一一对应的LinkedList，按顺序add
         // 表名，必填
         LinkedList<String> tableNames = new LinkedList<>();
         tableNames.add("a_apple");
-        tableNames.add("a_table");
-        //tableNames.add("a_apple"); 多表生成时，可以多次add，下方其他配置都必须对应多次add
+//        tableNames.add("a_apple");// 多表生成时，用多次add添加
 
         // 表主键类型，必填（如：IdType.ASSIGN_UUID、IdType.ASSIGN_ID）
         LinkedList<IdType> idTypes = new LinkedList<>();
         idTypes.add(IdType.ASSIGN_UUID);
-        idTypes.add(IdType.ASSIGN_UUID);
+//        idTypes.add(IdType.ASSIGN_UUID);// 多表生成时，用多次add添加
 
         // 包名，必填（支持多层包名，例如：system.role）
         LinkedList<String> packages = new LinkedList<>();
         packages.add("aapple");
-        packages.add("atable");
+//        packages.add("atable");// 多表生成时，用多次add添加
 
         // 前端view路径，非必填（支持多层目录，例如：/system/role）
         LinkedList<String> viewPaths = new LinkedList<>();
         viewPaths.add("/aapple");// 允许为空，若为空则不生成前端页面
-        viewPaths.add("/atable");// 允许为空，若为空则不生成前端页面
+//        viewPaths.add("/atable");// 多表生成时，用多次add添加
 
         // ========= 3 删除日志配置 =========
         // 说明： 1. 日志表名，自动生成[主表名_logs]；
@@ -70,7 +69,7 @@ public class MybatisPlusGenerator {
         // 配置：是否生成删除日志
         LinkedList<Boolean> isDeleteLogs = new LinkedList<>();
         isDeleteLogs.add(true);
-        isDeleteLogs.add(false);
+//        isDeleteLogs.add(false);// 多表生成时，用多次add添加
 
         // ========= 4 附件表配置 =========
         // 说明： 1. 附件表名，自动生成[主表名_files]；
@@ -79,13 +78,37 @@ public class MybatisPlusGenerator {
         // 配置：是否生成附件表
         LinkedList<Boolean> isAttachments = new LinkedList<>();
         isAttachments.add(true);
-        isAttachments.add(true);
+//        isAttachments.add(true);// 多表生成时，用多次add添加
 
-        // ========= 5 检查配置，并准备生成 =========
+
+        // ========= 5 配置【查询字段、表格字端、导入字段、导出字段】信息 =========
+        // 说明： 1. map的key是表名，value是逗号分隔的字段名；
+        //       2. 若为空，则按照默认规则生成；
+        //       3. 若不为空，则按照配置规则生成；
+        // 配置：查询字段
+        Map<String, String> searchMap = new HashMap<>(); // 查询字段
+        searchMap.put("a_apple", "apple_name,type");
+        // 配置：表格字段
+        Map<String, String> listMap = new HashMap<>(); // 表格字段
+        listMap.put("a_apple", "apple_name,type,order_index,create_time");
+        // 配置：导入字段
+        Map<String, String> importMap = new HashMap<>(); // 导入字段
+        importMap.put("a_apple", "apple_name,type,order_index");
+        // 配置：导出字段
+        Map<String, String> exportMap = new HashMap<>(); // 导出字段
+        exportMap.put("a_apple", "apple_name,type,order_index");
+
+
+        /*                            上方代码，可修改配置生成信息                           */
+        /* ----------------------------------- 分割线 ----------------------------------- */
+        /*                                下方代码，无需修改                                */
+
+
+        // ========= 6 检查配置，并准备生成 =========
         if (!checkArraysLength(tableNames, idTypes, packages, viewPaths, isDeleteLogs, isAttachments)) {
             throw new RuntimeException("配置项数组长度不一致，请检查！！！");
         }
-        // 自动处理附件相关信息（一般不需要改动）
+        // 生成附件表，并自动处理附件相关信息（不要改动）
         Map<String, Object> childTableMap = null;// 子表信息
         Map<String, String> attachmentFieldMap = null;// 配置子表的前端生成需要的信息
         TableDTO tableDTO = null;// 生成前端代码所需信息
@@ -128,11 +151,18 @@ public class MybatisPlusGenerator {
             }
             tableDTO.setAttachmentField(attachmentFieldMap);
         }
+        // 自动配置字段信息
+        if (!searchMap.isEmpty() || !listMap.isEmpty() || !importMap.isEmpty() || !exportMap.isEmpty()) {
+            if (tableDTO == null) {
+                tableDTO = new TableDTO();
+            }
+            tableDTO.setSearchMap(searchMap);
+            tableDTO.setListMap(listMap);
+            tableDTO.setImportMap(importMap);
+            tableDTO.setExportMap(exportMap);
+        }
 
-        // ========= 5 其他配置 =========
-        // todo: 配置查询字段、表格字端、导入字段、导出字段
-
-        // ========= 6 执行代码生成 =========
+        // ========= 7 开始执行代码生成 =========
         generatorCodeUtils.start(basePath, module, basePackage, author, vueFolder, vue3Folder,
                 tableNames, idTypes, packages, viewPaths, tableDTO, childTableMap, isDeleteLogs);
     }

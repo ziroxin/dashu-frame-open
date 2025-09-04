@@ -19,10 +19,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * MybatisPlus代码生成器工具类
@@ -112,6 +109,13 @@ public class GeneratorCodeUtils {
                 Map<String, String> parentTable = new HashMap<>();
                 parentTable.put("parentTable", tableName);
                 parentTable.put("parentKey", getTablePrimary(tableName));
+                // 查询附表字段map
+                if (tableDTO != null) {
+                    tableDTO.getSearchMap().put(tableName2, tableDTO.getSearchMap().get(tableName));
+                    tableDTO.getListMap().put(tableName2, tableDTO.getListMap().get(tableName));
+                    tableDTO.getImportMap().put(tableName2, tableDTO.getImportMap().get(tableName));
+                    tableDTO.getExportMap().put(tableName2, tableDTO.getExportMap().get(tableName));
+                }
                 generatorCode(author, javaPath, basePackage, pathInfo, tableName2, null, deleteLogsViewPath,
                         IdType.ASSIGN_UUID, packageStr, tableDTO, childTableList2, false, parentTable);
             }
@@ -168,6 +172,20 @@ public class GeneratorCodeUtils {
                     try {
                         // 设置需要生成的表名
                         builder.addInclude(tableName);
+                        List<String> searchFields = null;
+                        List<String> listFields = null;
+                        if (tableDTO != null) {
+                            searchFields = Optional.ofNullable(tableDTO.getSearchFields())
+                                    .orElseGet(() -> Optional.ofNullable(tableDTO.getSearchMap())
+                                            .map(map -> map.get(tableName))
+                                            .map(fields -> Arrays.asList(fields.split(",")))
+                                            .orElse(null));
+                            listFields = Optional.ofNullable(tableDTO.getListFields())
+                                    .orElseGet(() -> Optional.ofNullable(tableDTO.getListMap())
+                                            .map(map -> map.get(tableName))
+                                            .map(fields -> Arrays.asList(fields.split(",")))
+                                            .orElse(null));
+                        }
                         // ===============indexVue配置
                         if (StringUtils.hasText(indexViewPath)) {
                             // vue2 代码
@@ -175,57 +193,84 @@ public class GeneratorCodeUtils {
                                 builder.indexVueBuilder()// ===============indexVue配置
                                         .enableFileOverride()
                                         .viewPath(indexViewPath);// 前端文件路径
-                            } else if (tableDTO.getGenerateType().equals("code")) {
-                                builder.indexVueBuilder()// ===============indexVue配置
-                                        // 附件form-item名
-                                        .attachmentField1(tableDTO.getAttachmentField().get(tableName))
-                                        .enableFileOverride()
-                                        .viewPath(indexViewPath);// 前端文件路径
-                            } else {
-                                builder.indexVueBuilder()// ===============indexVue配置
-                                        .templateHtml(URLDecoder.decode(tableDTO.getTemplate(), "UTF-8"))
-                                        .jsData(URLDecoder.decode(tableDTO.getJsData(), "UTF-8"))
-                                        .jsCreated(URLDecoder.decode(tableDTO.getJsCreated(), "UTF-8"))
-                                        .jsMethods(URLDecoder.decode(tableDTO.getJsMethods(), "UTF-8"))
-                                        .templateCss(URLDecoder.decode(tableDTO.getCss(), "UTF-8"))
-                                        .searchFields(tableDTO.getSearchFields())
-                                        .listFields(tableDTO.getListFields())
-                                        .enableFileOverride()
-                                        .viewPath(indexViewPath);// 前端文件路径
-                            }
-                            // vue3 代码
-                            if (tableDTO != null && tableDTO.getGenerateType().equals("code")) {
-                                builder.vue3IndexBuilder()// ===============vue3Index配置
-                                        // 附件form-item名
-                                        .attachmentField2(tableDTO.getAttachmentField().get(tableName))
-                                        .enableFileOverride()
-                                        .viewPath(indexViewPath);// 前端文件路径
-                            } else {
                                 builder.vue3IndexBuilder()// ===============vue3Index配置
                                         .enableFileOverride()
                                         .viewPath(indexViewPath);// 前端文件路径
+                            } else {
+                                if (tableDTO.getGenerateType().equals("code")) {
+                                    builder.indexVueBuilder()// ===============indexVue配置
+                                            // 附件form-item名
+                                            .attachmentField1(tableDTO.getAttachmentField().get(tableName))
+                                            .searchFields(searchFields)
+                                            .listFields(listFields)
+                                            .enableFileOverride()
+                                            .viewPath(indexViewPath);// 前端文件路径
+                                    builder.vue3IndexBuilder()// ===============vue3Index配置
+                                            // 附件form-item名
+                                            .attachmentField2(tableDTO.getAttachmentField().get(tableName))
+                                            .searchFields(searchFields)
+                                            .listFields(listFields)
+                                            .enableFileOverride()
+                                            .viewPath(indexViewPath);// 前端文件路径
+                                } else {
+                                    builder.indexVueBuilder()// ===============indexVue配置
+                                            .templateHtml(URLDecoder.decode(tableDTO.getTemplate(), "UTF-8"))
+                                            .jsData(URLDecoder.decode(tableDTO.getJsData(), "UTF-8"))
+                                            .jsCreated(URLDecoder.decode(tableDTO.getJsCreated(), "UTF-8"))
+                                            .jsMethods(URLDecoder.decode(tableDTO.getJsMethods(), "UTF-8"))
+                                            .templateCss(URLDecoder.decode(tableDTO.getCss(), "UTF-8"))
+                                            .searchFields(searchFields)
+                                            .listFields(listFields)
+                                            .enableFileOverride()
+                                            .viewPath(indexViewPath);// 前端文件路径
+                                    builder.vue3IndexBuilder()// ===============vue3Index配置
+                                            .searchFields(searchFields)
+                                            .listFields(listFields)
+                                            .enableFileOverride()
+                                            .viewPath(indexViewPath);// 前端文件路径
+                                }
                             }
                         }
                         // ===============deleteLogsVue配置
                         if (StringUtils.hasText(deleteLogsViewPath)) {
-                            if (tableDTO != null && tableDTO.getGenerateType().equals("code")) {
+                            if (tableDTO == null) {
                                 builder.deleteLogsVueBuilder()// ===============deleteLogsVue配置
-                                        // 附件form-item名
-                                        .attachmentField3(tableDTO.getAttachmentField().get(tableName))
                                         .enableFileOverride()
                                         .viewPath(deleteLogsViewPath);// 前端文件路径
                                 builder.vue3DeleteLogsBuilder()// ===============vue3DeleteLogs配置
-                                        // 附件form-item名
-                                        .attachmentField4(tableDTO.getAttachmentField().get(tableName))
                                         .enableFileOverride()
                                         .viewPath(deleteLogsViewPath);// 前端文件路径
                             } else {
-                                builder.deleteLogsVueBuilder()// ===============deleteLogsVue配置
-                                        .enableFileOverride()
-                                        .viewPath(deleteLogsViewPath);// 前端文件路径
-                                builder.vue3DeleteLogsBuilder()// ===============vue3DeleteLogs配置
-                                        .enableFileOverride()
-                                        .viewPath(deleteLogsViewPath);// 前端文件路径
+                                if (tableDTO.getGenerateType().equals("code")) {
+                                    builder.deleteLogsVueBuilder()// ===============deleteLogsVue配置
+                                            // 附件form-item名
+                                            .attachmentField3(tableDTO.getAttachmentField().get(tableName))
+                                            .searchFields(searchFields)
+                                            .listFields(listFields)
+                                            .enableFileOverride()
+                                            .viewPath(deleteLogsViewPath);// 前端文件路径
+                                    builder.vue3DeleteLogsBuilder()// ===============vue3DeleteLogs配置
+                                            // 附件form-item名
+                                            .attachmentField4(tableDTO.getAttachmentField().get(tableName))
+                                            .searchFields(searchFields)
+                                            .listFields(listFields)
+                                            .enableFileOverride()
+                                            .viewPath(deleteLogsViewPath);// 前端文件路径
+
+                                } else {
+                                    builder.deleteLogsVueBuilder()// ===============deleteLogsVue配置
+                                            // 附件form-item名
+                                            .searchFields(searchFields)
+                                            .listFields(listFields)
+                                            .enableFileOverride()
+                                            .viewPath(deleteLogsViewPath);// 前端文件路径
+                                    builder.vue3DeleteLogsBuilder()// ===============vue3DeleteLogs配置
+                                            // 附件form-item名
+                                            .searchFields(searchFields)
+                                            .listFields(listFields)
+                                            .enableFileOverride()
+                                            .viewPath(deleteLogsViewPath);// 前端文件路径
+                                }
                             }
                         }
                         // ====================DTO配置（配置附件子表信息）
@@ -242,13 +287,23 @@ public class GeneratorCodeUtils {
                                     .enableLombok();
                         }
                         // ====================excel配置
-                        if (tableDTO == null || tableDTO.getImportFields() == null || tableDTO.getExportFields() == null) {
+                        if (tableDTO == null) {
                             builder.excelsBuilder()// =================excel配置
                                     .enableFileOverride();
                         } else {
+                            List<String> importFields = Optional.ofNullable(tableDTO.getImportFields())
+                                    .orElseGet(() -> Optional.ofNullable(tableDTO.getImportMap())
+                                            .map(map -> map.get(tableName))
+                                            .map(fields -> Arrays.asList(fields.split(",")))
+                                            .orElse(null));
+                            List<String> exportFields = Optional.ofNullable(tableDTO.getExportFields())
+                                    .orElseGet(() -> Optional.ofNullable(tableDTO.getExportMap())
+                                            .map(map -> map.get(tableName))
+                                            .map(fields -> Arrays.asList(fields.split(",")))
+                                            .orElse(null));
                             builder.excelsBuilder()// =================excel配置
-                                    .setImportFields(tableDTO.getImportFields())
-                                    .setExportFields(tableDTO.getExportFields())
+                                    .setImportFields(importFields)
+                                    .setExportFields(exportFields)
                                     .enableFileOverride();
                         }
                         // ====================service配置

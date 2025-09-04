@@ -7,6 +7,7 @@ import com.kg.component.generator.config.po.TableInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,6 +25,10 @@ public class Vue3DeleteLogs implements ITemplate {
     private String viewPath;
     // 是否覆盖代码
     private boolean fileOverride;
+    // 查询字段列表
+    private List<String> searchFields;
+    // 列表字段列表
+    private List<String> listFields;
     // 附件字段名
     private String attachmentField4;
 
@@ -33,6 +38,14 @@ public class Vue3DeleteLogs implements ITemplate {
 
     public boolean isFileOverride() {
         return fileOverride;
+    }
+
+    public List<String> getSearchFields() {
+        return searchFields;
+    }
+
+    public List<String> getListFields() {
+        return listFields;
     }
 
     public String getAttachmentField4() {
@@ -51,6 +64,8 @@ public class Vue3DeleteLogs implements ITemplate {
             data.put("controllerMapping", tableInfo.getEntityPath());
         }
 
+        data.put("searchFields4", getSearchFields());
+        data.put("listFields4", getListFields());
         data.put("attachmentField4", getAttachmentField4());
         System.out.println("vue3DeleteLogs data: " + data);
         return data;
@@ -65,6 +80,16 @@ public class Vue3DeleteLogs implements ITemplate {
 
         public Vue3DeleteLogs.Builder viewPath(String viewPath) {
             this.vue3DeleteLogs.viewPath = viewPath;
+            return this;
+        }
+
+        public Vue3DeleteLogs.Builder searchFields(List<String> searchFields) {
+            this.vue3DeleteLogs.searchFields = searchFields;
+            return this;
+        }
+
+        public Vue3DeleteLogs.Builder listFields(List<String> listFields) {
+            this.vue3DeleteLogs.listFields = listFields;
             return this;
         }
 

@@ -3,10 +3,37 @@
     <!-- ${table.comment!}-管理按钮 -->
     <div class="searchPanel">
       <div class="searchForm">
-<#list table.fields as field>
-  <#if field.propertyName!=entityKeyName && field.propertyName!='orderIndex'
-  && field.propertyName!='createUserId' && field.propertyName!='updateUserId'
-  && field.propertyName!='createTime' && field.propertyName!='updateTime'>
+<#if searchFields3??>
+  <#-- 根据前端配置searchFields3 - 生成查询字段 -->
+  <#list table.fields as field>
+    <#-- 只生成searchFields3中指定的字段 -->
+    <#if searchFields3?seq_contains(field.annotationColumnName)>
+      <#if field.propertyName=='createTime'>
+        <el-date-picker v-model="searchData.createTimeRange" size="small" clearable class="searchInput"
+                        type="datetimerange" style="width:340px;" start-placeholder="开始时间"
+                        end-placeholder="结束时间" value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+      <#elseif field.propertyName=='updateTime'>
+        <el-date-picker v-model="searchData.updateTimeRange" size="small" clearable class="searchInput"
+                        type="datetimerange" style="width:340px;" start-placeholder="开始时间"
+                        end-placeholder="结束时间" value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+      <#elseif field.propertyType=='LocalDate' || field.propertyType=='Date'>
+        <el-date-picker v-model="searchData.${field.propertyName}" size="small" type="date" clearable class="searchInput"
+                        placeholder="${field.comment}" value-format="yyyy-MM-dd" format="yyyy-MM-dd"/>
+      <#elseif field.propertyType=='LocalDateTime' || field.propertyType=='DateTime'>
+        <el-date-picker v-model="searchData.${field.propertyName}" size="small" type="datetime" clearable class="searchInput"
+                        placeholder="${field.comment}" value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+      <#else>
+        <el-input v-model="searchData.${field.propertyName}" size="small" clearable class="searchInput" placeholder="${field.comment}"/>
+      </#if>
+    </#if>
+  </#list>
+<#else>
+  <#-- 没有配置searchFields3的情况下，按照默认配置 - 生成查询字段 -->
+  <#list table.fields as field>
+    <#-- 忽略字段：主键、排序字段、创建时间、更新时间、创建用户、更新用户 -->
+    <#if field.propertyName!=entityKeyName && field.propertyName!='orderIndex'
+              && field.propertyName!='createUserId' && field.propertyName!='updateUserId'
+              && field.propertyName!='createTime' && field.propertyName!='updateTime'>
       <#if field.propertyType=='LocalDate' || field.propertyType=='Date'>
         <el-date-picker v-model="searchData.${field.propertyName}" size="small" type="date" clearable class="searchInput"
                         placeholder="${field.comment}" value-format="yyyy-MM-dd" format="yyyy-MM-dd"/>
@@ -16,8 +43,17 @@
       <#else>
         <el-input v-model="searchData.${field.propertyName}" size="small" clearable class="searchInput" placeholder="${field.comment}"/>
       </#if>
-  </#if>
-</#list>
+    <#elseif field.propertyName=='createTime'>
+        <el-date-picker v-model="searchData.createTimeRange" size="small" clearable class="searchInput"
+                        type="datetimerange" style="width:340px;" start-placeholder="开始时间"
+                        end-placeholder="结束时间" value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+    <#elseif field.propertyName=='updateTime'>
+        <el-date-picker v-model="searchData.updateTimeRange" size="small" clearable class="searchInput"
+                        type="datetimerange" style="width:340px;" start-placeholder="开始时间"
+                        end-placeholder="结束时间" value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss"/>
+    </#if>
+  </#list>
+</#if>
         <el-button class="searchBtn" type="primary" size="small" icon="el-icon-search"
                    @click="searchBtnHandle">查询
         </el-button>
@@ -34,12 +70,24 @@
     <el-table ref="dataTable" :data="tableData" stripe border v-loading="isLoading"
               @selection-change="handleTableSelectChange" @sort-change="handleTableSortChange">
       <el-table-column type="selection" width="50" align="center" header-align="center"/>
-<#list table.fields as field>
+<#if listFields3??>
+  <#-- 根据前端配置listFields3 - 生成列表字段 -->
+  <#list table.fields as field>
+    <#-- 只生成listFields3中指定的字段 -->
+    <#if listFields3?seq_contains(field.annotationColumnName)>
+      <el-table-column label="${field.comment}" prop="${field.propertyName}" align="center" sortable="custom"/>
+    </#if>
+  </#list>
+<#else>
+  <#-- 没有配置listFields3的情况下，按照默认配置 - 生成列表字段 -->
+  <#list table.fields as field>
+    <#-- 忽略字段：主键、更新时间、创建用户、更新用户 -->
     <#if field.propertyName!=entityKeyName && field.propertyName!='updateTime'
             && field.propertyName!='createUserId' && field.propertyName!='updateUserId'>
       <el-table-column label="${field.comment}" prop="${field.propertyName}" align="center" sortable="custom"/>
     </#if>
-</#list>
+  </#list>
+</#if>
       <el-table-column fixed="right" label="操作" width="120" align="center">
         <template v-slot="scope">
           <el-button type="text" style="color: #13ce66;" size="small" @click="openView(scope.row)">详情</el-button>
@@ -169,11 +217,24 @@ export default {
     // 加载表格
     loadTableList() {
       this.isLoading = true
-      const params = {
-        ...this.pager,
-        params: JSON.stringify(this.searchData),
-        sorts: JSON.stringify(this.sortData)
-      };
+      const obj = {...this.searchData}
+<#list table.fields as field>
+  <#if field.propertyName=='createTime'>
+      if (obj.createTimeRange && obj.createTimeRange.length > 0) {
+        obj.createTimeStart = obj.createTimeRange[0]
+        obj.createTimeEnd = obj.createTimeRange[1]
+        delete obj.createTimeRange
+      }
+  </#if>
+  <#if field.propertyName=='updateTime'>
+      if (obj.updateTimeRange && obj.updateTimeRange.length > 0) {
+        obj.updateTimeStart = obj.updateTimeRange[0]
+        obj.updateTimeEnd = obj.updateTimeRange[1]
+        delete obj.updateTimeRange
+      }
+  </#if>
+</#list>
+      const params = {...this.pager, params: JSON.stringify(obj), sorts: JSON.stringify(this.sortData)}
       request({url: '${controllerMapping}/list', method: 'get', params}).then((response) => {
         const {data} = response
         this.pager.totalCount = data.total
@@ -240,7 +301,24 @@ export default {
     },
     // 导出Excel文件
     exportExcel() {
-      const params = {params: JSON.stringify(this.searchData), sorts: JSON.stringify(this.sortData)}
+      const obj = {...this.searchData}
+<#list table.fields as field>
+  <#if field.propertyName=='createTime'>
+      if (obj.createTimeRange && obj.createTimeRange.length > 0) {
+        obj.createTimeStart = obj.createTimeRange[0]
+        obj.createTimeEnd = obj.createTimeRange[1]
+        delete obj.createTimeRange
+      }
+  </#if>
+  <#if field.propertyName=='updateTime'>
+      if (obj.updateTimeRange && obj.updateTimeRange.length > 0) {
+        obj.updateTimeStart = obj.updateTimeRange[0]
+        obj.updateTimeEnd = obj.updateTimeRange[1]
+        delete obj.updateTimeRange
+      }
+  </#if>
+</#list>
+      const params = {params: JSON.stringify(obj), sorts: JSON.stringify(this.sortData)}
       downloadUtil.download('${controllerMapping}/export/excel', params, '${table.comment!}.xlsx')
     },
   }

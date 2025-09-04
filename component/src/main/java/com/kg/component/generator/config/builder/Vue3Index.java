@@ -66,10 +66,10 @@ public class Vue3Index implements ITemplate {
             data.put("controllerMapping", tableInfo.getEntityPath());
             data.put("buttonNamePre", tableInfo.getEntityPath() + "-");
         }
-        data.put("searchFields", getSearchFields());
-        data.put("listFields", getListFields());
         data.put("hasDeleteLog", config.getStrategyConfig().service().hasDeleteLog());
 
+        data.put("searchFields2", getSearchFields());
+        data.put("listFields2", getListFields());
         data.put("attachmentField2", getAttachmentField2());
         return data;
     }
