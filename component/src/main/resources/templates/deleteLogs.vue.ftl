@@ -152,7 +152,7 @@
 </#list>
 <#if attachmentField3??>
         <el-form-item label="附件" prop="${attachmentField3}">
-          <file-upload v-model="formData.${attachmentField3}" :limit-size="1024*1024*10"/>
+          <file-upload v-model="temp.${attachmentField3}" :limit-size="1024*1024*10"/>
         </el-form-item>
 </#if>
       </el-form>

@@ -181,7 +181,7 @@
   </#list>
   <#if attachmentField1??>
         <el-form-item label="附件" prop="${attachmentField1}">
-          <file-upload v-model="formData.${attachmentField1}" :limit-size="1024*1024*10"/>
+          <file-upload v-model="temp.${attachmentField1}" :limit-size="1024*1024*10"/>
         </el-form-item>
   </#if>
       </el-form>
@@ -377,11 +377,6 @@ export default {
     closeDialog() {
       this.temp = this.$options.data().temp
       this.dialogIndex++
-<#if childTableList??>
-  <#list childTableList as child>
-      this.load${child}FileList()
-  </#list>
-</#if>
 <#if jsMethods??>
       this.loadChkStr2Arr()
 </#if>
@@ -407,11 +402,6 @@ export default {
       } else {
         // 修改弹窗
         this.temp = Object.assign({}, this.tableSelectRows[0])
-<#if childTableList??>
-  <#list childTableList as child>
-        this.load${child}FileList()
-  </#list>
-</#if>
 <#if jsMethods??>
         this.loadChkStr2Arr()
 </#if>
@@ -425,11 +415,6 @@ export default {
     // 打开查看窗口
     openView(row) {
       this.temp = Object.assign({}, row)
-<#if childTableList??>
-    <#list childTableList as child>
-      this.load${child}FileList()
-    </#list>
-</#if>
 <#if jsMethods??>
       this.loadChkStr2Arr()
 </#if>

@@ -45,7 +45,7 @@ public class MybatisPlusGenerator {
         // 表名，必填
         LinkedList<String> tableNames = new LinkedList<>();
         tableNames.add("a_apple");
-//        tableNames.add("a_apple");// 多表生成时，用多次add添加
+//        tableNames.add("a_table");// 多表生成时，用多次add添加
 
         // 表主键类型，必填（如：IdType.ASSIGN_UUID、IdType.ASSIGN_ID）
         LinkedList<IdType> idTypes = new LinkedList<>();
@@ -69,7 +69,7 @@ public class MybatisPlusGenerator {
         // 配置：是否生成删除日志
         LinkedList<Boolean> isDeleteLogs = new LinkedList<>();
         isDeleteLogs.add(true);
-//        isDeleteLogs.add(false);// 多表生成时，用多次add添加
+//        isDeleteLogs.add(true);// 多表生成时，用多次add添加
 
         // ========= 4 附件表配置 =========
         // 说明： 1. 附件表名，自动生成[主表名_files]；
@@ -133,8 +133,7 @@ public class MybatisPlusGenerator {
                     idTypes.add(IdType.ASSIGN_UUID);// 子表字段类型
                     packages.add(childCamelTableName);// 子表包名
                     viewPaths.add("");// 子表前端（不生成前端，所以置空）
-                    boolean isChildDeleteLogs = isDeleteLogs.get(i);
-                    isDeleteLogs.add(isChildDeleteLogs);// 父表有删除日志，则附件子表也有删除日志
+                    isDeleteLogs.add(false);// 父表有删除日志，则附件子表也有删除日志
                     isAttachments.add(false);// 子表不生成附件表
                     // 给主表添加子表配置（子表名）
                     LinkedList<String> childTableList = new LinkedList<>();// 子表名，多个子表支持配置列表（驼峰）
@@ -143,7 +142,7 @@ public class MybatisPlusGenerator {
                     // 配置子表的前端生成需要的信息
                     attachmentFieldMap.put(tableName, childCamelTableName.toLowerCase() + "List");
                     // 给主表的日志代码，加上附件信息
-                    if (isChildDeleteLogs) {
+                    if (isDeleteLogs.get(i)) {
                         childTableMap.put(tableName + "_logs", childTableList);
                         attachmentFieldMap.put(tableName + "_logs", childCamelTableName.toLowerCase() + "List");
                     }
