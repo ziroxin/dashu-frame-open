@@ -26,6 +26,7 @@
 
 <script setup lang="ts">
 import { CodeEditor } from '@/components/CodeEditor'
+import { objToStr } from '@/utils'
 
 // 当前Tab
 const currentTab = ref('json')
@@ -52,7 +53,18 @@ const getHtmlCode = () => {
   const itemHtmlArr: string[] = []
   formItemList.value.forEach((item: any) => {
     // 1.1处理表单及属性
-    const attrsStr = Object.keys(item.__attrs).map(key => `${key}="${item.__attrs[key]}"`).join(' ')
+    const attrsStr = Object.keys(item.__attrs).map(key => {
+      const val = item.__attrs[key]
+      if (!['boolean', 'number', 'object', 'string'].includes(typeof val)) {
+        console.log('意外的数据类型：', typeof val, {key: val})
+      }
+      if (val) {
+        const bindArr = ['boolean', 'number', 'object']
+        return bindArr.includes(typeof val) ? `:${key}="${objToStr(val)}"` : `${key}="${val}"`
+      } else {
+        return null
+      }
+    }).filter(attr => attr !== null).join(' ')
     const wangEditorDisable = item.__key === 'my-wang-editor' ? ` :disabled="dialogType==='view'"` : ''
     const innerHtml = `<el-form-item label="${item.__formItemAttrs.label}" prop="${item.__modelName}"
                       :rules="${getRules(item.__formItemAttrs)}">
