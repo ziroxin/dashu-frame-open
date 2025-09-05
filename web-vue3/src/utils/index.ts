@@ -19,6 +19,49 @@ export const humpToDash = (str: string): string => {
   return str.replace(/([A-Z])/g, '-$1').toLowerCase()
 }
 
+/** Object 转 字符串（单引号） */
+export const objToStr = (obj: any): string => {
+  // 1 非object类型直接返回
+  if (typeof obj !== 'object') {
+    return obj
+  }
+  // 2 定义处理不同类型数据的方法
+  const replacer = (key: string, value: any): string => {
+    // number/boolean直接返回
+    if (typeof value === 'number' || typeof value === 'boolean') {
+      return value.toString()
+    }
+    // 数组，处理每一个内部值
+    if (Array.isArray(value)) {
+      return `[${value.map(item => replacer(key, item)).join(', ')}]`
+    }
+    // 其他object，迭代转str
+    if (value && typeof value === 'object') {
+      return `${objToStr(value)}`
+    }
+    // 其他类型，如string等，加单引号返回
+    return `'${value}'`
+  }
+  // 3 单独处理数组
+  if (Array.isArray(obj)) {
+    return `[${obj.map(item => replacer('', item)).join(', ')}]`
+  }
+  // 4 处理object
+  // 4.1 含特殊字符的key，加单引号
+  const specialCharsRegex = /[^a-zA-Z0-9_]/
+  const processKey = (key: string): string => (specialCharsRegex.test(key) ? `'${key}'` : `${key}`)
+  // 4.2 组装结果集
+  const result: string[] = []
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const newKey = processKey(key)
+      const newValue = replacer(key, obj[key])
+      result.push(`${newKey}:${newValue}`)
+    }
+  }
+  return `{${result.join(', ')}}`
+}
+
 /** 设置css变量 */
 export const setCssVar = (prop: string, val: any, dom = document.documentElement) => {
   dom.style.setProperty(prop, val)
