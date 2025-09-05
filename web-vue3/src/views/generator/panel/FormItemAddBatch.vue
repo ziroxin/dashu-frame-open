@@ -106,7 +106,7 @@ import { underlineToHump } from '@/utils'
 import { generateUUID } from '@/utils/tools'
 import allConfig from '@/views/generator/panel/config/allConfig'
 // 组件列表
-const componentList = ref(allConfig)
+const componentList: any = ref(allConfig)
 // 显示状态
 const formItemAddBatchVisible = defineModel()
 // 表单列表数据
@@ -116,25 +116,29 @@ const formItemList = defineModel('formItemList', {type: Object, default: () => {
 const itemStr = ref('')
 const colLen = ref(0)
 const colIndexList = ref({fieldIdx: 0, typeIdx: 1, labelIdx: 11, requiredIdx: 4})
-const fieldData = ref([])
+const fieldData: any = ref([])
 const change = (val) => {
-  const result1 = []
+  const result1: any[] = []
   val.split('\n').forEach(rowData => {
     const cols = rowData.split('\t')
     if (cols && cols.length > 1) result1.push(cols)
   })
   colLen.value = result1.length > 0 ? result1[0].length : 0
-  const result2 = []
+  const result2: any[] = []
   if (result1.length > 0 && colLen.value > 0) {
     for (let rowIdx = 0; rowIdx < result1.length; rowIdx++) {
-      const __type = getComponentType(result1[rowIdx][colIndexList.value.typeIdx])
+      if (result1[rowIdx].join(',').startsWith('名称,类型,长度,小数点')) {
+        continue
+      }
+      const __type1 = getComponentType(result1[rowIdx][colIndexList.value.typeIdx])
+      const __required1 = result1[rowIdx][colIndexList.value.requiredIdx]
       result2.push({
         __id: generateUUID(),
         __modelName: underlineToHump(result1[rowIdx][colIndexList.value.fieldIdx]) || '',
         __label: result1[rowIdx][colIndexList.value.labelIdx] || '',
-        __required: result1[rowIdx][colIndexList.value.requiredIdx] === '0' ? true : false,
-        __type: __type,
-        ...(__type === 'el-input' ? {__type2: 'text'} : __type === 'el-date-picker' ? {__type2: 'date'} : {})
+        __required: __required1 === 'true' || __required1 === '0' ? true : false,
+        __type: __type1,
+        ...(__type1 === 'el-input' ? {__type2: 'text'} : __type1 === 'el-date-picker' ? {__type2: 'date'} : {})
       })
     }
   }
@@ -153,7 +157,6 @@ const getComponentType = (type) => {
     return 'el-input'
   }
 }
-console.log(formItemList.value)
 // 保存
 const saveItems = () => {
   if (fieldData.value.some(item => !item.__modelName)) {
@@ -168,8 +171,8 @@ const saveItems = () => {
     ElMessage({message: '字段名不能重复！', type: 'error', grouping: true})
     return
   }
-  const result = []
-  const list = componentList.value.flatMap(g => g.list)
+  const result: any[] = []
+  const list = componentList.value.flatMap(g => g.list.map(c => ({...c, parentType: g.type})))
   fieldData.value.forEach(item => {
     const cp = cloneDeep(list.find(c => c.__key === item.__type))
     cp.__id = item.__id
@@ -184,9 +187,13 @@ const saveItems = () => {
         cp.__attrs.valueFormat = item.__type2 === 'datetime' ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'
       }
     }
+    if (cp.parentType === 'input') {
+      cp.__attrs.placeholder = item.__label ? '请输入' + item.__label : cp.__attrs.placeholder
+    } else if (cp.parentType === 'select') {
+      cp.__attrs.placeholder = item.__label ? '请选择' + item.__label : cp.__attrs.placeholder
+    }
     result.push(cp)
   })
-  console.log(111, result)
   formItemList.value.push(...result)
   ElMessage({message: '操作成功！', type: 'success', grouping: true})
   formItemAddBatchVisible.value = false

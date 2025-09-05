@@ -28,7 +28,7 @@
   <form-item-add v-if="addDialogVisible" v-model="addDialogVisible"
                  v-model:addItem="addItem" v-model:formItemList="formItemList"/>
   <!-- 批量添加表单项弹窗 -->
-  <el-dialog title="批量添加表单项" v-model="formItemAddBatchVisible" top="5vh" width="1000px"
+  <el-dialog title="批量添加表单项" v-model="formItemAddBatchVisible" top="5vh" width="90%"
              :close-on-click-modal="false">
     <form-item-add-batch v-if="formItemAddBatchVisible" v-model="formItemAddBatchVisible"
                          v-model:formItemList="formItemList"/>
