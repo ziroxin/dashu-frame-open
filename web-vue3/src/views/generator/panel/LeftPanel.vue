@@ -42,7 +42,7 @@ import FormItemAdd from '@/views/generator/panel/FormItemAdd'
 import FormItemAddBatch from '@/views/generator/panel/FormItemAddBatch'
 
 // 组件配置
-const componentList = ref(allConfig)
+const componentList = cloneDeep(allConfig)
 
 const formItemList = defineModel()
 

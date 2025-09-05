@@ -61,9 +61,8 @@ const getHtmlCode = () => {
       if (val) {
         const bindArr = ['boolean', 'number', 'object']
         return bindArr.includes(typeof val) ? `:${key}="${objToStr(val)}"` : `${key}="${val}"`
-      } else {
-        return null
       }
+      return null
     }).filter(attr => attr !== null).join(' ')
     const wangEditorDisable = item.__key === 'my-wang-editor' ? ` :disabled="dialogType==='view'"` : ''
     const innerHtml = `<el-form-item label="${item.__formItemAttrs.label}" prop="${item.__modelName}"

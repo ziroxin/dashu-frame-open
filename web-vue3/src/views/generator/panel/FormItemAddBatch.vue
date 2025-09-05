@@ -106,7 +106,7 @@ import { underlineToHump } from '@/utils'
 import { generateUUID } from '@/utils/tools'
 import allConfig from '@/views/generator/panel/config/allConfig'
 // 组件列表
-const componentList: any = ref(allConfig)
+const componentList: any = cloneDeep(allConfig)
 // 显示状态
 const formItemAddBatchVisible = defineModel()
 // 表单列表数据
@@ -172,7 +172,7 @@ const saveItems = () => {
     return
   }
   const result: any[] = []
-  const list = componentList.value.flatMap(g => g.list.map(c => ({...c, parentType: g.type})))
+  const list = componentList.flatMap(g => g.list.map(c => ({...c, parentType: g.type})))
   fieldData.value.forEach(item => {
     const cp = cloneDeep(list.find(c => c.__key === item.__type))
     cp.__id = item.__id
