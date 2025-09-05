@@ -8,7 +8,6 @@ const state = {
   device: 'desktop',
   size: sessionStorage.getItem(storageKeys.size) || 'medium'
 }
-console.log(state, 999)
 
 const mutations = {
   TOGGLE_SIDEBAR: state => {
