@@ -53,7 +53,7 @@ export const objToStr = (obj: any): string => {
   // 4.2 组装结果集
   const result: string[] = []
   for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
       const newKey = processKey(key)
       const newValue = replacer(key, obj[key])
       result.push(`${newKey}:${newValue}`)
