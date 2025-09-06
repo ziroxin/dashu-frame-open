@@ -1,6 +1,7 @@
 export default [
   {
     __key: 'el-select',
+    __docLink: 'https://element-plus.org/zh-CN/component/select.html#select-attributes',
     __name: '下拉框',
     __icon: 'form-select',
     __span: 24,
@@ -17,6 +18,7 @@ export default [
   },
   {
     __key: 'el-date-picker',
+    __docLink: 'https://element-plus.org/zh-CN/component/date-picker.html#api',
     __name: '日期选择',
     __icon: 'form-date',
     __span: 24,

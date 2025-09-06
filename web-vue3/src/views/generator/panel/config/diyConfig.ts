@@ -1,6 +1,7 @@
 export default [
   {
     __key: 'my-wang-editor',
+    __docLink: 'https://www.wangeditor.com/v5/getting-started.html',
     __name: '富文本框',
     __icon: 'form-rich-text',
     __span: 24,
