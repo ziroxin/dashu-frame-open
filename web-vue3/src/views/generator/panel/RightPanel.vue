@@ -6,7 +6,7 @@
         <el-form v-if="current?.__id" :model="current" label-width="auto" size="small">
           <!-- 组件类型 -->
           <el-form-item label="组件类型" prop="__key">
-            <el-select v-model="current.__key" @change="componentChange">
+            <el-select v-model="current.__key" @change="componentChange" class="w-80%!">
               <el-option-group v-for="group in componentList" :key="group.name" :label="group.name">
                 <el-option v-for="item in group.list" :key="item.__key" :label="item.__name" :value="item.__key">
                   <my-icon v-if="item.__icon" :icon="item.__icon"/>
@@ -14,6 +14,10 @@
                 </el-option>
               </el-option-group>
             </el-select>
+            <a :href="current.__docLink || 'https://element-plus.org/zh-CN/'" target="_blank"
+               class="flex justify-center items-center w-20%!">
+              <base-button type="primary" link icon="el-icon-link" size="default"/>
+            </a>
           </el-form-item>
           <!-- input-文本类型 -->
           <el-form-item v-if="'el-input'===current.__key" label="文本类型">
@@ -39,8 +43,8 @@
           </el-form-item>
 
           <el-divider>更多属性</el-divider>
+          <!-- input属性 -->
           <template v-if="'el-input'===current.__key">
-            <!-- input属性 -->
             <el-form-item label="MaxLength">
               <el-input-number v-model="current.__attrs.maxlength"/>
             </el-form-item>
@@ -75,6 +79,76 @@
               </div>
             </el-form-item>
           </template>
+          <!-- input-number属性 -->
+          <template v-if="'el-input-number'===current.__key">
+            <el-form-item label="最小值">
+              <el-input-number v-model="current.__attrs.min"/>
+            </el-form-item>
+            <el-form-item label="最大值">
+              <el-input-number v-model="current.__attrs.max"/>
+            </el-form-item>
+            <el-form-item label="步长step">
+              <el-input-number v-model="current.__attrs.step"/>
+            </el-form-item>
+            <el-form-item label="严格模式">
+              <el-switch v-model="current.__attrs.stepStrictly" active-text="是" inactive-text="否"
+                         :active-value="true" :inactive-value="false"/>
+              <el-tag :type="current.__attrs.stepStrictly?'success':'info'" class="ml-10px">只输入step的倍数</el-tag>
+            </el-form-item>
+            <el-form-item label="精度">
+              <el-input-number v-model="current.__attrs.precision"/>
+            </el-form-item>
+            <el-form-item label="控制按钮">
+              <el-switch v-model="current.__attrs.controls" active-text="显示" inactive-text="隐藏"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="控钮位置" v-if="current.__attrs.controls">
+              <el-switch v-model="current.__attrs.controlsPosition" active-text="右侧" inactive-text="默认"
+                         :active-value="'right'" :inactive-value="''"/>
+            </el-form-item>
+            <el-form-item label="文本对齐">
+              <el-radio-group v-model="current.__attrs.align">
+                <el-radio-button label="Left" value="left"/>
+                <el-radio-button label="Center" value="center"/>
+                <el-radio-button label="Right" value="right"/>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="科学计数">
+              <el-switch v-model="current.__attrs.disabledScientific" active-text="禁用" inactive-text="启用"
+                         :active-value="true" :inactive-value="false" class="mr-10px"/>
+              <el-tag v-if="current.__attrs.disabledScientific" type="info" disable-transitions>不可输入'e'</el-tag>
+              <el-tag v-else type="success" disable-transitions>可输入'e'</el-tag>
+            </el-form-item>
+          </template>
+<!--
+model-value / v-model	绑定值array—
+max	可添加标签的最大数量number—
+tag-type	标签类型	enum info
+tag-effect	标签效果	enum light
+trigger	触发输入标签的按键	enum Enter
+draggable	是否可以拖动标签	boolean false
+delimiter 2.9.9	在匹配分隔符时添加标签 string  /regex—
+size	输入框尺寸	enum—
+collapse-tags 2.11.0	多选时是否将选中值按文字的形式展示boolean false
+collapse-tags-tooltip 2.11.0	当鼠标悬停于折叠标签的文本时，是否显示所有选中的标签。 要使用此功能，collapse-tags的值必须为true booleanfalse
+save-on-blur 2.9.7	当输入失去焦点时是否保存输入值 boolean true
+clearable	是否显示清除按钮 boolean false
+clear-icon 2.11.0	自定义清除图标 string  / object CircleClose
+disabled	是否禁用 boolean false
+validate-event	是否触发表单验证 boolean true
+readonly	等价于原生 readonly 属性 boolean false
+autofocus	等价于原生  autofocus  属性 boolean false
+id	等价于原生 input id 属性 string —
+tabindex	等价于原生  tabindex  属性 string  / number —
+max-collapse-tags 2.11.0	需要显示的 Tag 的最大数量 要使用此功能，collapse-tags的值必须为true  number 1
+maxlength	等价于原生  maxlength  属性 string  / number —
+minlength	等价于原生  minlength  属性string  / number—
+placeholder	输入框占位文本string—
+autocomplete	等价于原生  autocomplete  属性stringoff
+aria-label a11y	等价于原生  aria-label  属性string
+-->
+
+
 
           <el-divider>test</el-divider>
           <base-button type="primary" @click="()=>{console.log(JSON.stringify(current.__attrs))}">测试属性</base-button>
@@ -201,6 +275,8 @@
 import { cloneDeep } from 'lodash-es'
 import allConfig from '@/views/generator/panel/config/allConfig'
 import FormItemRules from '@/views/generator/panel/FormItemRules'
+import { BaseButton } from '@/components/BaseButton'
+import { MyIcon } from '@/components/MyIcon'
 
 // 全部组件类型
 const componentList = cloneDeep(allConfig)
@@ -233,6 +309,11 @@ watch(() => current.value.autosizeType, (val) => {
   if (val === 'boolean') current.value.__attrs.autosize = true
   else if (val === 'object') current.value.__attrs.autosize = {minRows: 2, maxRows: 5}
   else delete current.value.__attrs.autosize
+})
+// input-number监听控制按钮显示/隐藏
+watch(() => current.value.__attrs?.controls, (val) => {
+  current.value.__attrs.controlsPosition = ''
+  if (!val) delete current.value.__attrs.controlsPosition
 })
 </script>
 

@@ -1,9 +1,6 @@
 <template>
   <!-- 批量添加按钮 -->
-  <div class="el-divider el-divider--horizontal">
-    <div class="el-divider__text is-center bg-[var(--el-fill-color-light)]! text-12px!">批量添加</div>
-  </div>
-  <div class="w-full px-15px">
+  <div class="w-full px-15px pt-15px">
     <base-button icon="el-icon-plus" class="w-full" @click="formItemAddBatchVisible=true">批量添加</base-button>
   </div>
   <!-- 单个添加-组件列表 -->
