@@ -34,6 +34,9 @@ export const setupDictList = () => {
  * @param code 字典类型code
  */
 export function getDict(code: string) {
+  if (!dictList || dictList.length <= 0) {
+    setupDictList()
+  }
   const dict = dictList.filter(item => item.typeCode === code)
   return dict.length > 0 ? dict[0].children : []
 }
