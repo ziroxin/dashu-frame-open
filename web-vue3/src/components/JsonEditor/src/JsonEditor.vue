@@ -4,7 +4,7 @@
                    :deep="deep"
                    :show-length="showLength"
                    :show-line-numbers="showLineNumbers"
-                   :show-line-number="showLineNumber"
+                   :show-line-number="showLineNumbers"
                    :show-icon="showIcon"
                    :show-double-quotes="showDoubleQuotes"
                    :virtual="virtual"
@@ -40,7 +40,6 @@ const props = defineProps({
   deep: {type: Number, default: 5}, // JSON 数据的深度，默认为 5 级
   showLength: {type: Boolean, default: true}, // 是否显示数组或对象的长度
   showLineNumbers: {type: Boolean, default: true}, // 是否显示行号
-  showLineNumber: {type: Boolean, default: true}, // 是否显示行号（注意：此属性与 showLineNumbers 重复）
   showIcon: {type: Boolean, default: true}, // 是否显示节点图标
   showDoubleQuotes: {type: Boolean, default: false}, // 是否显示双引号
   virtual: {type: Boolean, default: false}, // 是否使用虚拟滚动
