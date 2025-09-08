@@ -42,7 +42,7 @@ export default [
       rules: [{required: true, message: '标签不能为空'}]
     },
     __attrs: {
-      placeholder: '请输入标签'
+      placeholder: '请输入标签（按回车分割标签）'
     }
   }
 ]

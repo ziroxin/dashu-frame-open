@@ -3,7 +3,7 @@
     <div class="mb-10px flex justify-between items-center">
       <span class="text-16px color-#666">批量添加字段</span>
       <span class="text-12px color-[--el-color-primary] mx-10px">
-        从 navicat->设计表->复制整行字段，粘贴至下方文本框，自动识别
+        从 navicat->设计表->复制整行字段，粘贴至下方文本框，自动识别（已适配 Navicat v12/v17）
       </span>
       <base-button type="danger" plain icon="el-icon-close" size="small" @click="itemStr=''">清空</base-button>
     </div>

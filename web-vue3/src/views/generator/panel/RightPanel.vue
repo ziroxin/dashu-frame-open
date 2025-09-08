@@ -2,11 +2,11 @@
   <el-tabs class="w-full" stretch model-value="componentTab">
     <!-- tab1组件属性 -->
     <el-tab-pane label="组件属性" name="componentTab">
-      <div class="mx-10px">
+      <div class="ml-10px mr-5px h-[calc(100vh-55px)] overflow-x-hidden overflow-y-auto">
         <el-form v-if="current?.__id" :model="current" label-width="auto" size="small">
           <!-- 组件类型 -->
           <el-form-item label="组件类型" prop="__key">
-            <el-select v-model="current.__key" @change="componentChange" class="w-80%!">
+            <el-select v-model="current.__key" @change="componentChange" class="w-65%!">
               <el-option-group v-for="group in componentList" :key="group.name" :label="group.name">
                 <el-option v-for="item in group.list" :key="item.__key" :label="item.__name" :value="item.__key">
                   <my-icon v-if="item.__icon" :icon="item.__icon"/>
@@ -14,9 +14,8 @@
                 </el-option>
               </el-option-group>
             </el-select>
-            <a :href="current.__docLink || 'https://element-plus.org/zh-CN/'" target="_blank"
-               class="flex justify-center items-center w-20%!">
-              <base-button type="primary" link icon="el-icon-link" size="default"/>
+            <a :href="current.__docLink || 'https://element-plus.org/zh-CN/'" target="_blank" class="ml-2% w-33%!">
+              <base-button type="primary" plain icon="el-icon-link" class="w-full">文档</base-button>
             </a>
           </el-form-item>
           <!-- input-文本类型 -->
@@ -41,6 +40,75 @@
           <el-form-item v-if="current?.__attrs?.placeholder" label="占位提示">
             <el-input v-model="current.__attrs.placeholder"/>
           </el-form-item>
+
+          <template v-if="'el-select'===current.__key">
+            <el-divider>数据</el-divider>
+            <el-form-item label-width="0">
+              <el-tabs v-model="current.dataType" class="dataTab w-full"
+                       type="border-card" stretch @tab-change="dataTypeClick">
+                <el-tab-pane label="静态" name="static">
+                  <template v-if="'static'===current.dataType">
+                    <el-form-item label="Props" label-width="60px" class="mt-10px">
+                      <div class="color-#666">默认值不可修改</div>
+                      <json-editor v-model="current.__attrs.props" :showLineNumbers="false" :showIcon="false"
+                                   :collapsedOnClickBrackets="false" :editable="false"/>
+                    </el-form-item>
+                    <el-form-item label="Options" label-width="60px" class="mt-10px">
+                      <vue-draggable v-model="current.__attrs.options" :animation="150"
+                                     :key="'drag'+current.__attrs.options.length">
+                        <div v-for="(item,idx) in current.__attrs.options" :key="idx" class="flex items-center mb-10px">
+                          <my-icon icon="el-icon-rank" :size="20" color="#409eff" class="mr-5px cursor-grab"/>
+                          <el-input v-model="item.label" class="mr-5px"/>
+                          <el-input v-model="item.value" class="mr-5px"/>
+                          <base-button type="danger" link icon="el-icon-delete" class="mr-5px" size="small"
+                                       @click="()=>{current.__attrs.options.splice(idx,1)}"/>
+                        </div>
+                      </vue-draggable>
+                      <base-button type="primary" link icon="el-icon-circle-plus-outline" size="small" class="mx-auto"
+                                   @click="addStaticData">添加数据
+                      </base-button>
+                    </el-form-item>
+                  </template>
+                </el-tab-pane>
+                <el-tab-pane label="动态" name="dynamic">
+                  <template v-if="'dynamic'===current.dataType">
+                    <el-form-item label="Props 可修改" label-width="55px" class="mt-10px">
+                      <json-editor v-model="current.__attrs.props" :showLineNumbers="false" :showIcon="false"
+                                   :collapsedOnClickBrackets="false"/>
+                    </el-form-item>
+                    <el-form-item label="接口" label-width="70px" class="mt-10px">
+                      <el-input v-model="current.dataDynamic.url" placeholder="接口地址">
+                        <template #prefix>
+                          <span class="bg-#efefef color-#777 px-10px ml-[-6px]! b-rd-4px">GET</span>
+                        </template>
+                      </el-input>
+                    </el-form-item>
+                    <el-form-item label="数据字段" label-width="70px" class="mt-10px">
+                      <el-input v-model="current.dataDynamic.dataKey" placeholder="数据字段"/>
+                    </el-form-item>
+                    <base-button type="primary" link icon="el-icon-refresh" size="small" class="ml-70px"
+                                 @click="refreshDynamicData">刷新数据
+                    </base-button>
+                  </template>
+                </el-tab-pane>
+                <el-tab-pane label="字典" name="dict">
+                  <template v-if="'dict'===current.dataType">
+                    <el-form-item label="Props" label-width="60px" class="mt-10px">
+                      <div class="color-#666">默认值不可修改</div>
+                      <json-editor v-model="current.__attrs.props" :showLineNumbers="false" :showIcon="false"
+                                   :collapsedOnClickBrackets="false" :editable="false"/>
+                    </el-form-item>
+                    <el-form-item label="字典类型code" label-width="100px" class="mt-10px">
+                      <el-input v-model="current.dictCode" placeholder="字典类型code"/>
+                    </el-form-item>
+                    <base-button type="primary" link icon="el-icon-refresh" size="small" class="ml-100px"
+                                 @click="refreshDictData">刷新数据
+                    </base-button>
+                  </template>
+                </el-tab-pane>
+              </el-tabs>
+            </el-form-item>
+          </template>
 
           <el-divider>更多属性</el-divider>
           <!-- input属性 -->
@@ -120,35 +188,119 @@
               <el-tag v-else type="success" disable-transitions>可输入'e'</el-tag>
             </el-form-item>
           </template>
-<!--
-model-value / v-model	绑定值array—
-max	可添加标签的最大数量number—
-tag-type	标签类型	enum info
-tag-effect	标签效果	enum light
-trigger	触发输入标签的按键	enum Enter
-draggable	是否可以拖动标签	boolean false
-delimiter 2.9.9	在匹配分隔符时添加标签 string  /regex—
-size	输入框尺寸	enum—
-collapse-tags 2.11.0	多选时是否将选中值按文字的形式展示boolean false
-collapse-tags-tooltip 2.11.0	当鼠标悬停于折叠标签的文本时，是否显示所有选中的标签。 要使用此功能，collapse-tags的值必须为true booleanfalse
-save-on-blur 2.9.7	当输入失去焦点时是否保存输入值 boolean true
-clearable	是否显示清除按钮 boolean false
-clear-icon 2.11.0	自定义清除图标 string  / object CircleClose
-disabled	是否禁用 boolean false
-validate-event	是否触发表单验证 boolean true
-readonly	等价于原生 readonly 属性 boolean false
-autofocus	等价于原生  autofocus  属性 boolean false
-id	等价于原生 input id 属性 string —
-tabindex	等价于原生  tabindex  属性 string  / number —
-max-collapse-tags 2.11.0	需要显示的 Tag 的最大数量 要使用此功能，collapse-tags的值必须为true  number 1
-maxlength	等价于原生  maxlength  属性 string  / number —
-minlength	等价于原生  minlength  属性string  / number—
-placeholder	输入框占位文本string—
-autocomplete	等价于原生  autocomplete  属性stringoff
-aria-label a11y	等价于原生  aria-label  属性string
--->
+          <!-- input-tag属性 -->
+          <template v-if="'el-input-tag'===current.__key">
+            <el-form-item label="标签限制">
+              <el-input-number v-model="current.__attrs.max" class="w-90px!"/>
+              <span class="text-12px text-#999 ml-5px">可添加标签最大数量</span>
+            </el-form-item>
+            <el-form-item label="标签类型">
+              <el-select v-model="current.__attrs.tagType" clearable placeholder="请选择标签类型（可为空）">
+                <el-option :value="t" :label="t" :key="t" v-for="t in ['primary','success','info','warning','danger']"/>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="标签效果">
+              <el-select v-model="current.__attrs.tagEffect" clearable placeholder="请选择标签效果（可为空）">
+                <el-option :value="e" :label="e" :key="e" v-for="e in ['light','dark','plain']"/>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="触发按键">
+              <el-switch v-model="current.__attrs.trigger" active-text="空格Space" inactive-text="回车Enter"
+                         active-value="Space" inactive-value="Enter"/>
+            </el-form-item>
+            <el-form-item label="拖动标签">
+              <el-switch v-model="current.__attrs.draggable" active-text="允许拖动" inactive-text="禁止拖动"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="分隔符">
+              <el-input v-model="current.__attrs.delimiter" placeholder="分隔符自动分割（为空时不分割）" clearable/>
+            </el-form-item>
+            <el-form-item label="标签折叠">
+              <el-switch v-model="current.__attrs.collapseTags" active-text="折叠" inactive-text="不折叠"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <template v-if="current.__attrs.collapseTags">
+              <el-form-item label="折叠提示">
+                <el-switch v-model="current.__attrs.collapseTagsTooltip" active-text="折叠提示"
+                           inactive-text="折叠不提示" :active-value="true" :inactive-value="false"/>
+              </el-form-item>
+              <el-form-item label="不折叠数">
+                <el-input-number v-model="current.__attrs.maxCollapseTags" class="w-90px!"/>
+                <span class="text-12px text-#999 ml-5px">超出该数的标签才折叠</span>
+              </el-form-item>
+            </template>
+            <el-form-item label="失焦保存">
+              <el-select v-model="current.__attrs.saveOnBlur" clearable placeholder="请选择失去焦点时是否保存">
+                <el-option :value="true" label="失去焦点时保存"/>
+                <el-option :value="false" label="失去焦点时不保存"/>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="清除按钮">
+              <el-switch v-model="current.__attrs.clearable" active-text="显示" inactive-text="隐藏"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+          </template>
+          <!-- select属性 -->
+          <template v-if="'el-select'===current.__key">
+            <el-form-item label="多选">
+              <el-switch v-model="current.__attrs.multiple" active-text="是" inactive-text="否"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="value键名">
+              <el-input v-model="current.__attrs.valueKey" placeholder="绑定值为对象类型时必填"/>
+            </el-form-item>
+            <el-form-item label="清除按钮">
+              <el-switch v-model="current.__attrs.clearable" active-text="显示" inactive-text="隐藏"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <template v-if="current.__attrs.multiple">
+              <el-form-item label="最多可选">
+                <el-input-number v-model="current.__attrs.multipleLimit" class="w-90px!"/>
+                <span class="text-12px text-#999 ml-5px">最多可选数,0不限制</span>
+              </el-form-item>
+              <!-- 多选时，配置标签折叠 -->
+              <el-form-item label="选项折叠">
+                <el-switch v-model="current.__attrs.collapseTags" active-text="折叠" inactive-text="不折叠"
+                           :active-value="true" :inactive-value="false"/>
+              </el-form-item>
+              <template v-if="current.__attrs.collapseTags">
+                <el-form-item label="折叠提示">
+                  <el-switch v-model="current.__attrs.collapseTagsTooltip" active-text="折叠提示"
+                             inactive-text="折叠不提示" :active-value="true" :inactive-value="false"/>
+                </el-form-item>
+                <el-form-item label="不折叠数">
+                  <el-input-number v-model="current.__attrs.maxCollapseTags" class="w-90px!"/>
+                  <span class="text-12px text-#999 ml-5px">超出该数的才折叠</span>
+                </el-form-item>
+              </template>
+            </template>
+            <el-form-item label="主题">
+              <el-switch v-model="current.__attrs.effect" active-text="Dark" inactive-text="Light"
+                         active-value="dark" inactive-value="light"/>
+            </el-form-item>
+            <el-form-item label="筛选">
+              <el-switch v-model="current.__attrs.filterable" active-text="可查询" inactive-text="不可查询"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <template v-if="current.__attrs.filterable">
+              <el-form-item label="筛选提示">
+                <el-input v-model="current.__attrs.noMatchText" clearable placeholder="筛选条件无匹配时显示的文字"/>
+              </el-form-item>
+              <el-form-item label="新条目">
+                <el-switch v-model="current.__attrs.allowCreate" active-text="允许" inactive-text="不允许用户创建新条目"
+                           :active-value="true" :inactive-value="false"/>
+              </el-form-item>
+            </template>
+            <el-form-item label="无数据">
+              <el-input v-model="current.__attrs.noDataText" clearable placeholder="无选项时显示的文字"/>
+            </el-form-item>
+            <el-form-item label="回车键">
+              <el-switch v-model="current.__attrs.defaultFirstOption" active-text="选中第一项"
+                         inactive-text="回车无操作"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
 
-
+          </template>
 
           <el-divider>test</el-divider>
           <base-button type="primary" @click="()=>{console.log(JSON.stringify(current.__attrs))}">测试属性</base-button>
@@ -272,14 +424,17 @@ aria-label a11y	等价于原生  aria-label  属性string
 </template>
 
 <script setup lang="ts">
+import { ElMessage } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
+import { VueDraggable } from 'vue-draggable-plus'
+import { getDict } from '@/utils/dict-util'
+import { JsonEditor } from '@/components/JsonEditor'
 import allConfig from '@/views/generator/panel/config/allConfig'
 import FormItemRules from '@/views/generator/panel/FormItemRules'
-import { BaseButton } from '@/components/BaseButton'
-import { MyIcon } from '@/components/MyIcon'
+import request from '@/utils/request'
 
 // 全部组件类型
-const componentList = cloneDeep(allConfig)
+const componentList: any = cloneDeep(allConfig)
 
 // 绑定组件属性
 const current = defineModel('current', {type: Object, default: () => {}})
@@ -315,8 +470,70 @@ watch(() => current.value.__attrs?.controls, (val) => {
   current.value.__attrs.controlsPosition = ''
   if (!val) delete current.value.__attrs.controlsPosition
 })
+// input-tag监听标签折叠/不折叠
+watch(() => current.value.__attrs?.collapseTags, (val) => {
+  delete current.value.__attrs.collapseTags
+  delete current.value.__attrs.collapseTagsTooltip
+  delete current.value.__attrs.maxCollapseTags
+  if (val) {
+    current.value.__attrs.collapseTags = true
+    current.value.__attrs.collapseTagsTooltip = true
+  }
+})
+// select组件，监听数据类型
+const dataTypeClick = (val) => {
+  console.log(222, val)
+  if ('static' === val) {
+    current.value.__attrs.props = {value: 'value', label: 'label', disabled: 'disabled'}
+    current.value.__attrs.options = [{value: 'value1', label: 'label1'}]
+  } else if ('dynamic' === val) {
+    current.value.dataDynamic = {url: '/role/list', dataKey: 'data.records'}
+    current.value.__attrs.props = {value: 'roleId', label: 'roleName', options: 'children', disabled: 'disabled'}
+    current.value.__attrs.options = []
+    refreshDynamicData()
+  } else if ('dict' === val) {
+    current.value.dictCode = 'sys_user_sex'
+    current.value.__attrs.props = {value: 'dictValue', label: 'dictLabel', disabled: 'disabled'}
+    current.value.__attrs.options = []
+    refreshDictData()
+  }
+
+}
+const addStaticData = () => {
+  const obj = cloneDeep(current.value.__attrs.options)
+  current.value.__attrs.options = []
+  current.value.__attrs.options = [...obj, {value: 'value' + (obj.length + 1), label: 'label' + (obj.length + 1)}]
+}
+const refreshDynamicData = () => {
+  const obj = current.value.dataDynamic
+  if (!obj.url) {
+    ElMessage({message: '接口地址不能为空！', type: 'warning', grouping: true})
+    return
+  }
+  if (!obj.dataKey) {
+    ElMessage({message: '数据字段不能为空！', type: 'warning', grouping: true})
+    return
+  }
+  request({url: obj.url, method: 'get'}).then((response) => {
+    current.value.__attrs.options = obj.dataKey.split('.').reduce((acc, k) => acc[k], response) || []
+  })
+}
+const refreshDictData = () => {
+  if (!current.value.dictCode) {
+    ElMessage({message: '数据字典类型code不能为空！', type: 'warning', grouping: true})
+    return
+  }
+  current.value.__attrs.options = getDict(current.value.dictCode)
+}
 </script>
 
 <style lang="less" scoped>
-
+.dataTab {
+  :deep(.el-tabs__item) {
+    height: 30px;
+  }
+  :deep(.el-tabs__content) {
+    padding: 5px 5px 5px 0;
+  }
+}
 </style>

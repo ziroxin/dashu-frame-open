@@ -25,11 +25,12 @@
 </template>
 
 <script setup lang="ts">
+import { cloneDeep } from 'lodash-es'
 import { CodeEditor } from '@/components/CodeEditor'
 import { objToStr } from '@/utils'
 
 // 当前Tab
-const currentTab = ref('json')
+const currentTab = ref('html')
 // 主题切换
 const theme = ref('vs')
 // 接收参数
@@ -51,23 +52,38 @@ const getHtmlCode = () => {
   const fl = formProps.value.__layout
   // 1. 遍历处理el-form-item
   const itemHtmlArr: string[] = []
-  formItemList.value.forEach((item: any) => {
+  formItemList.value.forEach((r: any) => {
+    const item = cloneDeep(r)
     // 1.1处理表单及属性
+    // 1.1.1 数据
+    let propsStr = ''
+    let optionsStr = ''
+    if ('el-select' === item.__key) {
+      if (['dynamic', 'dict'].includes(item.dataType)) {
+        // 刷新动态数据或字典数据
+        propsStr = `:props="${item.__modelName}Props"`
+        optionsStr = `:options="${item.__modelName}Options"`
+        delete item.__attrs.props
+        delete item.__attrs.options
+      }
+    }
+    // 1.1.2 其他属性
     const attrsStr = Object.keys(item.__attrs).map(key => {
       const val = item.__attrs[key]
-      if (!['boolean', 'number', 'object', 'string'].includes(typeof val)) {
-        console.log('意外的数据类型：', typeof val, {key: val})
-      }
-      if (val) {
-        const bindArr = ['boolean', 'number', 'object']
-        return bindArr.includes(typeof val) ? `:${key}="${objToStr(val)}"` : `${key}="${val}"`
+      if (!['boolean', 'number', 'object', 'string'].includes(typeof val)) console.log('意外的数据类型：', typeof val)
+      if (val !== undefined && val !== null && val !== '') {
+        if (['number', 'object'].includes(typeof val)) return `:${key}="${objToStr(val)}"`
+        if ('boolean' === typeof val) return val ? `${key}` : null
+        return `${key}="${val}"`
       }
       return null
     }).filter(attr => attr !== null).join(' ')
+    // 1.1.3 wangEditor特殊属性
     const wangEditorDisable = item.__key === 'my-wang-editor' ? ` :disabled="dialogType==='view'"` : ''
+    // 1.1.4 组装el-form-item
     const innerHtml = `<el-form-item label="${item.__formItemAttrs.label}" prop="${item.__modelName}"
                       :rules="${getRules(item.__formItemAttrs)}">
-          <${item.__key} v-model="formData.${item.__modelName}" ${attrsStr}${wangEditorDisable}/>
+          <${item.__key} v-model="formData.${item.__modelName}" ${attrsStr}${wangEditorDisable}${propsStr}${optionsStr}/>
         </el-form-item>`
 
     // 1.2处理栅格布局el-col
@@ -114,14 +130,53 @@ const getHtmlCode = () => {
       ${rowHtml}
     </el-form>`
 }
+
 const getTsCode = () => {
   const list = formItemList.value
   // 1表单数据默认值
   const formDataDefault = list.filter(o => o.__key === 'el-input-number').map(item => `${item.__modelName}:0`).join(', ')
   // 2自定义组件导入
   const wangEditorImport = list.some(o => o.__key === 'my-wang-editor') ? `import { MyWangEditor } from '@/components/MyWangEditor'` : ''
-  // 3返回ts代码
+  // 3数据
+  let requestImport = ''
+  let dictImport = ''
+  let onMountedStr = ''
+  let dataStr = ''
+  list.filter(o => o.__key === 'el-select').forEach((r: any) => {
+    const item = cloneDeep(r)
+    if ('dynamic' === item.dataType) {
+      requestImport = `import request from '@/utils/request'`
+      onMountedStr = `load${item.__modelName}Data()`
+      dataStr = `// ${item.__modelName}数据
+          const ${item.__modelName}Props = ref(${objToStr(item.__attrs.props) || {}})
+          const ${item.__modelName}Options = ref([])
+          const load${item.__modelName}Data = () => {
+            request({url: '${item.dataDynamic.url}', method: 'get'}).then((response) => {
+              ${item.__modelName}Options.value = response.${item.dataDynamic.dataKey} || []
+            })
+          }`
+    } else if ('dict' === item.dataType) {
+      dictImport = `import { getDict } from '@/utils/dict-util'`
+      onMountedStr = `load${item.__modelName}Data()`
+      dataStr = `// ${item.__modelName}数据
+          const ${item.__modelName}Props = ref(${objToStr(item.__attrs.props) || {}})
+          const ${item.__modelName}Options = ref([])
+          const load${item.__modelName}Data = () => {
+            ${item.__modelName}Options.value = getDict('${item.dictCode}')
+          }`
+    }
+  })
+
+  // 4返回ts代码
   return `${wangEditorImport}
+    ${requestImport}
+    ${dictImport}
+
+    // 生命周期页面加载数据
+    onMounted(() => {
+      ${onMountedStr}
+    })
+
     // 弹窗显示隐藏
     const dialogFormVisible = ref(false)
     // 弹窗索引
@@ -137,6 +192,8 @@ const getTsCode = () => {
       formData.value = {${formDataDefault}}
       dialogIndex.value++
     }
+
+    ${dataStr}
   `
 }
 

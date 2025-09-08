@@ -21,12 +21,12 @@
         </div>
         <!-- 预览模式 -->
         <div class="b-t-1px b-t-dashed b-t-#ccc h-[calc(100vh-var(--top-tool-height))] flex">
-          <div class="w-[var(--left-menu-max-width)] bg-[var(--el-fill-color-light)]">
+          <div class="w-260px bg-[var(--el-fill-color-light)]">
             <!-- 左-菜单栏 -->
             <left-panel v-model="formItemList"/>
           </div>
           <div
-              class="m-5px w-[calc(100%-var(--left-menu-max-width))] h-[calc(100%-10px)] overflow-y-auto b-1px b-dashed b-#ccc b-rd-5px">
+              class="m-5px w-[calc(100%-260px)] h-[calc(100%-10px)] overflow-y-auto b-1px b-dashed b-#ccc b-rd-5px">
             <!-- 中-内容区域 -->
             <center-panel v-model="formItemList" v-model:current="current" v-model:formProps="formProps"/>
           </div>

@@ -67,6 +67,7 @@ const formItemAddBatchVisible = ref(false)
   display: flex;
   justify-content: left;
   align-items: center;
+  margin-bottom: 5px;
   padding: 8px;
   background-color: var(--el-bg-color);
   border-radius: 6px;

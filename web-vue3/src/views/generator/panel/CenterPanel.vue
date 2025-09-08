@@ -8,7 +8,7 @@
           <div :class="{'isActived':current.__id===item.__id}" class="cursor-move mx-10px p-10px b-rd-5px"
                @click.stop="changeC(item)">
             <!-- 表单元素 -->
-            <center-form-items :item="item" :key="'col-'+item.__id"/>
+            <center-form-items v-model="formData" :item="item" :key="'col-'+item.__id"/>
             <!-- 复制/删除 -->
             <div v-if="current.__id===item.__id" class="absolute bottom-5px right-10px z-9">
               <base-button @click="copyC(item)" type="primary" icon="el-icon-copy-document" plain circle size="small"/>
@@ -29,7 +29,7 @@
               <div :class="{'isActived':current.__id===item.__id}" class="cursor-move mx-10px p-10px b-rd-5px"
                    @click.stop="changeC(item)">
                 <!-- 表单元素 -->
-                <center-form-items :item="item" :key="'col-'+item.__id"/>
+                <center-form-items v-model="formData" :item="item" :key="'col-'+item.__id"/>
                 <!-- 复制/删除 -->
                 <div v-if="current.__id===item.__id" class="absolute bottom-5px right-10px z-9">
                   <base-button @click="copyC(item)" type="primary" icon="el-icon-copy-document"
@@ -66,7 +66,7 @@ import FormItemAdd from '@/views/generator/panel/FormItemAdd'
 import CenterFormItems from '@/views/generator/panel/CenterFormItems'
 
 // 编辑器Model
-const formItemList = defineModel()
+const formItemList: any = defineModel()
 const current = defineModel('current', {type: Object, default: () => {}})
 const formProps = defineModel('formProps', {type: Object, default: () => {}})
 const html = defineModel('html', {type: String, default: ''})
@@ -75,8 +75,8 @@ const ts = defineModel('ts', {type: String, default: ''})
 const dataFormRef = ref()
 const formData = ref({})
 const deleteC = (item) => {
+  current.value = {}
   formItemList.value.splice(formItemList.value.indexOf(item), 1)
-  setTimeout(() => { current.value = {} }, 10)
 }
 const changeC = (item) => {
   current.value = item ? {...item} : {}
