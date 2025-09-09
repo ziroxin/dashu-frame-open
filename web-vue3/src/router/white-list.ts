@@ -6,8 +6,7 @@ import { loginRoute, oauth2Routes } from '@/router/constant-routes'
  *
  * 注意：使用 /.* 可以模糊匹配目录
  */
-const whiteList = [loginRoute.path, ...oauth2Routes.map(o => o.path),
-  '/register', '/swagger/home', '/generator/form']
+const whiteList = [loginRoute.path, ...oauth2Routes.map(o => o.path), '/register', '/swagger/home']
 
 // 路由是否在白名单中
 export function isWhiteList(path) {
