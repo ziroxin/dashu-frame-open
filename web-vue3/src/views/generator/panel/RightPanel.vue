@@ -26,6 +26,12 @@
               <el-option label="密码框" value="password"/>
             </el-select>
           </el-form-item>
+          <!-- date-日期类型 -->
+          <el-form-item v-if="'el-date-picker'===current.__key" label="日期类型">
+            <el-select v-model="current.__attrs.type" filterable @change="dateTypeChange">
+              <el-option v-for="item in dateType" :label="item" :value="item" :key="item"/>
+            </el-select>
+          </el-form-item>
 
           <el-divider>通用属性</el-divider>
           <el-form-item label="字段名" required>
@@ -41,73 +47,13 @@
             <el-input v-model="current.__attrs.placeholder"/>
           </el-form-item>
 
+          <!-- select数据 -->
           <template v-if="'el-select'===current.__key">
-            <el-divider>数据</el-divider>
-            <el-form-item label-width="0">
-              <el-tabs v-model="current.dataType" class="dataTab w-full"
-                       type="border-card" stretch @tab-change="dataTypeClick">
-                <el-tab-pane label="静态" name="static">
-                  <template v-if="'static'===current.dataType">
-                    <el-form-item label="Props" label-width="60px" class="mt-10px">
-                      <div class="color-#666">默认值不可修改</div>
-                      <json-editor v-model="current.__attrs.props" :showLineNumbers="false" :showIcon="false"
-                                   :collapsedOnClickBrackets="false" :editable="false"/>
-                    </el-form-item>
-                    <el-form-item label="Options" label-width="60px" class="mt-10px">
-                      <vue-draggable v-model="current.__attrs.options" :animation="150"
-                                     :key="'drag'+current.__attrs.options.length">
-                        <div v-for="(item,idx) in current.__attrs.options" :key="idx" class="flex items-center mb-10px">
-                          <my-icon icon="el-icon-rank" :size="20" color="#409eff" class="mr-5px cursor-grab"/>
-                          <el-input v-model="item.label" class="mr-5px"/>
-                          <el-input v-model="item.value" class="mr-5px"/>
-                          <base-button type="danger" link icon="el-icon-delete" class="mr-5px" size="small"
-                                       @click="()=>{current.__attrs.options.splice(idx,1)}"/>
-                        </div>
-                      </vue-draggable>
-                      <base-button type="primary" link icon="el-icon-circle-plus-outline" size="small" class="mx-auto"
-                                   @click="addStaticData">添加数据
-                      </base-button>
-                    </el-form-item>
-                  </template>
-                </el-tab-pane>
-                <el-tab-pane label="动态" name="dynamic">
-                  <template v-if="'dynamic'===current.dataType">
-                    <el-form-item label="Props 可修改" label-width="55px" class="mt-10px">
-                      <json-editor v-model="current.__attrs.props" :showLineNumbers="false" :showIcon="false"
-                                   :collapsedOnClickBrackets="false"/>
-                    </el-form-item>
-                    <el-form-item label="接口" label-width="70px" class="mt-10px">
-                      <el-input v-model="current.dataDynamic.url" placeholder="接口地址">
-                        <template #prefix>
-                          <span class="bg-#efefef color-#777 px-10px ml-[-6px]! b-rd-4px">GET</span>
-                        </template>
-                      </el-input>
-                    </el-form-item>
-                    <el-form-item label="数据字段" label-width="70px" class="mt-10px">
-                      <el-input v-model="current.dataDynamic.dataKey" placeholder="数据字段"/>
-                    </el-form-item>
-                    <base-button type="primary" link icon="el-icon-refresh" size="small" class="ml-70px"
-                                 @click="refreshDynamicData">刷新数据
-                    </base-button>
-                  </template>
-                </el-tab-pane>
-                <el-tab-pane label="字典" name="dict">
-                  <template v-if="'dict'===current.dataType">
-                    <el-form-item label="Props" label-width="60px" class="mt-10px">
-                      <div class="color-#666">默认值不可修改</div>
-                      <json-editor v-model="current.__attrs.props" :showLineNumbers="false" :showIcon="false"
-                                   :collapsedOnClickBrackets="false" :editable="false"/>
-                    </el-form-item>
-                    <el-form-item label="字典类型code" label-width="100px" class="mt-10px">
-                      <el-input v-model="current.dictCode" placeholder="字典类型code"/>
-                    </el-form-item>
-                    <base-button type="primary" link icon="el-icon-refresh" size="small" class="ml-100px"
-                                 @click="refreshDictData">刷新数据
-                    </base-button>
-                  </template>
-                </el-tab-pane>
-              </el-tabs>
-            </el-form-item>
+            <data-select v-model="current" :key="current.__id"/>
+          </template>
+          <!-- cascader数据 -->
+          <template v-if="'el-cascader'===current.__key">
+            <data-cascader v-model="current" :key="current.__id"/>
           </template>
 
           <el-divider>更多属性</el-divider>
@@ -301,10 +247,108 @@
             </el-form-item>
 
           </template>
+          <!-- datetime属性 -->
+          <template v-if="'el-date-picker'===current.__key">
+            <el-form-item label="可输入">
+              <el-switch v-model="current.__attrs.editable" active-text="是" inactive-text="否"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="清除按钮">
+              <el-switch v-model="current.__attrs.clearable" active-text="显示" inactive-text="隐藏"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="显示格式">
+              <el-input v-model="current.__attrs.format" clearable placeholder="显示在输入框中的格式"/>
+              <a href="https://day.js.org/docs/zh-CN/display/format" target="_blank">
+                <base-button type="primary" link icon="el-icon-link">更多格式文档</base-button>
+              </a>
+            </el-form-item>
+            <el-form-item label="绑定格式">
+              <el-input v-model="current.__attrs.valueFormat" clearable placeholder="绑定值的格式"/>
+            </el-form-item>
+            <template v-if="['datetimerange','daterange','monthrange','yearrange'].includes(current.__attrs.type)">
+              <el-form-item label="开始占位">
+                <el-input v-model="current.__attrs.startPlaceholder" clearable placeholder="范围选择-开始日期占位内容"/>
+              </el-form-item>
+              <el-form-item label="结束占位">
+                <el-input v-model="current.__attrs.endPlaceholder" clearable placeholder="范围选择-结束日期占位内容"/>
+              </el-form-item>
+              <el-form-item label="分隔符">
+                <el-input v-model="current.__attrs.rangeSeparator" clearable placeholder="选择范围时的分隔符"/>
+              </el-form-item>
+            </template>
+            <template v-if="['dates','months','years','datetime','datetimerange'].includes(current.__attrs.type)">
+              <el-form-item label="页脚">
+                <el-switch v-model="current.__attrs.showFooter" active-text="显示" inactive-text="隐藏"
+                           :active-value="true" :inactive-value="false"/>
+              </el-form-item>
+              <el-form-item label="确定按钮">
+                <el-switch v-model="current.__attrs.showConfirm" active-text="显示" inactive-text="隐藏"
+                           :active-value="true" :inactive-value="false"/>
+              </el-form-item>
+              <el-form-item label="周数">
+                <el-switch v-model="current.__attrs.showWeekNumber" active-text="显示" inactive-text="隐藏"
+                           :active-value="true" :inactive-value="false"/>
+              </el-form-item>
+            </template>
+          </template>
+          <!-- cascader属性 -->
+          <template v-if="'el-cascader'===current.__key">
+            <el-form-item label="清除按钮">
+              <el-switch v-model="current.__attrs.clearable" active-text="显示" inactive-text="隐藏"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="显示路径">
+              <el-switch v-model="current.__attrs.showAllLevels" active-text="显示" inactive-text="输入框不显示完整路径"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <template v-if="current.__attrs.props?.multiple">
+              <!-- 多选时，配置标签折叠 -->
+              <el-form-item label="选项折叠">
+                <el-switch v-model="current.__attrs.collapseTags" active-text="折叠" inactive-text="不折叠"
+                           :active-value="true" :inactive-value="false"/>
+              </el-form-item>
+              <template v-if="current.__attrs.collapseTags">
+                <el-form-item label="折叠提示">
+                  <el-switch v-model="current.__attrs.collapseTagsTooltip" active-text="折叠提示"
+                             inactive-text="折叠不提示" :active-value="true" :inactive-value="false"/>
+                </el-form-item>
+                <el-form-item label="不折叠数">
+                  <el-input-number v-model="current.__attrs.maxCollapseTags" class="w-90px!"/>
+                  <span class="text-12px text-#999 ml-5px">超出该数的才折叠</span>
+                </el-form-item>
+              </template>
+            </template>
+            <el-form-item label="分隔符">
+              <el-input v-model="current.__attrs.separator" clearable placeholder="分隔选项的字符"/>
+            </el-form-item>
+            <el-form-item label="筛选">
+              <el-switch v-model="current.__attrs.filterable" active-text="可查询" inactive-text="不可查询"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="去抖延迟">
+              <el-input-number v-model="current.__attrs.debounce" :step="100" class="w-90px!"/>
+              <span class="text-12px text-#999 ml-5px">毫秒</span>
+              <div class="text-12px text-#999">输入搜索词时的去抖延迟,默认300ms</div>
+            </el-form-item>
+          </template>
 
           <el-divider>test</el-divider>
           <base-button type="primary" @click="()=>{console.log(JSON.stringify(current.__attrs))}">测试属性</base-button>
 
+          <!-- radio属性 -->
+          <!-- checkbox属性 -->
+          <!-- switch属性 -->
+
+          <!-- wangEditor属性 -->
+          <!-- imageAvatar属性 -->
+          <!-- imageOne属性 -->
+          <!-- imageUpload属性 -->
+          <!-- fileUpload属性 -->
+          <!-- 原生upload属性 -->
+
+          <!-- slider属性 -->
+          <!-- rate属性 -->
 
           <el-divider>表单规则</el-divider>
           <form-item-rules v-if="current?.__id" :key="current.__id" v-model="currentRules"/>
@@ -424,14 +468,11 @@
 </template>
 
 <script setup lang="ts">
-import { ElMessage } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
-import { VueDraggable } from 'vue-draggable-plus'
-import { getDict } from '@/utils/dict-util'
-import { JsonEditor } from '@/components/JsonEditor'
 import allConfig from '@/views/generator/panel/config/allConfig'
 import FormItemRules from '@/views/generator/panel/FormItemRules'
-import request from '@/utils/request'
+import DataSelect from '@/views/generator/panel/DataSelect'
+import DataCascader from '@/views/generator/panel/DataCascader'
 
 // 全部组件类型
 const componentList: any = cloneDeep(allConfig)
@@ -440,6 +481,9 @@ const componentList: any = cloneDeep(allConfig)
 const current = defineModel('current', {type: Object, default: () => {}})
 // 绑定表单属性
 const formProps = defineModel('formProps', {type: Object, default: () => {}})
+// 日期选择类型
+const dateType = ref(['date', 'datetime', 'daterange', 'datetimerange',
+  'dates', 'week', 'month', 'months', 'monthrange', 'year', 'years', 'yearrange'])
 
 // 表单验证规则（切换当前组件时，自动更新）
 const currentRules = ref([])
@@ -458,6 +502,17 @@ const typeChange = (val) => {
   }
   if (val === 'password') delete current.value.__attrs.showWordLimit
   if (val !== 'password') delete current.value.__attrs.showPassword
+}
+// date组件，日期类型变化
+const dateTypeChange = (val) => {
+  // current.value.
+  const formatStr = ['year', 'years', 'yearrange'].includes(val) ? 'YYYY' :
+      ['month', 'months', 'monthrange'].includes(val) ? 'YYYY-MM' :
+          ['date', 'dates', 'daterange'].includes(val) ? 'YYYY-MM-DD' :
+              ['datetime', 'datetimerange'].includes(val) ? 'YYYY-MM-DD HH:mm:ss' :
+                  'week' === val ? 'YYYY-wo' : 'YYYY-MM-DD'
+  current.value.__attrs.format = formatStr
+  current.value.__attrs.valueFormat = formatStr
 }
 // textarea组件，高度自适应变化
 watch(() => current.value.autosizeType, (val) => {
@@ -480,60 +535,7 @@ watch(() => current.value.__attrs?.collapseTags, (val) => {
     current.value.__attrs.collapseTagsTooltip = true
   }
 })
-// select组件，监听数据类型
-const dataTypeClick = (val) => {
-  console.log(222, val)
-  if ('static' === val) {
-    current.value.__attrs.props = {value: 'value', label: 'label', disabled: 'disabled'}
-    current.value.__attrs.options = [{value: 'value1', label: 'label1'}]
-  } else if ('dynamic' === val) {
-    current.value.dataDynamic = {url: '/role/list', dataKey: 'data.records'}
-    current.value.__attrs.props = {value: 'roleId', label: 'roleName', options: 'children', disabled: 'disabled'}
-    current.value.__attrs.options = []
-    refreshDynamicData()
-  } else if ('dict' === val) {
-    current.value.dictCode = 'sys_user_sex'
-    current.value.__attrs.props = {value: 'dictValue', label: 'dictLabel', disabled: 'disabled'}
-    current.value.__attrs.options = []
-    refreshDictData()
-  }
-
-}
-const addStaticData = () => {
-  const obj = cloneDeep(current.value.__attrs.options)
-  current.value.__attrs.options = []
-  current.value.__attrs.options = [...obj, {value: 'value' + (obj.length + 1), label: 'label' + (obj.length + 1)}]
-}
-const refreshDynamicData = () => {
-  const obj = current.value.dataDynamic
-  if (!obj.url) {
-    ElMessage({message: '接口地址不能为空！', type: 'warning', grouping: true})
-    return
-  }
-  if (!obj.dataKey) {
-    ElMessage({message: '数据字段不能为空！', type: 'warning', grouping: true})
-    return
-  }
-  request({url: obj.url, method: 'get'}).then((response) => {
-    current.value.__attrs.options = obj.dataKey.split('.').reduce((acc, k) => acc[k], response) || []
-  })
-}
-const refreshDictData = () => {
-  if (!current.value.dictCode) {
-    ElMessage({message: '数据字典类型code不能为空！', type: 'warning', grouping: true})
-    return
-  }
-  current.value.__attrs.options = getDict(current.value.dictCode)
-}
 </script>
 
 <style lang="less" scoped>
-.dataTab {
-  :deep(.el-tabs__item) {
-    height: 30px;
-  }
-  :deep(.el-tabs__content) {
-    padding: 5px 5px 5px 0;
-  }
-}
 </style>

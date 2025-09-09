@@ -58,7 +58,7 @@ const getHtmlCode = () => {
     // 1.1.1 数据
     let propsStr = ''
     let optionsStr = ''
-    if ('el-select' === item.__key) {
+    if (['el-select', 'el-cascader'].includes(item.__key)) {
       if (['dynamic', 'dict'].includes(item.dataType)) {
         // 刷新动态数据或字典数据
         propsStr = `:props="${item.__modelName}Props"`
@@ -73,7 +73,7 @@ const getHtmlCode = () => {
       if (!['boolean', 'number', 'object', 'string'].includes(typeof val)) console.log('意外的数据类型：', typeof val)
       if (val !== undefined && val !== null && val !== '') {
         if (['number', 'object'].includes(typeof val)) return `:${key}="${objToStr(val)}"`
-        if ('boolean' === typeof val) return val ? `${key}` : null
+        if ('boolean' === typeof val) return val ? `${key}` : `:${key}="false"`
         return `${key}="${val}"`
       }
       return null
@@ -83,7 +83,7 @@ const getHtmlCode = () => {
     // 1.1.4 组装el-form-item
     const innerHtml = `<el-form-item label="${item.__formItemAttrs.label}" prop="${item.__modelName}"
                       :rules="${getRules(item.__formItemAttrs)}">
-          <${item.__key} v-model="formData.${item.__modelName}" ${attrsStr}${wangEditorDisable}${propsStr}${optionsStr}/>
+          <${item.__key} v-model="formData.${item.__modelName}" ${attrsStr} ${wangEditorDisable} ${propsStr} ${optionsStr}/>
         </el-form-item>`
 
     // 1.2处理栅格布局el-col
@@ -142,12 +142,14 @@ const getTsCode = () => {
   let dictImport = ''
   let onMountedStr = ''
   let dataStr = ''
-  list.filter(o => o.__key === 'el-select').forEach((r: any) => {
+  list.filter(o => ['el-select', 'el-cascader'].includes(o.__key)).forEach((r: any) => {
     const item = cloneDeep(r)
     if ('dynamic' === item.dataType) {
       requestImport = `import request from '@/utils/request'`
-      onMountedStr = `load${item.__modelName}Data()`
-      dataStr = `// ${item.__modelName}数据
+      onMountedStr += `
+                      load${item.__modelName}Data()`
+      dataStr += `
+          // ${item.__modelName}数据
           const ${item.__modelName}Props = ref(${objToStr(item.__attrs.props) || {}})
           const ${item.__modelName}Options = ref([])
           const load${item.__modelName}Data = () => {
@@ -157,8 +159,10 @@ const getTsCode = () => {
           }`
     } else if ('dict' === item.dataType) {
       dictImport = `import { getDict } from '@/utils/dict-util'`
-      onMountedStr = `load${item.__modelName}Data()`
-      dataStr = `// ${item.__modelName}数据
+      onMountedStr += `
+                      load${item.__modelName}Data()`
+      dataStr += `
+          // ${item.__modelName}数据
           const ${item.__modelName}Props = ref(${objToStr(item.__attrs.props) || {}})
           const ${item.__modelName}Options = ref([])
           const load${item.__modelName}Data = () => {

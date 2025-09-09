@@ -11,6 +11,8 @@
                v-model="formData[item.__modelName]"/>
     <el-date-picker v-if="item.__key==='el-date-picker'" v-bind="{...itemAttrs}"
                     v-model="formData[item.__modelName]"/>
+    <el-cascader v-if="item.__key==='el-cascader'" v-bind="{...itemAttrs}"
+                    v-model="formData[item.__modelName]"/>
     <my-wang-editor v-if="item.__key==='my-wang-editor'" v-bind="{...itemAttrs}"
                     v-model="formData[item.__modelName]"/>
   </el-form-item>
@@ -20,6 +22,7 @@
 import { MyWangEditor } from '@/components/MyWangEditor'
 
 const formData: any = defineModel()
+// 处理属性
 const {item} = defineProps({item: {type: Object, required: true, default: () => ({})}})
 const itemAttrs = computed(() => {
   return Object.keys(item.__attrs).reduce((acc, key) => {
@@ -29,6 +32,8 @@ const itemAttrs = computed(() => {
     return acc
   }, {})
 })
+// 监听__attrs.type变更，清空数据（防止意外格式）
+watch(() => item.__attrs?.type, () => { formData.value[item.__modelName] = '' })
 
 const getRules = (attrs: any) => {
   let result = []

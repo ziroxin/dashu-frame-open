@@ -29,8 +29,25 @@ export default [
     __attrs: {
       type: 'date',// 常用：date|datetime|daterange|datetimerange
       placeholder: '请选择日期',
+      clearable: true,
       format: 'YYYY-MM-DD',
       valueFormat: 'YYYY-MM-DD'
+    }
+  },
+  {
+    __key: 'el-cascader',
+    __docLink: 'https://element-plus.org/zh-CN/component/cascader.html#cascader-api',
+    __name: '级联选择',
+    __icon: 'form-cascader',
+    __span: 24,
+    __formItemAttrs: {
+      label: '级联选择',
+      rules: [{required: true, message: '级联选择必选'}]
+    },
+    __attrs: {
+      placeholder: '请选择',
+      filterable: true,
+      clearable: true
     }
   }
 ]
