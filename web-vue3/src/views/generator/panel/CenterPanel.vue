@@ -5,7 +5,7 @@
       <vue-draggable v-model="formItemList" :animation="150" group="content" @click="changeC(null)"
                      class="flex flex-col h-[calc(100vh-var(--top-header-height)-30px)] overflow-auto">
         <template v-for="item in formItemList" :key="item.__id">
-          <div :class="{'isActived':current.__id===item.__id}" class="cursor-move mx-10px p-10px b-rd-5px"
+          <div :class="{'isActived':current.__id===item.__id}" class="citem cursor-move mx-10px p-10px b-rd-5px"
                @click.stop="changeC(item)">
             <!-- 表单元素 -->
             <center-form-items v-model="formData" :item="item" :key="'col-'+item.__id"/>
@@ -26,7 +26,7 @@
                        class="el-row h-[calc(100vh-var(--top-header-height)-30px)] overflow-auto">
           <template v-for="item in formItemList" :key="item.__id">
             <el-col :span="item?.__span">
-              <div :class="{'isActived':current.__id===item.__id}" class="cursor-move mx-10px p-10px b-rd-5px"
+              <div :class="{'isActived':current.__id===item.__id}" class="citem cursor-move mx-10px p-10px b-rd-5px"
                    @click.stop="changeC(item)">
                 <!-- 表单元素 -->
                 <center-form-items v-model="formData" :item="item" :key="'col-'+item.__id"/>
@@ -102,8 +102,9 @@ const clearInterval = () => {dataFormRef.value.resetFields()}
 </script>
 
 <style lang="less" scoped>
-.isActived {
+.isActived, .citem:hover {
   position: relative;
-  background-color: var(--el-fill-color-light);
+  background-color: #f5f7fa50;
+  border: 1px dashed #dddfe1;
 }
 </style>

@@ -55,6 +55,22 @@
           <template v-if="'el-cascader'===current.__key">
             <data-cascader v-model="current" :key="current.__id"/>
           </template>
+          <!-- radio-group数据 -->
+          <template v-if="'el-radio-group'===current.__key">
+            <data-radio-group v-model="current" :key="current.__id"/>
+          </template>
+          <!-- radio数据 -->
+          <template v-if="'el-radio'===current.__key">
+            <data-radio v-model="current" :key="current.__id"/>
+          </template>
+          <!-- checkbox-group数据 -->
+          <template v-if="'el-checkbox-group'===current.__key">
+            <data-checkbox-group v-model="current" :key="current.__id"/>
+          </template>
+          <!-- checkbox数据 -->
+          <template v-if="'el-checkbox'===current.__key">
+            <data-checkbox v-model="current" :key="current.__id"/>
+          </template>
 
           <el-divider>更多属性</el-divider>
           <!-- input属性 -->
@@ -332,13 +348,50 @@
               <div class="text-12px text-#999">输入搜索词时的去抖延迟,默认300ms</div>
             </el-form-item>
           </template>
+          <!-- radio-group属性 -->
+          <template v-if="'el-radio-group'===current.__key">
+            <div class="flex flex-1 justify-center items-center text-12px my-20px color-gray-5">无</div>
+          </template>
+          <!-- radio属性 -->
+          <template v-if="'el-radio'===current.__key">
+            <el-form-item label="单选类型">
+              <el-switch v-model="current.radioType" active-text="按钮" inactive-text="原始"
+                         active-value="button" inactive-value="radio"/>
+            </el-form-item>
+            <el-form-item label="边框">
+              <el-switch v-model="current.__attrs.border" active-text="有边框" inactive-text="无边框"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+          </template>
+          <!-- checkbox-group属性 -->
+          <template v-if="'el-checkbox-group'===current.__key">
+            <el-form-item label="最小数">
+              <el-input-number v-model="current.__attrs.min" class="w-90px!"/>
+              <span class="text-12px text-#999 ml-5px">可被勾选的最小数</span>
+            </el-form-item>
+            <el-form-item label="最大数">
+              <el-input-number v-model="current.__attrs.max" class="w-90px!"/>
+              <span class="text-12px text-#999 ml-5px">可被勾选的最大数</span>
+            </el-form-item>
+          </template>
+          <!-- checkbox属性 -->
+          <template v-if="'el-checkbox'===current.__key">
+            <el-form-item label="多选类型">
+              <el-switch v-model="current.checkboxType" active-text="按钮" inactive-text="原始"
+                         active-value="button" inactive-value="radio"/>
+            </el-form-item>
+            <el-form-item label="边框">
+              <el-switch v-model="current.__attrs.border" active-text="有边框" inactive-text="无边框"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+          </template>
+          <!-- switch属性 -->
+          <template v-if="'el-switch'===current.__key">
+          </template>
+
 
           <el-divider>test</el-divider>
           <base-button type="primary" @click="()=>{console.log(JSON.stringify(current.__attrs))}">测试属性</base-button>
-
-          <!-- radio属性 -->
-          <!-- checkbox属性 -->
-          <!-- switch属性 -->
 
           <!-- wangEditor属性 -->
           <!-- imageAvatar属性 -->
@@ -473,6 +526,10 @@ import allConfig from '@/views/generator/panel/config/allConfig'
 import FormItemRules from '@/views/generator/panel/FormItemRules'
 import DataSelect from '@/views/generator/panel/DataSelect'
 import DataCascader from '@/views/generator/panel/DataCascader'
+import DataRadio from '@/views/generator/panel/DataRadio'
+import DataRadioGroup from '@/views/generator/panel/DataRadioGroup'
+import DataCheckbox from '@/views/generator/panel/DataCheckbox'
+import DataCheckboxGroup from '@/views/generator/panel/DataCheckboxGroup'
 
 // 全部组件类型
 const componentList: any = cloneDeep(allConfig)

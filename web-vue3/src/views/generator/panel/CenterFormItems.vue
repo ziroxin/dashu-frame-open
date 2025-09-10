@@ -1,19 +1,58 @@
 <template>
   <el-form-item v-bind="{...item.__formItemAttrs}" :prop="item.__modelName"
                 :rules="getRules(item.__formItemAttrs)">
-    <el-input v-if="item.__key==='el-input'" v-bind="{...itemAttrs}"
+    <!-- el-input -->
+    <el-input v-if="'el-input'===item.__key" v-bind="{...itemAttrs}"
               v-model="formData[item.__modelName]"/>
-    <el-input-number v-if="item.__key==='el-input-number'" v-bind="{...itemAttrs}"
+    <!-- el-input-number -->
+    <el-input-number v-if="'el-input-number'===item.__key" v-bind="{...itemAttrs}"
                      v-model="formData[item.__modelName]"/>
-    <el-input-tag v-if="item.__key==='el-input-tag'" v-bind="{...itemAttrs}"
+    <!-- el-input-tag -->
+    <el-input-tag v-if="'el-input-tag'===item.__key" v-bind="{...itemAttrs}"
                   v-model="formData[item.__modelName]"/>
-    <el-select v-if="item.__key==='el-select'" v-bind="{...itemAttrs}"
+    <!-- el-radio-group -->
+    <el-radio-group v-if="'el-radio-group'===item.__key" v-bind="{...itemAttrs}"
+                    v-model="formData[item.__modelName]"/>
+    <!-- el-radio -->
+    <template v-if="'el-radio'===item.__key">
+      <el-radio-group v-model="formData[item.__modelName]">
+        <template v-if="item.radioType==='button'">
+          <el-radio-button v-for="(r, i) in item.radioData" v-bind="{...itemAttrs}"
+                           :key="i" :label="r[item.labelKey]" :value="r[item.valueKey]"/>
+        </template>
+        <template v-else>
+          <el-radio v-for="(r, i) in item.radioData" v-bind="{...itemAttrs}"
+                    :key="i" :label="r[item.labelKey]" :value="r[item.valueKey]"/>
+        </template>
+      </el-radio-group>
+    </template>
+    <!-- el-checkbox-group -->
+    <el-checkbox-group v-if="'el-checkbox-group'===item.__key" v-bind="{...itemAttrs}"
+                       v-model="formData[item.__modelName]"/>
+    <!-- el-checkbox -->
+    <template v-if="'el-checkbox'===item.__key">
+      <el-checkbox-group v-model="formData[item.__modelName]">
+        <template v-if="item.checkboxType==='button'">
+          <el-checkbox-button v-for="(r, i) in item.checkboxData" v-bind="{...itemAttrs}"
+                              :key="i" :label="r[item.labelKey]" :value="r[item.valueKey]"/>
+        </template>
+        <template v-else>
+          <el-checkbox v-for="(r, i) in item.checkboxData" v-bind="{...itemAttrs}"
+                       :key="i" :label="r[item.labelKey]" :value="r[item.valueKey]"/>
+        </template>
+      </el-checkbox-group>
+    </template>
+    <!-- el-select -->
+    <el-select v-if="'el-select'===item.__key" v-bind="{...itemAttrs}"
                v-model="formData[item.__modelName]"/>
-    <el-date-picker v-if="item.__key==='el-date-picker'" v-bind="{...itemAttrs}"
+    <!-- el-cascader -->
+    <el-cascader v-if="'el-cascader'===item.__key" v-bind="{...itemAttrs}"
+                 v-model="formData[item.__modelName]"/>
+    <!-- el-date-picker -->
+    <el-date-picker v-if="'el-date-picker'===item.__key" v-bind="{...itemAttrs}"
                     v-model="formData[item.__modelName]"/>
-    <el-cascader v-if="item.__key==='el-cascader'" v-bind="{...itemAttrs}"
-                    v-model="formData[item.__modelName]"/>
-    <my-wang-editor v-if="item.__key==='my-wang-editor'" v-bind="{...itemAttrs}"
+    <!-- my-wang-editor -->
+    <my-wang-editor v-if="'my-wang-editor'===item.__key" v-bind="{...itemAttrs}"
                     v-model="formData[item.__modelName]"/>
   </el-form-item>
 </template>

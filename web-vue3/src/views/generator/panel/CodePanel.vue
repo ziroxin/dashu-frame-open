@@ -66,7 +66,7 @@ const getHtmlCode = () => {
     // 1.1.1 数据
     let propsStr = ''
     let optionsStr = ''
-    if (['el-select', 'el-cascader'].includes(item.__key)) {
+    if (['el-select', 'el-cascader', 'el-radio-group', 'el-checkbox-group'].includes(item.__key)) {
       if (['dynamic', 'dict'].includes(item.dataType)) {
         // 刷新动态数据或字典数据
         propsStr = `:props="${item.__modelName}Props"`
@@ -88,10 +88,27 @@ const getHtmlCode = () => {
     }).filter(attr => attr !== null).join(' ')
     // 1.1.3 wangEditor特殊属性
     const wangEditorDisable = item.__key === 'my-wang-editor' ? ` :disabled="dialogType==='view'"` : ''
-    // 1.1.4 组装el-form-item
+    // 1.1.4 单独处理 el-radio和el-checkbox
+    let itemHtml = `<${item.__key} v-model="formData.${item.__modelName}" ${attrsStr} ${wangEditorDisable} ${propsStr} ${optionsStr}/>`
+    if ('el-radio' === item.__key) {
+      const rData = ['dynamic', 'dict'].includes(item.dataType) ? `${item.__modelName}Options` : objToStr(item.radioData)
+      const tagHtml = item.radioType === 'button' ? `el-radio-button` : `el-radio`
+      itemHtml = `<el-radio-group v-model="formData.${item.__modelName}">
+            <${tagHtml} v-for="(r, i) in ${rData}" ${attrsStr}
+                    :key="i" :label="r.${item.labelKey}" :value="r.${item.valueKey}"/>
+        </el-radio-group>`
+    } else if ('el-checkbox' === item.__key) {
+      const cData = ['dynamic', 'dict'].includes(item.dataType) ? `${item.__modelName}Options` : objToStr(item.checkboxData)
+      const tagHtml = item.checkboxType === 'button' ? `el-checkbox-button` : `el-checkbox`
+      itemHtml = `<el-checkbox-group v-model="formData.${item.__modelName}">
+            <${tagHtml} v-for="(r, i) in ${cData}" ${attrsStr}
+                    :key="i" :label="r.${item.labelKey}" :value="r.${item.valueKey}"/>
+        </el-checkbox-group>`
+    }
+    // 1.1.5 组装el-form-item
     const innerHtml = `<el-form-item label="${item.__formItemAttrs.label}" prop="${item.__modelName}"
                       :rules="${getRules(item.__formItemAttrs)}">
-          <${item.__key} v-model="formData.${item.__modelName}" ${attrsStr} ${wangEditorDisable} ${propsStr} ${optionsStr}/>
+          ${itemHtml}
         </el-form-item>`
 
     // 1.2处理栅格布局el-col
@@ -150,7 +167,8 @@ const getTsCode = () => {
   let dictImport = ''
   let onMountedStr = ''
   let dataStr = ''
-  list.filter(o => ['el-select', 'el-cascader'].includes(o.__key)).forEach((r: any) => {
+  const arr1 = ['el-select', 'el-cascader', 'el-radio', 'el-radio-group', 'el-checkbox', 'el-checkbox-group']
+  list.filter(o => arr1.includes(o.__key)).forEach((r: any) => {
     const item = cloneDeep(r)
     if ('dynamic' === item.dataType) {
       requestImport = `import request from '@/utils/request'`
@@ -158,7 +176,7 @@ const getTsCode = () => {
                       load${item.__modelName}Data()`
       dataStr += `
           // ${item.__modelName}数据
-          const ${item.__modelName}Props = ref(${objToStr(item.__attrs.props) || {}})
+          const ${item.__modelName}Props = ref(${objToStr(item.__attrs.props || {})})
           const ${item.__modelName}Options = ref([])
           const load${item.__modelName}Data = () => {
             request({url: '${item.dataDynamic.url}', method: 'get'}).then((response) => {
@@ -171,7 +189,7 @@ const getTsCode = () => {
                       load${item.__modelName}Data()`
       dataStr += `
           // ${item.__modelName}数据
-          const ${item.__modelName}Props = ref(${objToStr(item.__attrs.props) || {}})
+          const ${item.__modelName}Props = ref(${objToStr(item.__attrs.props || {})})
           const ${item.__modelName}Options = ref([])
           const load${item.__modelName}Data = () => {
             ${item.__modelName}Options.value = getDict('${item.dictCode}')
@@ -189,21 +207,9 @@ const getTsCode = () => {
       ${onMountedStr}
     })
 
-    // 弹窗显示隐藏
-    const dialogFormVisible = ref(false)
-    // 弹窗索引
-    const dialogIndex = ref(0)
-
     // 表单
     const dataFormRef = ref()
     const formData = ref({${formDataDefault}})
-
-    // 关闭弹窗（清空表单temp数据）
-    const closeDialog = () => {
-      dialogFormVisible.value = false
-      formData.value = {${formDataDefault}}
-      dialogIndex.value++
-    }
 
     ${dataStr}
   `
