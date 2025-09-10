@@ -548,7 +548,10 @@ watch(() => current.value.__id, () => { currentRules.value = current.value?.__fo
 
 // 切换组件类型
 const componentChange = (val) => {
+  // 重置 __attrs
   current.value.__attrs = {...componentList.flatMap(o => o.list).find(i => i.__key === val).__attrs}
+  // 重置 dataType
+  current.value.dataType = ''
 }
 // input组件，文本类型变化
 const typeChange = (val) => {
@@ -562,7 +565,6 @@ const typeChange = (val) => {
 }
 // date组件，日期类型变化
 const dateTypeChange = (val) => {
-  // current.value.
   const formatStr = ['year', 'years', 'yearrange'].includes(val) ? 'YYYY' :
       ['month', 'months', 'monthrange'].includes(val) ? 'YYYY-MM' :
           ['date', 'dates', 'daterange'].includes(val) ? 'YYYY-MM-DD' :
