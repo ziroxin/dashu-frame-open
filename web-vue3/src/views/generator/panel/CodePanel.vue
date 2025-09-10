@@ -13,14 +13,19 @@
                      :key="item" :label="item" :value="item"/>
         </el-select>
         <el-divider direction="vertical"/>
-
+        <base-button type="primary" link :icon="readonly?'el-icon-unlock':'el-icon-lock'" @click="readonly=!readonly">
+          {{ readonly ? '允许编辑' : '切换只读' }}
+        </base-button>
+        <el-divider direction="vertical"/>
+        <base-button type="primary" link icon="el-icon-refresh" @click="formatCode">格式化代码</base-button>
+        <el-divider direction="vertical"/>
         <base-button icon="el-icon-close" link type="primary" class="mr-10px"
                      @click="closeCodeDialog">关闭
         </base-button>
       </div>
     </div>
-    <code-editor :key="'ce-'+currentTab" class="mt-10px h-full"
-                 :theme="theme" :language="currentTab" :content="getCode(currentTab)"/>
+    <code-editor :key="'ce-'+currentTab" class="mt-10px h-full" :content="getCode(currentTab)"
+                 :theme="theme" :language="currentTab" :readonly="readonly"/>
   </div>
 </template>
 
@@ -28,11 +33,14 @@
 import { cloneDeep } from 'lodash-es'
 import { CodeEditor } from '@/components/CodeEditor'
 import { objToStr } from '@/utils'
+import { formatCode } from '@/components/CodeEditor/src/helper'
 
 // 当前Tab
 const currentTab = ref('html')
 // 主题切换
 const theme = ref('vs')
+// 只读切换
+const readonly = ref(true)
 // 接收参数
 const formItemList = defineModel({type: Array<any>, default: () => []})
 const formProps = defineModel('formProps', {type: Object, default: () => {}})

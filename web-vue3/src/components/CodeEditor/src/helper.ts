@@ -25,7 +25,7 @@ self.MonacoEnvironment = {
 }
 
 // 初始化编辑器
-export const createEditor = (editorRef: any, theme: string = 'vs', language: string = 'html') => {
+export const createEditor = (editorRef: any, theme: string = 'vs', language: string = 'html', readonly: boolean = true) => {
   if (!editorRef.value) return undefined
   editor = monaco.editor.create(editorRef.value, {
     // 初始模型
@@ -43,7 +43,7 @@ export const createEditor = (editorRef: any, theme: string = 'vs', language: str
     // 行号
     lineNumbers: 'on',
     // 只读
-    readOnly: true,
+    readOnly: readonly,
     // tab大小
     tabSize: 2,
     //字体大小
@@ -85,4 +85,14 @@ export const changeTheme = (newTheme: string) => {
 // 切换语言
 export const changeLanguage = (newLanguage: string) => {
   editor.setModel(monaco.editor.createModel('', newLanguage))
+}
+
+// 格式化代码
+export const formatCode = async () => {
+  await editor.getAction('editor.action.formatDocument')?.run()
+}
+
+// 更新readonly状态
+export const changeReadonly = (isReadonly: boolean) => {
+  editor.updateOptions({readOnly: isReadonly})
 }
