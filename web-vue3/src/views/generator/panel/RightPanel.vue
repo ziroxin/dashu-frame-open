@@ -500,14 +500,118 @@
               <span class="text-12px text-#999 ml-5px">0表示不限制</span>
             </el-form-item>
           </template>
+          <!-- slider属性 -->
+          <template v-if="'el-slider'===current.__key">
+            <el-form-item label="最小值">
+              <el-input-number v-model="current.__attrs.min"/>
+            </el-form-item>
+            <el-form-item label="最大值">
+              <el-input-number v-model="current.__attrs.max"/>
+            </el-form-item>
+            <el-form-item label="步长">
+              <el-input-number v-model="current.__attrs.step"/>
+            </el-form-item>
+            <el-form-item label="输入框">
+              <el-switch v-model="current.__attrs.showInput" active-text="显示" inactive-text="隐藏"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="控制按钮" v-if="current.__attrs?.showInput">
+              <el-switch v-model="current.__attrs.showInputControls" active-text="显示" inactive-text="隐藏"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="间断点">
+              <el-switch v-model="current.__attrs.showStops" active-text="显示" inactive-text="隐藏"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="ToolTip">
+              <el-switch v-model="current.__attrs.showTooltip" active-text="显示" inactive-text="隐藏"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="位置" v-if="current.__attrs.showTooltip">
+              <el-select v-model="current.__attrs.placement" clearable filterable class="w-100px!">
+                <el-option v-for="(r,i) in placementList" :key="i" :value="r" :label="r"/>
+              </el-select>
+              <span class="text-12px color-gray-5 ml-5px">ToolTip显示位置</span>
+            </el-form-item>
+            <el-form-item label="选择范围">
+              <el-switch v-model="current.__attrs.range" active-text="开启" inactive-text="关闭"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="垂直模式">
+              <el-switch v-model="current.__attrs.vertical" active-text="开启" inactive-text="关闭"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="滑块高度" v-if="current.__attrs.vertical">
+              <el-input v-model="current.__attrs.height" clearable placeholder="滑块高度（垂直模式必填）"/>
+            </el-form-item>
+            <el-form-item label="标记">
+              <el-input v-model="current.__attrs.marks" clearable placeholder="突出显示标记的点（格式：{10:'提示'}）"/>
+            </el-form-item>
+
+          </template>
+          <!-- rate属性 -->
+          <template v-if="'el-rate'===current.__key">
+            <el-form-item label="最大值">
+              <el-input-number v-model="current.__attrs.max"/>
+            </el-form-item>
+            <el-form-item label="半选">
+              <el-switch v-model="current.__attrs.allowHalf" active-text="允许半选" inactive-text="不允许"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="低-中分">
+              <el-input-number v-model="current.__attrs.lowThreshold"/>
+              <span class="text-12px text-gray-5">低分和中等分数的界限值，值本身算低分</span>
+            </el-form-item>
+            <el-form-item label="中-高分">
+              <el-input-number v-model="current.__attrs.highThreshold"/>
+              <span class="text-12px text-gray-5">高分和中等分数的界限值，值本身算高分</span>
+            </el-form-item>
+            <el-form-item label="分段颜色">
+              <span class="mr-5px">低分:</span>
+              <el-color-picker v-model="current.__attrs.colors[0]" value-on-clear="#f7ba2a"/>
+              <span class="ml-10px mr-5px">中分:</span>
+              <el-color-picker v-model="current.__attrs.colors[1]" value-on-clear="#f7ba2a"/>
+              <span class="ml-10px mr-5px">高分:</span>
+              <el-color-picker v-model="current.__attrs.colors[2]" value-on-clear="#f7ba2a"/>
+            </el-form-item>
+            <el-form-item label="未选颜色">
+              <span class="mr-5px">正常未选中:</span>
+              <el-color-picker v-model="current.__attrs.voidColor" value-on-clear="#c6d1de"/>
+              <span class="ml-10px mr-5px">只读时未选中:</span>
+              <el-color-picker v-model="current.__attrs.disabledVoidColor" value-on-clear="#eff2f7"/>
+            </el-form-item>
+            <el-form-item label="辅助文本">
+              <el-select v-model="current.rateTxtType" clearable>
+                <el-option :value="'score'" label="显示当前分数"/>
+                <el-option :value="'text'" label="显示辅助文字"/>
+              </el-select>
+            </el-form-item>
+            <template v-if="current.rateTxtType==='score'">
+              <el-form-item label="分数">
+                <el-switch v-model="current.__attrs.showScore" active-text="显示" inactive-text="隐藏"
+                           :active-value="true" :inactive-value="false"/>
+              </el-form-item>
+              <el-form-item label="分数模板" v-if="current.__attrs.showScore">
+                <el-input v-model="current.__attrs.scoreTemplate" clearable placeholder="{value}分"/>
+              </el-form-item>
+            </template>
+            <template v-if="current.rateTxtType==='text'">
+              <el-form-item label="辅助文字">
+                <el-switch v-model="current.__attrs.showText" active-text="显示" inactive-text="隐藏"
+                           :active-value="true" :inactive-value="false"/>
+              </el-form-item>
+              <el-form-item label="最大值" v-if="current.__attrs.showText">
+                <el-input v-model="current.__attrs.texts" clearable placeholder="['极差', '差', '一般', '好', '极好']"/>
+              </el-form-item>
+            </template>
+            <el-form-item label="辅助颜色" v-if="current.rateTxtType">
+              <el-color-picker v-model="current.__attrs.textColor"/>
+            </el-form-item>
+          </template>
+          <!-- color属性 -->
 
           <el-divider>test</el-divider>
           <base-button type="primary" @click="()=>{console.log(JSON.stringify(current.__attrs))}">测试属性</base-button>
-
-          <!-- 原生upload属性 -->
-
-          <!-- slider属性 -->
-          <!-- rate属性 -->
 
           <el-divider>表单规则</el-divider>
           <form-item-rules v-if="current?.__id" :key="current.__id" v-model="currentRules"/>
@@ -648,6 +752,8 @@ const formProps = defineModel('formProps', {type: Object, default: () => {}})
 // 日期选择类型
 const dateType = ref(['date', 'datetime', 'daterange', 'datetimerange',
   'dates', 'week', 'month', 'months', 'monthrange', 'year', 'years', 'yearrange'])
+const placementList = ref(['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end',
+  'left', 'left-start', 'left-end', 'right', 'right-start', 'right-end'])
 
 // 表单验证规则（切换当前组件时，自动更新）
 const currentRules = ref([])
@@ -715,6 +821,25 @@ watch(() => current.value.__attrs?.showTip, (val) => {
 watch(() => current.value.acceptSelect, (val) => {
   if (val) current.value.__attrs.accept = val.join(',')
 })
+// slider监听属性变化
+watch(() => current.value.__attrs?.showInput, (val) => { if (!val) delete current.value.__attrs.showInputControls })
+watch(() => current.value.__attrs?.showTooltip, (val) => { if (!val) delete current.value.__attrs.placement })
+watch(() => current.value.__attrs?.vertical, (val) => { if (!val) delete current.value.__attrs.height })
+// rate监听属性变化
+watch(() => current.value?.rateTxtType, (val) => {
+  console.log(222)
+  if (val === 'score') delete current.value.__attrs.showText
+  else if (val === 'text') delete current.value.__attrs.showScore
+  else {
+    delete current.value.__attrs.showScore
+    delete current.value.__attrs.showText
+    delete current.value.__attrs.textColor
+  }
+})
+watch(() => current.value.__attrs?.showScore, (val) => { if (!val) delete current.value.__attrs.scoreTemplate })
+watch(() => current.value.__attrs?.showText, (val) => { if (!val) delete current.value.__attrs.texts })
+
+
 </script>
 
 <style lang="less" scoped>

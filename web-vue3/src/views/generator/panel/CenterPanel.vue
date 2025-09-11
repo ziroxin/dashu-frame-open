@@ -50,9 +50,12 @@
   </el-form>
   <!-- 测试按钮 -->
   <div class="w-full py-10px text-center b-t-1px b-t-dashed b-t-#ccc">
-    <base-button @click="check" icon="el-icon-check" type="primary" plain>测试表单</base-button>
-    <base-button @click="clearInterval" icon="el-icon-close" plain>重置表单</base-button>
+    <base-button @click="check" icon="el-icon-check" type="primary" plain>测试提交</base-button>
+    <base-button @click="clearInterval" icon="el-icon-close" plain>重置</base-button>
     <el-tag type="info" class="ml-10px">此处按钮只用于测试表单，不生成代码！</el-tag>
+    <a href="https://element-plus.org/zh-CN/component/overview.html" target="_blank">
+      <base-button type="primary" link icon="el-icon-link" class="px-20px!">Element Plus 官方文档</base-button>
+    </a>
   </div>
   <!-- 复制表单项弹窗 -->
   <form-item-add v-if="addDialogVisible" v-model="addDialogVisible"
@@ -91,10 +94,10 @@ const copyC = (item) => {
 }
 
 const check = () => {
-  console.log(10, formData.value)
+  console.log('表单验证前', JSON.stringify(formData.value))
   dataFormRef.value.validate((valid) => {
     if (valid) {
-      console.log(11, formData.value)
+      console.log('表单验证通过，提交表单：', JSON.stringify(formData.value))
     }
   })
 }

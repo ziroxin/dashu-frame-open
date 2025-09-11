@@ -62,6 +62,18 @@ export const objToStr = (obj: any): string => {
   return `{${result.join(', ')}}`
 }
 
+/** 字符串 转 object（优化JSON.parse） */
+export const strToObj = (str: string): any => {
+  try {
+    // 使用正则表达式将单引号替换为双引号，并在键前加双引号
+    let jsonString = str.replace(/'/g, '"').replace(/\b(\d+)\b(?=\s*:)/g, '"$1"')
+    // 解析 JSON 字符串为 JavaScript 对象
+    return JSON.parse(jsonString)
+  } catch (e) {
+    return str
+  }
+}
+
 /** 设置css变量 */
 export const setCssVar = (prop: string, val: any, dom = document.documentElement) => {
   dom.style.setProperty(prop, val)

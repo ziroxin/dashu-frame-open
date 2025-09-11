@@ -69,10 +69,17 @@
     <!-- file-upload -->
     <file-upload v-if="'file-upload'===item.__key" v-bind="{...itemAttrs}"
                  v-model="formData[item.__modelName]"/>
+    <!-- el-slider -->
+    <el-slider v-if="'el-slider'===item.__key" v-bind="{...itemAttrs}"
+               v-model="formData[item.__modelName]"/>
+    <!-- el-rate -->
+    <el-rate v-if="'el-rate'===item.__key" v-bind="{...itemAttrs}"
+             v-model="formData[item.__modelName]"/>
   </el-form-item>
 </template>
 
 <script setup lang="ts">
+import { strToObj } from '@/utils'
 import { MyWangEditor } from '@/components/MyWangEditor'
 import ImageAvatar from '@/components/Upload/ImageAvatar'
 import ImageOne from '@/components/Upload/ImageOne'
@@ -84,8 +91,13 @@ const formData: any = defineModel()
 const {item} = defineProps({item: {type: Object, required: true, default: () => ({})}})
 const itemAttrs = computed(() => {
   return Object.keys(item.__attrs).reduce((acc, key) => {
+    // 特殊处理，object以字符串传入的key
     if (item.__attrs[key] !== undefined && item.__attrs[key] !== null && item.__attrs[key] !== '') {
-      acc[key] = item.__attrs[key]
+      if (['marks', 'texts'].includes(key)) {
+        if (item.__attrs[key]) acc[key] = strToObj(item.__attrs[key])
+      } else {
+        acc[key] = item.__attrs[key]
+      }
     }
     return acc
   }, {})
