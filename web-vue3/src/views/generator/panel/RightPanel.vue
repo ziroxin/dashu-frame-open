@@ -609,6 +609,23 @@
             </el-form-item>
           </template>
           <!-- color属性 -->
+          <template v-if="'el-color-picker'===current.__key">
+            <el-form-item label="透明度">
+              <el-switch v-model="current.__attrs.showAlpha" active-text="支持透明度" inactive-text="不支持"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="颜色格式">
+              <el-select v-model="current.__attrs.colorFormat" clearable>
+                <el-option v-for="(r,i) in ['rgb','hsl','hsv','hex','rgb','hex']" :key="i" :value="r" :label="r"/>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="预定义">
+              <el-input v-model="current.__attrs.predefine" clearable placeholder="示例：['#67C23A','#F56C6C']"/>
+            </el-form-item>
+            <el-form-item label="清空值">
+              <el-input v-model="current.__attrs.valueOnClear" clearable placeholder="示例：'#909399'"/>
+            </el-form-item>
+          </template>
 
           <el-divider>test</el-divider>
           <base-button type="primary" @click="()=>{console.log(JSON.stringify(current.__attrs))}">测试属性</base-button>

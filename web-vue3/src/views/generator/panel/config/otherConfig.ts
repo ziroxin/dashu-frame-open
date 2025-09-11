@@ -27,5 +27,19 @@ export default [
       highThreshold: 4,
       colors: ['#f7ba2a', '#f7ba2a', '#f7ba2a']
     }
+  },
+  {
+    __key: 'el-color-picker',
+    __docLink: 'https://element-plus.org/zh-CN/component/color-picker.html#api',
+    __name: '颜色选择',
+    __icon: 'form-color',
+    __span: 24,
+    __formItemAttrs: {
+      label: '颜色选择',
+      rules: [{required: true, message: '颜色选择不能为空'}]
+    },
+    __attrs: {
+      showAlpha: false
+    }
   }
 ]

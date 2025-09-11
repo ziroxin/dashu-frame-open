@@ -75,6 +75,9 @@
     <!-- el-rate -->
     <el-rate v-if="'el-rate'===item.__key" v-bind="{...itemAttrs}"
              v-model="formData[item.__modelName]"/>
+    <!-- el-color-picker -->
+    <el-color-picker v-if="'el-color-picker'===item.__key" v-bind="{...itemAttrs}"
+                     v-model="formData[item.__modelName]"/>
   </el-form-item>
 </template>
 
@@ -93,7 +96,7 @@ const itemAttrs = computed(() => {
   return Object.keys(item.__attrs).reduce((acc, key) => {
     // 特殊处理，object以字符串传入的key
     if (item.__attrs[key] !== undefined && item.__attrs[key] !== null && item.__attrs[key] !== '') {
-      if (['marks', 'texts'].includes(key)) {
+      if (['marks', 'texts', 'predefine'].includes(key)) {
         if (item.__attrs[key]) acc[key] = strToObj(item.__attrs[key])
       } else {
         acc[key] = item.__attrs[key]

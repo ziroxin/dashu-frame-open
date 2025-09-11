@@ -80,7 +80,7 @@ const getHtmlCode = () => {
       const val = item.__attrs[key]
       if (!['boolean', 'number', 'object', 'string'].includes(typeof val)) console.log('意外的数据类型：', typeof val)
       if (val !== undefined && val !== null && val !== '') {
-        if (['marks', 'texts'].includes(key)) {
+        if (['marks', 'texts', 'predefine'].includes(key)) {
           return `:${key}="${objToStr(val)}"` // 特殊标签，加v-bind:
         } else if (['number', 'object'].includes(typeof val)) {
           return `:${key}="${objToStr(val)}"` // 数字和Object类型，加v-bind:
