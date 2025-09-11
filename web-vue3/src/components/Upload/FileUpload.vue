@@ -5,7 +5,7 @@
        paramsData: 可选，调用上传接口时传入后台的参数（JSON格式）
        name: 可选，file表单的name属性，默认：filename
        action: 可选，上传接口地址，默认：/upload/files
-       accept: 可选，上传文件类型（格式举例：.jpg,.png,.gif）
+       accept: 可选，上传文件类型（格式举例：.zip,image/*）
        btnTitle: 可选，上传按钮显示文字，默认：点击上传文件
        showTip: 可选，是否显示提示信息，默认：true
        tipInfo: 可选，提示信息，默认：支持图片、Word、Excel、Pdf、Rar、Zip格式的文件
@@ -54,7 +54,7 @@ export default {
     name: {type: String, default: 'filename'},
     // 上传接口地址
     action: {type: String, default: ''},
-    // 上传文件类型
+    // 上传文件类型（例如：.zip,image/*）
     accept: {type: String, default: '.jpg,.png,.jpeg,.gif,.doc,.docx,.xls,.xlsx,.pdf,.zip,.rar'},
     // 上传按钮标题
     btnTitle: {type: String, default: '点击上传文件'},

@@ -5,7 +5,7 @@
        paramsData: 可选，调用上传接口时传入后台的参数（JSON格式）
        name: 可选，file表单的name属性，默认：filename
        action: 可选，上传接口地址，默认：/upload/files
-       accept: 可选，上传文件类型（格式举例：.jpg,.png,.gif）
+       accept: 可选，上传文件类型（格式举例：.zip,image/*）
        btnTitle: 可选，上传按钮显示文字，默认：点击上传文件
        showTip: 可选，是否显示提示信息，默认：true
        tipInfo: 可选，提示信息，默认：支持图片、Word、Excel、Pdf、Rar、Zip格式的文件
@@ -49,7 +49,7 @@ export default {
     name: {type: String, default: 'filename'},
     // 上传接口地址
     action: {type: String, default: ''},
-    // 上传文件类型
+    // 上传文件类型（例如：.zip,image/*）
     accept: {type: String, default: '.jpg,.png,.jpeg,.gif,.doc,.docx,.xls,.xlsx,.pdf,.zip,.rar'},
     // 上传按钮标题
     btnTitle: {type: String, default: '点击上传文件'},
@@ -75,7 +75,7 @@ export default {
       // 文件列表
       fileList: [],
       // 回显文件列表
-      fileShowList: [],
+      fileShowList: []
     }
   },
   mounted() {
@@ -103,9 +103,16 @@ export default {
       }
       // 判断文件扩展名
       const fileExt = file.name.slice(file.name.lastIndexOf('.')).toLowerCase()
-      let isAccept = this.accept.split(',').some(ext => ext.toLowerCase() === fileExt)
+      const fileMime = file.type.toLowerCase()
+      let isAccept = this.accept.split(',').some(ext => {
+        if (ext.includes('*')) {
+          return fileMime.startsWith(ext.split('/')[0].toLowerCase())
+        } else {
+          return fileExt === ext.toLowerCase()
+        }
+      })
       if (!isAccept) {
-        this.$message.error('上传文件格式错误！只能上传' + this.accept + '格式的文件');
+        this.$message.error('上传文件格式错误！只能上传' + this.accept + '格式的文件')
       }
       // 判断上传个数
       let isLimitCount = this.limitCount <= 0 || this.fileList.length < this.limitCount
@@ -140,7 +147,7 @@ export default {
       this.$emit('input', this.fileList)
     },
     formatSize(size) {
-      let sizeStr = size + 'B';
+      let sizeStr = size + 'B'
       if (size >= 1024 * 1024 * 1024) {
         sizeStr = (size / 1024 / 1024 / 1024).toFixed(2) + 'GB'
       } else if (size >= 1024 * 1024) {
@@ -150,7 +157,7 @@ export default {
       } else {
         sizeStr = size + 'B'
       }
-      return sizeStr;
+      return sizeStr
     }
   }
 }
