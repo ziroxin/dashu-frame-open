@@ -50,6 +50,21 @@ export function parseTime(time, cFormat) {
   return time_str
 }
 
+/** 文件大小格式化 */
+export function formatSize(size) {
+  let sizeStr = size + 'B'
+  if (size >= 1024 * 1024 * 1024) {
+    sizeStr = (size / 1024 / 1024 / 1024).toFixed(2) + 'GB'
+  } else if (size >= 1024 * 1024) {
+    sizeStr = (size / 1024 / 1024).toFixed(2) + 'MB'
+  } else if (size >= 1024) {
+    sizeStr = (size / 1024).toFixed(2) + 'KB'
+  } else {
+    sizeStr = size + 'B'
+  }
+  return sizeStr
+}
+
 /** 生成uuid */
 export function generateUUID() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {

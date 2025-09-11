@@ -14,9 +14,10 @@
                 </el-option>
               </el-option-group>
             </el-select>
-            <a :href="current.__docLink || 'https://element-plus.org/zh-CN/'" target="_blank" class="ml-2% w-33%!">
+            <a v-if="current.__docLink" :href="current.__docLink" target="_blank" class="ml-2% w-33%!">
               <base-button type="primary" plain icon="el-icon-link" class="w-full">文档</base-button>
             </a>
+            <base-button v-else type="info" link plain class="ml-2% w-33%!">无文档</base-button>
           </el-form-item>
           <!-- input-文本类型 -->
           <el-form-item v-if="'el-input'===current.__key" label="文本类型">
@@ -258,10 +259,8 @@
             </el-form-item>
             <el-form-item label="回车键">
               <el-switch v-model="current.__attrs.defaultFirstOption" active-text="选中第一项"
-                         inactive-text="回车无操作"
-                         :active-value="true" :inactive-value="false"/>
+                         inactive-text="回车无操作" :active-value="true" :inactive-value="false"/>
             </el-form-item>
-
           </template>
           <!-- datetime属性 -->
           <template v-if="'el-date-picker'===current.__key">
@@ -387,17 +386,124 @@
           </template>
           <!-- switch属性 -->
           <template v-if="'el-switch'===current.__key">
+            <el-form-item label="文字位置">
+              <el-switch v-model="current.__attrs.inlinePrompt" active-text="内部" inactive-text="显示在按钮外部"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="开启文字">
+              <el-input v-model="current.__attrs.activeText" clearable placeholder="开启时显示的文字"/>
+            </el-form-item>
+            <el-form-item label="关闭文字">
+              <el-input v-model="current.__attrs.inactiveText" clearable placeholder="关闭时显示的文字"/>
+            </el-form-item>
+            <el-divider>Value属性</el-divider>
+            <el-form-item label="value类型">
+              <el-radio-group v-model="current.__valueType" class="w-full mb-5px" @change="switchValueTypeChange">
+                <el-radio-button label="boolean" value="boolean"/>
+                <el-radio-button label="number" value="number"/>
+                <el-radio-button label="string" value="string"/>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="开启value">
+              <el-switch v-if="current.__valueType==='boolean'" v-model="current.__attrs.activeValue"
+                         active-text="true" inactive-text="false" :active-value="true" :inactive-value="false"/>
+              <el-input-number v-if="current.__valueType==='number'" v-model="current.__attrs.activeValue"/>
+              <el-input v-if="current.__valueType==='string'" v-model="current.__attrs.activeValue"/>
+            </el-form-item>
+            <el-form-item label="关闭value">
+              <el-switch v-if="current.__valueType==='boolean'" v-model="current.__attrs.inactiveValue"
+                         active-text="true" inactive-text="false" :active-value="true" :inactive-value="false"/>
+              <el-input-number v-if="current.__valueType==='number'" v-model="current.__attrs.inactiveValue"/>
+              <el-input v-if="current.__valueType==='string'" v-model="current.__attrs.inactiveValue"/>
+            </el-form-item>
           </template>
-
+          <!-- wangEditor属性 -->
+          <template v-if="'my-wang-editor'===current.__key">
+            <el-form-item label="编辑器高度">
+              <el-input v-model="current.__attrs.height" placeholder="编辑器高度"/>
+            </el-form-item>
+          </template>
+          <!-- imageAvatar属性、imageOne属性 -->
+          <template v-if="['image-avatar','image-one'].includes(current.__key)">
+            <el-form-item label="大小限制">
+              <el-input-number v-model="current.__attrs.limitSize" :step="1024" placeholder="上传图片大小限制"/>
+              <span class="text-12px text-#999 ml-5px">单位：b</span>
+              <div class="text-12px text-red">上传图片大小限制：{{ formatSize(current.__attrs.limitSize) || '' }}</div>
+            </el-form-item>
+          </template>
+          <!-- imageUpload属性 -->
+          <template v-if="'image-upload'===current.__key">
+            <el-form-item label="多选">
+              <el-switch v-model="current.__attrs.multiple" active-text="多选" inactive-text="单选"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="大小限制">
+              <el-input-number v-model="current.__attrs.limitSize" :step="1024" placeholder="上传图片大小限制"/>
+              <span class="text-12px text-#999 ml-5px">单位：b</span>
+              <div class="text-12px text-red">上传图片大小限制：{{ formatSize(current.__attrs.limitSize) || '' }}</div>
+            </el-form-item>
+            <el-form-item label="个数限制">
+              <el-input-number v-model="current.__attrs.limitCount" placeholder="上传图片个数限制"/>
+              <span class="text-12px text-#999 ml-5px">0表示不限制</span>
+            </el-form-item>
+          </template>
+          <!-- fileUpload属性 -->
+          <template v-if="'file-upload'===current.__key">
+            <el-form-item label="类型限制">
+              <el-tooltip placement="left" content="以本输入框内容为最终限制类型（下拉框可快速选择常见类型）">
+                <el-input v-model="current.__attrs.accept" clearable placeholder="允许上传的文件类型"/>
+              </el-tooltip>
+              <el-select v-model="current.acceptSelect" placeholder="请选择文件类型" multiple clearable class="mt-10px">
+                <el-option label="图片-常用" value=".jpg,.jpeg,.png,.gif,.bmp"/>
+                <el-option label="Excel" value=".xls,.xlsx"/>
+                <el-option label="Word" value=".doc,.docx"/>
+                <el-option label="PPT" value=".ppt,.pptx"/>
+                <el-option label="Pdf" value=".pdf"/>
+                <el-option label="Txt" value=".txt"/>
+                <el-option label="Zip" value=".zip"/>
+                <el-option label="Rar" value=".rar"/>
+                <el-option label="Mp4" value=".mp4"/>
+                <el-option label="Mp3" value=".mp3"/>
+                <el-option label="图片-全" value="image/*"/>
+                <el-option label="视频-全" value="video/*"/>
+                <el-option label="音频-全" value="audio/*"/>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="按钮文字">
+              <el-input v-model="current.__attrs.btnTitle" clearable placeholder="按钮文字"/>
+            </el-form-item>
+            <el-form-item label="提示信息">
+              <el-switch v-model="current.__attrs.showTip" active-text="显示" inactive-text="隐藏"
+                         :active-value="true" :inactive-value="false"/>
+              <el-input v-if="current.__attrs.showTip" class="mt-5px"
+                        v-model="current.__attrs.tipInfo" clearable placeholder="提示文字"/>
+            </el-form-item>
+            <el-form-item label="多选">
+              <el-switch v-model="current.__attrs.multiple" active-text="多选" inactive-text="单选"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="文件列表">
+              <el-switch v-model="current.__attrs.showFileList" active-text="显示" inactive-text="隐藏"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="自动上传">
+              <el-switch v-model="current.__attrs.autoUpload" active-text="自动上传" inactive-text="手动上传"
+                         :active-value="true" :inactive-value="false"/>
+            </el-form-item>
+            <el-form-item label="大小限制">
+              <el-input-number v-model="current.__attrs.limitSize" :step="1024" placeholder="上传图片大小限制"/>
+              <span class="text-12px text-#999 ml-5px">单位：b</span>
+              <div class="text-12px text-red">上传图片大小限制：{{ formatSize(current.__attrs.limitSize) || '' }}</div>
+            </el-form-item>
+            <el-form-item label="个数限制">
+              <el-input-number v-model="current.__attrs.limitCount" placeholder="上传图片个数限制"/>
+              <span class="text-12px text-#999 ml-5px">0表示不限制</span>
+            </el-form-item>
+          </template>
 
           <el-divider>test</el-divider>
           <base-button type="primary" @click="()=>{console.log(JSON.stringify(current.__attrs))}">测试属性</base-button>
 
-          <!-- wangEditor属性 -->
-          <!-- imageAvatar属性 -->
-          <!-- imageOne属性 -->
-          <!-- imageUpload属性 -->
-          <!-- fileUpload属性 -->
           <!-- 原生upload属性 -->
 
           <!-- slider属性 -->
@@ -522,6 +628,7 @@
 
 <script setup lang="ts">
 import { cloneDeep } from 'lodash-es'
+import { formatSize } from '@/utils/tools'
 import allConfig from '@/views/generator/panel/config/allConfig'
 import FormItemRules from '@/views/generator/panel/FormItemRules'
 import DataSelect from '@/views/generator/panel/DataSelect'
@@ -593,6 +700,20 @@ watch(() => current.value.__attrs?.collapseTags, (val) => {
     current.value.__attrs.collapseTags = true
     current.value.__attrs.collapseTagsTooltip = true
   }
+})
+// switch数据类型切换
+const switchValueTypeChange = (val) => {
+  current.value.__attrs.activeValue = val === 'boolean' ? true : val === 'number' ? 1 : 'on'
+  current.value.__attrs.inactiveValue = val === 'boolean' ? false : val === 'number' ? 0 : 'off'
+}
+// file-upload监听showTip变更
+watch(() => current.value.__attrs?.showTip, (val) => {
+  if (val) current.value.__attrs.tipInfo = '支持图片、Word、Excel、Pdf、Rar、Zip格式的文件'
+  else delete current.value.__attrs.tipInfo
+})
+// file-upload监听文件类型变更
+watch(() => current.value.acceptSelect, (val) => {
+  if (val) current.value.__attrs.accept = val.join(',')
 })
 </script>
 

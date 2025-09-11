@@ -109,7 +109,14 @@ export default {
       }
       // 判断文件扩展名
       const fileExt = file.name.slice(file.name.lastIndexOf('.')).toLowerCase()
-      const isAccept = this.accept.split(',').some(ext => ext.toLowerCase() === fileExt)
+      const fileMime = file.type.toLowerCase()
+      const isAccept = this.accept.split(',').some(ext => {
+        if (ext.includes('*')) {
+          return fileMime.startsWith(ext.split('/')[0].toLowerCase())
+        } else {
+          return fileExt === ext.toLowerCase()
+        }
+      })
       if (!isAccept) {
         this.$message.error('上传文件格式错误！只能上传' + this.accept + '格式的文件')
       }

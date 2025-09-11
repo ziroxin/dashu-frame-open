@@ -51,14 +51,33 @@
     <!-- el-date-picker -->
     <el-date-picker v-if="'el-date-picker'===item.__key" v-bind="{...itemAttrs}"
                     v-model="formData[item.__modelName]"/>
+    <!-- el-switch -->
+    <el-switch v-if="'el-switch'===item.__key" v-bind="{...itemAttrs}"
+               v-model="formData[item.__modelName]"/>
     <!-- my-wang-editor -->
     <my-wang-editor v-if="'my-wang-editor'===item.__key" v-bind="{...itemAttrs}"
                     v-model="formData[item.__modelName]"/>
+    <!-- image-avatar -->
+    <image-avatar v-if="'image-avatar'===item.__key" v-bind="{...itemAttrs}"
+                  v-model="formData[item.__modelName]"/>
+    <!-- image-one -->
+    <image-one v-if="'image-one'===item.__key" v-bind="{...itemAttrs}"
+               v-model="formData[item.__modelName]"/>
+    <!-- image-upload -->
+    <image-upload v-if="'image-upload'===item.__key" v-bind="{...itemAttrs}"
+                  v-model="formData[item.__modelName]"/>
+    <!-- file-upload -->
+    <file-upload v-if="'file-upload'===item.__key" v-bind="{...itemAttrs}"
+                 v-model="formData[item.__modelName]"/>
   </el-form-item>
 </template>
 
 <script setup lang="ts">
 import { MyWangEditor } from '@/components/MyWangEditor'
+import ImageAvatar from '@/components/Upload/ImageAvatar'
+import ImageOne from '@/components/Upload/ImageOne'
+import ImageUpload from '@/components/Upload/ImageUpload'
+import FileUpload from '@/components/Upload/FileUpload'
 
 const formData: any = defineModel()
 // 处理属性

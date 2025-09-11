@@ -44,7 +44,7 @@
   </template>
   <div class="flex justify-evenly items-center">
     <base-button type="primary" link icon="el-icon-plus" @click="addNewRule">添加规则</base-button>
-    <el-tooltip v-if="ruleList?.length>0" :content="getViewContent()">
+    <el-tooltip v-if="ruleList?.length>0" :content="getViewContent()" placement="top">
       <base-button type="danger" link icon="el-icon-view">预览规则</base-button>
     </el-tooltip>
   </div>

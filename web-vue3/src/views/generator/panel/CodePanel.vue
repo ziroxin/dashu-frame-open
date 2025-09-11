@@ -14,7 +14,7 @@
         </el-select>
         <el-divider direction="vertical"/>
         <base-button type="primary" link :icon="readonly?'el-icon-unlock':'el-icon-lock'" @click="readonly=!readonly">
-          {{ readonly ? '允许编辑' : '切换只读' }}
+          {{ readonly ? '启用编辑' : '切换只读' }}
         </base-button>
         <el-divider direction="vertical"/>
         <base-button type="primary" link icon="el-icon-refresh" @click="formatCode">格式化代码</base-button>
@@ -31,8 +31,8 @@
 
 <script setup lang="ts">
 import { cloneDeep } from 'lodash-es'
-import { CodeEditor } from '@/components/CodeEditor'
 import { objToStr } from '@/utils'
+import { CodeEditor } from '@/components/CodeEditor'
 import { formatCode } from '@/components/CodeEditor/src/helper'
 
 // 当前Tab
@@ -161,7 +161,27 @@ const getTsCode = () => {
   // 1表单数据默认值
   const formDataDefault = list.filter(o => o.__key === 'el-input-number').map(item => `${item.__modelName}:0`).join(', ')
   // 2自定义组件导入
-  const wangEditorImport = list.some(o => o.__key === 'my-wang-editor') ? `import { MyWangEditor } from '@/components/MyWangEditor'` : ''
+  let diyConfigImport = ``
+  if (list.some(o => o.__key === 'my-wang-editor')) {
+    diyConfigImport += `
+        import { MyWangEditor } from '@/components/MyWangEditor'`
+  }
+  if (list.some(o => o.__key === 'image-avatar')) {
+    diyConfigImport += `
+        import ImageAvatar from '@/components/Upload/ImageAvatar'`
+  }
+  if (list.some(o => o.__key === 'image-one')) {
+    diyConfigImport += `
+        import ImageOne from '@/components/Upload/ImageOne'`
+  }
+  if (list.some(o => o.__key === 'image-upload')) {
+    diyConfigImport += `
+        import ImageUpload from '@/components/Upload/ImageUpload'`
+  }
+  if (list.some(o => o.__key === 'file-upload')) {
+    diyConfigImport += `
+        import FileUpload from '@/components/Upload/FileUpload'`
+  }
   // 3数据
   let requestImport = ''
   let dictImport = ''
@@ -171,9 +191,10 @@ const getTsCode = () => {
   list.filter(o => arr1.includes(o.__key)).forEach((r: any) => {
     const item = cloneDeep(r)
     if ('dynamic' === item.dataType) {
-      requestImport = `import request from '@/utils/request'`
+      requestImport = `
+          import request from '@/utils/request'`
       onMountedStr += `
-                      load${item.__modelName}Data()`
+          load${item.__modelName}Data()`
       dataStr += `
           // ${item.__modelName}数据
           const ${item.__modelName}Props = ref(${objToStr(item.__attrs.props || {})})
@@ -184,9 +205,10 @@ const getTsCode = () => {
             })
           }`
     } else if ('dict' === item.dataType) {
-      dictImport = `import { getDict } from '@/utils/dict-util'`
+      dictImport = `
+          import { getDict } from '@/utils/dict-util'`
       onMountedStr += `
-                      load${item.__modelName}Data()`
+          load${item.__modelName}Data()`
       dataStr += `
           // ${item.__modelName}数据
           const ${item.__modelName}Props = ref(${objToStr(item.__attrs.props || {})})
@@ -198,9 +220,7 @@ const getTsCode = () => {
   })
 
   // 4返回ts代码
-  return `${wangEditorImport}
-    ${requestImport}
-    ${dictImport}
+  return `${diyConfigImport}${requestImport}${dictImport}
 
     // 生命周期页面加载数据
     onMounted(() => {

@@ -7,7 +7,7 @@ export default [
     __span: 24,
     __formItemAttrs: {
       label: '单选组',
-      rules: [{required: true, message: '单选组必选'}]
+      rules: [{required: true, message: '单选组不能为空'}]
     },
     __attrs: {}
   },
@@ -19,7 +19,7 @@ export default [
     __span: 24,
     __formItemAttrs: {
       label: '单选按钮/边框',
-      rules: [{required: true, message: '单选按钮/边框必选'}]
+      rules: [{required: true, message: '单选按钮/边框不能为空'}]
     },
     __attrs: {
       border: true
@@ -33,7 +33,7 @@ export default [
     __span: 24,
     __formItemAttrs: {
       label: '多选',
-      rules: [{required: true, message: '多选必选'}]
+      rules: [{required: true, message: '多选不能为空'}]
     },
     __attrs: {}
   },
@@ -45,7 +45,7 @@ export default [
     __span: 24,
     __formItemAttrs: {
       label: '多选按钮/边框',
-      rules: [{required: true, message: '多选按钮/边框必选'}]
+      rules: [{required: true, message: '多选按钮/边框不能为空'}]
     },
     __attrs: {
       border: true
@@ -59,7 +59,7 @@ export default [
     __span: 24,
     __formItemAttrs: {
       label: '下拉框',
-      rules: [{required: true, message: '下拉框必选'}]
+      rules: [{required: true, message: '下拉框不能为空'}]
     },
     __attrs: {
       placeholder: '请选择',
@@ -76,7 +76,7 @@ export default [
     __span: 24,
     __formItemAttrs: {
       label: '级联选择',
-      rules: [{required: true, message: '级联选择必选'}]
+      rules: [{required: true, message: '级联选择不能为空'}]
     },
     __attrs: {
       placeholder: '请选择',
@@ -92,7 +92,7 @@ export default [
     __span: 24,
     __formItemAttrs: {
       label: '日期选择器',
-      rules: [{required: true, message: '日期必选'}]
+      rules: [{required: true, message: '日期不能为空'}]
     },
     __attrs: {
       type: 'date',// 常用：date|datetime|daterange|datetimerange
@@ -101,5 +101,21 @@ export default [
       format: 'YYYY-MM-DD',
       valueFormat: 'YYYY-MM-DD'
     }
+  },
+  {
+    __key: 'el-switch',
+    __docLink: 'https://element-plus.org/zh-CN/component/switch.html#api',
+    __name: 'Switch开关',
+    __icon: 'form-switch',
+    __span: 24,
+    __formItemAttrs: {
+      label: 'Switch开关',
+      rules: [{required: true, message: 'Switch开关不能为空'}]
+    },
+    __attrs: {
+      activeValue: true,
+      inactiveValue: false
+    },
+    __valueType: 'boolean'
   }
 ]

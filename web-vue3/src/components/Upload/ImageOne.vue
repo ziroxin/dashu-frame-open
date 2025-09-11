@@ -30,7 +30,7 @@
                :before-upload="imgBeforeUpload"
                :on-success="imgUploadSuccess"
                :on-remove="imgRemove"
-               :class="value!==''?'hidden-btn':''"
+               :class="modelValue!==''?'hidden-btn':''"
                list-type="picture-card"
                accept="image/*">
       <my-icon icon="el-icon-plus" :size="28"/>
