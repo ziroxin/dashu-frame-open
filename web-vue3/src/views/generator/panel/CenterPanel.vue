@@ -64,7 +64,9 @@
 </template>
 
 <script setup lang="ts">
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
+import { objToStr } from '@/utils'
 import { VueDraggable } from 'vue-draggable-plus'
 import FormItemAdd from '@/views/generator/panel/FormItemAdd'
 import CenterFormItems from '@/views/generator/panel/CenterFormItems'
@@ -95,10 +97,12 @@ const copyC = (item) => {
 }
 
 const check = () => {
-  console.log('表单验证前', JSON.stringify(formData.value))
+  console.log('表单验证前', objToStr(formData.value))
+  ElMessage({message: '表单验证前：' + objToStr(formData.value), type: 'warning', grouping: true})
   dataFormRef.value.validate((valid) => {
     if (valid) {
-      console.log('表单验证通过，提交表单：', JSON.stringify(formData.value))
+      console.log('表单验证通过，提交表单：', objToStr(formData.value))
+      ElMessageBox.alert('表单数据：<br/>'+objToStr(formData.value), '表单验证通过', {dangerouslyUseHTMLString: true})
     }
   })
 }

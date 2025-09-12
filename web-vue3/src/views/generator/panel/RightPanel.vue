@@ -627,8 +627,8 @@
             </el-form-item>
           </template>
 
-          <el-divider>test</el-divider>
-          <base-button type="primary" @click="()=>{console.log(JSON.stringify(current.__attrs))}">测试属性</base-button>
+<!--          <el-divider>test</el-divider>
+          <base-button type="primary" @click="()=>{console.log(JSON.stringify(current.__attrs))}">测试属性</base-button>-->
 
           <el-divider>表单规则</el-divider>
           <form-item-rules v-if="current?.__id" :key="current.__id" v-model="currentRules"/>
