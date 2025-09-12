@@ -13,7 +13,7 @@
 <template>
   <div>
     <!-- 图片预览 -->
-    <el-dialog v-model="dialogVisible" :fullscreen="true" @click.native="dialogVisible=false"
+    <el-dialog v-model="dialogVisible" :fullscreen="true" @click="dialogVisible=false"
                append-to-body custom-class="img-preview-dialog">
       <img width="100%" :src="dialogImageUrl" alt="" @click.stop="dialogVisible=true"/>
       <div class="img-text-info">按ESC键或点击遮罩可关闭预览</div>
@@ -24,7 +24,7 @@
                :data="{'path':folder,...paramsData}"
                :name="name"
                :action="action===''?$baseServer+'/upload/images':action"
-               :file-list.sync="imgList"
+               :file-list="imgList"
                :multiple="false"
                :on-preview="imgPreview"
                :before-upload="imgBeforeUpload"
@@ -95,12 +95,12 @@ export default {
     // 图片大小和格式限制
     imgBeforeUpload(file) {
       // 判断文件大小
-      let isRightSize = file.size < this.limitSize
+      const isRightSize = file.size < this.limitSize
       if (!isRightSize) {
         this.$message.error('图片大小不能超过 ' + this.formatSize(this.limitSize))
       }
       // 判断图片扩展名
-      let isAccept = new RegExp('image/*').test(file.type)
+      const isAccept = new RegExp('image/*').test(file.type)
       if (!isAccept) {
         this.$message.error('请选择正确的图片！')
       }
