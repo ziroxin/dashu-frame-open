@@ -7,14 +7,17 @@
           <!-- 顶左-Logo -->
           <base-button icon="el-icon-back" link type="danger" @click="back">返回后台</base-button>
           <div class="ml-10px text-22px font-bold cursor-pointer text-[var(--el-color-primary)]">
-            <el-tooltip content="所见即所得，在线编辑页面，代码直接拷贝到vue页面中，即可使用！">
-              代码在线编辑（开发中...）
+            <el-tooltip content="所见即所得，在线编辑表单信息，【查看代码】根据需要将代码拷贝到vue页面中，即可使用！">
+              <div class="flex items-center justify-center">
+                <span class="mr-10px">表单在线编辑</span>
+                <my-icon icon="el-icon-question" :size="20"/>
+              </div>
             </el-tooltip>
           </div>
           <!-- 顶右-操作按钮 -->
           <div class="flex items-center">
             <el-divider direction="vertical"/>
-            <base-button icon="el-icon-edit-outline" link type="primary" @click="openCodeDialog">打开代码</base-button>
+            <base-button icon="el-icon-view" link type="primary" @click="openCodeDialog">查看代码</base-button>
             <el-divider direction="vertical"/>
             <base-button icon="el-icon-delete" link type="danger" @click="clearCode">清空</base-button>
           </div>

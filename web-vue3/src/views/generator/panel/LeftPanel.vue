@@ -1,7 +1,8 @@
 <template>
   <!-- 批量添加按钮 -->
-  <div class="w-full px-15px pt-15px">
-    <base-button icon="el-icon-plus" class="w-full" @click="formItemAddBatchVisible=true">批量添加</base-button>
+  <div class="w-full text-center px-15px pt-15px">
+    <base-button icon="el-icon-coin" @click="tableDialogVisible=true">导入表</base-button>
+    <base-button icon="el-icon-plus" @click="formItemAddBatchVisible=true">批量添加</base-button>
   </div>
   <!-- 单个添加-组件列表 -->
   <div class="el-divider el-divider--horizontal">
@@ -9,7 +10,7 @@
   </div>
   <div v-for="row in componentList" :key="row.name" class="b-b-1px b-b-dashed b-b-#bbb mb-15px mx-15px">
     <div class="left-title">
-      <my-icon :icon="row.icon" class="mr-5px"/>
+      <my-icon v-if="row.icon" :icon="row.icon" class="mr-5px"/>
       {{ row.name }}
     </div>
     <div :sort="false" class="grid gap-5px w-full grid-cols-[1fr_1fr] mt-10px mb-15px">
@@ -30,6 +31,9 @@
     <form-item-add-batch v-if="formItemAddBatchVisible" v-model="formItemAddBatchVisible"
                          v-model:formItemList="formItemList"/>
   </el-dialog>
+  <!-- 导入表 -->
+  <table-list-dialog v-if="tableDialogVisible" v-model="tableDialogVisible"
+                     v-model:formItemList="formItemList"/>
 </template>
 
 <script setup lang="ts">
@@ -37,13 +41,13 @@ import { cloneDeep } from 'lodash-es'
 import allConfig from '@/views/generator/panel/config/allConfig'
 import FormItemAdd from '@/views/generator/panel/FormItemAdd'
 import FormItemAddBatch from '@/views/generator/panel/FormItemAddBatch'
+import TableListDialog from '@/views/generator/panel/TableListDialog'
 
 // 组件配置
 const componentList = cloneDeep(allConfig)
 
-const formItemList = defineModel()
-
 // 单个添加弹窗
+const formItemList = defineModel()
 const addDialogVisible = ref(false)
 const addItem = ref({})
 const addToCenter = (item) => {
@@ -53,6 +57,9 @@ const addToCenter = (item) => {
 
 // 批量添加表单项弹窗
 const formItemAddBatchVisible = ref(false)
+
+// 导入表弹窗
+const tableDialogVisible = ref(false)
 </script>
 
 <style lang="less" scoped>

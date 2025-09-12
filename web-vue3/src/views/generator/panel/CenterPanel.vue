@@ -1,5 +1,5 @@
 <template>
-  <el-form ref="dataFormRef" :model="formData" v-bind="{...formProps.__attrs}" class="min-h-[calc(100%-54px)]">
+  <el-form ref="dataFormRef" :model="formData" v-bind="{...formProps.__attrs}" class="min-h-[calc(100%-59px)] mt-5px">
     <!-- 普通布局 -->
     <template v-if="!formProps?.__layout?.layout">
       <vue-draggable v-model="formItemList" :animation="150" group="content" @click="changeC(null)"
@@ -11,6 +11,7 @@
             <center-form-items v-model="formData" :item="item" :key="'col-'+item.__id"/>
             <!-- 复制/删除 -->
             <div v-if="current.__id===item.__id" class="absolute bottom-5px right-10px z-9">
+              <span class="text-12px text-gray-4 mr-10px">可以拖拽修改组件顺序</span>
               <base-button @click="copyC(item)" type="primary" icon="el-icon-copy-document" plain circle size="small"/>
               <base-button @click="deleteC(item)" type="danger" icon="el-icon-delete" plain circle size="small"/>
             </div>
@@ -105,9 +106,14 @@ const clearInterval = () => {dataFormRef.value.resetFields()}
 </script>
 
 <style lang="less" scoped>
-.isActived, .citem:hover {
+.isActived {
   position: relative;
   background-color: #f5f7fa50;
   border: 1px dashed #dddfe1;
+}
+
+.citem:hover {
+  border: 1px dashed #dddfe1;
+  cursor: grab;
 }
 </style>

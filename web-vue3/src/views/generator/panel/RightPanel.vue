@@ -6,7 +6,7 @@
         <el-form v-if="current?.__id" :model="current" label-width="auto" size="small">
           <!-- 组件类型 -->
           <el-form-item label="组件类型" prop="__key">
-            <el-select v-model="current.__key" @change="componentChange" class="w-65%!">
+            <el-select v-model="current.__key" filterable @change="componentChange" class="w-65%!">
               <el-option-group v-for="group in componentList" :key="group.name" :label="group.name">
                 <el-option v-for="item in group.list" :key="item.__key" :label="item.__name" :value="item.__key">
                   <my-icon v-if="item.__icon" :icon="item.__icon"/>
@@ -778,10 +778,18 @@ watch(() => current.value.__id, () => { currentRules.value = current.value?.__fo
 
 // 切换组件类型
 const componentChange = (val) => {
-  // 重置 __attrs
-  current.value.__attrs = {...componentList.flatMap(o => o.list).find(i => i.__key === val).__attrs}
-  // 重置 dataType
-  current.value.dataType = ''
+  // 保留旧组件的数据
+  const oldData = {
+    __id: current.value.__id,
+    __modelName: current.value.__modelName,
+    __name: current.value.__name,
+    __formItemAttrs: {...current.value.__formItemAttrs}
+  }
+  // 查找新组件类型
+  const newData = componentList.flatMap(o => o.list).find(i => i.__key === val)
+  // 重置
+  current.value = {}
+  current.value = cloneDeep({...newData, ...oldData})
 }
 // input组件，文本类型变化
 const typeChange = (val) => {

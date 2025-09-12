@@ -94,9 +94,9 @@ const formData: any = defineModel()
 const {item} = defineProps({item: {type: Object, required: true, default: () => ({})}})
 const itemAttrs = computed(() => {
   return Object.keys(item.__attrs).reduce((acc, key) => {
-    // 特殊处理，object以字符串传入的key
     if (item.__attrs[key] !== undefined && item.__attrs[key] !== null && item.__attrs[key] !== '') {
       if (['marks', 'texts', 'predefine'].includes(key)) {
+        // 特殊处理，object以字符串传入的key
         if (item.__attrs[key]) acc[key] = strToObj(item.__attrs[key])
       } else {
         acc[key] = item.__attrs[key]

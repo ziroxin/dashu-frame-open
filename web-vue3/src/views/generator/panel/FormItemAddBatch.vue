@@ -7,7 +7,7 @@
       </span>
       <base-button type="danger" plain icon="el-icon-close" size="small" @click="itemStr=''">清空</base-button>
     </div>
-    <el-input type="textarea" v-model="itemStr" @input="change" :rows="4" clearable/>
+    <el-input type="textarea" v-model="itemStr" @input="inputChange" :rows="4" clearable/>
     <!-- 列数据 -->
     <el-divider>表单数据</el-divider>
     <div class="w-97% mx-auto">
@@ -41,83 +41,27 @@
           </div>
         </template>
       </div>
-      <el-table :data="fieldData" stripe border>
-        <el-table-column label="唯一ID" prop="__id" align="center" show-overflow-tooltip>
-          <template #default="scope">
-            <base-button type="danger" icon="el-icon-delete" link size="small"
-                         @click="fieldData.splice(scope.$index,1)">删除
-            </base-button>
-            {{ scope.row.__id }}
-          </template>
-        </el-table-column>
-        <el-table-column label="字段名" prop="__modelName" align="center">
-          <template #default="scope">
-            <el-input v-model="scope.row.__modelName" size="small" :key="'name'+scope.$index"/>
-          </template>
-        </el-table-column>
-        <el-table-column label="Label" prop="__label" align="center">
-          <template #default="scope">
-            <el-input v-model="scope.row.__label" size="small" :key="'label'+scope.$index"/>
-          </template>
-        </el-table-column>
-        <el-table-column label="必填" prop="__required" align="center">
-          <template #default="scope">
-            <el-switch v-model="scope.row.__required" active-text="必填" inactive-text="非必填"
-                       size="small" :key="'required'+scope.$index"/>
-          </template>
-        </el-table-column>
-        <el-table-column label="组件类型" prop="__type" align="center">
-          <template #default="scope">
-            <el-select v-model="scope.row.__type" size="small" :key="'type'+scope.$index">
-              <el-option-group v-for="group in componentList" :key="group.name" :label="group.name">
-                <el-option v-for="item in group.list" :key="item.__key" :label="item.__name" :value="item.__key">
-                  <my-icon v-if="item.__icon" :icon="item.__icon"/>
-                  {{ item.__name }}
-                </el-option>
-              </el-option-group>
-            </el-select>
-            <el-select v-if="scope.row.__type==='el-input'" v-model="scope.row.__type2"
-                       size="small" :key="'type2'+scope.$index">
-              <el-option label="text" value="text"/>
-              <el-option label="textarea" value="textarea"/>
-              <el-option label="password" value="password"/>
-            </el-select>
-            <el-select v-if="scope.row.__type==='el-date-picker'" v-model="scope.row.__type2"
-                       size="small" :key="'type2'+scope.$index">
-              <el-option label="date" value="date"/>
-              <el-option label="datetime" value="datetime"/>
-            </el-select>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <el-divider/>
-    <div class="flex justify-center items-center">
-      <base-button type="primary" icon="el-icon-check" @click="saveItems">保存</base-button>
-      <base-button icon="el-icon-close" @click="formItemAddBatchVisible=false">取消</base-button>
+      <table-field v-model:visible="formItemAddBatchVisible"
+                   v-model="fieldData" v-model:formItemList="formItemList"/>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ElMessage } from 'element-plus'
-import { cloneDeep } from 'lodash-es'
 import { underlineToHump } from '@/utils'
 import { generateUUID } from '@/utils/tools'
-import allConfig from '@/views/generator/panel/config/allConfig'
-// 组件列表
-const componentList: any = cloneDeep(allConfig)
-// 显示状态
-const formItemAddBatchVisible = defineModel()
+import TableField from '@/views/generator/panel/TableField'
+
 // 表单列表数据
 const formItemList = defineModel('formItemList', {type: Object, default: () => {}})
-
+// 显示状态
+const formItemAddBatchVisible = defineModel()
 // 字段信息
 const itemStr = ref('')
 const colLen = ref(0)
 const colIndexList = ref({fieldIdx: 0, typeIdx: 1, labelIdx: 11, requiredIdx: 4})
 const fieldData: any = ref([])
-const change = (val) => {
+const inputChange = (val) => {
   const result1: any[] = []
   val.split('\n').forEach(rowData => {
     const cols = rowData.split('\t')
@@ -156,46 +100,5 @@ const getComponentType = (type) => {
   } else {
     return 'el-input'
   }
-}
-// 保存
-const saveItems = () => {
-  if (fieldData.value.some(item => !item.__modelName)) {
-    ElMessage({message: '字段名不能为空！', type: 'error', grouping: true})
-    return
-  }
-  if (fieldData.value.some(item => formItemList.value.some(field => field.__id === item.__id))) {
-    ElMessage({message: '组件ID不能重复！', type: 'error', grouping: true})
-    return
-  }
-  if (fieldData.value.some(item => formItemList.value.some(field => field.__modelName === item.__modelName))) {
-    ElMessage({message: '字段名不能重复！', type: 'error', grouping: true})
-    return
-  }
-  const result: any[] = []
-  const list = componentList.flatMap(g => g.list.map(c => ({...c, parentType: g.type})))
-  fieldData.value.forEach(item => {
-    const cp = cloneDeep(list.find(c => c.__key === item.__type))
-    cp.__id = item.__id
-    cp.__modelName = item.__modelName
-    cp.__name = item.__label
-    cp.__formItemAttrs.label = item.__label
-    cp.__formItemAttrs.rules = item.__required ? [{required: true, message: item.__label + '不能为空'}] : []
-    if (item.__type2) {
-      cp.__attrs.type = item.__type2
-      if (item.__type === 'el-date-picker') {
-        cp.__attrs.format = item.__type2 === 'datetime' ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'
-        cp.__attrs.valueFormat = item.__type2 === 'datetime' ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'
-      }
-    }
-    if (cp.parentType === 'input') {
-      cp.__attrs.placeholder = item.__label ? '请输入' + item.__label : cp.__attrs.placeholder
-    } else if (cp.parentType === 'select') {
-      cp.__attrs.placeholder = item.__label ? '请选择' + item.__label : cp.__attrs.placeholder
-    }
-    result.push(cp)
-  })
-  formItemList.value.push(...result)
-  ElMessage({message: '操作成功！', type: 'success', grouping: true})
-  formItemAddBatchVisible.value = false
 }
 </script>
