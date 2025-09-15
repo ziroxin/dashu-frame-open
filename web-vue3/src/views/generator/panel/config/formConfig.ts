@@ -1,4 +1,6 @@
 export default {
+  __formRef: 'dataFormRef',
+  __formData: 'formData',
   // Form属性
   __attrs: {
     labelPosition: 'right',// 标签对齐

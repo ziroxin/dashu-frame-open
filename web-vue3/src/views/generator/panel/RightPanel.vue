@@ -645,6 +645,12 @@
     <el-tab-pane label="表单属性" name="formTab">
       <div class="mx-10px">
         <el-form :model="formProps" label-width="auto" size="small">
+          <el-form-item label="表单Ref名">
+            <el-input v-model="formProps.__formRef" placeholder="表单Ref名"/>
+          </el-form-item>
+          <el-form-item label="表单Data名">
+            <el-input v-model="formProps.__formData" placeholder="表单Data名"/>
+          </el-form-item>
           <el-divider>基础属性</el-divider>
           <el-form-item label="标签对齐">
             <el-radio-group v-model="formProps.__attrs.labelPosition">

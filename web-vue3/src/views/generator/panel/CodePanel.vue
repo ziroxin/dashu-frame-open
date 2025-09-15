@@ -94,18 +94,18 @@ const getHtmlCode = () => {
     // 1.1.3 wangEditor特殊属性
     const wangEditorDisable = item.__key === 'my-wang-editor' ? ` :disabled="dialogType==='view'"` : ''
     // 1.1.4 单独处理 el-radio和el-checkbox
-    let itemHtml = `<${item.__key} v-model="formData.${item.__modelName}" ${attrsStr} ${wangEditorDisable} ${propsStr} ${optionsStr}/>`
+    let itemHtml = `<${item.__key} v-model="${formProps.value.__formData}.${item.__modelName}" ${attrsStr} ${wangEditorDisable} ${propsStr} ${optionsStr}/>`
     if ('el-radio' === item.__key) {
       const rData = ['dynamic', 'dict'].includes(item.dataType) ? `${item.__modelName}Options` : objToStr(item.radioData)
       const tagHtml = item.radioType === 'button' ? `el-radio-button` : `el-radio`
-      itemHtml = `<el-radio-group v-model="formData.${item.__modelName}">
+      itemHtml = `<el-radio-group v-model="${formProps.value.__formData}.${item.__modelName}">
             <${tagHtml} v-for="(r, i) in ${rData}" ${attrsStr}
                     :key="i" :label="r.${item.labelKey}" :value="r.${item.valueKey}"/>
         </el-radio-group>`
     } else if ('el-checkbox' === item.__key) {
       const cData = ['dynamic', 'dict'].includes(item.dataType) ? `${item.__modelName}Options` : objToStr(item.checkboxData)
       const tagHtml = item.checkboxType === 'button' ? `el-checkbox-button` : `el-checkbox`
-      itemHtml = `<el-checkbox-group v-model="formData.${item.__modelName}">
+      itemHtml = `<el-checkbox-group v-model="${formProps.value.__formData}.${item.__modelName}">
             <${tagHtml} v-for="(r, i) in ${cData}" ${attrsStr}
                     :key="i" :label="r.${item.labelKey}" :value="r.${item.valueKey}"/>
         </el-checkbox-group>`
@@ -156,7 +156,7 @@ const getHtmlCode = () => {
   if (!f.scrollToError) formAttrs += ` :scroll-to-error="false"`
 
   // 4. 组装el-form
-  return `<el-form ref="dataFormRef" :model="formData" ${formAttrs} :disabled="dialogType==='view'">
+  return `<el-form ref="${formProps.value.__formRef}" :model="${formProps.value.__formData}" ${formAttrs} :disabled="dialogType==='view'">
       ${rowHtml}
     </el-form>`
 }
@@ -233,8 +233,8 @@ const getTsCode = () => {
     })
 
     // 表单
-    const dataFormRef = ref()
-    const formData = ref({${formDataDefault}})
+    const ${formProps.value.__formRef} = ref()
+    const ${formProps.value.__formData} = ref({${formDataDefault}})
 
     ${dataStr}
   `
