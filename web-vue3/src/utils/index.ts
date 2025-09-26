@@ -65,8 +65,10 @@ export const objToStr = (obj: any): string => {
 /** 字符串 转 object（优化JSON.parse） */
 export const strToObj = (str: string): any => {
   try {
-    // 使用正则表达式将单引号替换为双引号，并在键前加双引号
-    const jsonString = str.replace(/'/g, '"').replace(/\b(\d+)\b(?=\s*:)/g, '"$1"')
+    // 使用正则表达式将单引号替换为双引号
+    let jsonString = str.replace(/'/g, '"').replace(/\b(\d+)\b(?=\s*:)/g, '"$1"')
+    // 给key加双引号
+    jsonString = jsonString.replace(/(\w+):/g, '"$1":')
     // 解析 JSON 字符串为 JavaScript 对象
     return JSON.parse(jsonString)
   } catch (e) {
