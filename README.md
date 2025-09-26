@@ -12,8 +12,9 @@
 ---
 仓库地址：[[Gitee]](https://gitee.com/ziro/dashu-frame-open)  
 文档地址：[[开发文档]](https://docs.java119.cn/)    
-<p style="font-size:20px;color:red;">
-    Vue3 + Element Plus 版本已上线，欢迎体验：<a href="https://yanshi.java119.cn/">[Vue3演示地址]</a>
+<p>
+<a style="font-size:20px;color:#D7000F;font-weight:bold;">Vue3 + Element Plus 版本已上线，欢迎体验：</a>
+<a style="font-size:20px;" href="https://yanshi.java119.cn/">[Vue3演示地址]</a>
 </p>    
 旧版(vue2)演示地址：[[Vue2演示地址]](https://yanshi.java119.cn/vue2/)
   
