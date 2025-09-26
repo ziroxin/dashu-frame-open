@@ -8,21 +8,25 @@ export function parseTime(time, cFormat) {
   if (arguments.length === 0 || !time) {
     return null
   }
+  if (new Date(time).toString() === 'Invalid Date') {
+    console.log('时间格式错误：', time)
+    return null
+  }
   const format = cFormat || 'yyyy-MM-dd HH:mm:ss' // 修改默认格式为 'yyyy-MM-dd HH:mm:ss'
   let date
   if (typeof time === 'object') {
     date = time
-  } else {
-    if ((typeof time === 'string')) {
-      if ((/^[0-9]+$/.test(time))) {
-        // 支持时间戳（例：1548221490638）
-        time = parseInt(time)
-      } else {
-        // 苹果safari浏览器支持（参考文档：https://stackoverflow.com/questions/4310953/invalid-date-in-safari）
-        time = time.replace(new RegExp(/-/gm), '/')
-      }
+  } else if (typeof time === 'string') {
+    if ((/^[0-9]+$/.test(time))) {
+      // 支持时间戳（例：1548221490638）
+      time = parseInt(time)
+    } else {
+      // 苹果safari浏览器支持（参考文档：https://stackoverflow.com/questions/4310953/invalid-date-in-safari）
+      time = time.replace(new RegExp(/-/gm), '/')
     }
-    if ((typeof time === 'number') && (time.toString().length === 10)) {
+    date = new Date(time)
+  } else if (typeof time === 'number') {
+    if (time.toString().length === 10) {
       time = time * 1000
     }
     date = new Date(time)
