@@ -1,5 +1,6 @@
 package com.kg.core.web;
 
+import com.kg.component.file.FilePathConfig;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -19,14 +20,6 @@ import java.io.IOException;
  * @date 2025/10/24 10:32
  */
 public class ImageThumbnailHandlerInterceptor implements HandlerInterceptor {
-
-    private final String fileUploadPath;
-    private final String fileUploadUrl;
-
-    public ImageThumbnailHandlerInterceptor(String fileUploadPath, String fileUploadUrl) {
-        this.fileUploadPath = fileUploadPath;
-        this.fileUploadUrl = fileUploadUrl;
-    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -48,19 +41,21 @@ public class ImageThumbnailHandlerInterceptor implements HandlerInterceptor {
             }
             // 如果width和height都被设置，则生成缩略图
             if (width > 0 && height > 0) {
+                String parentUrl = requestURI.substring(0, requestURI.lastIndexOf("/")) + "/";
+                String parentSavePath = FilePathConfig.switchSavePath(parentUrl) + "/";
                 String fileName = requestURI.substring(requestURI.lastIndexOf("/") + 1);
                 String baseFileName = fileName.substring(0, fileName.lastIndexOf("."));
                 String thumbnailFileName = baseFileName + "_" + width + "x" + height + "." + extend;
-                String thumbnailFilePath = fileUploadPath + thumbnailFileName;
+                String thumbnailFilePath = parentSavePath + thumbnailFileName;
                 File thumbnailFile = new File(thumbnailFilePath);
                 if (thumbnailFile.exists()) {
                     // 如果缩略图文件存在，则重定向到该文件的URL地址
-                    String thumbnailUrl = fileUploadUrl + thumbnailFileName;
+                    String thumbnailUrl = parentUrl + thumbnailFileName;
                     response.sendRedirect(thumbnailUrl);
                     return false; // 中止后续处理
                 } else {
                     // 如果缩略图文件不存在，则生成缩略图并保存为新文件
-                    String originalFilePath = fileUploadPath + fileName;
+                    String originalFilePath = parentSavePath + fileName;
                     File originalFile = new File(originalFilePath);
                     if (originalFile.exists()) {
                         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
@@ -72,7 +67,7 @@ public class ImageThumbnailHandlerInterceptor implements HandlerInterceptor {
                                 fileOutputStream.write(thumbnailBytes);
                             }
                             // 重定向到生成的缩略图的URL地址
-                            String thumbnailUrl = fileUploadUrl + thumbnailFileName;
+                            String thumbnailUrl = parentUrl + thumbnailFileName;
                             response.sendRedirect(thumbnailUrl);
                             return false; // 中止后续处理
                         } catch (IOException e) {

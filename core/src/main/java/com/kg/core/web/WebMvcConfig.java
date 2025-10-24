@@ -27,9 +27,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     /** 图片自动处理缩略图 */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        String fileUploadPath = FilePathConfig.SAVE_PATH + "/";
-        String fileUploadUrl = FilePathConfig.URL_PRE + "/";
-        registry.addInterceptor(new ImageThumbnailHandlerInterceptor(fileUploadPath, fileUploadUrl))
-                .addPathPatterns(fileUploadUrl + "**");
+        registry.addInterceptor(new ImageThumbnailHandlerInterceptor())
+                .addPathPatterns(FilePathConfig.URL_PRE + "/**");
     }
 }
