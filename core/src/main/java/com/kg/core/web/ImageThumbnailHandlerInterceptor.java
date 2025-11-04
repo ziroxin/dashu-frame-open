@@ -3,6 +3,7 @@ package com.kg.core.web;
 import com.kg.component.file.FilePathConfig;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +24,7 @@ public class ImageThumbnailHandlerInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String requestURI = request.getRequestURI();
+        String requestURI = removeCtx(request.getRequestURI(), request.getContextPath());
         String queryString = request.getQueryString();
         // 检查请求路径是否是图片并且带有查询参数
         String extend = requestURI.substring(requestURI.lastIndexOf(".") + 1).toLowerCase();
@@ -50,7 +51,7 @@ public class ImageThumbnailHandlerInterceptor implements HandlerInterceptor {
                 File thumbnailFile = new File(thumbnailFilePath);
                 if (thumbnailFile.exists()) {
                     // 如果缩略图文件存在，则重定向到该文件的URL地址
-                    String thumbnailUrl = parentUrl + thumbnailFileName;
+                    String thumbnailUrl = request.getContextPath() + parentUrl + thumbnailFileName;
                     response.sendRedirect(thumbnailUrl);
                     return false; // 中止后续处理
                 } else {
@@ -67,7 +68,7 @@ public class ImageThumbnailHandlerInterceptor implements HandlerInterceptor {
                                 fileOutputStream.write(thumbnailBytes);
                             }
                             // 重定向到生成的缩略图的URL地址
-                            String thumbnailUrl = parentUrl + thumbnailFileName;
+                            String thumbnailUrl = request.getContextPath() + parentUrl + thumbnailFileName;
                             response.sendRedirect(thumbnailUrl);
                             return false; // 中止后续处理
                         } catch (IOException e) {
@@ -85,6 +86,7 @@ public class ImageThumbnailHandlerInterceptor implements HandlerInterceptor {
         return true; // 继续处理请求
     }
 
+    /** 根据文件扩展名获取MediaType */
     private MediaType getMediaTypeForExtension(String extension) {
         switch (extension) {
             case "jpg":
@@ -99,5 +101,20 @@ public class ImageThumbnailHandlerInterceptor implements HandlerInterceptor {
             default:
                 return null;
         }
+    }
+
+    /** 去掉当前路径上下文 */
+    private static String removeCtx(String url, String contextPath) {
+        url = url.trim();
+        if (!StringUtils.hasText(contextPath)) {
+            return url;
+        }
+        if (!StringUtils.hasText(url)) {
+            return "";
+        }
+        if (url.startsWith(contextPath)) {
+            url = url.replaceFirst(contextPath, "");
+        }
+        return url;
     }
 }
