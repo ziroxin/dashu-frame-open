@@ -67,6 +67,11 @@ export default {
       previewDialogVisible: false
     }
   },
+  watch: {
+    value() {
+      this.loadFileShowList()
+    }
+  },
   mounted() {
     // 加载回显图片列表
     this.loadFileShowList()
@@ -75,12 +80,12 @@ export default {
     getTokenHeader,
     // 加载回显图片列表
     loadFileShowList() {
+      this.fileList = []
+      this.fileShowList = []
       if (this.modelValue && this.modelValue.length > 0) {
         this.fileList = [...this.modelValue]
         this.fileShowList = [...this.modelValue.map(item => ({
-          ...item,
-          name: item.fileOldName,
-          url: this.$baseServer + item.fileUrl
+          ...item, name: item.fileOldName, url: this.$baseServer + item.fileUrl
         }))]
       }
     },

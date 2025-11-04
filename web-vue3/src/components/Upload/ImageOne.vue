@@ -87,10 +87,12 @@ export default {
     imgUploadSuccess(response, file, fileList) {
       // 给value赋值
       this.$emit('update:modelValue', response.data[0].fileUrl)
+      this.$emit('change', response.data[0].fileUrl)// 触发change事件
     },
     imgRemove(file, fileList) {
       // 清空value
       this.$emit('update:modelValue', '')
+      this.$emit('change', '')// 触发change事件
     },
     // 图片大小和格式限制
     imgBeforeUpload(file) {
@@ -108,11 +110,11 @@ export default {
     },
     // 预览图片
     imgPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
     },
     formatSize(size) {
-      let sizeStr = size + 'B';
+      let sizeStr = size + 'B'
       if (size >= 1024 * 1024 * 1024) {
         sizeStr = (size / 1024 / 1024 / 1024).toFixed(2) + 'GB'
       } else if (size >= 1024 * 1024) {
@@ -122,7 +124,7 @@ export default {
       } else {
         sizeStr = size + 'B'
       }
-      return sizeStr;
+      return sizeStr
     }
   }
 }
