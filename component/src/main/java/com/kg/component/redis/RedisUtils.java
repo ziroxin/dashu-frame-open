@@ -144,7 +144,7 @@ public class RedisUtils {
      */
     public boolean hasKey(String key) {
         try {
-            return redisTemplate.hasKey(key);
+            return redisTemplate.hasKey(key) && redisTemplate.getExpire(key) != -2;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -155,7 +155,7 @@ public class RedisUtils {
      * 已存储的keys列表
      */
     public List<String> getSaveKeysList() {
-        if (redisTemplate.hasKey("REDIS_ALL_SAVE_KEYS_LIST")) {
+        if (redisTemplate.hasKey("REDIS_ALL_SAVE_KEYS_LIST") && redisTemplate.getExpire("REDIS_ALL_SAVE_KEYS_LIST") != -2) {
             Object keys = redisTemplate.opsForValue().get("REDIS_ALL_SAVE_KEYS_LIST");
             if (keys != null && !"".equals(keys.toString())) {
                 return Arrays.asList(keys.toString().split(","));
@@ -181,7 +181,7 @@ public class RedisUtils {
                     }
                     // 检查key是否过期，过期的删除
                     List<String> updateList = allKeys.stream()
-                            .filter(k -> redisTemplate.hasKey(k)).collect(Collectors.toList());
+                            .filter(k -> redisTemplate.hasKey(k) && redisTemplate.getExpire(k) != -2).collect(Collectors.toList());
                     // 更新REDIS_ALL_SAVE_KEYS_LIST
                     redisTemplate.opsForValue().set("REDIS_ALL_SAVE_KEYS_LIST",
                             updateList.stream().collect(Collectors.joining(",")));
