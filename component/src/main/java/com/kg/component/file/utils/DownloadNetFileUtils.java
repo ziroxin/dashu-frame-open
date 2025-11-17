@@ -13,6 +13,8 @@ import com.kg.component.utils.TimeUtils;
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 
 /**
@@ -111,8 +113,12 @@ public class DownloadNetFileUtils {
             // 压缩图片
             if (isCompress) {
                 // 判断是否图片格式
-                Img.from(FileUtil.getInputStream(saveFile))
-                        .setQuality(0.6).write(FileUtil.getOutputStream(saveFile));
+                try (InputStream in = FileUtil.getInputStream(saveFile);
+                     OutputStream out = FileUtil.getOutputStream(saveFile)) {
+                    Img.from(in).setQuality(0.6).write(out);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         } else {
             // 非图片

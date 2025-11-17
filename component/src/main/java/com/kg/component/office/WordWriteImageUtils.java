@@ -79,7 +79,7 @@ public class WordWriteImageUtils {
      */
     private static XWPFParagraph writeInTable(XWPFDocument doc, String keyStr, File imgFile,
                                               int imgType, int width, int height, boolean isAppend) {
-        try {
+        try (FileInputStream inputStream = new FileInputStream(imgFile)) {
             String key = "${" + keyStr + "}";
             // 遍历表格，每个单元格遍历段落
             List<XWPFTable> tables = doc.getTables();
@@ -90,7 +90,7 @@ public class WordWriteImageUtils {
                         if (newParagraph != null) {
                             XWPFRun run = newParagraph.createRun();
                             // 插入图片
-                            run.addPicture(new FileInputStream(imgFile), imgType, null,
+                            run.addPicture(inputStream, imgType, null,
                                     Units.toEMU(Units.pixelToPoints(width)), Units.toEMU(Units.pixelToPoints(height)));
                             newParagraph.setAlignment(ParagraphAlignment.CENTER);
                             // 是否追加
@@ -168,7 +168,7 @@ public class WordWriteImageUtils {
      */
     private static XWPFParagraph write(XWPFDocument doc, String keyStr, File imgFile,
                                        int imgType, int width, int height, boolean isAppend) {
-        try {
+        try (FileInputStream inputStream = new FileInputStream(imgFile)) {
             // 另起一行，并获取当前段落
             XWPFParagraph currentParagraph = WordWriteStringUtils.writeStrNewline(doc, keyStr, "", null, false);
             // 获取光标的位置
@@ -177,7 +177,7 @@ public class WordWriteImageUtils {
             XWPFParagraph newParagraph = doc.insertNewParagraph(cursor);
             XWPFRun run = newParagraph.createRun();
             // 插入图片
-            run.addPicture(new FileInputStream(imgFile), imgType, null,
+            run.addPicture(inputStream, imgType, null,
                     Units.toEMU(Units.pixelToPoints(width)), Units.toEMU(Units.pixelToPoints(height)));
             newParagraph.setAlignment(ParagraphAlignment.CENTER);
             // 是否追加

@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -114,9 +116,12 @@ public class UploadImageUtils {
                 FileUtil.mkParentDirs(saveFile);
                 if (isCompress && !"gif".equalsIgnoreCase(extend)) {
                     // 压缩
-                    Img.from(multipartFile.getInputStream())
-                            .setQuality(Float.parseFloat(FilePathConfig.DEFAULT_IMAGE_QUALITY))// 压缩比率，默认0.6 即60%
-                            .write(FileUtil.getOutputStream(saveFile));
+                    try (InputStream inputStream = multipartFile.getInputStream();
+                         OutputStream outputStream = FileUtil.getOutputStream(saveFile)) {
+                        Img.from(inputStream)
+                                .setQuality(Float.parseFloat(FilePathConfig.DEFAULT_IMAGE_QUALITY))
+                                .write(outputStream);
+                    }
                 } else {
                     // 不压缩直接复制
                     FileCopyUtils.copy(multipartFile.getBytes(), saveFile);

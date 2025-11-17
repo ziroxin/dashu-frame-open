@@ -71,25 +71,29 @@ public class ImgToPdfUtils {
     public static FileDTO toPdf(String imgUrl, String outFolder, Integer width, Integer height)
             throws IOException {
         // 读取图片文件，生成文档对象
-        PDDocument document = new PDDocument();
-        String savePath = FilePathConfig.switchSavePath(imgUrl);
-        write(document, savePath, width, height);
-        // 保存PDF文件
-        String imgName = savePath.substring(savePath.lastIndexOf("/"));
-        String pdfSavePath = StringUtils.hasText(outFolder)
-                ? FilePathConfig.SAVE_PATH + "/" + outFolder + "/" + imgName.substring(0, imgName.lastIndexOf(".")) + ".pdf"
-                : savePath.substring(0, savePath.lastIndexOf(".")) + ".pdf";
-        pdfSavePath = pdfSavePath.replaceAll("//", "/");
-        FileUtil.mkParentDirs(pdfSavePath);
-        document.save(pdfSavePath);
-        document.close();
-        // 返回文件信息
-        FileDTO fileDTO = new FileDTO();
-        fileDTO.setFileUrl(FilePathConfig.switchUrl(pdfSavePath));
-        fileDTO.setFileName(pdfSavePath.substring(pdfSavePath.lastIndexOf("/") + 1));
-        fileDTO.setFileSize(new File(pdfSavePath).length());
-        fileDTO.setFileExtend("pdf");
-        return fileDTO;
+        try (PDDocument document = new PDDocument()) {
+            String savePath = FilePathConfig.switchSavePath(imgUrl);
+            write(document, savePath, width, height);
+            // 保存PDF文件
+            String imgName = savePath.substring(savePath.lastIndexOf("/"));
+            String pdfSavePath = StringUtils.hasText(outFolder)
+                    ? FilePathConfig.SAVE_PATH + "/" + outFolder + "/" + imgName.substring(0, imgName.lastIndexOf(".")) + ".pdf"
+                    : savePath.substring(0, savePath.lastIndexOf(".")) + ".pdf";
+            pdfSavePath = pdfSavePath.replaceAll("//", "/");
+            FileUtil.mkParentDirs(pdfSavePath);
+            document.save(pdfSavePath);
+            document.close();
+            // 返回文件信息
+            FileDTO fileDTO = new FileDTO();
+            fileDTO.setFileUrl(FilePathConfig.switchUrl(pdfSavePath));
+            fileDTO.setFileName(pdfSavePath.substring(pdfSavePath.lastIndexOf("/") + 1));
+            fileDTO.setFileSize(new File(pdfSavePath).length());
+            fileDTO.setFileExtend("pdf");
+            return fileDTO;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("图片转PDF失败");
+        }
     }
 
     /**
@@ -115,26 +119,36 @@ public class ImgToPdfUtils {
      */
     public static FileDTO listToPdf(List<String> imgUrlList, String outFolder, Integer width, Integer height)
             throws IOException {
-        // 读取图片文件，生成文档对象
-        PDDocument document = new PDDocument();
-        for (String imgUrl : imgUrlList) {
-            // 写入图片到PDF文档
-            String imgPath = FilePathConfig.switchSavePath(imgUrl);
-            write(document, imgPath, width, height);
+        if (imgUrlList == null || imgUrlList.isEmpty()) {
+            throw new IllegalArgumentException("图片路径列表不能为空");
         }
-        // 保存PDF文件
-        String pdfSavePath = FilePathConfig.SAVE_PATH + "/" + outFolder + "/" + GuidUtils.getUuid32() + ".pdf";
-        pdfSavePath = pdfSavePath.replaceAll("//", "/");
-        FileUtil.mkParentDirs(pdfSavePath);
-        document.save(pdfSavePath);
-        document.close();
-        // 返回文件信息
-        FileDTO fileDTO = new FileDTO();
-        fileDTO.setFileUrl(FilePathConfig.switchUrl(pdfSavePath));
-        fileDTO.setFileExtend("pdf");
-        fileDTO.setFileSize(new File(pdfSavePath).length());
-        fileDTO.setFileName(pdfSavePath.substring(pdfSavePath.lastIndexOf("/") + 1));
-        return fileDTO;
+        if (outFolder == null) {
+            throw new IllegalArgumentException("输出文件夹不能为空");
+        }
+        // 读取图片文件，生成文档对象
+        try (PDDocument document = new PDDocument()) {
+            for (String imgUrl : imgUrlList) {
+                // 写入图片到PDF文档
+                String imgPath = FilePathConfig.switchSavePath(imgUrl);
+                write(document, imgPath, width, height);
+            }
+            // 保存PDF文件
+            String pdfSavePath = FilePathConfig.SAVE_PATH + "/" + outFolder + "/" + GuidUtils.getUuid32() + ".pdf";
+            pdfSavePath = pdfSavePath.replaceAll("//", "/");
+            FileUtil.mkParentDirs(pdfSavePath);
+            document.save(pdfSavePath);
+            document.close();
+            // 返回文件信息
+            FileDTO fileDTO = new FileDTO();
+            fileDTO.setFileUrl(FilePathConfig.switchUrl(pdfSavePath));
+            fileDTO.setFileExtend("pdf");
+            fileDTO.setFileSize(new File(pdfSavePath).length());
+            fileDTO.setFileName(pdfSavePath.substring(pdfSavePath.lastIndexOf("/") + 1));
+            return fileDTO;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IOException("图片转PDF失败");
+        }
     }
 
     /**
@@ -159,10 +173,10 @@ public class ImgToPdfUtils {
         document.addPage(page);
         // 创建内容流
         PDImageXObject pdImage = PDImageXObject.createFromFile(imgPath, document);
-        PDPageContentStream contentStream = new PDPageContentStream(document, page);
-        // 图片位置，左上角为原点
-        contentStream.drawImage(pdImage, 0, maxHeight - height, width, height);
-        contentStream.close();
+        try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
+            // 图片位置，左上角为原点
+            contentStream.drawImage(pdImage, 0, maxHeight - height, width, height);
+        }
     }
 
 }

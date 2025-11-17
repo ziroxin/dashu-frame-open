@@ -38,24 +38,34 @@ public class WordToPdfUtils {
     public static FileDTO toPdf(String fileUrl, String outFolder) throws Exception {
         // 读取word
         String savePath = FilePathConfig.switchSavePath(fileUrl);
-        Document document = new Document(savePath);
-        // 保存pdf
-        String docxName = savePath.substring(savePath.lastIndexOf("/"));
-        String pdfSavePath = StringUtils.hasText(outFolder)
-                ? FilePathConfig.SAVE_PATH + "/" + outFolder + "/" + docxName.substring(0, docxName.lastIndexOf(".")) + ".pdf"
-                : savePath.substring(0, savePath.lastIndexOf(".")) + ".pdf";
-        pdfSavePath = pdfSavePath.replaceAll("//", "/");
-        FileUtil.mkParentDirs(pdfSavePath);
-        document.save(pdfSavePath, SaveFormat.PDF);
-        FileDTO fileDTO = new FileDTO();
-        // 切换url
-        fileDTO.setFileUrl(FilePathConfig.switchUrl(pdfSavePath));
-        // 文件扩展名
-        fileDTO.setFileExtend("pdf");
-        // 计算文件大小
-        fileDTO.setFileSize(new File(pdfSavePath).length());
-        // 文件名
-        fileDTO.setFileName(pdfSavePath.substring(pdfSavePath.lastIndexOf("/") + 1));
-        return fileDTO;
+        Document document = null;
+        try {
+            document = new Document(savePath);
+            // 保存pdf
+            String docxName = savePath.substring(savePath.lastIndexOf("/"));
+            String pdfSavePath = StringUtils.hasText(outFolder)
+                    ? FilePathConfig.SAVE_PATH + "/" + outFolder + "/" + docxName.substring(0, docxName.lastIndexOf(".")) + ".pdf"
+                    : savePath.substring(0, savePath.lastIndexOf(".")) + ".pdf";
+            pdfSavePath = pdfSavePath.replaceAll("//", "/");
+            FileUtil.mkParentDirs(pdfSavePath);
+            document.save(pdfSavePath, SaveFormat.PDF);
+            FileDTO fileDTO = new FileDTO();
+            // 切换url
+            fileDTO.setFileUrl(FilePathConfig.switchUrl(pdfSavePath));
+            // 文件扩展名
+            fileDTO.setFileExtend("pdf");
+            // 计算文件大小
+            fileDTO.setFileSize(new File(pdfSavePath).length());
+            // 文件名
+            fileDTO.setFileName(pdfSavePath.substring(pdfSavePath.lastIndexOf("/") + 1));
+            return fileDTO;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("word转pdf失败");
+        } finally {
+            if (document != null) {
+                document = null;
+            }
+        }
     }
 }

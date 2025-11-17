@@ -10,8 +10,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -102,6 +100,7 @@ public class UploadFileChunksUtils {
      * @return 是否已接收所有分片
      */
     public static boolean isAllChunksUploaded(String tempFileName, String uploadId, String totalChunks) {
+        try {
         for (int i = 0; i < Integer.parseInt(totalChunks); i++) {
             String chunkFileName = getFileChunkTempPath(tempFileName, uploadId, i + "");
             File chunkFile = new File(chunkFileName);
@@ -110,6 +109,10 @@ public class UploadFileChunksUtils {
             }
         }
         return true;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     /**
@@ -122,20 +125,16 @@ public class UploadFileChunksUtils {
      */
     public static void mergeChunksSave(String tempFileName, String uploadId, String totalChunks, String savePath) throws IOException {
         File mergedFile = new File(savePath);
-        FileOutputStream fos = new FileOutputStream(mergedFile, true);
+        FileUtil.mkParentDirs(mergedFile);
         for (int i = 0; i < Integer.parseInt(totalChunks); i++) {
             String chunkFileName = getFileChunkTempPath(tempFileName, uploadId, i + "");
             File chunkFile = new File(chunkFileName);
-            FileInputStream fis = new FileInputStream(chunkFile);
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = fis.read(buffer)) != -1) {
-                fos.write(buffer, 0, len);
+            if (!chunkFile.exists()) {
+                throw new IOException("分片文件不存在: " + chunkFileName);
             }
-            fis.close();
+            FileUtil.copyFile(chunkFile, mergedFile);
             chunkFile.delete();
         }
-        fos.close();
     }
 
     /**

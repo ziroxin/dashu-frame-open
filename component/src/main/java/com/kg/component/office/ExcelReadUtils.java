@@ -29,10 +29,9 @@ public class ExcelReadUtils {
      */
     public static <T> List<T> read(HttpServletRequest request, int headerRowIndex, int startRowIndex,
                                    Class clazz, Map<String, String> alias) {
-        try {
-            MultipartHttpServletRequest req = (MultipartHttpServletRequest) request;
-            MultipartFile multipartFile = req.getFile(req.getFileMap().entrySet().stream().findFirst().get().getKey());
-            InputStream inputStream = multipartFile.getInputStream();
+        MultipartHttpServletRequest req = (MultipartHttpServletRequest) request;
+        MultipartFile multipartFile = req.getFile(req.getFileMap().entrySet().stream().findFirst().get().getKey());
+        try (InputStream inputStream = multipartFile.getInputStream()) {
             //读取文件为ExcelReader对象
             ExcelReader reader = ExcelUtil.getReader(inputStream);
             //设置标题别名
@@ -59,10 +58,9 @@ public class ExcelReadUtils {
      */
     public static List<Map<String, Object>> read(HttpServletRequest request, int headerRowIndex, int startRowIndex,
                                                  Map<String, String> alias) {
-        try {
-            MultipartHttpServletRequest req = (MultipartHttpServletRequest) request;
-            MultipartFile multipartFile = req.getFile(req.getFileMap().entrySet().stream().findFirst().get().getKey());
-            InputStream inputStream = multipartFile.getInputStream();
+        MultipartHttpServletRequest req = (MultipartHttpServletRequest) request;
+        MultipartFile multipartFile = req.getFile(req.getFileMap().entrySet().stream().findFirst().get().getKey());
+        try (InputStream inputStream = multipartFile.getInputStream()) {
             //读取文件为ExcelReader对象
             ExcelReader reader = ExcelUtil.getReader(inputStream);
             //设置标题别名

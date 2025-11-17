@@ -145,20 +145,22 @@ public class WordWriteHtmlUtils {
                     String imgSrc = image.attr("src");
                     try {
                         File imgFile = getImgFile(imgSrc);
-                        BufferedImage imgRead = ImageIO.read(imgFile);
-                        int width = imgRead.getWidth();
-                        int height = imgRead.getHeight();
-                        if (width > 600) {
-                            height = 600 * height / width;
-                            width = 600;
+                        try (FileInputStream inputStream = new FileInputStream(imgFile)) {
+                            BufferedImage imgRead = ImageIO.read(inputStream);
+                            int width = imgRead.getWidth();
+                            int height = imgRead.getHeight();
+                            if (width > 600) {
+                                height = 600 * height / width;
+                                width = 600;
+                            }
+                            if (height > 930) {
+                                width = 930 * width / height;
+                                height = 930;
+                            }
+                            int imgType = getPictureType(imgSrc);
+                            xwpfParagraph.createRun().addPicture(inputStream, imgType, null,
+                                    Units.toEMU(Units.pixelToPoints(width)), Units.toEMU(Units.pixelToPoints(height)));
                         }
-                        if (height > 930) {
-                            width = 930 * width / height;
-                            height = 930;
-                        }
-                        int imgType = getPictureType(imgSrc);
-                        xwpfParagraph.createRun().addPicture(new FileInputStream(imgFile), imgType, null,
-                                Units.toEMU(Units.pixelToPoints(width)), Units.toEMU(Units.pixelToPoints(height)));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

@@ -60,40 +60,54 @@ public class ExcelToPdfUtils {
      * @return pdf文件DTO
      */
     public static FileDTO toPdf(String fileUrl, String outFolder, int sheetIndex) throws Exception {
-        // 读取excel
+        // 读取excel文件路径
         String savePath = FilePathConfig.switchSavePath(fileUrl);
-        Workbook workbook = new Workbook(savePath);
-        // 切换工作簿
-        if (sheetIndex >= 0) {
-            WorksheetCollection sheets = workbook.getWorksheets();
-            if (sheetIndex < sheets.getCount()) {
-                for (int i = 0; i < sheets.getCount(); i++) {
-                    if (i != sheetIndex) {
-                        // 隐藏无需转pdf的工作簿
-                        sheets.get(i).setVisible(false);
+        // 创建Workbook对象
+        Workbook workbook = null;
+        try {
+            workbook = new Workbook(savePath);
+            // 切换工作簿
+            if (sheetIndex >= 0) {
+                WorksheetCollection sheets = workbook.getWorksheets();
+                if (sheetIndex < sheets.getCount()) {
+                    for (int i = 0; i < sheets.getCount(); i++) {
+                        if (i != sheetIndex) {
+                            // 隐藏无需转pdf的工作簿
+                            sheets.get(i).setVisible(false);
+                        }
                     }
                 }
             }
+            // 确定PDF保存路径
+            String xlsxName = new File(savePath).getName();
+            String pdfSavePath = StringUtils.hasText(outFolder)
+                    ? FilePathConfig.SAVE_PATH + "/" + outFolder + "/" + xlsxName.substring(0, xlsxName.lastIndexOf(".")) + ".pdf"
+                    : savePath.substring(0, savePath.lastIndexOf(".")) + ".pdf";
+            pdfSavePath = pdfSavePath.replaceAll("//", "/");
+            // 确保输出文件夹存在
+            FileUtil.mkParentDirs(pdfSavePath);
+            // 设置PDF保存选项
+            PdfSaveOptions pdfSaveOptions = new PdfSaveOptions();
+            pdfSaveOptions.setOnePagePerSheet(true);
+            // 保存PDF文件
+            workbook.save(pdfSavePath, pdfSaveOptions);
+            // 创建FileDTO对象
+            FileDTO fileDTO = new FileDTO();
+            // 设置文件URL
+            fileDTO.setFileUrl(FilePathConfig.switchUrl(pdfSavePath));
+            // 设置文件扩展名
+            fileDTO.setFileExtend("pdf");
+            // 计算文件大小
+            fileDTO.setFileSize(new File(pdfSavePath).length());
+            // 设置文件名
+            fileDTO.setFileName(new File(pdfSavePath).getName());
+            return fileDTO;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("Excel转PDF失败：" + e.getMessage());
+        } finally {
+            // 关闭Workbook对象
+            workbook.dispose();
         }
-        // 保存pdf
-        String xlsxName = savePath.substring(savePath.lastIndexOf("/"));
-        String pdfSavePath = StringUtils.hasText(outFolder)
-                ? FilePathConfig.SAVE_PATH + "/" + outFolder + "/" + xlsxName.substring(0, xlsxName.lastIndexOf(".")) + ".pdf"
-                : savePath.substring(0, savePath.lastIndexOf(".")) + ".pdf";
-        pdfSavePath = pdfSavePath.replaceAll("//", "/");
-        FileUtil.mkParentDirs(pdfSavePath);
-        PdfSaveOptions pdfSaveOptions = new PdfSaveOptions();
-        pdfSaveOptions.setOnePagePerSheet(true);
-        workbook.save(pdfSavePath, pdfSaveOptions);
-        FileDTO fileDTO = new FileDTO();
-        // 切换url
-        fileDTO.setFileUrl(FilePathConfig.switchUrl(pdfSavePath));
-        // 文件扩展名
-        fileDTO.setFileExtend("pdf");
-        // 计算文件大小
-        fileDTO.setFileSize(new File(pdfSavePath).length());
-        // 文件名
-        fileDTO.setFileName(pdfSavePath.substring(pdfSavePath.lastIndexOf("/") + 1));
-        return fileDTO;
     }
 }
