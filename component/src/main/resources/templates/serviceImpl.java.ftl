@@ -357,10 +357,19 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
                 }
 <#list table.fields as field>
     <#if field.propertyName=='orderIndex'>
+        <#if importFields??>
+            <#if importFields?seq_contains(field.annotationColumnName)>
                 // 检测数字格式
                 if (StringUtils.hasText(entity.getOrderIndex()) && !StrTypeCheckUtils.isNumeric(entity.getOrderIndex())) {
                     errorMsg += "第" + currentRowIdx + "行，${field.comment}必须是数字！<br/>";
                 }
+            </#if>
+        <#else>
+                // 检测数字格式
+                if (StringUtils.hasText(entity.getOrderIndex()) && !StrTypeCheckUtils.isNumeric(entity.getOrderIndex())) {
+                    errorMsg += "第" + currentRowIdx + "行，${field.comment}必须是数字！<br/>";
+                }
+        </#if>
     </#if>
 </#list>
             }

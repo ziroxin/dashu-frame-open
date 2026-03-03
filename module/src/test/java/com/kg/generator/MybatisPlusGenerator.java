@@ -44,7 +44,7 @@ public class MybatisPlusGenerator {
         //      注意 [表名、主键类型、包名、前端view路径、删除日志、附件] 必须是一一对应的LinkedList，按顺序add
         // 表名，必填
         LinkedList<String> tableNames = new LinkedList<>();
-        tableNames.add("a_apple");
+        tableNames.add("a_table");
 //        tableNames.add("a_table");// 多表生成时，用多次add添加
 
         // 表主键类型，必填（如：IdType.ASSIGN_UUID、IdType.ASSIGN_ID）
@@ -54,12 +54,12 @@ public class MybatisPlusGenerator {
 
         // 包名，必填（支持多层包名，例如：system.role）
         LinkedList<String> packages = new LinkedList<>();
-        packages.add("aapple");
+        packages.add("atable");
 //        packages.add("atable");// 多表生成时，用多次add添加
 
         // 前端view路径，非必填（支持多层目录，例如：/system/role）
         LinkedList<String> viewPaths = new LinkedList<>();
-        viewPaths.add("/aapple");// 允许为空，若为空则不生成前端页面
+        viewPaths.add("/atable");// 允许为空，若为空则不生成前端页面
 //        viewPaths.add("/atable");// 多表生成时，用多次add添加
 
         // ========= 3 删除日志配置 =========
@@ -77,7 +77,7 @@ public class MybatisPlusGenerator {
         //       3. 附件表关联主表的字段名，自动生成[主表名_id]
         // 配置：是否生成附件表
         LinkedList<Boolean> isAttachments = new LinkedList<>();
-        isAttachments.add(true);
+        isAttachments.add(false);
 //        isAttachments.add(true);// 多表生成时，用多次add添加
 
 
@@ -87,16 +87,16 @@ public class MybatisPlusGenerator {
         //       3. 若不为空，则按照配置规则生成；
         // 配置：查询字段
         Map<String, String> searchMap = new HashMap<>(); // 查询字段
-        searchMap.put("a_apple", "apple_name,type");
+        searchMap.put("a_table", "mobile");
         // 配置：表格字段
         Map<String, String> listMap = new HashMap<>(); // 表格字段
-        listMap.put("a_apple", "apple_name,type,order_index,create_time");
+        listMap.put("a_table", "mobile,order_index,field116,a,b,c,d");
         // 配置：导入字段
         Map<String, String> importMap = new HashMap<>(); // 导入字段
-        importMap.put("a_apple", "apple_name,type,order_index");
+        importMap.put("a_table", "mobile,field116,a,b,c,d");
         // 配置：导出字段
         Map<String, String> exportMap = new HashMap<>(); // 导出字段
-        exportMap.put("a_apple", "apple_name,type,order_index");
+        exportMap.put("a_table", "mobile,field116,a,b,c,d");
 
 
         /*                            上方代码，可修改配置生成信息                           */
@@ -119,8 +119,6 @@ public class MybatisPlusGenerator {
             long lens = tableNames.size();
             for (int i = 0; i < lens; i++) {
                 if (isAttachments.get(i)) {
-                    // 该字段使用说明，详见实体属性注释
-                    tableDTO.setGenerateType("code");
                     // 主表名
                     String tableName = tableNames.get(i);
                     // 附件表名
@@ -160,6 +158,8 @@ public class MybatisPlusGenerator {
             tableDTO.setImportMap(importMap);
             tableDTO.setExportMap(exportMap);
         }
+        // 标记在本地Test生成代码，而非网页在线代码生成器
+        tableDTO.setGenerateType("code");
 
         // ========= 7 开始执行代码生成 =========
         generatorCodeUtils.start(basePath, module, basePackage, author, vueFolder, vue3Folder,
