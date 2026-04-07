@@ -58,12 +58,12 @@ public class Vue3Index implements ITemplate {
         Map<String, Object> data = new HashMap<>(10);
         String packageStr = config.getPackageConfig().getModuleName();
         if (StringUtils.isNotBlank(packageStr)) {
-            data.put("controllerMapping", packageStr.replaceAll("\\.", "/") + "/" +
+            data.put("controllerMapping", "/" + packageStr.replaceAll("\\.", "/") + "/" +
                     tableInfo.getEntityPath());
             data.put("buttonNamePre", packageStr.replaceAll("\\.", "-") + "-" +
                     tableInfo.getEntityPath() + "-");
         } else {
-            data.put("controllerMapping", tableInfo.getEntityPath());
+            data.put("controllerMapping", "/" + tableInfo.getEntityPath());
             data.put("buttonNamePre", tableInfo.getEntityPath() + "-");
         }
         data.put("hasDeleteLog", config.getStrategyConfig().service().hasDeleteLog());

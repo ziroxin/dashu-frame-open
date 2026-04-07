@@ -102,12 +102,12 @@ public class Controller implements ITemplate {
         Map<String, Object> data = new HashMap<>(5);
         String packageStr = config.getPackageConfig().getModuleName();
         if (StringUtils.isNotBlank(packageStr)) {
-            data.put("controllerMapping", packageStr.replaceAll("\\.", "/") + "/" +
+            data.put("controllerMapping", "/" + packageStr.replaceAll("\\.", "/") + "/" +
                     (this.hyphenStyle ? StringUtils.camelToHyphen(tableInfo.getEntityPath()) : tableInfo.getEntityPath()));
             data.put("controllerAuthorizePre", packageStr.replaceAll("\\.", ":") + ":" +
                     (this.hyphenStyle ? StringUtils.camelToHyphen(tableInfo.getEntityPath()) : tableInfo.getEntityPath()) + ":");
         } else {
-            data.put("controllerMapping",
+            data.put("controllerMapping", "/" +
                     (this.hyphenStyle ? StringUtils.camelToHyphen(tableInfo.getEntityPath()) : tableInfo.getEntityPath()));
             data.put("controllerAuthorizePre",
                     (this.hyphenStyle ? StringUtils.camelToHyphen(tableInfo.getEntityPath()) : tableInfo.getEntityPath()) + ":");

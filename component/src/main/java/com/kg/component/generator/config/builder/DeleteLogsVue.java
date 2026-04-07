@@ -58,10 +58,10 @@ public class DeleteLogsVue implements ITemplate {
         Map<String, Object> data = new HashMap<>(2);
         String packageStr = config.getPackageConfig().getModuleName();
         if (StringUtils.isNotBlank(packageStr)) {
-            data.put("controllerMapping", packageStr.replaceAll("\\.", "/") + "/" +
+            data.put("controllerMapping", "/" + packageStr.replaceAll("\\.", "/") + "/" +
                     tableInfo.getEntityPath());
         } else {
-            data.put("controllerMapping", tableInfo.getEntityPath());
+            data.put("controllerMapping", "/" + tableInfo.getEntityPath());
         }
 
         data.put("searchFields3", getSearchFields());
