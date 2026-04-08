@@ -25,4 +25,8 @@ public class RedisCacheManagerDTO {
      * 过期时间
      */
     private Long expireTime;
+    /**
+     * 缓存类型
+     */
+    private String type;
 }
