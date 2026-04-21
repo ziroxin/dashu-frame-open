@@ -83,7 +83,7 @@ public class MybatisPlusGenerator {
 
         // ========= 5 配置【查询字段、表格字端、导入字段、导出字段】信息 =========
         // 说明： 1. map的key是表名，value是逗号分隔的字段名；
-        //       2. 若为空，则按照默认规则生成；
+        //       2. 若为空，则按照默认规则生成；（不配置可直接注释put方法，如下面导入、导出为例）
         //       3. 若不为空，则按照配置规则生成；
         // 配置：查询字段
         Map<String, String> searchMap = new HashMap<>(); // 查询字段
@@ -93,10 +93,10 @@ public class MybatisPlusGenerator {
         listMap.put("a_table", "mobile,order_index,field116,a,b,c,d");
         // 配置：导入字段
         Map<String, String> importMap = new HashMap<>(); // 导入字段
-        importMap.put("a_table", "mobile,field116,a,b,c,d");
+//        importMap.put("a_table", "mobile,field116,a,b,c,d");
         // 配置：导出字段
         Map<String, String> exportMap = new HashMap<>(); // 导出字段
-        exportMap.put("a_table", "mobile,field116,a,b,c,d");
+//        exportMap.put("a_table", "mobile,field116,a,b,c,d");
 
 
         /*                            上方代码，可修改配置生成信息                           */
@@ -149,15 +149,13 @@ public class MybatisPlusGenerator {
             tableDTO.setAttachmentField(attachmentFieldMap);
         }
         // 自动配置字段信息
-        if (!searchMap.isEmpty() || !listMap.isEmpty() || !importMap.isEmpty() || !exportMap.isEmpty()) {
-            if (tableDTO == null) {
-                tableDTO = new TableDTO();
-            }
-            tableDTO.setSearchMap(searchMap);
-            tableDTO.setListMap(listMap);
-            tableDTO.setImportMap(importMap);
-            tableDTO.setExportMap(exportMap);
+        if (tableDTO == null) {
+            tableDTO = new TableDTO();
         }
+        tableDTO.setSearchMap(searchMap);
+        tableDTO.setListMap(listMap);
+        tableDTO.setImportMap(importMap);
+        tableDTO.setExportMap(exportMap);
         // 标记在本地Test生成代码，而非网页在线代码生成器
         tableDTO.setGenerateType("code");
 
