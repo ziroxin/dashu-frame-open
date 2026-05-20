@@ -65,8 +65,11 @@
         <choose>
 <#list table.fields as field>
     <#if field.propertyName!=entityKeyName && field.propertyName!='updateTime' && field.propertyName!='createUserId' && field.propertyName!='updateUserId'>
-            <when test="${field.propertyName}Order != null and ${field.propertyName}Order != ''">
-                ORDER BY ${field.annotationColumnName} ${'$'}{${field.propertyName}Order}
+            <when test="${field.propertyName}Order != null and ${field.propertyName}Order == 'ASC'">
+                ORDER BY ${field.annotationColumnName} ASC
+            </when>
+            <when test="${field.propertyName}Order != null and ${field.propertyName}Order == 'DESC'">
+                ORDER BY ${field.annotationColumnName} DESC
             </when>
     </#if>
 </#list>

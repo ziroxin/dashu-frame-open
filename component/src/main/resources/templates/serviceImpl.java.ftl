@@ -106,7 +106,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             // 例如：{"columnStr": "字段名", "orderStr": "ASC/DESC"}
             JSONObject sortObj = JSONUtil.parseObj(sorts, true);
             if (sortObj.size() > 0) {
-                paramObj.set(sortObj.getStr("column") + "Order", sortObj.getStr("order"));
+                paramObj.set(sortObj.getStr("column") + "Order", sortObj.getStr("order").toUpperCase());
             }
         }
         // 查询列表
@@ -298,7 +298,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
                 // 例如：{"columnStr": "字段名", "orderStr": "ASC/DESC"}
                 JSONObject sortObj = JSONUtil.parseObj(sorts, true);
                 if (sortObj.size() > 0) {
-                    paramObj.set(sortObj.getStr("column") + "Order", sortObj.getStr("order"));
+                    paramObj.set(sortObj.getStr("column") + "Order", sortObj.getStr("order").toUpperCase());
                 }
             }
 
