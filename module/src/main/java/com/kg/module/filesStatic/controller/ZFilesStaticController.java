@@ -2,7 +2,9 @@ package com.kg.module.filesStatic.controller;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.kg.component.file.FilePathConfig;
 import com.kg.component.file.dto.FileDTO;
+import com.kg.component.file.utils.FileTypeUtils;
 import com.kg.component.file.utils.UploadFileUtils;
 import com.kg.component.utils.GuidUtils;
 import com.kg.core.annotation.AutoOperateLog;
@@ -20,6 +22,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
@@ -191,8 +194,17 @@ public class ZFilesStaticController {
             Iterator<String> fileNamesIterator = multipartRequest.getFileNames();
             int count = 0;
             while (fileNamesIterator.hasNext()) {
+                MultipartFile multipartFile = multipartRequest.getFile(fileNamesIterator.next());
+                if (multipartFile == null || multipartFile.isEmpty()) {
+                    continue;
+                }
+                // 判断文件扩展名
+                String extend = FileTypeUtils.getFileType(multipartFile.getBytes());
+                if (!StringUtils.hasText(extend) || FilePathConfig.UPLOAD_FILE_ALLOW_EXTEND.toLowerCase().indexOf(extend) < 0) {
+                    throw new BaseException("您上传的文件格式不正确！请检查");
+                }
                 // 获取文件的实际名称
-                String fileOriginalName = multipartRequest.getFile(fileNamesIterator.next()).getOriginalFilename();
+                String fileOriginalName = multipartFile.getOriginalFilename();
                 // 检查是否有同名文件已经存在
                 if (zFilesStaticService.lambdaQuery().eq(ZFilesStatic::getParentId, parentId)
                         .eq(ZFilesStatic::getFileOldName, fileOriginalName).count() > 0) {

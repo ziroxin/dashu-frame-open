@@ -2,6 +2,7 @@ package com.kg.core.zupload.controller;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.CharsetUtil;
+import com.kg.component.file.FilePathConfig;
 import com.kg.component.file.utils.FileTypeUtils;
 import com.kg.core.annotation.NoRepeatSubmit;
 import com.kg.core.exception.BaseException;
@@ -9,7 +10,10 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -64,8 +68,15 @@ public class ZUploadFileHeaderController {
                 String fileInputName = fileInput.getKey();
                 List<MultipartFile> fileList = multipartRequest.getFiles(fileInputName);
                 for (MultipartFile multipartFile : fileList) {
+                    if (multipartFile == null || multipartFile.isEmpty()) {
+                        continue;
+                    }
                     // 文件头hash
                     byte[] fileBytes = multipartFile.getBytes();
+                    String extend = FileTypeUtils.getFileType(fileBytes);
+                    if (!StringUtils.hasText(extend) || FilePathConfig.UPLOAD_FILE_ALLOW_EXTEND.toLowerCase().indexOf(extend) < 0) {
+                        throw new BaseException("您上传的文件格式不正确！请检查");
+                    }
                     byte[] bytes = new byte[10];
                     for (int i = 0; i < bytes.length; i++) {
                         if (fileBytes.length == 0 || fileBytes.length <= i) {
