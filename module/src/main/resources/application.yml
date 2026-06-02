@@ -237,6 +237,16 @@ com.kg:
     privateKey: MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAJ1JHnbeO5I5QpF/ILDEsye55DkdsUfc5GBLOwgUi7PjSVQh5mpE+M2QUUFtXXn1dB9cazSl+hfrxj7KVN1ZoIJ4cfE2PH6pWQAT20zKizENdJSP5jPyu5kD3bS7Sd7ZVJVl3jUC2uUtozwNoVU58Lt2eAXHXauix9KXGvHTI9TzAgMBAAECgYBF2l1vSU+Hp2qLF7y7BQDUGdjkDO3ZDp9WrNKwyf8piz3b4Zplg/BDy15rAllLetlxvCfYoAYsbYgEBvQdwlpoINyt3WjCfwaOH6CRI2AtgI90D6qLk+1ejQuepzzitCKId5gvu0uOQbYxo4YMiszDzH15FjqnLODQ7VSWO2vCYQJBAPpVxeGZ2C0hFNgNZWF5wGubMqEYXdMOqO2B/Fo1k3oO8TWhuT+4PupXMHtvVWWu1py/KzVTAGZNyR1CiZyjnMsCQQCg2EwaBF5UUCYk0xYmXpp5c7ysnzErgYBztihWbFrX2LsgNInN6EBvjT4hNjz3sQcfwfy3jDac5HIocGVl9gt5AkBZRIDd5Ahsf2F5cb13Nv1g4eT6AUBj5NRkbXfZi0VdvzpQj60JheAZnKHTQm5HZkNtfdYgm8qGsLJI1tNPoiBlAkBJAcSRLphuZq7ZmiJ8qgYtyHXEWMGlwLNAUlc+2xHk1VAijxZZqujMeWzRAGBuASF9rbx6x57mWd7jMhkkTajpAkEApVakMWfoALWG/zigX6CiuIDXuPqn1Qh73AR5C3ypPUNbYCReJx9G5gxDohtqiHBxY9rYqR1wR7pWFanmMTGlPw==
     #分块加密的分隔符（用于解密时，分块解密）
     separator: '@dashu@'
+  #数据脱敏规则配置（格式：x,y 保留前x位和后y位，中间内容填充*）
+  desensitized:
+    chineseName: 0,1
+    idCard: 6,4
+    mobilePhone: 3,4
+    fixedPhone: 3,2
+    bankCard: 4,4
+    carLicense: 2,3
+    password: 1,1
+    other: 2,2
 
 #输出日志配置（日志级别：trace/debug/info/warn/error）
 logging.level:

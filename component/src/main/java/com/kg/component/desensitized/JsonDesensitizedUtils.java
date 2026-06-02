@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author ziro
- * @date 2023-02-15 15:08:15
+ * @date 2026-06-02 15:08:15
  */
 @Getter
 @Setter
@@ -33,6 +33,18 @@ public class JsonDesensitizedUtils extends JsonSerializer<String> implements Con
      * 脱敏类型
      */
     private DesensitizedType type;
+
+    /**
+     * 脱敏配置（静态变量，由外部初始化）
+     */
+    private static DesensitizedConfig config;
+
+    /**
+     * 设置脱敏配置（由Spring配置类调用）
+     */
+    public static void setConfig(DesensitizedConfig desensitizedConfig) {
+        config = desensitizedConfig;
+    }
 
     @Override
     public JsonSerializer<?> createContextual(SerializerProvider serializerProvider, BeanProperty beanProperty) throws JsonMappingException {
@@ -58,32 +70,32 @@ public class JsonDesensitizedUtils extends JsonSerializer<String> implements Con
     public void serialize(String str, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         switch (this.type) {
             case CHINESE_NAME:
-                // 中文姓名脱敏：保留最后 1 位
-                jsonGenerator.writeString(StrUtil.isBlank(str) ? "" : StrUtil.hide(str, 0, str.length() - 1));
+                // 中文姓名脱敏：根据配置保留前N位和后M位
+                jsonGenerator.writeString(desensitizeWithConfig(str, config != null ? config.getChineseName() : "0,1"));
                 break;
             case ENGLISH_NAME:
                 // 英文名脱敏： 1. 只有一段的名字，保留首字母; 2. 两段或者以上的名字，脱敏第一段.
                 jsonGenerator.writeString(JsonDesensitizedUtils.englishName(str));
                 break;
             case ID_CARD:
-                // 身份证号脱敏：保留前 1 位和后 1 位
-                jsonGenerator.writeString(StrUtil.isBlank(str) ? "" : StrUtil.hide(str, 1, str.length() - 1));
+                // 身份证号脱敏：根据配置保留前N位和后M位
+                jsonGenerator.writeString(desensitizeWithConfig(str, config != null ? config.getIdCard() : "6,4"));
                 break;
             case MOBILE_PHONE:
-                // 手机号脱敏：保留前 3 位和后 2 位
-                jsonGenerator.writeString(StrUtil.isBlank(str) ? "" : StrUtil.hide(str, 3, str.length() - 2));
+                // 手机号脱敏：根据配置保留前N位和后M位
+                jsonGenerator.writeString(desensitizeWithConfig(str, config != null ? config.getMobilePhone() : "3,4"));
                 break;
             case FIXED_PHONE:
-                // 座机号脱敏：保留前 4 位和后 2 位
-                jsonGenerator.writeString(StrUtil.isBlank(str) ? "" : StrUtil.hide(str, 4, str.length() - 2));
+                // 座机号脱敏：根据配置保留前N位和后M位
+                jsonGenerator.writeString(desensitizeWithConfig(str, config != null ? config.getFixedPhone() : "3,2"));
                 break;
             case BANK_CARD:
-                // 银行卡号脱敏：保留后 4 位
-                jsonGenerator.writeString(StrUtil.isBlank(str) ? "" : StrUtil.hide(str, 0, str.length() - 4));
+                // 银行卡号脱敏：根据配置保留前N位和后M位
+                jsonGenerator.writeString(desensitizeWithConfig(str, config != null ? config.getBankCard() : "4,4"));
                 break;
             case CAR_LICENSE:
-                // 车牌号脱敏：保留前 2 位（地区信息）和后 3 位
-                jsonGenerator.writeString(StrUtil.isBlank(str) ? "" : StrUtil.hide(str, 2, str.length() - 3));
+                // 车牌号脱敏：根据配置保留前N位和后M位
+                jsonGenerator.writeString(desensitizeWithConfig(str, config != null ? config.getCarLicense() : "2,3"));
                 break;
             case EMAIL:
                 // 邮箱脱敏：保留 @ 后的内容
@@ -94,14 +106,57 @@ public class JsonDesensitizedUtils extends JsonSerializer<String> implements Con
                 jsonGenerator.writeString(JsonDesensitizedUtils.address(str));
                 break;
             case PASSWORD:
-                // 密码脱敏：全部*代替
-                jsonGenerator.writeString(StrUtil.isBlank(str) ? "" : StrUtil.repeat('*', str.length()));
+                // 密码脱敏：根据配置保留前N位和后M位，中间用*代替
+                jsonGenerator.writeString(desensitizeWithConfig(str, config != null ? config.getPassword() : "1,1"));
                 break;
             case OTHER:
-                // 其他脱敏规则：显示前 1/3 和后 1/3 其他用*代替
-                jsonGenerator.writeString(JsonDesensitizedUtils.other(str));
+                // 其他脱敏规则：根据配置保留前N位和后M位，中间用*代替
+                jsonGenerator.writeString(desensitizeWithConfig(str, config != null ? config.getOther() : "2,2"));
                 break;
             default:
+                jsonGenerator.writeString(str);
+        }
+    }
+
+    /**
+     * 根据配置进行脱敏：保留前N位和后M位，中间用*代替
+     *
+     * @param str       原始字符串
+     * @param configStr 配置格式："前保留位数,后保留位数"，如 "3,4"
+     * @return 脱敏后的字符串
+     */
+    private String desensitizeWithConfig(String str, String configStr) {
+        if (StrUtil.isBlank(str)) {
+            return "";
+        }
+
+        // 解析配置
+        String[] parts = configStr.split(",");
+        if (parts.length != 2) {
+            // 配置格式错误，返回原字符串
+            return str;
+        }
+
+        try {
+            int keepStart = Integer.parseInt(parts[0].trim());
+            int keepEnd = Integer.parseInt(parts[1].trim());
+
+            int length = str.length();
+
+            // 如果字符串长度小于等于要保留的位数之和，返回原字符串
+            if (length <= keepStart + keepEnd) {
+                return str;
+            }
+
+            // 计算需要隐藏的起始和结束位置
+            int hideStart = keepStart;
+            int hideEnd = length - keepEnd;
+
+            // 执行脱敏
+            return StrUtil.hide(str, hideStart, hideEnd);
+        } catch (NumberFormatException e) {
+            // 配置解析失败，返回原字符串
+            return str;
         }
     }
 
@@ -186,7 +241,7 @@ public class JsonDesensitizedUtils extends JsonSerializer<String> implements Con
             return StrUtil.hide(other, length / 3, length - length / 3);
         }
     }
-    
+
     public static void main(String[] args) {
         String str = "11223456789";
         System.out.println(StrUtil.isBlank(str) ? "" : StrUtil.hide(str, 4, str.length() - 2));
