@@ -6,7 +6,7 @@ networks:
 services:
  openresty:
   container_name: openresty
-  image: registry.cn-beijing.aliyuncs.com/dashu_pub/dashu-openresty-waf:1.21.4.1.1-alpine
+  image: registry.cn-beijing.aliyuncs.com/dashu_pub/dashu-openresty-waf-new:1.29.2.4.1-alpine
   volumes:
    - /etc/localtime:/etc/localtime:ro
    - /etc/timezone:/etc/timezone:ro
