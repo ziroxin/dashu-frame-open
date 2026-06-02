@@ -59,11 +59,87 @@ public class GlobalExceptionHandler {
                         .build();
             }
         }
+        // 检测是否包含数据库敏感信息，防止泄露
+        if (isDatabaseException(error)) {
+            log.error("数据库异常被拦截: {}", error, ex);
+            return ResponseResult.error("数据操作异常，请检查输入内容或联系管理员！");
+        }
         // 未定义异常，统一返回500异常
         log.error(error, ex);
         return ResponseResult.error(error);
     }
 
+    /**
+     * 判断是否为数据库相关异常（通过异常消息特征识别）
+     *
+     * @param errorMessage 异常消息
+     * @return true-数据库异常，false-其他异常
+     */
+    private boolean isDatabaseException(String errorMessage) {
+        if (errorMessage == null || errorMessage.isEmpty()) {
+            return false;
+        }
+
+        String lowerMessage = errorMessage.toLowerCase();
+
+        // 1. 数据库驱动包名特征
+        String[] dbPackageKeywords = {
+                "com.mysql",
+                "org.postgresql",
+                "oracle.jdbc",
+                "com.microsoft.sqlserver",
+                "com.ibm.db2",
+                "org.h2",
+                "org.sqlite"
+        };
+
+        // 2. 数据库异常类型特征
+        String[] dbExceptionKeywords = {
+                "sqlsyntaxerrorexception",
+                "sqlexception",
+                "dataintegrityviolation",
+                "constraintviolation",
+                "deadlock",
+                "timeout"
+        };
+
+        // 3. 常见数据库错误信息特征
+        String[] dbErrorKeywords = {
+                "duplicate entry",           // MySQL 唯一约束冲突
+                "data too long",             // 字段长度超限
+                "cannot be null",            // 非空约束
+                "foreign key",               // 外键约束
+                "table doesn't exist",       // 表不存在
+                "column doesn't exist",      // 列不存在
+                "truncated",                 // 数据截断
+                "out of range",              // 数值越界
+                "connection refused",        // 连接拒绝
+                "connection timed out"       // 连接超时
+        };
+
+        // 检查数据库驱动包名
+        for (String keyword : dbPackageKeywords) {
+            if (lowerMessage.contains(keyword.toLowerCase())) {
+                return true;
+            }
+        }
+
+        // 检查异常类型
+        for (String keyword : dbExceptionKeywords) {
+            if (lowerMessage.contains(keyword.toLowerCase())) {
+                return true;
+            }
+        }
+
+        // 检查错误信息特征
+        for (String keyword : dbErrorKeywords) {
+            if (lowerMessage.contains(keyword.toLowerCase())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /**
      * 服务端异常：用户名或密码错误 40001
@@ -75,7 +151,6 @@ public class GlobalExceptionHandler {
         return ResponseResult.builder()
                 .code(BaseErrorCode.LOGIN_ERROR_USERNAME_OR_PASSWORD_WRONG.getCode().toString())
                 .message(BaseErrorCode.LOGIN_ERROR_USERNAME_OR_PASSWORD_WRONG.getInfo())
-                .data(ex.getMessage())
                 .build();
     }
 
@@ -96,7 +171,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.OK)
     public ResponseResult<Object> handleException(Exception ex) {
         log.error(ex.getMessage(), ex);
-        return ResponseResult.error(ex.getMessage());
+        return ResponseResult.error("系统繁忙，请稍后重试！");
     }
 
     /**
@@ -106,7 +181,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.OK)
     public ResponseResult<Object> handleRuntimeException(RuntimeException ex) {
         log.error(ex.getMessage(), ex);
-        return ResponseResult.error(ex.getMessage());
+        return ResponseResult.error("服务器端异常，请联系管理员！");
     }
 
     /**
@@ -116,7 +191,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.OK)
     public ResponseResult<Object> handleIOException(IOException ex) {
         log.error(ex.getMessage(), ex);
-        return ResponseResult.error(ex.getMessage());
+        return ResponseResult.error("文件操作失败，请重试！");
     }
 
     /**
@@ -126,7 +201,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.OK)
     public ResponseResult<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
         log.error(ex.getMessage(), ex);
-        return ResponseResult.error(ex.getMessage());
+        return ResponseResult.error("参数不正确，请检查后重试！");
     }
 
 
@@ -140,7 +215,6 @@ public class GlobalExceptionHandler {
         return ResponseResult.builder()
                 .code("405")// HttpStatus.METHOD_NOT_ALLOWED
                 .message("客户端错误：请求类型错误！")
-                .data("Method Not Allowed!" + ex.getMessage())
                 .build();
     }
 
