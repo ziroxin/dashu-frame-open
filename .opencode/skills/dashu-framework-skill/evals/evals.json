@@ -1,0 +1,130 @@
+{
+  "skill_name": "dashu-framework-skill",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "add-new-business-module",
+      "prompt": "I need to add a new business module called 'product' for managing products in the dashu project. It has fields like product_name, product_code, price, status, and category_id. Please generate the complete backend CRUD code following the framework conventions, including Entity, DTO, Convert, Mapper, Service, Controller, and Excel support. Use the code generator patterns.",
+      "expected_output": "Complete CRUD code for a new 'product' module following dashu framework conventions — Entity (@TableName, @TableId ASSIGN_UUID), DTO (implements BaseDTO, @ApiModel), Convert (extends BaseConverter, @Mapper), Service (extends ServiceImpl, @Transactional), Controller (@RestController, @PreAuthorize, @NoRepeatSubmit, standard 7 endpoints), Excel export/import support, and proper package structure under com.kg.module.product.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "Entity uses @TableName with correct naming",
+          "description": "Entity class must have @TableName('z_product') and @TableId with IdType.ASSIGN_UUID",
+          "expected": "present"
+        },
+        {
+          "name": "Controller has standard 7 CRUD endpoints",
+          "description": "Controller must include getById, list, add, update, delete, export/excel, import/excel endpoints",
+          "expected": "present"
+        },
+        {
+          "name": "Permission strings follow module:entity:action format",
+          "description": "All @PreAuthorize annotations use 'product:zProduct:operation' format",
+          "expected": "present"
+        },
+        {
+          "name": "Convert extends BaseConverter with MapStruct config",
+          "description": "Convert interface extends BaseConverter<Product, ProductDTO> with @Mapper(config = BaseConverterConfig.class)",
+          "expected": "present"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "architecture-explanation",
+      "prompt": "What is the module dependency chain in the dashu framework? Explain the role of each module and how the packages are organized.",
+      "expected_output": "Explanation of component → core → module dependency chain, with each module's root package (com.kg.component.*, com.kg.core.*, com.kg.module.*) and their responsibilities.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "Correct dependency chain direction",
+          "description": "Must state component ← core ← module dependency",
+          "expected": "present"
+        },
+        {
+          "name": "Three module roles explained",
+          "description": "component=utilities, core=security+RBAC, module=app entry+controllers",
+          "expected": "present"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "code-review-framework-compliance",
+      "prompt": "Please review this Controller code for compliance with the dashu framework conventions:\n\n```java\n@RestController\n@RequestMapping(\"/user/zUser\")\npublic class ZUserController {\n    @Resource private ZUserService zUserService;\n\n    @PostMapping(\"/add\")\n    public String add(@RequestBody ZUser user) {\n        zUserService.save(user);\n        return \"success\";\n    }\n    \n    @GetMapping(\"/getById\")\n    public ZUser getById(String id) {\n        return zUserService.getById(id);\n    }\n}\n```",
+      "expected_output": "Code review identifying violations: missing @PreAuthorize, missing @NoRepeatSubmit on add, returning Entity directly instead of DTO, returning raw string instead of using ResponseResult auto-wrapping, missing @Api annotation, missing @Transactional on service.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "Identifies missing @PreAuthorize",
+          "description": "Review must flag missing @PreAuthorize on both endpoints",
+          "expected": "present"
+        },
+        {
+          "name": "Identifies returning Entity instead of DTO",
+          "description": "Review must flag that Entity should not be returned directly — must use Convert to DTO",
+          "expected": "present"
+        },
+        {
+          "name": "Identifies missing @NoRepeatSubmit",
+          "description": "Review must flag missing @NoRepeatSubmit on the POST /add endpoint",
+          "expected": "present"
+        },
+        {
+          "name": "Identifies missing Convert injection",
+          "description": "Review must flag missing ZUserConvert injection and DTO conversion",
+          "expected": "present"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "eval_name": "tech-stack-query",
+      "prompt": "What version of MyBatis-Plus and MapStruct does the dashu framework use? Also what is the base converter config and how do I create a new Convert interface?",
+      "expected_output": "MyBatis-Plus 3.5.6, MapStruct 1.4.1.Final. BaseConverterConfig with componentModel=spring, injectionStrategy=CONSTRUCTOR. New Convert extends BaseConverter<Entity, DTO> with @Component @Mapper(config = BaseConverterConfig.class).",
+      "files": [],
+      "assertions": [
+        {
+          "name": "Correct MyBatis-Plus version",
+          "description": "Must state MyBatis-Plus 3.5.6",
+          "expected": "present"
+        },
+        {
+          "name": "Correct MapStruct version",
+          "description": "Must state MapStruct 1.4.1.Final",
+          "expected": "present"
+        },
+        {
+          "name": "Correct BaseConverterConfig pattern",
+          "description": "Must describe BaseConverterConfig and the Convert interface pattern correctly",
+          "expected": "present"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "eval_name": "response-result-and-exception-handling",
+      "prompt": "How does the dashu framework handle uniform response and exceptions? Show me the ResponseResult class structure and how to throw business exceptions with proper error codes.",
+      "expected_output": "ResponseResult with code/message/timestamp/data fields, static success()/error() methods. Controllers return DTOs auto-wrapped by ResponseResultBodyAdvice. BaseException with String or BaseErrorCode constructors. GlobalExceptionHandler catches all exceptions and returns standardized ResponseResult.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "ResponseResult structure explained",
+          "description": "Must describe code, message, timestamp, data fields and static factory methods",
+          "expected": "present"
+        },
+        {
+          "name": "Auto-wrapping via ResponseResultBodyAdvice",
+          "description": "Must explain that controllers return DTOs directly and ResponseResultBodyAdvice auto-wraps them",
+          "expected": "present"
+        },
+        {
+          "name": "BaseException usage",
+          "description": "Must show how to throw BaseException with String or BaseErrorCode",
+          "expected": "present"
+        }
+      ]
+    }
+  ]
+}
