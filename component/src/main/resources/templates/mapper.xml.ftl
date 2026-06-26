@@ -48,10 +48,17 @@
         SELECT * FROM ${table.name}
         WHERE 1=1
 <#list table.fields as field>
-    <#if field.propertyName!=entityKeyName && field.propertyName!='orderIndex' && field.propertyName!='createTime' && field.propertyName!='updateTime'>
+    <#if field.propertyName!=entityKeyName && field.propertyName!='orderIndex' && field.propertyName!='createTime' && field.propertyName!='updateTime'
+        && field.propertyType!='Clob' && field.propertyType!='Blob' && field.propertyType!='byte[]'>
+        <#if field.propertyType=='String'>
         <if test="${field.propertyName}!= null and ${field.propertyName}!= ''">
             AND ${field.annotationColumnName} = ${'#{'+field.propertyName+'}'}
         </if>
+        <#else>
+        <if test="${field.propertyName}!= null">
+            AND ${field.annotationColumnName} = ${'#{'+field.propertyName+'}'}
+        </if>
+        </#if>
     <#elseif field.propertyName=='createTime'>
         <if test="createTimeStart!= null and createTimeStart!= '' and createTimeEnd!= null and createTimeEnd!= ''">
             AND create_time IS NOT NULL AND (create_time BETWEEN ${'#'}{createTimeStart} AND ${'#'}{createTimeEnd})
@@ -90,9 +97,16 @@
         SELECT COUNT(*) FROM ${table.name}
         WHERE 1=1
 <#list table.fields as field>
-    <#if field.propertyName!=entityKeyName && field.propertyName!='orderIndex' && field.propertyName!='createTime' && field.propertyName!='updateTime'>
+    <#if field.propertyName!=entityKeyName && field.propertyName!='orderIndex' && field.propertyName!='createTime' && field.propertyName!='updateTime'
+        && field.propertyType!='Clob' && field.propertyType!='Blob' && field.propertyType!='byte[]'>
+        <#if field.propertyType=='String'>
         <if test="${field.propertyName}!= null and ${field.propertyName}!= ''">
             AND ${field.annotationColumnName} = ${'#{'+field.propertyName+'}'}
+        </if>
+        <#else>
+        <if test="${field.propertyName}!= null">
+            AND ${field.annotationColumnName} = ${'#{'+field.propertyName+'}'}
+        </if>
         </if>
     <#elseif field.propertyName=='createTime'>
         <if test="createTimeStart!= null and createTimeStart!= '' and createTimeEnd!= null and createTimeEnd!= ''">
