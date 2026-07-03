@@ -107,7 +107,7 @@
         <if test="${field.propertyName}!= null">
             AND ${field.annotationColumnName} = ${'#{'+field.propertyName+'}'}
         </if>
-        </if>
+        </#if>
     <#elseif field.propertyName=='createTime'>
         <if test="createTimeStart!= null and createTimeStart!= '' and createTimeEnd!= null and createTimeEnd!= ''">
             AND create_time IS NOT NULL AND (create_time BETWEEN ${'#'}{createTimeStart} AND ${'#'}{createTimeEnd})
