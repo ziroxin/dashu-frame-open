@@ -114,8 +114,8 @@ public class UploadImageUtils {
                         + "/" + file.getFileName();
                 File saveFile = new File(savePath.replaceAll("//", "/"));
                 FileUtil.mkParentDirs(saveFile);
-                if (isCompress && !"gif".equalsIgnoreCase(extend)) {
-                    // 压缩
+                if (isCompress && !"gif".equalsIgnoreCase(extend) && !hasAlpha(multipartFile, extend)) {
+                    // GIF 或有透明度的图片不压缩；其余 Hutool 压缩
                     try (InputStream inputStream = multipartFile.getInputStream();
                          OutputStream outputStream = FileUtil.getOutputStream(saveFile)) {
                         Img.from(inputStream)
@@ -123,7 +123,7 @@ public class UploadImageUtils {
                                 .write(outputStream);
                     }
                 } else {
-                    // 不压缩直接复制
+                    // 直接复制（保留透明度）
                     FileCopyUtils.copy(multipartFile.getBytes(), saveFile);
                 }
                 // 文件访问地址
@@ -132,5 +132,26 @@ public class UploadImageUtils {
             }
         }
         return resultList;
+    }
+
+    /**
+     * 检查 PNG 是否有透明度（读 IHDR 块 color type，不解码整图）
+     * Color type: 0=灰度, 2=RGB, 3=索引, 4=灰度+Alpha, 6=RGBA
+     */
+    private static boolean hasAlpha(MultipartFile file, String extend) throws IOException {
+        if (!"png".equalsIgnoreCase(extend)) {
+            return false;
+        }
+        byte[] header = new byte[26];
+        int len;
+        try (InputStream inputStream = file.getInputStream()) {
+            len = inputStream.read(header);
+        }
+        if (len < 26) {
+            return false;
+        }
+        // color type 位于 IHDR 第 10 字节（从 16 偏移算起第 10 个）
+        int colorType = header[25] & 0xff;
+        return colorType == 4 || colorType == 6;
     }
 }
