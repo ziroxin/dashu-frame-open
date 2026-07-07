@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.io.IOException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
 import java.util.Set;
 
@@ -180,6 +181,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.OK)
     public ResponseResult<Object> handleRuntimeException(RuntimeException ex) {
+        if (ex instanceof UndeclaredThrowableException && ex.getCause() instanceof BaseException) {
+            return handleBaseException((BaseException) ex.getCause());
+        }
         log.error(ex.getMessage(), ex);
         return ResponseResult.error("服务器端异常，请联系管理员！");
     }
