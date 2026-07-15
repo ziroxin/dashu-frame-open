@@ -43,15 +43,11 @@ public class TypeRegistry {
         typeMap.put(Types.BLOB, DbColumnType.BYTE_ARRAY);
         typeMap.put(Types.LONGVARBINARY, DbColumnType.BYTE_ARRAY);
         typeMap.put(Types.VARBINARY, DbColumnType.BYTE_ARRAY);
-        //byte
-        typeMap.put(Types.TINYINT, DbColumnType.BYTE);
         //long
         typeMap.put(Types.BIGINT, DbColumnType.LONG);
         //boolean
         typeMap.put(Types.BIT, DbColumnType.BOOLEAN);
         typeMap.put(Types.BOOLEAN, DbColumnType.BOOLEAN);
-        //short
-        typeMap.put(Types.SMALLINT, DbColumnType.SHORT);
         //string
         typeMap.put(Types.CHAR, DbColumnType.STRING);
         typeMap.put(Types.CLOB, DbColumnType.STRING);
@@ -70,6 +66,8 @@ public class TypeRegistry {
         typeMap.put(Types.REAL, DbColumnType.DOUBLE);
         //int
         typeMap.put(Types.INTEGER, DbColumnType.INTEGER);
+        typeMap.put(Types.SMALLINT, DbColumnType.INTEGER);
+        typeMap.put(Types.TINYINT, DbColumnType.INTEGER);
         //bigDecimal
         typeMap.put(Types.NUMERIC, DbColumnType.BIG_DECIMAL);
         typeMap.put(Types.DECIMAL, DbColumnType.BIG_DECIMAL);
@@ -111,10 +109,8 @@ public class TypeRegistry {
             return typeMap.get(metaInfo.getJdbcType().TYPE_CODE);
         } else if (metaInfo.getLength() > 9) {
             return DbColumnType.LONG;
-        } else if (metaInfo.getLength() > 4) {
-            return DbColumnType.INTEGER;
         } else {
-            return DbColumnType.SHORT;
+            return DbColumnType.INTEGER;
         }
     }
 
