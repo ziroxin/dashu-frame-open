@@ -1,15 +1,9 @@
 .loginBody {
     font-family: "Karla", sans-serif;
-    /*让背景图半透明*/
-    background-attachment: fixed;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
     background-color: #ffffff;
-    /*背景模糊*/
     backdrop-filter: blur(5px);
     min-height: 100vh;
-    transition: background-image 1s linear;
+    overflow: hidden;
 }
 
 /*背景半透明蒙版*/
@@ -22,7 +16,34 @@
     height: 100%;
     backdrop-filter: blur(5px);
     background-color: rgba(0, 0, 0, 0.1);
-    z-index: -1;
+    z-index: 0;
+}
+
+/* ===== Animated Background Layer ===== */
+.login-bg-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -2;
+}
+
+.bg-fade-enter-active,
+.bg-fade-leave-active {
+    transition: opacity 1.2s ease, transform 1.2s ease;
+}
+
+.bg-fade-enter {
+    opacity: 0;
+    transform: scale(1.08);
+}
+
+.bg-fade-leave-to {
+    opacity: 0;
 }
 
 .brand-wrapper {
@@ -163,6 +184,78 @@
 
 .toggle-login-bg i:hover {
     background-color: rgba(0, 0, 0, 0.6);
+}
+
+/* ===== Left Image: Ken Burns + Liquid Morph ===== */
+.login-image-col {
+    position: relative;
+    overflow: hidden;
+    min-height: 100%;
+}
+
+.login-image-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #1a1a2e;
+}
+
+.ken-burns {
+    animation: kenBurns 25s ease-in-out infinite alternate;
+}
+
+@keyframes kenBurns {
+    0% {
+        transform: scale(1) translate(0, 0);
+    }
+    100% {
+        transform: scale(1.12) translate(-10px, -5px);
+    }
+}
+
+/* Flowing light: new image shines through */
+.img-morph-enter-active {
+    transition: opacity 1.5s ease,
+                filter 1.5s ease,
+                transform 1.5s ease;
+    opacity: 1;
+    filter: brightness(1);
+    transform: scale(1);
+}
+
+.img-morph-enter {
+    opacity: 0;
+    filter: brightness(3);
+    transform: scale(1.06);
+}
+
+.img-morph-leave-active {
+    transition: opacity 0.8s ease,
+                filter 0.8s ease;
+}
+
+.img-morph-leave-to {
+    opacity: 0;
+    filter: brightness(0.3);
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.2) 0%,
+        rgba(0, 0, 0, 0.05) 50%,
+        rgba(0, 0, 0, 0.15) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
 }
 
 /*# sourceMappingURL=login.css.map */

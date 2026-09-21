@@ -1,12 +1,22 @@
 <template>
-  <div class="loginBody" :style="'background-image: url(\''+loginBg[loginBgIndex]+'\');'">
+  <div class="loginBody">
+    <transition name="bg-fade">
+      <div :key="'bg-'+loginBgIndex" class="login-bg-layer"
+           :style="'background-image: url(\''+loginBg[loginBgIndex]+'\');'"></div>
+    </transition>
     <main class="d-flex align-items-center min-vh-100 py-3 py-md-0">
       <div class="container">
         <div class="card login-card">
           <div class="row no-gutters">
-            <div class="col-md-5">
-              <img :src="loginBg[loginBgIndex]" @error="handleImageError"
-                   alt="login" class="login-card-img">
+            <div class="col-md-5 login-image-col">
+              <div class="login-image-wrapper ken-burns">
+                <transition name="img-morph">
+                  <img :key="loginBgIndex" :src="loginBg[loginBgIndex]"
+                       @error="handleImageError"
+                       alt="login" class="login-card-img">
+                </transition>
+                <div class="image-overlay"></div>
+              </div>
               <div class="toggle-login-bg">
                 <el-tooltip class="item" effect="dark" content="换一批" placement="top">
                   <i class="el-icon-refresh" @click="loadRemoteWallpaper(true)"/>
