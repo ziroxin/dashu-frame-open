@@ -7,29 +7,29 @@
        action: 可选，上传接口地址，默认：/upload/images
        folder: 可选，服务端存储文件夹，默认空
        limitSize: 可选，上传文件大小限制，单位：b（默认10mb）
+       imgWidth: 可选，图片卡片宽度，单位px（默认148）
+       imgHeight: 可选，图片卡片高度，单位px（默认148；如3:2设 宽150 高100）
  * @Author: ziro
  * @Date: 2023/01/02 15:16:40
  -->
 <template>
-  <div>
-    <!-- 图片预览 -->
-    <el-dialog :visible.sync="dialogVisible" :fullscreen="true" @click.native="dialogVisible=false"
-               append-to-body custom-class="img-preview-dialog">
-      <img width="100%" :src="dialogImageUrl" alt="" @click.stop="dialogVisible=true"/>
-      <div class="img-text-info">按ESC键或点击遮罩可关闭预览</div>
-    </el-dialog>
+  <div class="img-upload-size pic-flexbox" :style="imgSizeStyle">
+    <!-- 已上传图片：点击打开el-image官方查看器，hover右上角删除 -->
+    <div v-if="value" class="pic-card">
+      <el-image class="pic-img" :src="$baseServer + value" :preview-src-list="[$baseServer + value]" fit="cover"/>
+      <i v-if="!isDisabled" class="el-icon-delete pic-del" @click="imgRemove"></i>
+    </div>
     <!-- 图片上传 -->
     <el-upload ref="imageOne"
                :headers="$store.getters.headerToken"
                :data="{'path':folder,...paramsData}"
                :name="name"
                :action="action===''?$baseServer+'/upload/images':action"
-               :file-list.sync="imgList"
                :multiple="false"
-               :on-preview="imgPreview"
+               :show-file-list="false"
+               :disabled="isDisabled"
                :before-upload="imgBeforeUpload"
                :on-success="imgUploadSuccess"
-               :on-remove="imgRemove"
                :class="value!==''?'hidden-btn':''"
                list-type="picture-card"
                accept="image/*">
@@ -53,39 +53,28 @@ export default {
     // 上传文件路径，可为空
     folder: {type: String, default: ''},
     // 上传文件大小限制，单位：b（默认10mb）
-    limitSize: {type: Number, default: 1024 * 1024 * 10}
+    limitSize: {type: Number, default: 1024 * 1024 * 10},
+    // 图片卡片宽度，单位px（默认148，正方形）
+    imgWidth: {type: Number, default: 148},
+    // 图片卡片高度，单位px（默认148，正方形；如3:2可设 宽150 高100）
+    imgHeight: {type: Number, default: 148}
   },
-  data() {
-    return {
-      // 图片列表
-      imgList: [],
-      // 图片预览
-      dialogVisible: false,
-      dialogImageUrl: ''
+  inject: {elForm: {default: null}},
+  computed: {
+    imgSizeStyle() {
+      return {'--img-w': this.imgWidth + 'px', '--img-h': this.imgHeight + 'px'}
+    },
+    // 表单disabled（只读场景）联动禁用上传/删除
+    isDisabled() {
+      return !!(this.elForm && this.elForm.disabled)
     }
-  },
-  watch: {
-    value() {
-      this.loadImg()
-    }
-  },
-  mounted() {
-    this.loadImg()
   },
   methods: {
-    loadImg() {
-      this.imgList = []
-      if (this.value && this.value !== null && this.value !== '') {
-        this.imgList[0] = {url: this.$baseServer + this.value}
-      } else {
-        this.$emit('input', '')
-      }
-    },
     imgUploadSuccess(response, file, fileList) {
       // 给value赋值
       this.$emit('input', response.data[0].fileUrl)
     },
-    imgRemove(file, fileList) {
+    imgRemove() {
       // 清空value
       this.$emit('input', '')
     },
@@ -103,13 +92,8 @@ export default {
       }
       return isRightSize && isAccept
     },
-    // 预览图片
-    imgPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
-    },
     formatSize(size) {
-      let sizeStr = size + 'B';
+      let sizeStr = size + 'B'
       if (size >= 1024 * 1024 * 1024) {
         sizeStr = (size / 1024 / 1024 / 1024).toFixed(2) + 'GB'
       } else if (size >= 1024 * 1024) {
@@ -119,44 +103,82 @@ export default {
       } else {
         sizeStr = size + 'B'
       }
-      return sizeStr;
+      return sizeStr
     }
   }
 }
 </script>
 <style lang="scss">
+.hidden-btn {
+  line-height: 0 !important;
+}
+
 .hidden-btn .el-upload--picture-card {
   display: none;
 }
+</style>
+<style lang="scss" scoped>
+.img-upload-size {
+  ::v-deep .el-upload--picture-card {
+    width: var(--img-w, 148px);
+    height: var(--img-h, 148px);
+    line-height: var(--img-h, 148px);
+  }
+}
 
-.img-preview-dialog {
-  background-color: rgba(0, 0, 0, 0.1) !important;
+.pic-flexbox {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.pic-card {
+  position: relative;
+  width: var(--img-w, 148px);
+  height: var(--img-h, 148px);
+  border: 1px solid #c0ccda;
+  border-radius: 6px;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  margin: 0 8px 8px 0;
+}
+
+.pic-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: pointer;
+
+  ::v-deep img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.pic-del {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 6;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
   text-align: center;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
 
-  .el-dialog__close {
-    color: #fff !important;
-    font-size: 24px !important;
-  }
-
-  img {
-    position: absolute;
-    left: 3%;
-    max-width: 94%;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  .img-text-info {
-    position: absolute;
-    bottom: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #ccc;
-    font-size: 14px;
-    background-color: #00000080;
-    padding: 10px 30px;
-    border-radius: 40px;
-    cursor: pointer;
-  }
+.pic-card:hover .pic-del {
+  opacity: 1;
 }
 </style>
