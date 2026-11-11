@@ -18,7 +18,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -115,14 +116,15 @@ public class DbQueryController {
             String csv = dbQueryService.exportToCsv(dto);
 
             response.setContentType("text/csv; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
             response.setHeader("Content-Disposition", "attachment; filename=export.csv");
 
-            // 添加 BOM 以支持 Excel 打开 UTF-8
-            response.getOutputStream().write(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF});
-
-            PrintWriter writer = response.getWriter();
-            writer.write(csv);
-            writer.flush();
+            // 统一使用输出流写字节：先写 UTF-8 BOM（兼容 Excel），再写 CSV 正文
+            // 注意：不能混用 getOutputStream() 与 getWriter()，否则 IllegalStateException
+            OutputStream os = response.getOutputStream();
+            os.write(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF});
+            os.write(csv.getBytes(StandardCharsets.UTF_8));
+            os.flush();
         } catch (IOException e) {
             log.error("导出CSV失败", e);
             throw new BaseException("导出CSV失败: " + e.getMessage());

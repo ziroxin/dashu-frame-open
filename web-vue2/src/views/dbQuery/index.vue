@@ -24,20 +24,26 @@
               :data="treeData"
               :props="treeProps"
               node-key="id"
+              highlight-current
+              :current-node-key="currentNodeKey"
+              :default-expanded-keys="defaultExpandedKeys"
               :filter-node-method="filterNode"
               @node-click="handleNodeClick"
               :expand-on-click-node="false"
               class="db-tree"
             >
-              <span class="tree-node" slot-scope="{ node, data }">
-                <i v-if="data.type === 'database'" class="el-icon-coin" style="margin-right: 5px"></i>
-                <i v-else-if="data.type === 'table'" class="el-icon-grid" style="margin-right: 5px"></i>
-                <i v-else class="el-icon-document" style="margin-right: 5px"></i>
-                <span>{{ node.label }}</span>
-                <el-tag v-if="data.comment" size="mini" type="info" style="margin-left: 5px">
-                  {{ data.comment }}
-                </el-tag>
-              </span>
+              <el-tooltip slot-scope="{ data }" placement="right" :open-delay="200">
+                <div slot="content">
+                  <div>{{ data.label }}</div>
+                  <div v-if="data.comment">{{ data.comment }}</div>
+                </div>
+                <span class="tree-node">
+                  <i v-if="data.type === 'database'" class="el-icon-coin" style="margin-right: 5px"></i>
+                  <i v-else-if="data.type === 'table'" class="el-icon-grid" style="margin-right: 5px"></i>
+                  <i v-else class="el-icon-document" style="margin-right: 5px"></i>
+                  <span class="tree-label">{{ data.label }}</span>
+                </span>
+              </el-tooltip>
             </el-tree>
           </div>
         </el-card>
@@ -48,49 +54,130 @@
         <!-- SQL 编辑器区域 -->
         <el-card class="sql-card">
           <div slot="header" class="clearfix">
-            <span><i class="el-icon-edit"></i> SQL 查询</span>
-            <div style="float: right">
-              <el-select v-model="currentDatabase" placeholder="选择数据库" size="mini" style="width: 140px; margin-right: 10px">
+            <div style="float: left">
+              <el-select v-model="currentDatabase" placeholder="选择数据库" size="mini" style="width: 160px; margin-right: 10px">
                 <el-option v-for="db in databases" :key="db.databaseName" :label="db.databaseName" :value="db.databaseName"/>
               </el-select>
-              <el-radio-group v-if="canWrite" v-model="mode" size="mini" style="margin-right: 10px">
+              <el-radio-group v-if="canWrite" v-model="mode" size="mini">
                 <el-radio-button label="query">查询</el-radio-button>
                 <el-radio-button label="write">写操作</el-radio-button>
               </el-radio-group>
-              <el-input-number v-if="mode === 'query'" v-model="maxRows" :min="1" :max="10000" size="mini" placeholder="最大行数" style="width: 110px; margin-right: 10px"/>
+            </div>
+            <div style="float: right">
               <el-button :type="mode === 'write' ? 'warning' : 'primary'" size="mini" @click="runMain" :loading="executing" icon="el-icon-caret-right">
                 {{ mode === 'write' ? '预览变更 (Ctrl+Enter)' : '执行 (Ctrl+Enter)' }}
               </el-button>
               <el-button size="mini" @click="clearEditor" icon="el-icon-delete">清空</el-button>
-              <el-button v-if="mode === 'query'" type="success" size="mini" @click="exportCsv" :disabled="!lastResult" icon="el-icon-download">
-                导出CSV
-              </el-button>
             </div>
           </div>
 
+          <!-- 已选表信息栏：位于输入框上方，与快捷操作分离 -->
+          <div v-if="selectedTable" class="selected-table-bar" style="margin-bottom: 10px">
+            <span class="st-label">当前表：</span>
+            <span class="copy-text st-name" title="点击复制表名" @click="copyText(selectedTable.tableName)">
+              {{ selectedTable.tableName }}
+            </span>
+            <span
+              v-if="selectedTable.tableComment"
+              class="copy-text st-comment"
+              title="点击复制表注释"
+              @click="copyText(selectedTable.tableComment)"
+            >
+              {{ selectedTable.tableComment }}
+            </span>
+            <span class="st-actions">
+              <el-button size="mini" type="primary" plain @click="openStructureDialog" :loading="structureLoading">表结构</el-button>
+              <el-button size="mini" type="text" @click="clearTableSelect">取消选择</el-button>
+            </span>
+          </div>
+
           <!-- SQL 输入框 -->
-          <el-input
-            ref="sqlInputRef"
-            v-model="sqlText"
-            type="textarea"
-            :rows="6"
-            :placeholder="mode === 'write'
-              ? '输入写操作 SQL... (仅支持单条 INSERT/UPDATE/DELETE；UPDATE/DELETE 必须带 WHERE)'
-              : '输入 SQL 语句... (支持 SELECT, SHOW, DESC 等只读操作)'"
-            class="sql-input"
-            @keydown.ctrl.enter.native="runMain"
-          />
+          <div class="sql-input-wrap">
+            <el-input
+              ref="sqlInputRef"
+              v-model="sqlText"
+              type="textarea"
+              :rows="6"
+              :placeholder="mode === 'write'
+                ? '输入写操作 SQL... (仅支持单条 INSERT/UPDATE/DELETE；UPDATE/DELETE 必须带 WHERE)'
+                : '输入 SQL 语句... (支持 SELECT, SHOW, DESC 等只读操作)'"
+              class="sql-input"
+              @keydown.ctrl.enter.native="runMain"
+            />
+            <span v-if="sqlText" class="sql-clear" title="清空" @click="sqlText = ''">
+              <i class="el-icon-circle-close"></i>
+            </span>
+          </div>
 
           <!-- 快捷操作 -->
           <div class="quick-actions" style="margin-top: 10px">
-            <el-tag
-              v-for="item in quickActions"
-              :key="item.label"
-              style="margin-right: 5px; margin-bottom: 5px; cursor: pointer"
-              @click="insertSql(item.sql)"
+            <!-- 第一行：选中表的快捷查询（红色）+ 基础查询（队尾） -->
+            <div class="quick-row">
+              <template v-if="selectedTable">
+                <el-tag class="quick-btn" type="danger" effect="dark" @click.native="fillTop10">查询前10条</el-tag>
+                <el-tag class="quick-btn" type="danger" effect="dark" @click.native="fillAllColumns">查询所有字段</el-tag>
+                <el-tag class="quick-btn" type="danger" effect="dark" @click.native="fillCount">查询总行数</el-tag>
+              </template>
+              <el-tag
+                v-for="item in baseActions"
+                :key="item.label"
+                class="quick-btn"
+                @click.native="insertSql(item.sql)"
+              >
+                {{ item.label }}
+              </el-tag>
+            </div>
+
+            <!-- 第二行：表名 / 字段名 快捷填充（文本样式，默认折叠一行，可展开收起） -->
+            <div v-if="selectedTable && tableColumns.length" class="token-row-wrap" style="margin-top: 6px">
+              <div
+                ref="tokenArea"
+                class="token-area"
+                :style="{ maxHeight: tokensExpanded ? 'none' : tokenOneRowH + 'px' }"
+              >
+                <span class="token-text table-token" title="点击插入表名" @click="insertToken(selectedTable.tableName)">
+                  {{ selectedTable.tableName }}
+                </span>
+                <span
+                  v-for="col in tableColumns"
+                  :key="col"
+                  class="token-text"
+                  title="点击插入字段名"
+                  @click="insertToken(col)"
+                >
+                  {{ col }}
+                </span>
+              </div>
+              <el-button v-if="tokensOverflow" type="text" size="mini" class="token-toggle" @click="tokensExpanded = !tokensExpanded">
+                <i :class="tokensExpanded ? 'el-icon-arrow-up' : 'el-icon-arrow-down'" style="margin-right: 3px"></i>{{ tokensExpanded ? '收起' : '展开' }}
+              </el-button>
+            </div>
+          </div>
+        </el-card>
+
+        <!-- 最近查询历史 -->
+        <el-card v-if="queryHistory.length" class="history-card" style="margin-top: 16px">
+          <div slot="header" class="history-header">
+            <span class="history-title"><i class="el-icon-time"></i> 最近查询 · {{ currentDatabase }}</span>
+            <div class="history-filter">
+              <el-input v-model="historyFilter" placeholder="筛选查询历史..." size="mini" clearable style="width: 200px"/>
+            </div>
+            <el-button type="text" icon="el-icon-delete" class="history-clear" @click="confirmClearHistory">清空全部</el-button>
+          </div>
+          <div class="history-list">
+            <div
+              v-for="(h, i) in filteredHistory"
+              :key="i"
+              class="history-item"
+              :title="h.sql"
+              @click="useHistory(h.sql)"
             >
-              {{ item.label }}
-            </el-tag>
+              <span class="history-index">{{ i + 1 }}</span>
+              <el-tag :type="h.success ? 'success' : 'danger'" size="mini" class="history-status">{{ h.success ? '成功' : '失败' }}</el-tag>
+              <span class="history-sql">{{ h.sql }}</span>
+              <span class="history-time">{{ formatHistoryTime(h.ts) }}</span>
+            </div>
+            <div v-if="!filteredHistory.length" class="history-empty">无匹配的查询历史</div>
           </div>
         </el-card>
 
@@ -109,6 +196,14 @@
                 {{ lastResult.executeTime }}ms
               </el-tag>
             </span>
+            <el-button
+              v-if="lastResult && lastResult.success && lastResult.columns && lastResult.columns.length > 0"
+              type="success"
+              size="mini"
+              icon="el-icon-download"
+              style="float: right"
+              @click="exportCsv"
+            >导出CSV</el-button>
           </div>
 
           <!-- 错误提示 -->
@@ -123,7 +218,7 @@
 
           <!-- 结果表格 -->
           <div v-if="lastResult && lastResult.success && lastResult.columns && lastResult.columns.length > 0" style="max-height: 400px; overflow: auto">
-            <el-table :data="lastResult.rows" border stripe size="mini" class="result-table">
+            <el-table :data="pagedRows" border stripe size="mini" class="result-table" @cell-click="handleCellCopy">
               <el-table-column
                 v-for="col in lastResult.columns"
                 :key="col"
@@ -133,14 +228,29 @@
                 min-width="150"
               >
                 <template slot-scope="{ row }">
-                  {{ formatCellValue(row[col]) }}
+                  <span class="copyable-cell">{{ formatCellValue(row[col]) }}</span>
                 </template>
               </el-table-column>
             </el-table>
           </div>
 
+          <!-- 分页 -->
+          <div v-if="lastResult && lastResult.success && resultTotal > resultPageSize" class="result-pagination" style="margin-top: 10px">
+            <el-pagination
+              :current-page="resultPage"
+              :page-size="resultPageSize"
+              :page-sizes="[50, 100, 200, 500]"
+              :total="resultTotal"
+              layout="total, sizes, prev, pager, next, jumper"
+              background
+              size="mini"
+              @current-change="handlePageChange"
+              @size-change="handleSizeChange"
+            />
+          </div>
+
           <!-- 空状态 -->
-          <div v-else-if="!executing" style="text-align: center; padding: 60px 0; color: #909399">
+          <div v-else-if="!executing && !(lastResult && lastResult.success && lastResult.columns && lastResult.columns.length > 0)" style="text-align: center; padding: 60px 0; color: #909399">
             <i class="el-icon-info" style="font-size: 48px"></i>
             <p style="margin-top: 10px">执行 SQL 查询查看结果</p>
           </div>
@@ -268,9 +378,10 @@ export default {
       filterText: '',
       sqlText: '',
       currentDatabase: '',
-      maxRows: 1000,
+      maxRows: 100,
       databases: [],
       treeData: [],
+      defaultExpandedKeys: [],
       lastResult: null,
       showStructureDialog: false,
       currentTableStructure: null,
@@ -281,18 +392,25 @@ export default {
       mode: 'query',
       showPreviewDialog: false,
       previewData: null,
+      currentNodeKey: '',
+      selectedTable: null,
+      tokensExpanded: false,
+      tokenOneRowH: 32,
+      tokensOverflow: false,
+      structureCache: {},
+      structureLoading: false,
+      resultPage: 1,
+      resultPageSize: 100,
+      historyMap: {},
+      historyMax: 50,
+      historyFilter: '',
       treeProps: {
         children: 'children',
         label: 'label'
       },
-      quickActions: [
-        { label: '查看所有表', sql: 'SHOW TABLES' },
-        { label: '查看建表语句', sql: 'SHOW CREATE TABLE ' },
-        { label: '查看表结构', sql: 'DESC ' },
-        { label: '查看索引', sql: 'SHOW INDEX FROM ' },
-        { label: '查看数据库', sql: 'SHOW DATABASES' },
+      baseActions: [
+        { label: '查询所有表', sql: 'SHOW TABLES' },
         { label: '查看版本', sql: 'SELECT VERSION()' },
-        { label: '查看当前时间', sql: 'SELECT NOW()' },
         { label: '查看进程', sql: 'SHOW PROCESSLIST' }
       ]
     }
@@ -300,14 +418,40 @@ export default {
   computed: {
     canWrite() {
       return !this.featureDisabled && this.writeEnabled && this.developer
+    },
+    tableColumns() {
+      const cols = this.currentTableStructure && this.currentTableStructure.columns
+      return Array.isArray(cols) ? cols.map(c => c.columnName) : []
+    },
+    resultTotal() {
+      return this.lastResult && this.lastResult.rows ? this.lastResult.rows.length : 0
+    },
+    pagedRows() {
+      const rows = (this.lastResult && this.lastResult.rows) || []
+      const start = (this.resultPage - 1) * this.resultPageSize
+      return rows.slice(start, start + this.resultPageSize)
+    },
+    queryHistory() {
+      return this.historyMap[this.currentDatabase] || []
+    },
+    filteredHistory() {
+      const kw = (this.historyFilter || '').trim().toLowerCase()
+      if (!kw) return this.queryHistory
+      return this.queryHistory.filter(h => h.sql.toLowerCase().includes(kw))
     }
   },
   watch: {
     filterText(val) {
       this.$refs.treeRef.filter(val)
+    },
+    // 字段列表变化时：折叠并重新测量单行高度
+    tableColumns() {
+      this.tokensExpanded = false
+      this.$nextTick(() => this.measureTokenLine())
     }
   },
   mounted() {
+    this.loadHistory()
     this.loadStatus()
     // 监听键盘快捷键
     document.addEventListener('keydown', this.handleKeydown)
@@ -339,13 +483,49 @@ export default {
         this.loadDatabases()
       }
     },
-    // 主按钮分发：查询模式执行查询，写模式先预览
+    // 主按钮分发：查询模式执行查询，写模式先预览（执行前先做前端模式校验，减少无效请求）
     runMain() {
+      const check = this.validateByMode(this.sqlText, this.mode)
+      if (!check.ok) {
+        this.$message.warning(check.message || 'SQL 不符合当前模式')
+        return
+      }
       if (this.mode === 'write') {
         this.doPreviewWrite()
       } else {
         this.executeQuery()
       }
+    },
+    // 取语句首个关键词
+    firstKeyword(sql) {
+      const m = (sql || '').trim().toUpperCase().match(/^[A-Z_]+/)
+      return m ? m[0] : ''
+    },
+    // 是否存在堆叠语句（去掉结尾分号后，中间仍有分号）
+    hasStackedStatement(sql) {
+      let body = (sql || '').trim()
+      while (body.endsWith(';')) body = body.slice(0, -1).trim()
+      return body.indexOf(';') >= 0
+    },
+    // 前端按模式预校验（非权威，后端仍会完整校验；仅拦截明显的模式不符，减少无效请求）
+    validateByMode(sql, mode) {
+      const READ = ['SELECT', 'SHOW', 'DESC', 'DESCRIBE', 'EXPLAIN']
+      const WRITE = ['INSERT', 'UPDATE', 'DELETE']
+      const trimmed = (sql || '').trim()
+      if (!trimmed) return { ok: false, message: '请输入 SQL 语句' }
+      const kw = this.firstKeyword(trimmed)
+      if (this.hasStackedStatement(trimmed)) return { ok: false, message: '禁止多语句（堆叠）执行' }
+      if (mode === 'query') {
+        if (WRITE.indexOf(kw) >= 0) return { ok: false, message: `这是写操作(${kw})，请切换到"写操作"模式再执行` }
+        if (READ.indexOf(kw) < 0) return { ok: false, message: `查询模式仅支持 ${READ.join('/')} 语句` }
+      } else {
+        if (READ.indexOf(kw) >= 0) return { ok: false, message: `这是查询语句(${kw})，请切换到"查询"模式再执行` }
+        if (WRITE.indexOf(kw) < 0) return { ok: false, message: '写操作仅支持 INSERT/UPDATE/DELETE 语句' }
+        if ((kw === 'UPDATE' || kw === 'DELETE') && !/\bWHERE\b/i.test(trimmed)) {
+          return { ok: false, message: `${kw} 必须带 WHERE 条件` }
+        }
+      }
+      return { ok: true }
     },
     // 预览写 SQL
     async doPreviewWrite() {
@@ -429,6 +609,7 @@ export default {
         // 默认选择第一个数据库
         if (this.databases.length > 0 && !this.currentDatabase) {
           this.currentDatabase = this.databases[0].databaseName
+          this.defaultExpandedKeys = [`db_${this.currentDatabase}`]
           this.loadTables(this.currentDatabase)
         }
       } catch (e) {
@@ -465,27 +646,161 @@ export default {
       if (!value) return true
       return data.label.toLowerCase().includes(value.toLowerCase())
     },
-    // 点击树节点
+    // 点击树节点：库→切换并清空选表；表→单选并加载结构（不再自动弹窗）
     async handleNodeClick(data) {
       if (data.type === 'database') {
         this.currentDatabase = data.databaseName
+        this.clearTableSelect()
         if (!data.children || data.children.length === 0) {
           await this.loadTables(data.databaseName)
         }
       } else if (data.type === 'table') {
-        // 查看表结构
-        this.showTableStructure(data.databaseName, data.tableName)
+        this.currentNodeKey = data.id
+        this.selectedTable = { databaseName: data.databaseName, tableName: data.tableName, tableComment: data.comment }
+        this.currentTableStructure = null
+        await this.ensureStructure(data.databaseName, data.tableName)
       }
     },
-    // 显示表结构
-    async showTableStructure(databaseName, tableName) {
+    // 加载（带缓存）表结构，供"查询所有字段"与字段快捷填充使用
+    async ensureStructure(databaseName, tableName) {
+      const key = `${databaseName}.${tableName}`
+      if (this.structureCache[key]) {
+        this.currentTableStructure = this.structureCache[key]
+        return this.structureCache[key]
+      }
+      this.structureLoading = true
       try {
         const res = await getTableStructureApi(databaseName, tableName)
+        this.$set(this.structureCache, key, res.data)
         this.currentTableStructure = res.data
-        this.showStructureDialog = true
+        return res.data
       } catch (e) {
         this.$message.error('获取表结构失败')
+        return null
+      } finally {
+        this.structureLoading = false
       }
+    },
+    // 点击"表结构"按钮：弹窗展示
+    async openStructureDialog() {
+      if (!this.selectedTable) return
+      const { databaseName, tableName } = this.selectedTable
+      await this.ensureStructure(databaseName, tableName)
+      if (this.currentTableStructure) {
+        this.showStructureDialog = true
+      }
+    },
+    // 取消表选择
+    clearTableSelect() {
+      this.selectedTable = null
+      this.currentTableStructure = null
+      this.currentNodeKey = ''
+      if (this.$refs.treeRef && this.$refs.treeRef.setCurrentKey) {
+        this.$refs.treeRef.setCurrentKey(null)
+      }
+    },
+    // 查询前10条
+    fillTop10() {
+      if (!this.selectedTable) return
+      this.sqlText = `SELECT * FROM \`${this.selectedTable.tableName}\` LIMIT 10`
+      this.focusSqlInput()
+    },
+    // 查询所有字段
+    fillAllColumns() {
+      if (!this.selectedTable) return
+      const cols = this.tableColumns
+      const colList = cols.length ? cols.map(c => `\`${c}\``).join(', ') : '*'
+      this.sqlText = `SELECT ${colList} FROM \`${this.selectedTable.tableName}\``
+      this.focusSqlInput()
+    },
+    // 查询总行数
+    fillCount() {
+      if (!this.selectedTable) return
+      this.sqlText = `SELECT COUNT(*) AS total FROM \`${this.selectedTable.tableName}\``
+      this.focusSqlInput()
+    },
+    // 测量单行 token 高度（用于折叠态只显示一行），并判断是否溢出多行
+    measureTokenLine() {
+      const area = this.$refs.tokenArea
+      const first = area && area.firstElementChild
+      if (first && first.offsetHeight > 0) {
+        this.tokenOneRowH = first.offsetHeight
+      }
+      if (area) {
+        this.tokensOverflow = area.scrollHeight > this.tokenOneRowH + 2
+      }
+    },
+    // 插入 token（表名/字段名），前后自动加空格
+    insertToken(token) {
+      const cur = this.sqlText || ''
+      this.sqlText = `${cur} ${token} `
+      this.focusSqlInput()
+    },
+    focusSqlInput() {
+      const target = this.$refs.sqlInputRef && this.$refs.sqlInputRef.$el
+        ? this.$refs.sqlInputRef.$el.querySelector('textarea')
+        : null
+      if (target) {
+        target.focus()
+        try { target.setSelectionRange(target.value.length, target.value.length) } catch (e) { /* noop */ }
+      }
+    },
+    // ===== 最近查询历史（按数据库分开，每库最多 50 条；重复语句仅更新顺序；成功/失败都记录） =====
+    loadHistory() {
+      try {
+        const raw = localStorage.getItem('db-query:history')
+        const obj = raw ? JSON.parse(raw) : {}
+        // 兼容旧数据（旧版为数组）：非对象或数组一律重置
+        this.historyMap = obj && typeof obj === 'object' && !Array.isArray(obj) ? obj : {}
+      } catch (e) {
+        this.historyMap = {}
+      }
+    },
+    persistHistory() {
+      try {
+        localStorage.setItem('db-query:history', JSON.stringify(this.historyMap))
+      } catch (e) {
+        // 忽略：隐私模式 / 配额限制
+      }
+    },
+    addHistory(sql, success) {
+      const s = (sql || '').trim()
+      if (!s) return
+      const db = this.currentDatabase
+      const list = this.historyMap[db] ? this.historyMap[db].slice() : []
+      const idx = list.findIndex(h => h.sql === s)
+      if (idx !== -1) list.splice(idx, 1)
+      list.unshift({ sql: s, ts: Date.now(), success })
+      if (list.length > this.historyMax) list.length = this.historyMax
+      this.$set(this.historyMap, db, list)
+      this.persistHistory()
+    },
+    useHistory(sql) {
+      this.sqlText = sql
+      this.focusSqlInput()
+    },
+    clearHistory() {
+      this.$set(this.historyMap, this.currentDatabase, [])
+      this.persistHistory()
+    },
+    // 清空本库历史（二次确认）
+    async confirmClearHistory() {
+      try {
+        await this.$confirm('确认清空当前库的最近查询历史？', '清空历史', {
+          type: 'warning',
+          confirmButtonText: '确认清空',
+          cancelButtonText: '取消'
+        })
+      } catch (e) {
+        return
+      }
+      this.clearHistory()
+      this.historyFilter = ''
+    },
+    formatHistoryTime(ts) {
+      const d = new Date(ts)
+      const p = n => (n < 10 ? '0' + n : '' + n)
+      return `${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`
     },
     // 执行查询
     async executeQuery() {
@@ -503,12 +818,17 @@ export default {
           timeout: 30
         })
         this.lastResult = res.data
+        this.resultPage = 1
 
         if (!res.data.success) {
           this.$message.error(res.data.errorMessage || '查询失败')
+          this.addHistory(this.sqlText, false)
+        } else {
+          this.addHistory(this.sqlText, true)
         }
       } catch (e) {
         this.$message.error(e.message || '查询失败')
+        this.addHistory(this.sqlText, false)
       } finally {
         this.executing = false
       }
@@ -517,6 +837,7 @@ export default {
     clearEditor() {
       this.sqlText = ''
       this.lastResult = null
+      this.resultPage = 1
     },
     // 插入 SQL
     insertSql(sql) {
@@ -528,20 +849,34 @@ export default {
       if (!this.lastResult) return
 
       try {
-        const res = await exportToCsvApi({
+        // request 拦截器对 blob 响应直接返回 Blob 本体，故此处 await 结果即为 Blob
+        const blob = await exportToCsvApi({
           sql: this.sqlText,
           databaseName: this.currentDatabase,
           maxRows: 10000,
           timeout: 60
         })
 
+        // 后端出错时可能返回 JSON（而非 CSV），需识别并提示
+        if (blob && blob.type && blob.type.indexOf('application/json') >= 0) {
+          const text = await blob.text()
+          let msg = '导出失败'
+          try {
+            msg = JSON.parse(text).message || msg
+          } catch (e) {
+            // 解析失败，使用默认提示
+          }
+          this.$message.error(msg)
+          return
+        }
+
         // 创建下载链接
-        const blob = new Blob([res.data], { type: 'text/csv;charset=utf-8;' })
+        const url = window.URL.createObjectURL(blob)
         const link = document.createElement('a')
-        link.href = URL.createObjectURL(blob)
+        link.href = url
         link.download = `export_${Date.now()}.csv`
         link.click()
-        URL.revokeObjectURL(link.href)
+        window.URL.revokeObjectURL(url)
 
         this.$message.success('导出成功')
       } catch (e) {
@@ -557,6 +892,50 @@ export default {
         return JSON.stringify(value)
       }
       return String(value)
+    },
+    // 分页：切换页码
+    handlePageChange(page) {
+      this.resultPage = page
+    },
+    // 分页：切换每页条数
+    handleSizeChange(size) {
+      this.resultPageSize = size
+      this.resultPage = 1
+    },
+    // 点击结果单元格：复制其内容
+    handleCellCopy(row, column) {
+      if (!column || !column.property) return
+      const val = this.formatCellValue(row[column.property])
+      if (val === null || val === undefined || val === '') return
+      this.copyText(val)
+    },
+    // 复制到剪贴板（生产多为 http，clipboard API 需安全上下文，故保留 execCommand 降级）
+    copyText(text) {
+      const tip = '已复制: ' + (text.length > 30 ? text.slice(0, 30) + '…' : text)
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text)
+          .then(() => this.$message.success(tip))
+          .catch(() => this.copyTextFallback(text, tip))
+        return
+      }
+      this.copyTextFallback(text, tip)
+    },
+    copyTextFallback(text, tip) {
+      try {
+        const textarea = document.createElement('textarea')
+        textarea.value = text
+        textarea.style.position = 'fixed'
+        textarea.style.top = '0'
+        textarea.style.opacity = '0'
+        document.body.appendChild(textarea)
+        textarea.focus()
+        textarea.select()
+        const ok = document.execCommand('copy')
+        document.body.removeChild(textarea)
+        ok ? this.$message.success(tip) : this.$message.error('复制失败')
+      } catch (e) {
+        this.$message.error('复制失败')
+      }
     }
   }
 }
@@ -579,6 +958,23 @@ export default {
 .sql-card {
   ::v-deep .el-card__body {
     padding: 15px;
+  }
+}
+
+.sql-input-wrap {
+  position: relative;
+}
+
+.sql-clear {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  z-index: 2;
+  cursor: pointer;
+  color: #c0c4cc;
+
+  &:hover {
+    color: #909399;
   }
 }
 
@@ -609,17 +1005,219 @@ export default {
 .tree-node {
   display: flex;
   align-items: center;
+  align-self: stretch;
   font-size: 13px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.tree-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selected-table-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 6px 8px;
+  background: #f5f7fa;
+  border-radius: 4px;
+  font-size: 13px;
+
+  .st-label {
+    color: #909399;
+  }
+
+  .st-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+  }
+}
+
+.quick-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.token-row-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.token-area {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  overflow: hidden;
+  transition: max-height 0.2s ease;
+}
+
+.token-toggle {
+  flex-shrink: 0;
+}
+
+.token-text {
+  cursor: pointer;
+  user-select: none;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  color: #606266;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.token-text:hover {
+  color: #409eff;
+  background: #ecf5ff;
+}
+
+.token-text.table-token {
+  color: #409eff;
+  font-weight: 600;
+}
+
+/* 当前表：文本式可复制 */
+.copy-text {
+  cursor: pointer;
+  user-select: none;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.copy-text:hover {
+  text-decoration: underline;
+}
+
+.st-name {
+  color: #409eff;
+  font-weight: 600;
+}
+
+.st-comment {
+  color: #909399;
+}
+
+/* 查询/写操作单选：选中态颜色区分（查询=蓝，写操作=橙） */
+.mode-radio {
+  ::v-deep .el-radio-button:nth-child(1) .el-radio-button__orig-radio:checked + .el-radio-button__inner {
+    background-color: #409eff;
+    border-color: #409eff;
+    color: #fff;
+  }
+
+  ::v-deep .el-radio-button:nth-child(2) .el-radio-button__orig-radio:checked + .el-radio-button__inner {
+    background-color: #e6a23c;
+    border-color: #e6a23c;
+    color: #fff;
+  }
+}
+
+.result-pagination {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.copyable-cell {
+  cursor: pointer;
+}
+
+.history-card {
+  ::v-deep .el-card__body {
+    padding: 10px;
+  }
+}
+
+.history-list {
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.history-empty {
+  padding: 12px 8px;
+  text-align: center;
+  color: #909399;
+  font-size: 12px;
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .history-title {
+    flex: none;
+  }
+
+  .history-filter {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  .history-clear {
+    flex: none;
+  }
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+
+  &:hover {
+    background: #f5f7fa;
+  }
+}
+
+.history-index {
+  flex: none;
+  width: 20px;
+  text-align: right;
+  color: #909399;
+  font-size: 11px;
+}
+
+.history-sql {
+  flex: 1;
+  min-width: 0;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-status {
+  flex: none;
+}
+
+.history-time {
+  flex: none;
+  color: #909399;
 }
 
 .quick-actions {
-  .el-tag {
+  .quick-btn {
     cursor: pointer;
     transition: all 0.2s;
 
     &:hover {
       transform: translateY(-1px);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
     }
   }
 }
