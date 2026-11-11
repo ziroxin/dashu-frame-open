@@ -78,6 +78,30 @@ com.kg:
     jwt-token-expiry: 120
   #开发管理员配置 (所有开发管理员的ids，多个用逗号隔开)
   developer-user-ids: 1
+  #数据库查询工具配置（用于堡垒机/VPN环境下，无法直连生产库时远程排障）
+  db-query:
+    #模块总开关：false时本模块所有Bean不注入、接口不可被扫描；前端探测失败提示"功能已关闭，请联系管理员"
+    enabled: false
+    #是否允许写操作(INSERT/UPDATE/DELETE)：true时仅"开发管理员"可用，且执行前需预览受影响行数并二次确认
+    write-enabled: true
+    #JDBC连接URL（建议配置只读账号；写操作需该账号本身具备写权限，二者独立生效；显式禁用多语句）
+    url: jdbc:mysql://mariadb:13306/dashu_frame_open?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=false
+    #数据库用户名（建议使用只读权限账号）
+    username: root
+    #数据库密码
+    password: dashu@2025++
+    #只读模式：控制查询接口(executeQuery)仅允许SELECT/SHOW等；写操作走独立通道，不受此项限制
+    read-only: true
+    #默认数据库名
+    default-database: dashu_frame_open
+    #查询默认最大返回行数
+    default-max-rows: 1000
+    #查询默认超时时间（秒）
+    default-timeout: 30
+    #写预览：允许的最大受影响行数，超过则拒绝执行，强制细化WHERE条件
+    max-affected-rows: 5000
+    #写预览快照有效期（秒）：二次确认须在此时间内完成，超时需重新预览
+    snapshot-ttl-seconds: 300
   #跨域配置
   cors:
     #是否允许跨域：false不允许；true允许（根据下方配置匹配跨域规则）
